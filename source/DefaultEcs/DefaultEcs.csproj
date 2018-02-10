@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <TargetFrameworks>
+      netcoreapp1.0;
+      netcoreapp2.0;
+      net45;
+      net46;
+      net47;
+      netstandard1.1;
+      netstandard2.0;
+    </TargetFrameworks>
+    <DefineConstants></DefineConstants>
+    <Optimize>true</Optimize>
+    <Configurations>Debug;Release</Configurations>
+
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
+    
+    <Description>
+      DefaultEcs
+    </Description>
+
+    <Version>0.1.0</Version>
+
+
+    <Authors>Paillat Laszlo</Authors>
+    <Copyright>Copyright © 2017-2018</Copyright>
+
+
+    <PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/Doraku/DefaultEcs/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageId>DefaultEcs</PackageId>
+    <PackageTags>ecs entity component system framework game</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0' or '$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='netstandard1.1'">
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="System.Memory" Version="4.5.0-preview2-26202-05" />
+  </ItemGroup>
+</Project>

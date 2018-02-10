@@ -1,0 +1,6 @@
+﻿/source/*/obj
+/source/*/bin
+/source/.vs
+/source/*/*.vspscc
+/source/*/*.vssscc
+/source/*/*.user
