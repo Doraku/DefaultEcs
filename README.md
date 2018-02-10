@@ -1,25 +1,65 @@
-# WEAK
-WEAK stands for Write Easily Application Kit. As many others it is a framework designed to help you build rich application by providing custom implementations of commonly used patterns in software development.
+# DefaultEcs
+DefaultEcs is an Entity Component System framework which aims to be accessible with constraints while retaining as much performance as possible for game development.
 
-WEAK stands for Write Easily Application Kit. As many others it is a framework designed to help you build rich application by providing custom implementations of commonly used patterns in software development.
+## World
+The World class act as a manager to create entity, get a selection of specific entities, get a family of component or publish and subscribe to messages that can be used to communicate in a decoupled way between the different elements.
+Multiple World objects can be used in parallel, each instance being thread-safe from one an other but operations performed on a single instance and all of its created items should be thought as non thread-safe but depending on what is done, it is still possible to process operations concurrently to optimise performance.
 
-# Why WEAK ?
-Through my job as a developer, I have used many different frameworks but none of them really suited my own preferences, be it too much verbose to use, awkward set up, or just questionable performance. As such I began working on my own framework for my personal projects and WEAK was born.
-Though it started as a WPF framework (at first it meant WPF Easy Application Kit !), it became apparent that lot of functionality were not inherent to WPF and the acronym changed signification. The letters WEAK remained, faithful to the main idea behind the framework to handle all references as WeakReference, removing many burdens on the developer for event hook up and other well hidden strong references in complex project resulting too often in memory leaks while still giving a high performance.
-Due to its root, WEAK also provide a specialised library for WPF development containing my own idea of the MVVM pattern, commonly used converters, useful markup extensions, attached properties and controls.
+Worlds are created as such
+```
+int maxEntityCount = 42;
+World world = new World(maxEntityCount);
+```
 
-# What is in WEAK ?
-As for now, WEAK is divided between two libraries, a core WEAK library usable anywhere and a WPF specialised WEAK.Windows library.
+It should be noted that the World class also implement the IDisposable interface.
 
-WEAK
-- Publish-subscribe pattern: high performance intra-application message dispatcher using types as topic, retaining no references on subscribes with different modes of publishing, synchronous, asynchronous for short and long operations (TPL) or using a SynchronizationContext (usually for UI operations)
-- Inversion of control pattern: link implementation to interface, a factory handles creations of instance and inject needed parameters in constructor, working in tandem with a set of classes to ensure singleton instance or multi instances, with no strong references retained as always
-- Command pattern: undo-redo engine with most used actions built-in, wrapper for list, dictionary and collection, easily extensible
-- WIP
+## Entity
+Entities are simple struct wraping above two Int32, acting as a key to manage components.
 
-WEAK.Windows
-- WIP
+Entities are created s such
+```
+Entity entity = world.CreateEntity();
+```
 
-# Where to with WEAK ?
-Since I am building it along my personal projects, other features are still work in progress (mainly a module solution and most of the WEAK.Windows library). A stable release of the core WEAK library should arrive soon as I am close to finishing the first batch of items for it.
-Like a lot of people, I have lot of ideas but not much time so things may  move a little slow but I will get there eventually !
+## Component
+Components are not restricted by any heritage hierarchy. It is recommanded that component objects only hold data and to be struct to generate as little as possible garbage and to have them contiguous in memory.
+```
+public struct Example
+{
+    public float Value;
+}
+```
+
+Before being used, the component type should be added to the world instance
+```
+int maxComponentCount = 42;
+world.AddComponentType<Example>(maxComponentCount);
+```
+
+It is then possible to add the component to the entity
+```
+entity.Set(new Example { Value = 42 });
+```
+
+## System
+Like components, systems are not restricted by any heritage hierarchy, that way execution logic and optimisation can be fined tuned as required.
+
+To perform operation, systems should get EntitySet from the World instance. EntitySet are updated as components are added/removed from entities and are used to get a subset of entities with the required component
+```
+// this set when enumerated will give all the entities with an Example composent
+EntitySet<Example> set = world.GetEntityWith<Example>()
+```
+
+EntitySet should be created before entities are instanced.
+
+## Message
+It is possible to send and receive message transiting in a World.
+```
+void On(bool message) { }
+
+// the method On will be called back every time a bool object is published
+// it is possible to use any type
+world.Subscribe<bool>(On);
+
+world.Publish(true);
+```
