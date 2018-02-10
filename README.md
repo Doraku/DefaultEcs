@@ -51,7 +51,7 @@ Like components, systems are not restricted by any heritage hierarchy, that way 
 
 To perform operation, systems should get EntitySet from the World instance. EntitySet are updated as components are added/removed from entities and are used to get a subset of entities with the required component
 ```
-// this set when enumerated will give all the entities with an Example composent
+// this set when enumerated will give all the entities with an Example component
 EntitySet<Example> set = world.GetEntityWith<Example>()
 ```
 
