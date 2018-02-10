@@ -4,3 +4,4 @@
 /source/*/*.vspscc
 /source/*/*.vssscc
 /source/*/*.user
+*.nupkg

@@ -1,5 +1,5 @@
 # DefaultEcs
-DefaultEcs is an Entity Component System framework which aims to be accessible with constraints while retaining as much performance as possible for game development.
+DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
 ## World
 The World class act as a manager to create entity, get a selection of specific entities, get a family of component or publish and subscribe to messages that can be used to communicate in a decoupled way between the different elements.
