@@ -41,6 +41,11 @@ It is then possible to add the component to the entity
 entity.Set(new Example { Value = 42 });
 ```
 
+It is also possible to share a component between entities without creating a new object
+```
+entity.SetSameAs<Example>(referenceEntity);
+```
+
 ## System
 Like components, systems are not restricted by any heritage hierarchy, that way execution logic and optimisation can be fined tuned as required.
 
