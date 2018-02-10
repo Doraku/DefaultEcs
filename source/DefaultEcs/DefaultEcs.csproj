@@ -17,6 +17,8 @@
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
     
+    <DocumentationFile>bin\DefaultEcs.xml</DocumentationFile>
+    
     <Description>DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.</Description>
 
     <Version>0.1.0</Version>
