@@ -17,8 +17,6 @@
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
     
-    <DocumentationFile>bin\DefaultEcs.xml</DocumentationFile>
-    
     <Description>DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.</Description>
 
     <Version>0.1.0</Version>
@@ -34,6 +32,10 @@
     <PackageTags>ecs entity component system framework game</PackageTags>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)'=='net47'">
+    <DocumentationFile>bin\DefaultEcs.xml</DocumentationFile>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG</DefineConstants>
