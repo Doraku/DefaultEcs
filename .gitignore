@@ -5,3 +5,4 @@
 /source/*/*.vssscc
 /source/*/*.user
 *.nupkg
+/source/DefaultEcs.Benchmark/BenchmarkDotNet.Artifacts

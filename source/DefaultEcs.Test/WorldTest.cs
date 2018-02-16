@@ -15,10 +15,29 @@ namespace DefaultEcs.Test
             using (World world = new World(0))
             {
                 bool done = false;
-                world.Subscribe<bool>(b => done = b);
+                world.Subscribe((in bool b) => done = b);
                 world.Publish(true);
 
                 Check.That(done).IsTrue();
+            }
+        }
+
+        [Fact]
+        public void Subscribe_Dispose_Should_unsubscribe()
+        {
+            using (World world = new World(0))
+            {
+                bool done = false;
+                using (world.Subscribe((in bool b) => done = b))
+                {
+                    world.Publish(true);
+
+                    Check.That(done).IsTrue();
+                }
+
+                done = false;
+                world.Publish(true);
+                Check.That(done).IsFalse();
             }
         }
 
@@ -28,7 +47,7 @@ namespace DefaultEcs.Test
             using (World world = new World(0))
             {
                 bool done = false;
-                world.Subscribe<bool>(b => done = b);
+                world.Subscribe((in bool b) => done = b);
                 world.Publish(true);
 
                 Check.That(done).IsTrue();
@@ -71,7 +90,7 @@ namespace DefaultEcs.Test
 
                 Entity messageEntity = default;
 
-                world.Subscribe<EntityCreatedMessage>(m => messageEntity = m.Entity);
+                world.Subscribe((in EntityCreatedMessage m) => messageEntity = m.Entity);
 
                 Check.That(world.CreateEntity()).IsEqualTo(messageEntity);
             }

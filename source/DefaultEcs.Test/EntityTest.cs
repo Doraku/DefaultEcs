@@ -108,7 +108,7 @@ namespace DefaultEcs.Test
             {
                 ComponentSettedMessage<bool> message = default;
 
-                world.Subscribe<ComponentSettedMessage<bool>>(m => message = m);
+                world.Subscribe((in ComponentSettedMessage<bool> m) => message = m);
 
                 world.AddComponentType<bool>(1);
                 world.CreateEntity();
@@ -133,7 +133,7 @@ namespace DefaultEcs.Test
 
                 entity.Set(true);
 
-                world.Subscribe<ComponentSettedMessage<bool>>(m => done = true);
+                world.Subscribe((in ComponentSettedMessage<bool> m) => done = true);
 
                 entity.Set(true);
 
@@ -237,7 +237,7 @@ namespace DefaultEcs.Test
 
                 reference.Set(true);
 
-                world.Subscribe<ComponentSettedMessage<bool>>(m => message = m);
+                world.Subscribe((in ComponentSettedMessage<bool> m) => message = m);
 
                 entity.SetSameAs<bool>(reference);
 
@@ -259,7 +259,7 @@ namespace DefaultEcs.Test
                 reference.Set(true);
                 entity.Set(true);
 
-                world.Subscribe<ComponentSettedMessage<bool>>(m => done = true);
+                world.Subscribe((in ComponentSettedMessage<bool> m) => done = true);
 
                 entity.SetSameAs<bool>(reference);
 
@@ -302,7 +302,7 @@ namespace DefaultEcs.Test
                 ComponentRemovedMessage<bool> message = default;
 
                 world.AddComponentType<bool>(1);
-                world.Subscribe<ComponentRemovedMessage<bool>>(m => message = m);
+                world.Subscribe((in ComponentRemovedMessage<bool> m) => message = m);
 
                 Entity entity = world.CreateEntity();
 
@@ -318,7 +318,7 @@ namespace DefaultEcs.Test
             using (World world = new World(1))
             {
                 bool done = false;
-                world.Subscribe<ComponentSettedMessage<bool>>(m => done = true);
+                world.Subscribe((in ComponentSettedMessage<bool> m) => done = true);
 
                 Entity entity = world.CreateEntity();
 
@@ -374,7 +374,7 @@ namespace DefaultEcs.Test
             using (World world = new World(4))
             {
                 List<Entity> messages = new List<Entity>();
-                world.Subscribe<ComponentRemovedMessage<bool>>(m => messages.Add(m.Entity));
+                world.Subscribe((in ComponentRemovedMessage<bool> m) => messages.Add(m.Entity));
 
                 world.AddComponentType<bool>(1);
 
@@ -493,7 +493,7 @@ namespace DefaultEcs.Test
                 Entity deletedEntity = default;
                 Entity entity = world.CreateEntity();
 
-                world.Subscribe<EntityCleanedMessage>(m => deletedEntity = m.Entity);
+                world.Subscribe((in EntityCleanedMessage m) => deletedEntity = m.Entity);
 
                 entity.Clean();
 
@@ -508,13 +508,13 @@ namespace DefaultEcs.Test
             {
                 ComponentRemovedMessage<bool> message = default;
 
-                world.Subscribe<ComponentRemovedMessage<bool>>(m => message = m);
+                world.Subscribe((in ComponentRemovedMessage<bool> m) => message = m);
 
                 world.AddComponentType<bool>(1);
                 world.CreateEntity();
                 Entity deletedEntity = world.CreateEntity();
                 deletedEntity.Set(true);
-                
+
                 deletedEntity.Clean();
 
                 Check.That(message.Entity).IsEqualTo(deletedEntity);

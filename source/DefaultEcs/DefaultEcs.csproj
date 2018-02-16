@@ -7,6 +7,7 @@
       net45;
       net46;
       net47;
+      net471;
       netstandard1.1;
       netstandard2.0;
     </TargetFrameworks>
@@ -32,7 +33,7 @@
     <PackageTags>ecs entity component system framework game</PackageTags>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net47'">
+  <PropertyGroup Condition="'$(TargetFramework)'=='net471'">
     <DocumentationFile>bin\DefaultEcs.xml</DocumentationFile>
   </PropertyGroup>
   

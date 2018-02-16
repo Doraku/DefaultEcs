@@ -67,8 +67,8 @@ namespace DefaultEcs
 
         public EntitySet(World world)
         {
-            world.Subscribe<EntityCreatedMessage>(m => _entities.Add(m.Entity));
-            world.Subscribe<EntityCleanedMessage>(m => _entities.Remove(m.Entity));
+            world.Subscribe((in EntityCreatedMessage m) => _entities.Add(m.Entity));
+            world.Subscribe((in EntityCleanedMessage m) => _entities.Remove(m.Entity));
         }
 
         #endregion
@@ -80,8 +80,8 @@ namespace DefaultEcs
 
         public EntitySet(World world)
         {
-            world.Subscribe<ComponentSettedMessage<T>>(m => _entities.Add(m.Entity));
-            world.Subscribe<ComponentRemovedMessage<T>>(m => _entities.Remove(m.Entity));
+            world.Subscribe((in ComponentSettedMessage<T> m) => _entities.Add(m.Entity));
+            world.Subscribe((in ComponentRemovedMessage<T> m) => _entities.Remove(m.Entity));
         }
 
         #endregion
@@ -116,17 +116,17 @@ namespace DefaultEcs
         public EntitySet(World world)
         {
             world.Subscribe<ComponentSettedMessage<T1>>(On);
-            world.Subscribe<ComponentRemovedMessage<T1>>(m => _entities.Remove(m.Entity));
+            world.Subscribe((in ComponentRemovedMessage<T1> m) => _entities.Remove(m.Entity));
 
             world.Subscribe<ComponentSettedMessage<T2>>(On);
-            world.Subscribe<ComponentRemovedMessage<T2>>(m => _entities.Remove(m.Entity));
+            world.Subscribe((in ComponentRemovedMessage<T2> m) => _entities.Remove(m.Entity));
         }
 
         #endregion
 
         #region Callbacks
 
-        private void On(ComponentSettedMessage<T1> message)
+        private void On(in ComponentSettedMessage<T1> message)
         {
             if (message.Entity.Has<T2>())
             {
@@ -134,7 +134,7 @@ namespace DefaultEcs
             }
         }
 
-        private void On(ComponentSettedMessage<T2> message)
+        private void On(in ComponentSettedMessage<T2> message)
         {
             if (message.Entity.Has<T1>())
             {
@@ -179,20 +179,20 @@ namespace DefaultEcs
         public EntitySet(World world)
         {
             world.Subscribe<ComponentSettedMessage<T1>>(On);
-            world.Subscribe<ComponentRemovedMessage<T1>>(m => _entities.Remove(m.Entity));
+            world.Subscribe((in ComponentRemovedMessage<T1> m) => _entities.Remove(m.Entity));
 
             world.Subscribe<ComponentSettedMessage<T2>>(On);
-            world.Subscribe<ComponentRemovedMessage<T2>>(m => _entities.Remove(m.Entity));
+            world.Subscribe((in ComponentRemovedMessage<T2> m) => _entities.Remove(m.Entity));
 
             world.Subscribe<ComponentSettedMessage<T3>>(On);
-            world.Subscribe<ComponentRemovedMessage<T3>>(m => _entities.Remove(m.Entity));
+            world.Subscribe((in ComponentRemovedMessage<T3> m) => _entities.Remove(m.Entity));
         }
 
         #endregion
 
         #region Callbacks
 
-        private void On(ComponentSettedMessage<T1> message)
+        private void On(in ComponentSettedMessage<T1> message)
         {
             if (message.Entity.Has<T2>()
                 && message.Entity.Has<T3>())
@@ -201,7 +201,7 @@ namespace DefaultEcs
             }
         }
 
-        private void On(ComponentSettedMessage<T2> message)
+        private void On(in ComponentSettedMessage<T2> message)
         {
             if (message.Entity.Has<T1>()
                 && message.Entity.Has<T3>())
@@ -210,7 +210,7 @@ namespace DefaultEcs
             }
         }
 
-        private void On(ComponentSettedMessage<T3> message)
+        private void On(in ComponentSettedMessage<T3> message)
         {
             if (message.Entity.Has<T1>()
                 && message.Entity.Has<T2>())
@@ -261,23 +261,23 @@ namespace DefaultEcs
         public EntitySet(World world)
         {
             world.Subscribe<ComponentSettedMessage<T1>>(On);
-            world.Subscribe<ComponentRemovedMessage<T1>>(m => _entities.Remove(m.Entity));
+            world.Subscribe((in ComponentRemovedMessage<T1> m) => _entities.Remove(m.Entity));
 
             world.Subscribe<ComponentSettedMessage<T2>>(On);
-            world.Subscribe<ComponentRemovedMessage<T2>>(m => _entities.Remove(m.Entity));
+            world.Subscribe((in ComponentRemovedMessage<T2> m) => _entities.Remove(m.Entity));
 
             world.Subscribe<ComponentSettedMessage<T3>>(On);
-            world.Subscribe<ComponentRemovedMessage<T3>>(m => _entities.Remove(m.Entity));
+            world.Subscribe((in ComponentRemovedMessage<T3> m) => _entities.Remove(m.Entity));
 
             world.Subscribe<ComponentSettedMessage<T4>>(On);
-            world.Subscribe<ComponentRemovedMessage<T4>>(m => _entities.Remove(m.Entity));
+            world.Subscribe((in ComponentRemovedMessage<T4> m) => _entities.Remove(m.Entity));
         }
 
         #endregion
 
         #region Callbacks
 
-        private void On(ComponentSettedMessage<T1> message)
+        private void On(in ComponentSettedMessage<T1> message)
         {
             if (message.Entity.Has<T2>()
                 && message.Entity.Has<T3>()
@@ -287,7 +287,7 @@ namespace DefaultEcs
             }
         }
 
-        private void On(ComponentSettedMessage<T2> message)
+        private void On(in ComponentSettedMessage<T2> message)
         {
             if (message.Entity.Has<T1>()
                 && message.Entity.Has<T3>()
@@ -297,7 +297,7 @@ namespace DefaultEcs
             }
         }
 
-        private void On(ComponentSettedMessage<T3> message)
+        private void On(in ComponentSettedMessage<T3> message)
         {
             if (message.Entity.Has<T1>()
                 && message.Entity.Has<T2>()
@@ -307,7 +307,7 @@ namespace DefaultEcs
             }
         }
 
-        private void On(ComponentSettedMessage<T4> message)
+        private void On(in ComponentSettedMessage<T4> message)
         {
             if (message.Entity.Has<T1>()
                 && message.Entity.Has<T2>()

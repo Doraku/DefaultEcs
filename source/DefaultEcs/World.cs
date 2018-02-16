@@ -4,6 +4,16 @@ using DefaultEcs.Message;
 
 namespace DefaultEcs
 {
+    #region Types
+
+    /// <summary>
+    /// Encapsulates a method that has a single in parameter and does not return a value used for <see cref="World.Subscribe{T}(SubscribeAction{T})" method./>
+    /// </summary>
+    /// <typeparam name="T">The type of message to subscribe to.</typeparam>
+    public delegate void SubscribeAction<T>(in T message);
+
+    #endregion
+
     /// <summary>
     /// Represents a item use to create and manage <see cref="Entity"/> objects.
     /// </summary>
@@ -48,25 +58,26 @@ namespace DefaultEcs
 
         #region Callbacks
 
-        private void On(EntityCleanedMessage message) => _entityIdDispenser.ReleaseInt(message.Entity.EntityId);
+        private void On(in EntityCleanedMessage message) => _entityIdDispenser.ReleaseInt(message.Entity.EntityId);
 
         #endregion
 
         #region Methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Subscribe<T>(int worldId, Action<T> action) => InnerPublisher<T>.Subscribe(worldId, action);
+        private static IDisposable Subscribe<T>(int worldId, SubscribeAction<T> action) => InnerPublisher<T>.Subscribe(worldId, action);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void Publish<T>(int worldId, in T arg) => InnerPublisher<T>.Actions[worldId]?.Invoke(arg);
 
         /// <summary>
-        /// Subscribes an <see cref="Action{T}"/> to be called back when a <typeparamref name="T"/> object is published.
+        /// Subscribes an <see cref="SubscribeAction{T}"/> to be called back when a <typeparamref name="T"/> object is published.
         /// </summary>
         /// <typeparam name="T">The type of the object to be called back with.</typeparam>
         /// <param name="action">The delegate to be called back.</param>
+        /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Subscribe<T>(Action<T> action) => Subscribe(_worldId, action);
+        public IDisposable Subscribe<T>(SubscribeAction<T> action) => Subscribe(_worldId, action);
 
         /// <summary>
         /// Publishes a <typeparamref name="T"/> object.

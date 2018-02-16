@@ -1,38 +1,39 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFrameworks>
-      netcoreapp1.0;
+      netcoreapp1.1;
       netcoreapp2.0;
-      net45;
       net46;
       net47;
       net471;
-      netstandard1.3;
-      netstandard2.0;
     </TargetFrameworks>
     <DefineConstants></DefineConstants>
     <Optimize>true</Optimize>
     <Configurations>Debug;Release</Configurations>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>
+    <StartupObject />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
-  
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.1' or '$(TargetFramework)'=='netcoreapp2.0'">
+    <PackageReference Include="BenchmarkDotNet.Core" Version="0.10.12" />
+  </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="NFluent" Version="2.1.1" />
-    <PackageReference Include="xunit.core" Version="2.3.1" />
-    <PackageReference Include="xunit.runner.console" Version="2.3.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" NoWarn="NU1701" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.12" NoWarn="NU1701" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DefaultEcs\DefaultEcs.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="xunit.runner.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Reference Include="Entitas">
+      <HintPath>..\..\dependency\Entitas.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
