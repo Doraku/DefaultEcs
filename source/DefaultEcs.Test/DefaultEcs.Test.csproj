@@ -2,14 +2,8 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFrameworks>
-      netcoreapp1.0;
       netcoreapp2.0;
-      net45;
-      net46;
-      net47;
       net471;
-      netstandard1.3;
-      netstandard2.0;
     </TargetFrameworks>
     <DefineConstants></DefineConstants>
     <Optimize>true</Optimize>
@@ -20,16 +14,18 @@
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="NFluent" Version="2.1.1" />
-    <PackageReference Include="xunit.core" Version="2.3.1" />
-    <PackageReference Include="xunit.runner.console" Version="2.3.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" NoWarn="NU1701" />
+    <PackageReference Include="NFluent" Version="2.2.0" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\DefaultEcs\DefaultEcs.csproj" />
   </ItemGroup>
+  
   <ItemGroup>
     <None Update="xunit.runner.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

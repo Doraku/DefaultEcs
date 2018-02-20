@@ -2,12 +2,6 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFrameworks>
-      netcoreapp1.0;
-      netcoreapp2.0;
-      net45;
-      net46;
-      net47;
-      net471;
       netstandard1.1;
       netstandard2.0;
     </TargetFrameworks>
@@ -20,7 +14,7 @@
     
     <Description>DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.</Description>
 
-    <Version>0.1.0</Version>
+    <Version>0.1.0-alpha</Version>
 
 
     <Authors>Paillat Laszlo</Authors>
@@ -33,7 +27,7 @@
     <PackageTags>ecs entity component system framework game</PackageTags>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net471'">
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
     <DocumentationFile>bin\DefaultEcs.xml</DocumentationFile>
   </PropertyGroup>
   
@@ -42,7 +36,7 @@
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.0' or '$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net46' or '$(TargetFramework)'=='netstandard1.1'">
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
   

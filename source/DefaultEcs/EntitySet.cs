@@ -7,11 +7,13 @@ using DefaultEcs.Message;
 
 namespace DefaultEcs
 {
-    public abstract class AEntitySet : IEnumerable<Entity>
+    public abstract class AEntitySet : IEnumerable<Entity>, IDisposable
     {
         #region Fields
 
         private protected readonly HashSet<Entity> _entities;
+
+        private protected IDisposable[] _subscriptions;
 
         #endregion
 
@@ -59,6 +61,18 @@ namespace DefaultEcs
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         #endregion
+
+        #region IDisposable
+
+        public void Dispose()
+        {
+            foreach (IDisposable subscription in _subscriptions)
+            {
+                subscription.Dispose();
+            }
+        }
+
+        #endregion
     }
 
     public sealed class EntitySet : AEntitySet
@@ -67,8 +81,11 @@ namespace DefaultEcs
 
         public EntitySet(World world)
         {
-            world.Subscribe((in EntityCreatedMessage m) => _entities.Add(m.Entity));
-            world.Subscribe((in EntityCleanedMessage m) => _entities.Remove(m.Entity));
+            _subscriptions = new[]
+            {
+                world.Subscribe((in EntityCreatedMessage m) => _entities.Add(m.Entity)),
+                world.Subscribe((in EntityCleanedMessage m) => _entities.Remove(m.Entity))
+            };
         }
 
         #endregion
@@ -80,8 +97,11 @@ namespace DefaultEcs
 
         public EntitySet(World world)
         {
-            world.Subscribe((in ComponentSettedMessage<T> m) => _entities.Add(m.Entity));
-            world.Subscribe((in ComponentRemovedMessage<T> m) => _entities.Remove(m.Entity));
+            _subscriptions = new[]
+            {
+                world.Subscribe((in ComponentSettedMessage<T> m) => _entities.Add(m.Entity)),
+                world.Subscribe((in ComponentRemovedMessage<T> m) => _entities.Remove(m.Entity))
+            };
         }
 
         #endregion
@@ -115,11 +135,13 @@ namespace DefaultEcs
 
         public EntitySet(World world)
         {
-            world.Subscribe<ComponentSettedMessage<T1>>(On);
-            world.Subscribe((in ComponentRemovedMessage<T1> m) => _entities.Remove(m.Entity));
-
-            world.Subscribe<ComponentSettedMessage<T2>>(On);
-            world.Subscribe((in ComponentRemovedMessage<T2> m) => _entities.Remove(m.Entity));
+            _subscriptions = new[]
+            {
+                world.Subscribe<ComponentSettedMessage<T1>>(On),
+                world.Subscribe((in ComponentRemovedMessage<T1> m) => _entities.Remove(m.Entity)),
+                world.Subscribe<ComponentSettedMessage<T2>>(On),
+                world.Subscribe((in ComponentRemovedMessage<T2> m) => _entities.Remove(m.Entity))
+            };
         }
 
         #endregion
@@ -178,14 +200,15 @@ namespace DefaultEcs
 
         public EntitySet(World world)
         {
-            world.Subscribe<ComponentSettedMessage<T1>>(On);
-            world.Subscribe((in ComponentRemovedMessage<T1> m) => _entities.Remove(m.Entity));
-
-            world.Subscribe<ComponentSettedMessage<T2>>(On);
-            world.Subscribe((in ComponentRemovedMessage<T2> m) => _entities.Remove(m.Entity));
-
-            world.Subscribe<ComponentSettedMessage<T3>>(On);
-            world.Subscribe((in ComponentRemovedMessage<T3> m) => _entities.Remove(m.Entity));
+            _subscriptions = new[]
+            {
+                world.Subscribe<ComponentSettedMessage<T1>>(On),
+                world.Subscribe((in ComponentRemovedMessage<T1> m) => _entities.Remove(m.Entity)),
+                world.Subscribe<ComponentSettedMessage<T2>>(On),
+                world.Subscribe((in ComponentRemovedMessage<T2> m) => _entities.Remove(m.Entity)),
+                world.Subscribe<ComponentSettedMessage<T3>>(On),
+                world.Subscribe((in ComponentRemovedMessage<T3> m) => _entities.Remove(m.Entity))
+            };
         }
 
         #endregion
@@ -260,17 +283,17 @@ namespace DefaultEcs
 
         public EntitySet(World world)
         {
-            world.Subscribe<ComponentSettedMessage<T1>>(On);
-            world.Subscribe((in ComponentRemovedMessage<T1> m) => _entities.Remove(m.Entity));
-
-            world.Subscribe<ComponentSettedMessage<T2>>(On);
-            world.Subscribe((in ComponentRemovedMessage<T2> m) => _entities.Remove(m.Entity));
-
-            world.Subscribe<ComponentSettedMessage<T3>>(On);
-            world.Subscribe((in ComponentRemovedMessage<T3> m) => _entities.Remove(m.Entity));
-
-            world.Subscribe<ComponentSettedMessage<T4>>(On);
-            world.Subscribe((in ComponentRemovedMessage<T4> m) => _entities.Remove(m.Entity));
+            _subscriptions = new[]
+            {
+                world.Subscribe<ComponentSettedMessage<T1>>(On),
+                world.Subscribe((in ComponentRemovedMessage<T1> m) => _entities.Remove(m.Entity)),
+                world.Subscribe<ComponentSettedMessage<T2>>(On),
+                world.Subscribe((in ComponentRemovedMessage<T2> m) => _entities.Remove(m.Entity)),
+                world.Subscribe<ComponentSettedMessage<T3>>(On),
+                world.Subscribe((in ComponentRemovedMessage<T3> m) => _entities.Remove(m.Entity)),
+                world.Subscribe<ComponentSettedMessage<T4>>(On),
+                world.Subscribe((in ComponentRemovedMessage<T4> m) => _entities.Remove(m.Entity))
+            };
         }
 
         #endregion
