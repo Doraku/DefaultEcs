@@ -9,7 +9,6 @@ namespace DefaultEcs
     {
         #region Fields
 
-        private readonly int _worldId;
         private readonly int[] _mapping;
         private readonly bool[] _isRef;
         private readonly int[] _reverseMapping;
@@ -21,13 +20,12 @@ namespace DefaultEcs
 
         #region Initialisation
 
-        public ComponentPool(int worldId, int entityMaxCount, int componentMaxCount)
+        public ComponentPool(int maxEntityCount, int maxComponentCount)
         {
-            _worldId = worldId;
-            _mapping = Enumerable.Repeat(-1, entityMaxCount).ToArray();
-            _isRef = new bool[entityMaxCount];
-            _reverseMapping = new int[componentMaxCount];
-            _items = new T[componentMaxCount];
+            _mapping = Enumerable.Repeat(-1, maxEntityCount).ToArray();
+            _isRef = new bool[maxEntityCount];
+            _reverseMapping = new int[maxComponentCount];
+            _items = new T[maxComponentCount];
 
             _lastIndex = -1;
         }
@@ -127,19 +125,16 @@ namespace DefaultEcs
             if (isRef)
             {
                 int refIndex = index;
-                Span<int> indexes = new Span<int>(_mapping);
-                for (int i = 0; i < indexes.Length; ++i)
+                for (int i = 0; i < _mapping.Length; ++i)
                 {
-                    ref int temp = ref indexes[i];
-                    if (temp == refIndex)
+                    if (_mapping[i] == refIndex && i != entityId)
                     {
-                        temp = -1;
-                        World.Publish(_worldId, new ComponentRemovedMessage<T>(new Entity(_worldId, i)));
+                        _isRef[i] = true;
+                        break;
                     }
                 }
 
                 isRef = false;
-                return false;
             }
 
             index = -1;

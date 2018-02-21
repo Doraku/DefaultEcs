@@ -348,7 +348,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Remove_Should_remove_component_of_all_referenced_Entity()
+        public void Remove_Should_not_remove_component_of_all_referenced_Entity()
         {
             using (World world = new World(3))
             {
@@ -363,7 +363,7 @@ namespace DefaultEcs.Test
 
                 reference.Remove<bool>();
 
-                Check.That(entity.Has<bool>()).IsFalse();
+                Check.That(entity.Has<bool>()).IsTrue();
                 Check.That(reference.Has<bool>()).IsFalse();
             }
         }

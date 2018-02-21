@@ -18,12 +18,12 @@
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp1.1' or '$(TargetFramework)'=='netcoreapp2.0'">
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
     <PackageReference Include="BenchmarkDotNet.Core" Version="0.10.12" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.12" NoWarn="NU1701" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.12" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DefaultEcs\DefaultEcs.csproj" />
@@ -31,6 +31,9 @@
   <ItemGroup>
     <Reference Include="Entitas">
       <HintPath>..\..\dependency\Entitas.dll</HintPath>
+    </Reference>
+    <Reference Include="Svelto.ECS">
+      <HintPath>..\..\dependency\Svelto.ECS.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

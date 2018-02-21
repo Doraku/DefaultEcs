@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -7,63 +6,90 @@ using DefaultEcs.Message;
 
 namespace DefaultEcs
 {
-    public abstract class AEntitySet : IEnumerable<Entity>, IDisposable
+    /// <summary>
+    /// Represents a sub-selection of <see cref="Entity"/> instances from a <see cref="World"/>.
+    /// </summary>
+    public abstract class EntitySet : IDisposable
     {
         #region Fields
 
-        private protected readonly HashSet<Entity> _entities;
+        private readonly int[] _mapping;
+        private readonly Entity[] _entities;
+        private readonly IDisposable[] _subscriptions;
 
-        private protected IDisposable[] _subscriptions;
+        private int _lastIndex;
 
         #endregion
 
         #region Properties
 
-        public int Count => _entities.Count;
+        /// <summary>
+        /// Gets the numbers of <see cref="Entity"/> in the current <see cref="EntitySet"/>.
+        /// </summary>
+        public int Count => _lastIndex + 1;
 
         #endregion
 
         #region Initialisation
 
-        public AEntitySet()
+        private protected EntitySet(World world)
         {
-            _entities = new HashSet<Entity>();
+            _mapping = Enumerable.Repeat(-1, world.MaxEntityCount).ToArray();
+            _entities = new Entity[world.MaxEntityCount];
+            _subscriptions = Subscribe(world).ToArray();
+
+            _lastIndex = -1;
         }
 
         #endregion
 
         #region Methods
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo(Span<Entity> destination)
-        {
-            if (destination.Length != _entities.Count)
-            {
-                throw new InvalidOperationException($"Incorrect destination Length: {destination.Length}, expected: {_entities.Count}");
-            }
+        private protected abstract IEnumerable<IDisposable> Subscribe(World world);
 
-            int i = 0;
-            foreach (Entity entity in _entities)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private protected void Add(Entity item)
+        {
+            ref int index = ref _mapping[item.EntityId];
+            if (index == -1)
             {
-                destination[i++] = entity;
+                index = ++_lastIndex;
+                _entities[index] = item;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Entity[] Copy() => _entities.ToArray();
+        private protected void Remove(Entity item)
+        {
+            ref int index = ref _mapping[item.EntityId];
+            if (index != -1)
+            {
+                if (index != _lastIndex)
+                {
+                    ref Entity entity = ref _entities[index];
+                    entity = _entities[_lastIndex];
+                    _mapping[entity.EntityId] = index;
+                }
 
-        #endregion
+                --_lastIndex;
+                index = -1;
+            }
+        }
 
-        #region IEnumerable
-
-        public IEnumerator<Entity> GetEnumerator() => _entities.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        /// <summary>
+        /// Gets the <see cref="Entity"/> contained in the current <see cref="EntitySet"/>.
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<Entity> GetEntities() => new ReadOnlySpan<Entity>(_entities, 0, Count);
 
         #endregion
 
         #region IDisposable
 
+        /// <summary>
+        /// Releases current <see cref="EntitySet"/> of its subscriptions, stopping it to get modifications on the <see cref="World"/>'s <see cref="Entity"/>.
+        /// </summary>
         public void Dispose()
         {
             foreach (IDisposable subscription in _subscriptions)
@@ -75,74 +101,55 @@ namespace DefaultEcs
         #endregion
     }
 
-    public sealed class EntitySet : AEntitySet
+    internal sealed class AllEntitySet : EntitySet
     {
         #region Initialisation
 
-        public EntitySet(World world)
+        public AllEntitySet(World world)
+            : base(world)
+        { }
+
+        #endregion
+
+        #region EntitySet
+
+        private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
-            _subscriptions = new[]
-            {
-                world.Subscribe((in EntityCreatedMessage m) => _entities.Add(m.Entity)),
-                world.Subscribe((in EntityCleanedMessage m) => _entities.Remove(m.Entity))
-            };
+            yield return world.Subscribe((in EntityCreatedMessage m) => Add(m.Entity));
+            yield return world.Subscribe((in EntityCleanedMessage m) => Remove(m.Entity));
         }
 
         #endregion
     }
 
-    public sealed class EntitySet<T> : AEntitySet
+    internal sealed class EntitySet<T> : EntitySet
     {
         #region Initialisation
 
         public EntitySet(World world)
-        {
-            _subscriptions = new[]
-            {
-                world.Subscribe((in ComponentSettedMessage<T> m) => _entities.Add(m.Entity)),
-                world.Subscribe((in ComponentRemovedMessage<T> m) => _entities.Remove(m.Entity))
-            };
-        }
+            : base(world)
+        { }
 
         #endregion
 
-        #region Methods
+        #region EntitySet
 
-        IEnumerable<(Entity, T)> CopyWithComponents()
+        private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
-            (Entity, T)[] items = new(Entity, T)[_entities.Count];
-
-            int i = 0;
-            foreach (Entity entity in _entities)
-            {
-                items[i++].Item1 = entity;
-            }
-            for (i = 0; i < items.Length; ++i)
-            {
-                ref (Entity, T) item = ref items[i];
-                item.Item2 = item.Item1.Get<T>();
-            }
-
-            return items;
+            yield return world.Subscribe((in ComponentSettedMessage<T> m) => Add(m.Entity));
+            yield return world.Subscribe((in ComponentRemovedMessage<T> m) => Remove(m.Entity));
         }
 
         #endregion
     }
 
-    public sealed class EntitySet<T1, T2> : AEntitySet
+    internal sealed class EntitySet<T1, T2> : EntitySet
     {
         #region Initialisation
 
         public EntitySet(World world)
-        {
-            _subscriptions = new[]
-            {
-                world.Subscribe<ComponentSettedMessage<T1>>(On),
-                world.Subscribe((in ComponentRemovedMessage<T1> m) => _entities.Remove(m.Entity)),
-                world.Subscribe<ComponentSettedMessage<T2>>(On),
-                world.Subscribe((in ComponentRemovedMessage<T2> m) => _entities.Remove(m.Entity))
-            };
-        }
+            : base(world)
+        { }
 
         #endregion
 
@@ -152,7 +159,7 @@ namespace DefaultEcs
         {
             if (message.Entity.Has<T2>())
             {
-                _entities.Add(message.Entity);
+                Add(message.Entity);
             }
         }
 
@@ -160,56 +167,32 @@ namespace DefaultEcs
         {
             if (message.Entity.Has<T1>())
             {
-                _entities.Add(message.Entity);
+                Add(message.Entity);
             }
         }
 
         #endregion
 
-        #region Methods
+        #region EntitySet
 
-        IEnumerable<(Entity, T1, T2)> CopyWithComponents()
+        private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
-            (Entity, T1, T2)[] items = new(Entity, T1, T2)[_entities.Count];
-
-            int i = 0;
-            foreach (Entity entity in _entities)
-            {
-                items[i++].Item1 = entity;
-            }
-            for (i = 0; i < items.Length; ++i)
-            {
-                ref (Entity, T1, T2) item = ref items[i];
-                item.Item2 = item.Item1.Get<T1>();
-            }
-            for (i = 0; i < items.Length; ++i)
-            {
-                ref (Entity, T1, T2) item = ref items[i];
-                item.Item3 = item.Item1.Get<T2>();
-            }
-
-            return items;
+            yield return world.Subscribe<ComponentSettedMessage<T1>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T1> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentSettedMessage<T2>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T2> m) => Remove(m.Entity));
         }
 
         #endregion
     }
 
-    public sealed class EntitySet<T1, T2, T3> : AEntitySet
+    internal sealed class EntitySet<T1, T2, T3> : EntitySet
     {
         #region Initialisation
 
         public EntitySet(World world)
-        {
-            _subscriptions = new[]
-            {
-                world.Subscribe<ComponentSettedMessage<T1>>(On),
-                world.Subscribe((in ComponentRemovedMessage<T1> m) => _entities.Remove(m.Entity)),
-                world.Subscribe<ComponentSettedMessage<T2>>(On),
-                world.Subscribe((in ComponentRemovedMessage<T2> m) => _entities.Remove(m.Entity)),
-                world.Subscribe<ComponentSettedMessage<T3>>(On),
-                world.Subscribe((in ComponentRemovedMessage<T3> m) => _entities.Remove(m.Entity))
-            };
-        }
+            : base(world)
+        { }
 
         #endregion
 
@@ -220,7 +203,7 @@ namespace DefaultEcs
             if (message.Entity.Has<T2>()
                 && message.Entity.Has<T3>())
             {
-                _entities.Add(message.Entity);
+                Add(message.Entity);
             }
         }
 
@@ -229,7 +212,7 @@ namespace DefaultEcs
             if (message.Entity.Has<T1>()
                 && message.Entity.Has<T3>())
             {
-                _entities.Add(message.Entity);
+                Add(message.Entity);
             }
         }
 
@@ -238,63 +221,34 @@ namespace DefaultEcs
             if (message.Entity.Has<T1>()
                 && message.Entity.Has<T2>())
             {
-                _entities.Add(message.Entity);
+                Add(message.Entity);
             }
         }
 
         #endregion
 
-        #region Methods
+        #region EntitySet
 
-        IEnumerable<(Entity, T1, T2, T3)> CopyWithComponents()
+        private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
-            (Entity, T1, T2, T3)[] items = new(Entity, T1, T2, T3)[_entities.Count];
-
-            int i = 0;
-            foreach (Entity entity in _entities)
-            {
-                items[i++].Item1 = entity;
-            }
-            for (i = 0; i < items.Length; ++i)
-            {
-                ref (Entity, T1, T2, T3) item = ref items[i];
-                item.Item2 = item.Item1.Get<T1>();
-            }
-            for (i = 0; i < items.Length; ++i)
-            {
-                ref (Entity, T1, T2, T3) item = ref items[i];
-                item.Item3 = item.Item1.Get<T2>();
-            }
-            for (i = 0; i < items.Length; ++i)
-            {
-                ref (Entity, T1, T2, T3) item = ref items[i];
-                item.Item4 = item.Item1.Get<T3>();
-            }
-
-            return items;
+            yield return world.Subscribe<ComponentSettedMessage<T1>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T1> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentSettedMessage<T2>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T2> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentSettedMessage<T3>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T3> m) => Remove(m.Entity));
         }
 
         #endregion
     }
 
-    public sealed class EntitySet<T1, T2, T3, T4> : AEntitySet
+    internal sealed class EntitySet<T1, T2, T3, T4> : EntitySet
     {
         #region Initialisation
 
         public EntitySet(World world)
-        {
-            _subscriptions = new[]
-            {
-                world.Subscribe<ComponentSettedMessage<T1>>(On),
-                world.Subscribe((in ComponentRemovedMessage<T1> m) => _entities.Remove(m.Entity)),
-                world.Subscribe<ComponentSettedMessage<T2>>(On),
-                world.Subscribe((in ComponentRemovedMessage<T2> m) => _entities.Remove(m.Entity)),
-                world.Subscribe<ComponentSettedMessage<T3>>(On),
-                world.Subscribe((in ComponentRemovedMessage<T3> m) => _entities.Remove(m.Entity)),
-                world.Subscribe<ComponentSettedMessage<T4>>(On),
-                world.Subscribe((in ComponentRemovedMessage<T4> m) => _entities.Remove(m.Entity))
-            };
-        }
+            : base(world)
+        { }
 
         #endregion
 
@@ -306,7 +260,7 @@ namespace DefaultEcs
                 && message.Entity.Has<T3>()
                 && message.Entity.Has<T4>())
             {
-                _entities.Add(message.Entity);
+                Add(message.Entity);
             }
         }
 
@@ -316,7 +270,7 @@ namespace DefaultEcs
                 && message.Entity.Has<T3>()
                 && message.Entity.Has<T4>())
             {
-                _entities.Add(message.Entity);
+                Add(message.Entity);
             }
         }
 
@@ -326,7 +280,7 @@ namespace DefaultEcs
                 && message.Entity.Has<T2>()
                 && message.Entity.Has<T4>())
             {
-                _entities.Add(message.Entity);
+                Add(message.Entity);
             }
         }
 
@@ -336,45 +290,24 @@ namespace DefaultEcs
                 && message.Entity.Has<T2>()
                 && message.Entity.Has<T3>())
             {
-                _entities.Add(message.Entity);
+                Add(message.Entity);
             }
         }
 
         #endregion
 
-        #region Methods
+        #region EntitySet
 
-        IEnumerable<(Entity, T1, T2, T3, T4)> CopyWithComponents()
+        private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
-            (Entity, T1, T2, T3, T4)[] items = new(Entity, T1, T2, T3, T4)[_entities.Count];
-
-            int i = 0;
-            foreach (Entity entity in _entities)
-            {
-                items[i++].Item1 = entity;
-            }
-            for (i = 0; i < items.Length; ++i)
-            {
-                ref (Entity, T1, T2, T3, T4) item = ref items[i];
-                item.Item2 = item.Item1.Get<T1>();
-            }
-            for (i = 0; i < items.Length; ++i)
-            {
-                ref (Entity, T1, T2, T3, T4) item = ref items[i];
-                item.Item3 = item.Item1.Get<T2>();
-            }
-            for (i = 0; i < items.Length; ++i)
-            {
-                ref (Entity, T1, T2, T3, T4) item = ref items[i];
-                item.Item4 = item.Item1.Get<T3>();
-            }
-            for (i = 0; i < items.Length; ++i)
-            {
-                ref (Entity, T1, T2, T3, T4) item = ref items[i];
-                item.Item5 = item.Item1.Get<T4>();
-            }
-
-            return items;
+            yield return world.Subscribe<ComponentSettedMessage<T1>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T1> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentSettedMessage<T2>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T2> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentSettedMessage<T3>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T3> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentSettedMessage<T4>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T4> m) => Remove(m.Entity));
         }
 
         #endregion

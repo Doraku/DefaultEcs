@@ -16,10 +16,8 @@
 
     <Version>0.1.0-alpha</Version>
 
-
     <Authors>Paillat Laszlo</Authors>
     <Copyright>Copyright © 2017-2018</Copyright>
-
 
     <PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Doraku/DefaultEcs/blob/master/LICENSE.md</PackageLicenseUrl>

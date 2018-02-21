@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using BenchmarkDotNet.Running;
+﻿using BenchmarkDotNet.Running;
 
 namespace DefaultEcs.Benchmark
 {
@@ -7,7 +6,12 @@ namespace DefaultEcs.Benchmark
     {
         private static void Main()
         {
-            BenchmarkSwitcher.FromAssembly(typeof(Program).GetTypeInfo().Assembly).RunAll();
+            BenchmarkSwitcher.FromTypes(new[]
+            {
+                typeof(DefaultEcs.EntitySetEnumeration),
+            }).RunAll();
+
+            //BenchmarkSwitcher.FromAssembly(typeof(Program).GetTypeInfo().Assembly).RunAll();
         }
     }
 }

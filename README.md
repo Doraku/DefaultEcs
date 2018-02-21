@@ -45,6 +45,7 @@ It is also possible to share a component between entities without creating a new
 ```C#
 entity.SetSameAs<Example>(referenceEntity);
 ```
+If the component is removed from the entity used as reference, it will not remove the component from the other entities using the same component.
 
 ## System
 Like components, systems are not restricted by any heritage hierarchy, that way execution logic and optimisation can be fined tuned as required.

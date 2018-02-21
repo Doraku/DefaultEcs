@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DefaultEcs.Message;
 using NFluent;
 using Xunit;
@@ -155,6 +156,238 @@ namespace DefaultEcs.Test
 
                 Check.That(components[0]).IsEqualTo(entity.Get<int>());
                 Check.That(components[1]).IsEqualTo(entity2.Get<int>());
+            }
+        }
+
+        [Fact]
+        public void GetAllEntities_Should_return_EntitySet_with_all_Entity()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetAllEntity())
+            {
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+
+                entities[2].Clean();
+                entities.RemoveAt(2);
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+            }
+        }
+
+        [Fact]
+        public void GetEntityWith_T_Should_return_EntitySet_with_all_Entity_with_component_T()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntityWith<bool>())
+            {
+                world.AddComponentType<bool>(4);
+
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+
+                entities[2].Remove<bool>();
+                entities.RemoveAt(2);
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+            }
+        }
+
+        [Fact]
+        public void GetEntityWith_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_T2()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntityWith<bool, int>())
+            {
+                world.AddComponentType<bool>(4);
+                world.AddComponentType<int>(4);
+
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+
+                Entity temp = entities[2];
+                temp.Remove<bool>();
+                entities.Remove(temp);
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+
+                temp.Set(true);
+                temp.Remove<int>();
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+            }
+        }
+
+        [Fact]
+        public void GetEntityWith_T1_T2_T3_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_T3()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntityWith<bool, int, string>())
+            {
+                world.AddComponentType<bool>(4);
+                world.AddComponentType<int>(4);
+                world.AddComponentType<string>(4);
+
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(string.Empty);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+
+                Entity temp = entities[2];
+                temp.Remove<bool>();
+                entities.Remove(temp);
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+
+                temp.Set(true);
+                temp.Remove<int>();
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+
+                temp.Set(42);
+                temp.Remove<string>();
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+            }
+        }
+
+        [Fact]
+        public void GetEntityWith_T1_T2_T3_T4_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_T3_T4()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntityWith<bool, int, string, float>())
+            {
+                world.AddComponentType<bool>(4);
+                world.AddComponentType<int>(4);
+                world.AddComponentType<string>(4);
+                world.AddComponentType<float>(4);
+
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(string.Empty);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42f);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+
+                Entity temp = entities[2];
+                temp.Remove<bool>();
+                entities.Remove(temp);
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+
+                temp.Set(true);
+                temp.Remove<int>();
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+
+                temp.Set(42);
+                temp.Remove<string>();
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+
+                temp.Set(string.Empty);
+                temp.Remove<float>();
+
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
             }
         }
 
