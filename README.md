@@ -1,4 +1,4 @@
-![DefaultEcs](https://github.com/Doraku/DefaultEcs/raw/master/logo.png)
+# DefaultEcs
 DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
 ## World
@@ -37,12 +37,12 @@ world.AddComponentType<Example>(maxComponentCount);
 ```
 
 It is then possible to add the component to the entity
-```csharp
+```C#
 entity.Set(new Example { Value = 42 });
 ```
 
 It is also possible to share a component between entities without creating a new object
-```csharp
+```C#
 entity.SetSameAs<Example>(referenceEntity);
 ```
 If the component is removed from the entity used as reference, it will not remove the component from the other entities using the same component.
@@ -51,7 +51,7 @@ If the component is removed from the entity used as reference, it will not remov
 Like components, systems are not restricted by any heritage hierarchy, that way execution logic and optimisation can be fined tuned as required.
 
 To perform operation, systems should get EntitySet from the World instance. EntitySet are updated as components are added/removed from entities and are used to get a subset of entities with the required component
-```csharp
+```C#
 // this set when enumerated will give all the entities with an Example component
 EntitySet<Example> set = world.GetEntityWith<Example>()
 ```
@@ -60,7 +60,7 @@ EntitySet should be created before entities are instanced.
 
 ## Message
 It is possible to send and receive message transiting in a World.
-```csharp
+```C#
 void On(in bool message) { }
 
 // the method On will be called back every time a bool object is published
