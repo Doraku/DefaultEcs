@@ -295,14 +295,14 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Remove_Should_publish_ComponentRemovedMessage_When_component_removed()
+        public void Remove_Should_publish_ComponentAddedMessage_When_component_removed()
         {
             using (World world = new World(1))
             {
-                ComponentRemovedMessage<bool> message = default;
+                ComponentAddedMessage<bool> message = default;
 
                 world.AddComponentType<bool>(1);
-                world.Subscribe((in ComponentRemovedMessage<bool> m) => message = m);
+                world.Subscribe((in ComponentAddedMessage<bool> m) => message = m);
 
                 Entity entity = world.CreateEntity();
 
@@ -313,7 +313,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Remove_Should_not_publish_ComponentRemovedMessage_When_does_not_have_component()
+        public void Remove_Should_not_publish_ComponentAddedMessage_When_does_not_have_component()
         {
             using (World world = new World(1))
             {
@@ -369,12 +369,12 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Remove_Should_publish_ComponentRemovedMessage_for_all_referenced_Entity()
+        public void Remove_Should_publish_ComponentAddedMessage_for_all_referenced_Entity()
         {
             using (World world = new World(4))
             {
                 List<Entity> messages = new List<Entity>();
-                world.Subscribe((in ComponentRemovedMessage<bool> m) => messages.Add(m.Entity));
+                world.Subscribe((in ComponentAddedMessage<bool> m) => messages.Add(m.Entity));
 
                 world.AddComponentType<bool>(1);
 
@@ -463,21 +463,21 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Clean_Should_throw_When_Entity_not_created_from_World()
+        public void Dispose_Should_throw_When_Entity_not_created_from_World()
         {
             Entity entity = default;
 
-            Check.ThatCode(() => entity.Clean()).Throws<InvalidOperationException>();
+            Check.ThatCode(() => entity.Dispose()).Throws<InvalidOperationException>();
         }
 
         [Fact]
-        public void Clean_Should_release_Entity()
+        public void Dispose_Should_release_Entity()
         {
             using (World world = new World(2))
             {
                 Entity deletedEntity = world.CreateEntity();
 
-                deletedEntity.Clean();
+                deletedEntity.Dispose();
 
                 Entity entity = world.CreateEntity();
 
@@ -486,36 +486,36 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Clean_Should_publish_EntityCleanedMessage()
+        public void Dispose_Should_publish_EntityDisposedMessage()
         {
             using (World world = new World(2))
             {
                 Entity deletedEntity = default;
                 Entity entity = world.CreateEntity();
 
-                world.Subscribe((in EntityCleanedMessage m) => deletedEntity = m.Entity);
+                world.Subscribe((in EntityDisposedMessage m) => deletedEntity = m.Entity);
 
-                entity.Clean();
+                entity.Dispose();
 
                 Check.That(deletedEntity).IsEqualTo(entity);
             }
         }
 
         [Fact]
-        public void Clean_Should_publish_ComponentRemovedMessage_for_all_component()
+        public void Dispose_Should_publish_ComponentAddedMessage_for_all_component()
         {
             using (World world = new World(2))
             {
-                ComponentRemovedMessage<bool> message = default;
+                ComponentAddedMessage<bool> message = default;
 
-                world.Subscribe((in ComponentRemovedMessage<bool> m) => message = m);
+                world.Subscribe((in ComponentAddedMessage<bool> m) => message = m);
 
                 world.AddComponentType<bool>(1);
                 world.CreateEntity();
                 Entity deletedEntity = world.CreateEntity();
                 deletedEntity.Set(true);
 
-                deletedEntity.Clean();
+                deletedEntity.Dispose();
 
                 Check.That(message.Entity).IsEqualTo(deletedEntity);
 

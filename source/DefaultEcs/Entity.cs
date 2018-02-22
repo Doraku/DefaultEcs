@@ -8,7 +8,7 @@ namespace DefaultEcs
     /// Represents an item in the <see cref="World"/>.
     /// Only use <see cref="Entity"/> generated from the <see cref="World.CreateEntity"/> method.
     /// </summary>
-    public readonly struct Entity : IEquatable<Entity>
+    public readonly struct Entity : IDisposable, IEquatable<Entity>
     {
         #region Fields
 
@@ -114,7 +114,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Removes the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
-        /// If current <see cref="Entity"/> had a component of type <typeparamref name="T"/>, a <see cref="ComponentRemovedMessage{T}"/> message is published.
+        /// If current <see cref="Entity"/> had a component of type <typeparamref name="T"/>, a <see cref="ComponentAddedMessage{T}"/> message is published.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException">Entity was not created from a <see cref="World"/>.</exception>
@@ -125,7 +125,7 @@ namespace DefaultEcs
 
             if (World.ComponentManager<T>.Pools[WorldId]?.Remove(EntityId) ?? false)
             {
-                World.Publish(WorldId, new ComponentRemovedMessage<T>(this));
+                World.Publish(WorldId, new ComponentAddedMessage<T>(this));
             }
         }
 
@@ -152,17 +152,21 @@ namespace DefaultEcs
             return ref pool.Get(EntityId);
         }
 
+        #endregion
+
+        #region IDisposable
+
         /// <summary>
-        /// Clean the current <see cref="Entity"/> of all its components and a <see cref="EntityCleanedMessage"/> message is published.
+        /// Clean the current <see cref="Entity"/> of all its components and a <see cref="EntityDisposedMessage"/> message is published.
         /// The current <see cref="Entity"/> should not be used again after calling this method.
         /// </summary>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clean()
+        public void Dispose()
         {
             ThrowIfNull();
 
-            World.Publish(WorldId, new EntityCleanedMessage(this));
+            World.Publish(WorldId, new EntityDisposedMessage(this));
         }
 
         #endregion

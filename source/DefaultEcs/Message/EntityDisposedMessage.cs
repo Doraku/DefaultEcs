@@ -1,16 +1,16 @@
 ﻿namespace DefaultEcs.Message
 {
     /// <summary>
-    /// Message sent when an <see cref="DefaultEcs.Entity"/> is cleaned up.
+    /// Message sent when an <see cref="DefaultEcs.Entity"/> is disposed.
     /// </summary>
-    public readonly struct EntityCleanedMessage
+    public readonly struct EntityDisposedMessage
     {
         /// <summary>
         /// The <see cref="DefaultEcs.Entity"/> cleaned up.
         /// </summary>
         public readonly Entity Entity;
 
-        internal EntityCleanedMessage(in Entity entity)
+        internal EntityDisposedMessage(in Entity entity)
         {
             Entity = entity;
         }

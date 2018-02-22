@@ -175,7 +175,7 @@ namespace DefaultEcs.Test
 
                 Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
 
-                entities[2].Clean();
+                entities[2].Dispose();
                 entities.RemoveAt(2);
 
                 Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);

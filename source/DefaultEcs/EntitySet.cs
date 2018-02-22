@@ -116,7 +116,7 @@ namespace DefaultEcs
         private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
             yield return world.Subscribe((in EntityCreatedMessage m) => Add(m.Entity));
-            yield return world.Subscribe((in EntityCleanedMessage m) => Remove(m.Entity));
+            yield return world.Subscribe((in EntityDisposedMessage m) => Remove(m.Entity));
         }
 
         #endregion
@@ -137,7 +137,7 @@ namespace DefaultEcs
         private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
             yield return world.Subscribe((in ComponentSettedMessage<T> m) => Add(m.Entity));
-            yield return world.Subscribe((in ComponentRemovedMessage<T> m) => Remove(m.Entity));
+            yield return world.Subscribe((in ComponentAddedMessage<T> m) => Remove(m.Entity));
         }
 
         #endregion
@@ -178,9 +178,9 @@ namespace DefaultEcs
         private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
             yield return world.Subscribe<ComponentSettedMessage<T1>>(On);
-            yield return world.Subscribe((in ComponentRemovedMessage<T1> m) => Remove(m.Entity));
+            yield return world.Subscribe((in ComponentAddedMessage<T1> m) => Remove(m.Entity));
             yield return world.Subscribe<ComponentSettedMessage<T2>>(On);
-            yield return world.Subscribe((in ComponentRemovedMessage<T2> m) => Remove(m.Entity));
+            yield return world.Subscribe((in ComponentAddedMessage<T2> m) => Remove(m.Entity));
         }
 
         #endregion
@@ -232,11 +232,11 @@ namespace DefaultEcs
         private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
             yield return world.Subscribe<ComponentSettedMessage<T1>>(On);
-            yield return world.Subscribe((in ComponentRemovedMessage<T1> m) => Remove(m.Entity));
+            yield return world.Subscribe((in ComponentAddedMessage<T1> m) => Remove(m.Entity));
             yield return world.Subscribe<ComponentSettedMessage<T2>>(On);
-            yield return world.Subscribe((in ComponentRemovedMessage<T2> m) => Remove(m.Entity));
+            yield return world.Subscribe((in ComponentAddedMessage<T2> m) => Remove(m.Entity));
             yield return world.Subscribe<ComponentSettedMessage<T3>>(On);
-            yield return world.Subscribe((in ComponentRemovedMessage<T3> m) => Remove(m.Entity));
+            yield return world.Subscribe((in ComponentAddedMessage<T3> m) => Remove(m.Entity));
         }
 
         #endregion
@@ -301,13 +301,13 @@ namespace DefaultEcs
         private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
             yield return world.Subscribe<ComponentSettedMessage<T1>>(On);
-            yield return world.Subscribe((in ComponentRemovedMessage<T1> m) => Remove(m.Entity));
+            yield return world.Subscribe((in ComponentAddedMessage<T1> m) => Remove(m.Entity));
             yield return world.Subscribe<ComponentSettedMessage<T2>>(On);
-            yield return world.Subscribe((in ComponentRemovedMessage<T2> m) => Remove(m.Entity));
+            yield return world.Subscribe((in ComponentAddedMessage<T2> m) => Remove(m.Entity));
             yield return world.Subscribe<ComponentSettedMessage<T3>>(On);
-            yield return world.Subscribe((in ComponentRemovedMessage<T3> m) => Remove(m.Entity));
+            yield return world.Subscribe((in ComponentAddedMessage<T3> m) => Remove(m.Entity));
             yield return world.Subscribe<ComponentSettedMessage<T4>>(On);
-            yield return world.Subscribe((in ComponentRemovedMessage<T4> m) => Remove(m.Entity));
+            yield return world.Subscribe((in ComponentAddedMessage<T4> m) => Remove(m.Entity));
         }
 
         #endregion

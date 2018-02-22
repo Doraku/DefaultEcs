@@ -55,14 +55,14 @@ namespace DefaultEcs
             _entityIdDispenser = new IntDispenser(-1);
             MaxEntityCount = maxEntityCount;
 
-            Subscribe<EntityCleanedMessage>(On);
+            Subscribe<EntityDisposedMessage>(On);
         }
 
         #endregion
 
         #region Callbacks
 
-        private void On(in EntityCleanedMessage message) => _entityIdDispenser.ReleaseInt(message.Entity.EntityId);
+        private void On(in EntityDisposedMessage message) => _entityIdDispenser.ReleaseInt(message.Entity.EntityId);
 
         #endregion
 
@@ -135,7 +135,7 @@ namespace DefaultEcs
             }
 
             pool = new ComponentPool<T>(MaxEntityCount, maxComponentCount);
-            Subscribe<EntityCleanedMessage>(ComponentPool<T>.On);
+            Subscribe<EntityDisposedMessage>(ComponentPool<T>.On);
         }
 
         /// <summary>
