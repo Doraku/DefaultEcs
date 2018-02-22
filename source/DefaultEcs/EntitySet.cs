@@ -136,8 +136,8 @@ namespace DefaultEcs
 
         private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
-            yield return world.Subscribe((in ComponentSettedMessage<T> m) => Add(m.Entity));
-            yield return world.Subscribe((in ComponentAddedMessage<T> m) => Remove(m.Entity));
+            yield return world.Subscribe((in ComponentAddedMessage<T> m) => Add(m.Entity));
+            yield return world.Subscribe((in ComponentRemovedMessage<T> m) => Remove(m.Entity));
         }
 
         #endregion
@@ -155,7 +155,7 @@ namespace DefaultEcs
 
         #region Callbacks
 
-        private void On(in ComponentSettedMessage<T1> message)
+        private void On(in ComponentAddedMessage<T1> message)
         {
             if (message.Entity.Has<T2>())
             {
@@ -163,7 +163,7 @@ namespace DefaultEcs
             }
         }
 
-        private void On(in ComponentSettedMessage<T2> message)
+        private void On(in ComponentAddedMessage<T2> message)
         {
             if (message.Entity.Has<T1>())
             {
@@ -177,10 +177,10 @@ namespace DefaultEcs
 
         private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
-            yield return world.Subscribe<ComponentSettedMessage<T1>>(On);
-            yield return world.Subscribe((in ComponentAddedMessage<T1> m) => Remove(m.Entity));
-            yield return world.Subscribe<ComponentSettedMessage<T2>>(On);
-            yield return world.Subscribe((in ComponentAddedMessage<T2> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentAddedMessage<T1>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T1> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentAddedMessage<T2>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T2> m) => Remove(m.Entity));
         }
 
         #endregion
@@ -198,7 +198,7 @@ namespace DefaultEcs
 
         #region Callbacks
 
-        private void On(in ComponentSettedMessage<T1> message)
+        private void On(in ComponentAddedMessage<T1> message)
         {
             if (message.Entity.Has<T2>()
                 && message.Entity.Has<T3>())
@@ -207,7 +207,7 @@ namespace DefaultEcs
             }
         }
 
-        private void On(in ComponentSettedMessage<T2> message)
+        private void On(in ComponentAddedMessage<T2> message)
         {
             if (message.Entity.Has<T1>()
                 && message.Entity.Has<T3>())
@@ -216,7 +216,7 @@ namespace DefaultEcs
             }
         }
 
-        private void On(in ComponentSettedMessage<T3> message)
+        private void On(in ComponentAddedMessage<T3> message)
         {
             if (message.Entity.Has<T1>()
                 && message.Entity.Has<T2>())
@@ -231,12 +231,12 @@ namespace DefaultEcs
 
         private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
-            yield return world.Subscribe<ComponentSettedMessage<T1>>(On);
-            yield return world.Subscribe((in ComponentAddedMessage<T1> m) => Remove(m.Entity));
-            yield return world.Subscribe<ComponentSettedMessage<T2>>(On);
-            yield return world.Subscribe((in ComponentAddedMessage<T2> m) => Remove(m.Entity));
-            yield return world.Subscribe<ComponentSettedMessage<T3>>(On);
-            yield return world.Subscribe((in ComponentAddedMessage<T3> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentAddedMessage<T1>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T1> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentAddedMessage<T2>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T2> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentAddedMessage<T3>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T3> m) => Remove(m.Entity));
         }
 
         #endregion
@@ -254,7 +254,7 @@ namespace DefaultEcs
 
         #region Callbacks
 
-        private void On(in ComponentSettedMessage<T1> message)
+        private void On(in ComponentAddedMessage<T1> message)
         {
             if (message.Entity.Has<T2>()
                 && message.Entity.Has<T3>()
@@ -264,7 +264,7 @@ namespace DefaultEcs
             }
         }
 
-        private void On(in ComponentSettedMessage<T2> message)
+        private void On(in ComponentAddedMessage<T2> message)
         {
             if (message.Entity.Has<T1>()
                 && message.Entity.Has<T3>()
@@ -274,7 +274,7 @@ namespace DefaultEcs
             }
         }
 
-        private void On(in ComponentSettedMessage<T3> message)
+        private void On(in ComponentAddedMessage<T3> message)
         {
             if (message.Entity.Has<T1>()
                 && message.Entity.Has<T2>()
@@ -284,7 +284,7 @@ namespace DefaultEcs
             }
         }
 
-        private void On(in ComponentSettedMessage<T4> message)
+        private void On(in ComponentAddedMessage<T4> message)
         {
             if (message.Entity.Has<T1>()
                 && message.Entity.Has<T2>()
@@ -300,14 +300,14 @@ namespace DefaultEcs
 
         private protected override IEnumerable<IDisposable> Subscribe(World world)
         {
-            yield return world.Subscribe<ComponentSettedMessage<T1>>(On);
-            yield return world.Subscribe((in ComponentAddedMessage<T1> m) => Remove(m.Entity));
-            yield return world.Subscribe<ComponentSettedMessage<T2>>(On);
-            yield return world.Subscribe((in ComponentAddedMessage<T2> m) => Remove(m.Entity));
-            yield return world.Subscribe<ComponentSettedMessage<T3>>(On);
-            yield return world.Subscribe((in ComponentAddedMessage<T3> m) => Remove(m.Entity));
-            yield return world.Subscribe<ComponentSettedMessage<T4>>(On);
-            yield return world.Subscribe((in ComponentAddedMessage<T4> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentAddedMessage<T1>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T1> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentAddedMessage<T2>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T2> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentAddedMessage<T3>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T3> m) => Remove(m.Entity));
+            yield return world.Subscribe<ComponentAddedMessage<T4>>(On);
+            yield return world.Subscribe((in ComponentRemovedMessage<T4> m) => Remove(m.Entity));
         }
 
         #endregion

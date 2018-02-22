@@ -54,7 +54,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
-        /// If current <see cref="Entity"/> did not have a component of type <typeparamref name="T"/>, a <see cref="ComponentSettedMessage{T}"/> message is published.
+        /// If current <see cref="Entity"/> did not have a component of type <typeparamref name="T"/>, a <see cref="ComponentAddedMessage{T}"/> message is published.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
@@ -75,13 +75,13 @@ namespace DefaultEcs
 
             if (pool.Set(EntityId, component))
             {
-                World.Publish(WorldId, new ComponentSettedMessage<T>(this));
+                World.Publish(WorldId, new ComponentAddedMessage<T>(this));
             }
         }
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current Entity to the same instance of an other <see cref="Entity"/>.
-        /// If current <see cref="Entity"/> did not have a component of type <typeparamref name="T"/>, a <see cref="ComponentSettedMessage{T}"/> message is published.
+        /// If current <see cref="Entity"/> did not have a component of type <typeparamref name="T"/>, a <see cref="ComponentAddedMessage{T}"/> message is published.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="reference">The other <see cref="Entity"/> used as reference.</param>
@@ -108,13 +108,13 @@ namespace DefaultEcs
 
             if (pool.SetSameAs(EntityId, reference.EntityId))
             {
-                World.Publish(WorldId, new ComponentSettedMessage<T>(this));
+                World.Publish(WorldId, new ComponentAddedMessage<T>(this));
             }
         }
 
         /// <summary>
         /// Removes the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
-        /// If current <see cref="Entity"/> had a component of type <typeparamref name="T"/>, a <see cref="ComponentAddedMessage{T}"/> message is published.
+        /// If current <see cref="Entity"/> had a component of type <typeparamref name="T"/>, a <see cref="ComponentRemovedMessage{T}"/> message is published.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException">Entity was not created from a <see cref="World"/>.</exception>
@@ -125,7 +125,7 @@ namespace DefaultEcs
 
             if (World.ComponentManager<T>.Pools[WorldId]?.Remove(EntityId) ?? false)
             {
-                World.Publish(WorldId, new ComponentAddedMessage<T>(this));
+                World.Publish(WorldId, new ComponentRemovedMessage<T>(this));
             }
         }
 

@@ -173,12 +173,12 @@ namespace DefaultEcs.Test
                     world.CreateEntity()
                 };
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
                 entities[2].Dispose();
                 entities.RemoveAt(2);
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
             }
         }
 
@@ -205,12 +205,12 @@ namespace DefaultEcs.Test
                     entity.Set(true);
                 }
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
                 entities[2].Remove<bool>();
                 entities.RemoveAt(2);
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
             }
         }
 
@@ -245,18 +245,18 @@ namespace DefaultEcs.Test
                     entity.Set(42);
                 }
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
                 Entity temp = entities[2];
                 temp.Remove<bool>();
                 entities.Remove(temp);
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
                 temp.Set(true);
                 temp.Remove<int>();
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
             }
         }
 
@@ -299,23 +299,23 @@ namespace DefaultEcs.Test
                     entity.Set(string.Empty);
                 }
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
                 Entity temp = entities[2];
                 temp.Remove<bool>();
                 entities.Remove(temp);
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
                 temp.Set(true);
                 temp.Remove<int>();
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
                 temp.Set(42);
                 temp.Remove<string>();
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
             }
         }
 
@@ -366,28 +366,28 @@ namespace DefaultEcs.Test
                     entity.Set(42f);
                 }
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
                 Entity temp = entities[2];
                 temp.Remove<bool>();
                 entities.Remove(temp);
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
                 temp.Set(true);
                 temp.Remove<int>();
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
                 temp.Set(42);
                 temp.Remove<string>();
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
                 temp.Set(string.Empty);
                 temp.Remove<float>();
 
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(entities);
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
             }
         }
 

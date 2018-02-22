@@ -27,7 +27,7 @@ namespace DefaultEcs.Test
 
                 set.CopyEntitiesTo(copy);
 
-                Check.That(copy.ToArray()).IsOnlyMadeOf(entities);
+                Check.That(copy.ToArray()).ContainsExactly(entities);
             }
         }
 
@@ -45,7 +45,7 @@ namespace DefaultEcs.Test
                     world.CreateEntity()
                 };
 
-                Check.That(set.CopyEntities()).IsOnlyMadeOf(entities);
+                Check.That(set.CopyEntities()).ContainsExactly(entities);
             }
         }
 

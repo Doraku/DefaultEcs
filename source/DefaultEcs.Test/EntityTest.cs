@@ -102,13 +102,13 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Set_Should_publish_ComponentSettedMessage_When_setted_for_the_first_time()
+        public void Set_Should_publish_ComponentAddedMessage_When_setted_for_the_first_time()
         {
             using (World world = new World(2))
             {
-                ComponentSettedMessage<bool> message = default;
+                ComponentAddedMessage<bool> message = default;
 
-                world.Subscribe((in ComponentSettedMessage<bool> m) => message = m);
+                world.Subscribe((in ComponentAddedMessage<bool> m) => message = m);
 
                 world.AddComponentType<bool>(1);
                 world.CreateEntity();
@@ -121,7 +121,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Set_Should_not_publish_ComponentSettedMessage_When_not_setted_for_the_first_time()
+        public void Set_Should_not_publish_ComponentAddedMessage_When_not_setted_for_the_first_time()
         {
             using (World world = new World(2))
             {
@@ -133,7 +133,7 @@ namespace DefaultEcs.Test
 
                 entity.Set(true);
 
-                world.Subscribe((in ComponentSettedMessage<bool> m) => done = true);
+                world.Subscribe((in ComponentAddedMessage<bool> m) => done = true);
 
                 entity.Set(true);
 
@@ -225,11 +225,11 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SetSameAs_Should_publish_ComponentSettedMessage_When_setted_for_the_first_time()
+        public void SetSameAs_Should_publish_ComponentAddedMessage_When_setted_for_the_first_time()
         {
             using (World world = new World(2))
             {
-                ComponentSettedMessage<bool> message = default;
+                ComponentAddedMessage<bool> message = default;
 
                 world.AddComponentType<bool>(1);
                 Entity entity = world.CreateEntity();
@@ -237,7 +237,7 @@ namespace DefaultEcs.Test
 
                 reference.Set(true);
 
-                world.Subscribe((in ComponentSettedMessage<bool> m) => message = m);
+                world.Subscribe((in ComponentAddedMessage<bool> m) => message = m);
 
                 entity.SetSameAs<bool>(reference);
 
@@ -246,7 +246,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SetSameAs_Should_not_publish_ComponentSettedMessage_When_not_setted_for_the_first_time()
+        public void SetSameAs_Should_not_publish_ComponentAddedMessage_When_not_setted_for_the_first_time()
         {
             using (World world = new World(2))
             {
@@ -259,7 +259,7 @@ namespace DefaultEcs.Test
                 reference.Set(true);
                 entity.Set(true);
 
-                world.Subscribe((in ComponentSettedMessage<bool> m) => done = true);
+                world.Subscribe((in ComponentAddedMessage<bool> m) => done = true);
 
                 entity.SetSameAs<bool>(reference);
 
@@ -295,14 +295,14 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Remove_Should_publish_ComponentAddedMessage_When_component_removed()
+        public void Remove_Should_publish_ComponentRemovedMessage_When_component_removed()
         {
             using (World world = new World(1))
             {
-                ComponentAddedMessage<bool> message = default;
+                ComponentRemovedMessage<bool> message = default;
 
                 world.AddComponentType<bool>(1);
-                world.Subscribe((in ComponentAddedMessage<bool> m) => message = m);
+                world.Subscribe((in ComponentRemovedMessage<bool> m) => message = m);
 
                 Entity entity = world.CreateEntity();
 
@@ -313,12 +313,12 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Remove_Should_not_publish_ComponentAddedMessage_When_does_not_have_component()
+        public void Remove_Should_not_publish_ComponentRemovedMessage_When_does_not_have_component()
         {
             using (World world = new World(1))
             {
                 bool done = false;
-                world.Subscribe((in ComponentSettedMessage<bool> m) => done = true);
+                world.Subscribe((in ComponentAddedMessage<bool> m) => done = true);
 
                 Entity entity = world.CreateEntity();
 
@@ -369,18 +369,17 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Remove_Should_publish_ComponentAddedMessage_for_all_referenced_Entity()
+        public void Remove_Should_not_publish_ComponentRemovedMessage_for_all_referenced_Entity()
         {
             using (World world = new World(4))
             {
                 List<Entity> messages = new List<Entity>();
-                world.Subscribe((in ComponentAddedMessage<bool> m) => messages.Add(m.Entity));
+                world.Subscribe((in ComponentRemovedMessage<bool> m) => messages.Add(m.Entity));
 
                 world.AddComponentType<bool>(1);
 
                 Entity entity = world.CreateEntity();
                 Entity entity2 = world.CreateEntity();
-                world.CreateEntity();
                 Entity reference = world.CreateEntity();
 
                 reference.Set(true);
@@ -389,7 +388,7 @@ namespace DefaultEcs.Test
 
                 reference.Remove<bool>();
 
-                Check.That(messages).IsOnlyMadeOf(new[] { entity, entity2, reference });
+                Check.That(messages).ContainsExactly(new[] { reference });
             }
         }
 
@@ -502,13 +501,13 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Dispose_Should_publish_ComponentAddedMessage_for_all_component()
+        public void Dispose_Should_publish_ComponentRemovedMessage_for_all_component()
         {
             using (World world = new World(2))
             {
-                ComponentAddedMessage<bool> message = default;
+                ComponentRemovedMessage<bool> message = default;
 
-                world.Subscribe((in ComponentAddedMessage<bool> m) => message = m);
+                world.Subscribe((in ComponentRemovedMessage<bool> m) => message = m);
 
                 world.AddComponentType<bool>(1);
                 world.CreateEntity();
