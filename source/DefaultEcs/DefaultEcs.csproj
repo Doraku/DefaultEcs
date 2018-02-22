@@ -23,6 +23,7 @@
     <PackageLicenseUrl>https://github.com/Doraku/DefaultEcs/blob/master/LICENSE.md</PackageLicenseUrl>
     <PackageId>DefaultEcs</PackageId>
     <PackageTags>ecs entity component system framework game</PackageTags>
+    <PackageIconUrl>https://github.com/Doraku/DefaultEcs/raw/master/logo.png</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
