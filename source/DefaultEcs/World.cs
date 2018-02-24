@@ -21,11 +21,11 @@ namespace DefaultEcs
     {
         #region Fields
 
+        private static readonly IntDispenser _worldIdDispenser;
+
         private static Action<int> _newWorld;
         private static Action<int> _cleanPublisher;
         private static Action<int> _cleanWorld;
-
-        private static readonly IntDispenser _worldIdDispenser;
 
         private readonly int _worldId;
         private readonly IntDispenser _entityIdDispenser;
