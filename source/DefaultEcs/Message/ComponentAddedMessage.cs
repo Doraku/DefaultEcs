@@ -1,7 +1,7 @@
 ﻿namespace DefaultEcs.Message
 {
     /// <summary>
-    /// Message sent when the component of type <typeparamref name="T"/> is setted on an <see cref="DefaultEcs.Entity"/>.
+    /// Message sent when the component of type <typeparamref name="T"/> is setted on an <see cref="DefaultEcs.Entity"/> for the first time.
     /// </summary>
     /// <typeparam name="T">The type of the component.</typeparam>
     public readonly struct ComponentAddedMessage<T>

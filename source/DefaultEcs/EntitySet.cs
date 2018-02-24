@@ -79,7 +79,7 @@ namespace DefaultEcs
         /// <summary>
         /// Gets the <see cref="Entity"/> contained in the current <see cref="EntitySet"/>.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A <see cref="ReadOnlySpan{T}"/> of the <see cref="Entity"/> contained in the current <see cref="EntitySet"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<Entity> GetEntities() => new ReadOnlySpan<Entity>(_entities, 0, Count);
 
