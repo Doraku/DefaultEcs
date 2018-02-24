@@ -69,10 +69,10 @@ namespace DefaultEcs
         #region Methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static IDisposable Subscribe<T>(int worldId, SubscribeAction<T> action) => InnerPublisher<T>.Subscribe(worldId, action);
+        private static IDisposable Subscribe<T>(int worldId, SubscribeAction<T> action) => Publisher<T>.Subscribe(worldId, action);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Publish<T>(int worldId, in T arg) => InnerPublisher<T>.Actions[worldId]?.Invoke(arg);
+        internal static void Publish<T>(int worldId, in T arg) => Publisher<T>.Actions[worldId]?.Invoke(arg);
 
         /// <summary>
         /// Subscribes an <see cref="SubscribeAction{T}"/> to be called back when a <typeparamref name="T"/> object is published.

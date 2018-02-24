@@ -5,7 +5,7 @@ namespace DefaultEcs
 {
     public sealed partial class World
     {
-        private static class InnerPublisher<T>
+        private static class Publisher<T>
         {
             #region Types
 
@@ -53,7 +53,7 @@ namespace DefaultEcs
 
             #region Initialisation
 
-            static InnerPublisher()
+            static Publisher()
             {
                 _locker = new object();
 
