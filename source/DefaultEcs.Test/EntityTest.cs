@@ -348,6 +348,30 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void Remove_Should_remove_component_and_pass_reference()
+        {
+            using (World world = new World(3))
+            {
+                world.AddComponentType<bool>(2);
+
+                Entity entity = world.CreateEntity();
+                Entity reference = world.CreateEntity();
+                Entity other = world.CreateEntity();
+
+                reference.Set(true);
+                entity.SetSameAs<bool>(reference);
+
+                reference.Remove<bool>();
+                other.Set(false);
+
+                Check.That(entity.Has<bool>()).IsTrue();
+                Check.That(reference.Has<bool>()).IsFalse();
+
+                Check.That(entity.Get<bool>()).IsTrue();
+            }
+        }
+
+        [Fact]
         public void Remove_Should_not_remove_component_of_all_referenced_Entity()
         {
             using (World world = new World(3))

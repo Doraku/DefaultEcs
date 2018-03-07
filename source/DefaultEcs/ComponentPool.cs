@@ -10,7 +10,7 @@ namespace DefaultEcs
         #region Fields
 
         private readonly int[] _mapping;
-        private readonly bool[] _isRef;
+        private readonly int[] _refCount;
         private readonly int[] _reverseMapping;
         private readonly T[] _items;
 
@@ -23,7 +23,7 @@ namespace DefaultEcs
         public ComponentPool(int maxEntityCount, int maxComponentCount)
         {
             _mapping = Enumerable.Repeat(-1, maxEntityCount).ToArray();
-            _isRef = new bool[maxEntityCount];
+            _refCount = new int[maxEntityCount];
             _reverseMapping = new int[maxComponentCount];
             _items = new T[maxComponentCount];
 
@@ -62,6 +62,7 @@ namespace DefaultEcs
             _items[++_lastIndex] = item;
             index = _lastIndex;
             _reverseMapping[_lastIndex] = entityId;
+            ++_refCount[_lastIndex];
 
             return true;
         }
@@ -90,7 +91,7 @@ namespace DefaultEcs
 
             if (_reverseMapping[refIndex] == refId)
             {
-                _isRef[refId] = true;
+                ++_refCount[refIndex];
             }
 
             index = refIndex;
@@ -107,34 +108,29 @@ namespace DefaultEcs
                 return false;
             }
 
-            ref int mappedEntityId = ref _reverseMapping[index];
-            if (mappedEntityId == entityId)
+            if (--_refCount[index] == 0)
             {
                 if (index != _lastIndex)
                 {
                     int lastId = _reverseMapping[_lastIndex];
                     _items[index] = _items[_lastIndex];
                     _mapping[lastId] = index;
-                    mappedEntityId = lastId;
+                    _reverseMapping[index] = lastId;
                 }
 
                 --_lastIndex;
             }
-
-            ref bool isRef = ref _isRef[entityId];
-            if (isRef)
+            else
             {
                 int refIndex = index;
                 for (int i = 0; i < _mapping.Length; ++i)
                 {
                     if (_mapping[i] == refIndex && i != entityId)
                     {
-                        _isRef[i] = true;
+                        _reverseMapping[index] = i;
                         break;
                     }
                 }
-
-                isRef = false;
             }
 
             index = -1;
