@@ -161,7 +161,7 @@ namespace DefaultEcs
         /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>.
         /// </summary>
         /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetAllEntity() => new AllEntitySet(this);
+        public EntitySet GetAllEntities() => new AllEntitySet(this);
 
         /// <summary>
         /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>
@@ -169,7 +169,7 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">A type of component needed.</typeparam>
         /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntityWith<T>() => new EntitySet<T>(this);
+        public EntitySet GetEntitiesWith<T>() => new EntitySet<T>(this);
 
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace DefaultEcs
         /// <typeparam name="T1">A type of component needed.</typeparam>
         /// <typeparam name="T2">A type of component needed.</typeparam>
         /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntityWith<T1, T2>() => new EntitySet<T1, T2>(this);
+        public EntitySet GetEntitiesWith<T1, T2>() => new EntitySet<T1, T2>(this);
 
         /// <summary>
         /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>
@@ -189,7 +189,7 @@ namespace DefaultEcs
         /// <typeparam name="T2">A type of component needed.</typeparam>
         /// <typeparam name="T3">A type of component needed.</typeparam>
         /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntityWith<T1, T2, T3>() => new EntitySet<T1, T2, T3>(this);
+        public EntitySet GetEntitiesWith<T1, T2, T3>() => new EntitySet<T1, T2, T3>(this);
 
         /// <summary>
         /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>
@@ -200,7 +200,7 @@ namespace DefaultEcs
         /// <typeparam name="T3">A type of component needed.</typeparam>
         /// <typeparam name="T4">A type of component needed.</typeparam>
         /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntityWith<T1, T2, T3, T4>() => new EntitySet<T1, T2, T3, T4>(this);
+        public EntitySet GetEntitiesWith<T1, T2, T3, T4>() => new EntitySet<T1, T2, T3, T4>(this);
 
         #endregion
 

@@ -163,7 +163,7 @@ namespace DefaultEcs.Test
         public void GetAllEntities_Should_return_EntitySet_with_all_Entity()
         {
             using (World world = new World(4))
-            using (EntitySet set = world.GetAllEntity())
+            using (EntitySet set = world.GetAllEntities())
             {
                 List<Entity> entities = new List<Entity>
                 {
@@ -183,10 +183,10 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void GetEntityWith_T_Should_return_EntitySet_with_all_Entity_with_component_T()
+        public void GetEntitiesWith_T_Should_return_EntitySet_with_all_Entity_with_component_T()
         {
             using (World world = new World(4))
-            using (EntitySet set = world.GetEntityWith<bool>())
+            using (EntitySet set = world.GetEntitiesWith<bool>())
             {
                 world.AddComponentType<bool>(4);
 
@@ -215,10 +215,10 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void GetEntityWith_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_T2()
+        public void GetEntitiesWith_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_T2()
         {
             using (World world = new World(4))
-            using (EntitySet set = world.GetEntityWith<bool, int>())
+            using (EntitySet set = world.GetEntitiesWith<bool, int>())
             {
                 world.AddComponentType<bool>(4);
                 world.AddComponentType<int>(4);
@@ -261,10 +261,10 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void GetEntityWith_T1_T2_T3_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_T3()
+        public void GetEntitiesWith_T1_T2_T3_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_T3()
         {
             using (World world = new World(4))
-            using (EntitySet set = world.GetEntityWith<bool, int, string>())
+            using (EntitySet set = world.GetEntitiesWith<bool, int, string>())
             {
                 world.AddComponentType<bool>(4);
                 world.AddComponentType<int>(4);
@@ -320,10 +320,10 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void GetEntityWith_T1_T2_T3_T4_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_T3_T4()
+        public void GetEntitiesWith_T1_T2_T3_T4_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_T3_T4()
         {
             using (World world = new World(4))
-            using (EntitySet set = world.GetEntityWith<bool, int, string, float>())
+            using (EntitySet set = world.GetEntitiesWith<bool, int, string, float>())
             {
                 world.AddComponentType<bool>(4);
                 world.AddComponentType<int>(4);
