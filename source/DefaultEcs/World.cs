@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Message;
+using DefaultEcs.Technical;
 
 namespace DefaultEcs
 {

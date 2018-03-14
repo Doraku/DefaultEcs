@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading;
 
-namespace DefaultEcs
+namespace DefaultEcs.Technical
 {
     internal sealed class IntDispenser
     {
