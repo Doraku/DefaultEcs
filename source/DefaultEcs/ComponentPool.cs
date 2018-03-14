@@ -34,7 +34,7 @@ namespace DefaultEcs
 
         #region Callbacks
 
-        public static void On(in EntityDisposedMessage message) => message.Entity.Remove<T>();
+        public void On(in EntityDisposedMessage message) => Remove(message.Entity.EntityId);
 
         #endregion
 

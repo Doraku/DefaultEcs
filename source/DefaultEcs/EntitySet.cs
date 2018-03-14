@@ -105,9 +105,7 @@ namespace DefaultEcs
     {
         #region Initialisation
 
-        public AllEntitySet(World world)
-            : base(world)
-        { }
+        public AllEntitySet(World world) : base(world) { }
 
         #endregion
 
@@ -126,9 +124,7 @@ namespace DefaultEcs
     {
         #region Initialisation
 
-        public EntitySet(World world)
-            : base(world)
-        { }
+        public EntitySet(World world) : base(world) { }
 
         #endregion
 
@@ -138,6 +134,7 @@ namespace DefaultEcs
         {
             yield return world.Subscribe((in ComponentAddedMessage<T> m) => Add(m.Entity));
             yield return world.Subscribe((in ComponentRemovedMessage<T> m) => Remove(m.Entity));
+            yield return world.Subscribe((in EntityDisposedMessage m) => Remove(m.Entity));
         }
 
         #endregion
@@ -147,9 +144,7 @@ namespace DefaultEcs
     {
         #region Initialisation
 
-        public EntitySet(World world)
-            : base(world)
-        { }
+        public EntitySet(World world) : base(world) { }
 
         #endregion
 
@@ -181,6 +176,7 @@ namespace DefaultEcs
             yield return world.Subscribe((in ComponentRemovedMessage<T1> m) => Remove(m.Entity));
             yield return world.Subscribe<ComponentAddedMessage<T2>>(On);
             yield return world.Subscribe((in ComponentRemovedMessage<T2> m) => Remove(m.Entity));
+            yield return world.Subscribe((in EntityDisposedMessage m) => Remove(m.Entity));
         }
 
         #endregion
@@ -190,9 +186,7 @@ namespace DefaultEcs
     {
         #region Initialisation
 
-        public EntitySet(World world)
-            : base(world)
-        { }
+        public EntitySet(World world) : base(world) { }
 
         #endregion
 
@@ -237,6 +231,7 @@ namespace DefaultEcs
             yield return world.Subscribe((in ComponentRemovedMessage<T2> m) => Remove(m.Entity));
             yield return world.Subscribe<ComponentAddedMessage<T3>>(On);
             yield return world.Subscribe((in ComponentRemovedMessage<T3> m) => Remove(m.Entity));
+            yield return world.Subscribe((in EntityDisposedMessage m) => Remove(m.Entity));
         }
 
         #endregion
@@ -246,9 +241,7 @@ namespace DefaultEcs
     {
         #region Initialisation
 
-        public EntitySet(World world)
-            : base(world)
-        { }
+        public EntitySet(World world) : base(world) { }
 
         #endregion
 
@@ -308,6 +301,7 @@ namespace DefaultEcs
             yield return world.Subscribe((in ComponentRemovedMessage<T3> m) => Remove(m.Entity));
             yield return world.Subscribe<ComponentAddedMessage<T4>>(On);
             yield return world.Subscribe((in ComponentRemovedMessage<T4> m) => Remove(m.Entity));
+            yield return world.Subscribe((in EntityDisposedMessage m) => Remove(m.Entity));
         }
 
         #endregion

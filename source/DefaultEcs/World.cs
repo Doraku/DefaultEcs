@@ -135,7 +135,7 @@ namespace DefaultEcs
             }
 
             pool = new ComponentPool<T>(MaxEntityCount, maxComponentCount);
-            Subscribe<EntityDisposedMessage>(ComponentPool<T>.On);
+            Subscribe<EntityDisposedMessage>(pool.On);
         }
 
         /// <summary>

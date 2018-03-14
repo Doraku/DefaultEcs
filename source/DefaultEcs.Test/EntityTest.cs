@@ -525,22 +525,17 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Dispose_Should_publish_ComponentRemovedMessage_for_all_component()
+        public void Dispose_Should_remove_all_component()
         {
             using (World world = new World(2))
             {
-                ComponentRemovedMessage<bool> message = default;
-
-                world.Subscribe((in ComponentRemovedMessage<bool> m) => message = m);
-
                 world.AddComponentType<bool>(1);
                 world.CreateEntity();
                 Entity deletedEntity = world.CreateEntity();
                 deletedEntity.Set(true);
 
                 deletedEntity.Dispose();
-
-                Check.That(message.Entity).IsEqualTo(deletedEntity);
+                Check.That(deletedEntity.Has<bool>()).IsFalse();
 
                 Entity entity = world.CreateEntity();
 
