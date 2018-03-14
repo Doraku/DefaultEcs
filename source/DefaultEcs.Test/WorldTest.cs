@@ -391,6 +391,711 @@ namespace DefaultEcs.Test
             }
         }
 
+        [Fact]
+        public void GetEntitiesWith_T1_T2_T3_T4_T5_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_T3_T4_T5()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntitiesWith<bool, int, string, float, uint>())
+            {
+                world.AddComponentType<bool>(4);
+                world.AddComponentType<int>(4);
+                world.AddComponentType<string>(4);
+                world.AddComponentType<float>(4);
+                world.AddComponentType<uint>(4);
+
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(string.Empty);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42f);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42u);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                Entity temp = entities[2];
+                temp.Remove<bool>();
+                entities.Remove(temp);
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(true);
+                temp.Remove<int>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42);
+                temp.Remove<string>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(string.Empty);
+                temp.Remove<float>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42f);
+                temp.Remove<uint>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
+        public void GetEntitiesWith_T1_T2_T3_T4_T5_T6_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_T3_T4_T5_T6()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntitiesWith<bool, int, string, float, uint, short>())
+            {
+                world.AddComponentType<bool>(4);
+                world.AddComponentType<int>(4);
+                world.AddComponentType<string>(4);
+                world.AddComponentType<float>(4);
+                world.AddComponentType<uint>(4);
+                world.AddComponentType<short>(4);
+
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(string.Empty);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42f);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42u);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set<short>(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                Entity temp = entities[2];
+                temp.Remove<bool>();
+                entities.Remove(temp);
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(true);
+                temp.Remove<int>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42);
+                temp.Remove<string>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(string.Empty);
+                temp.Remove<float>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42f);
+                temp.Remove<uint>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42u);
+                temp.Remove<short>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
+        public void GetEntitiesWith_T1_T2_T3_T4_T5_T6_T7_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_T3_T4_T5_T6_T7()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntitiesWith<bool, int, string, float, uint, short, ushort>())
+            {
+                world.AddComponentType<bool>(4);
+                world.AddComponentType<int>(4);
+                world.AddComponentType<string>(4);
+                world.AddComponentType<float>(4);
+                world.AddComponentType<uint>(4);
+                world.AddComponentType<short>(4);
+                world.AddComponentType<ushort>(4);
+
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(string.Empty);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42f);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42u);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set<short>(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set<ushort>(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                Entity temp = entities[2];
+                temp.Remove<bool>();
+                entities.Remove(temp);
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(true);
+                temp.Remove<int>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42);
+                temp.Remove<string>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(string.Empty);
+                temp.Remove<float>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42f);
+                temp.Remove<uint>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42u);
+                temp.Remove<short>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set<short>(42);
+                temp.Remove<ushort>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
+        public void GetEntitiesWith_T1_T2_T3_T4_T5_T6_T7_T8_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_T3_T4_T5_T6_T7_T8()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntitiesWith<bool, int, string, float, uint, short, ushort, long>())
+            {
+                world.AddComponentType<bool>(4);
+                world.AddComponentType<int>(4);
+                world.AddComponentType<string>(4);
+                world.AddComponentType<float>(4);
+                world.AddComponentType<uint>(4);
+                world.AddComponentType<short>(4);
+                world.AddComponentType<ushort>(4);
+                world.AddComponentType<long>(4);
+
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(string.Empty);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42f);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42u);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set<short>(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set<ushort>(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42L);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                Entity temp = entities[2];
+                temp.Remove<bool>();
+                entities.Remove(temp);
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(true);
+                temp.Remove<int>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42);
+                temp.Remove<string>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(string.Empty);
+                temp.Remove<float>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42f);
+                temp.Remove<uint>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42u);
+                temp.Remove<short>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set<short>(42);
+                temp.Remove<ushort>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set<ushort>(42);
+                temp.Remove<long>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
+        public void GetEntitiesWith_T1_T2_T3_T4_T5_T6_T7_T8_T9_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_T3_T4_T5_T6_T7_T8_T9()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntitiesWith<bool, int, string, float, uint, short, ushort, long, ulong>())
+            {
+                world.AddComponentType<bool>(4);
+                world.AddComponentType<int>(4);
+                world.AddComponentType<string>(4);
+                world.AddComponentType<float>(4);
+                world.AddComponentType<uint>(4);
+                world.AddComponentType<short>(4);
+                world.AddComponentType<ushort>(4);
+                world.AddComponentType<long>(4);
+                world.AddComponentType<ulong>(4);
+
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(string.Empty);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42f);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42u);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set<short>(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set<ushort>(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42L);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set<ulong>(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                Entity temp = entities[2];
+                temp.Remove<bool>();
+                entities.Remove(temp);
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(true);
+                temp.Remove<int>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42);
+                temp.Remove<string>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(string.Empty);
+                temp.Remove<float>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42f);
+                temp.Remove<uint>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42u);
+                temp.Remove<short>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set<short>(42);
+                temp.Remove<ushort>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set<ushort>(42);
+                temp.Remove<long>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42L);
+                temp.Remove<ulong>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
+        public void GetEntitiesWith_T1_T2_T3_T4_T5_T6_T7_T8_T9_T10_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_T3_T4_T5_T6_T7_T8_T9_T10()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntitiesWith<bool, int, string, float, uint, short, ushort, long, ulong, decimal>())
+            {
+                world.AddComponentType<bool>(4);
+                world.AddComponentType<int>(4);
+                world.AddComponentType<string>(4);
+                world.AddComponentType<float>(4);
+                world.AddComponentType<uint>(4);
+                world.AddComponentType<short>(4);
+                world.AddComponentType<ushort>(4);
+                world.AddComponentType<long>(4);
+                world.AddComponentType<ulong>(4);
+                world.AddComponentType<decimal>(4);
+
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(string.Empty);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42f);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42u);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set<short>(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set<ushort>(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42L);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set<ulong>(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set<decimal>(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                Entity temp = entities[2];
+                temp.Remove<bool>();
+                entities.Remove(temp);
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(true);
+                temp.Remove<int>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42);
+                temp.Remove<string>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(string.Empty);
+                temp.Remove<float>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42f);
+                temp.Remove<uint>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42u);
+                temp.Remove<short>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set<short>(42);
+                temp.Remove<ushort>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set<ushort>(42);
+                temp.Remove<long>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set(42L);
+                temp.Remove<ulong>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Set<ulong>(42);
+                temp.Remove<decimal>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
         #endregion
     }
 }
