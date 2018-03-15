@@ -76,7 +76,7 @@ namespace DefaultEcs
 
             if (pool.Set(EntityId, component))
             {
-                ref ComponentEnum components = ref World.ComponentManager<ComponentEnum>.Pools[WorldId].Get(EntityId);
+                ref ComponentEnum components = ref World.EntityComponents[WorldId][EntityId];
                 components[pool.Flag] = true;
                 World.Publish(WorldId, new ComponentAddedMessage<T>(this, components));
             }
@@ -112,7 +112,7 @@ namespace DefaultEcs
 
             if (pool.SetSameAs(EntityId, reference.EntityId))
             {
-                ref ComponentEnum components = ref World.ComponentManager<ComponentEnum>.Pools[WorldId].Get(EntityId);
+                ref ComponentEnum components = ref World.EntityComponents[WorldId][EntityId];
                 components[pool.Flag] = true;
                 World.Publish(WorldId, new ComponentAddedMessage<T>(this, components));
             }
@@ -133,7 +133,7 @@ namespace DefaultEcs
 
             if (pool?.Remove(EntityId) ?? false)
             {
-                ref ComponentEnum components = ref World.ComponentManager<ComponentEnum>.Pools[WorldId].Get(EntityId);
+                ref ComponentEnum components = ref World.EntityComponents[WorldId][EntityId];
                 components[pool.Flag] = false;
                 World.Publish(WorldId, new ComponentRemovedMessage<T>(this, components));
             }

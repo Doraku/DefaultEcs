@@ -22,8 +22,15 @@
     <PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Doraku/DefaultEcs/blob/master/LICENSE.md</PackageLicenseUrl>
     <PackageId>DefaultEcs</PackageId>
-    <PackageTags>ecs entity component system framework game</PackageTags>
+    <PackageTags>
+      gamedev game-development game-engine ecs entity-component-system
+    </PackageTags>
     <PackageIconUrl>https://github.com/Doraku/DefaultEcs/raw/master/logo.png</PackageIconUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
@@ -34,17 +41,12 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG</DefineConstants>
-  </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
+  <!--<ItemGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
-  </ItemGroup>
+  </ItemGroup>-->
   
   <ItemGroup>
-    <PackageReference Include="System.Memory" Version="4.5.0-preview2-26202-05" />
+    <PackageReference Include="System.Memory" Version="4.5.0-preview1-26216-02" />
   </ItemGroup>
 </Project>

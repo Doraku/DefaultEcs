@@ -5,6 +5,9 @@ using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs
 {
+    /// <summary>
+    /// Represent an helper object to create an <see cref="EntitySet"/> to retrieve specific subset of <see cref="Entity"/>.
+    /// </summary>
     public class EntitySetBuilder
     {
         #region Fields
@@ -32,6 +35,10 @@ namespace DefaultEcs
 
         #region Methods
 
+        /// <summary>
+        /// Returns an <see cref="EntitySet"/> with the specified rules.
+        /// </summary>
+        /// <returns>The <see cref="EntitySet"/>.</returns>
         public EntitySet Build()
         {
             if (_subscriptions.Count == 1
@@ -43,13 +50,19 @@ namespace DefaultEcs
             return new EntitySet(_world, _withFilter, _withoutFilter, _subscriptions);
         }
 
+        /// <summary>
+        /// Makes a rule to observe <see cref="Entity"/> with a component of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of component.</typeparam>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        /// <exception cref="InvalidOperationException">The type of component <typeparamref name="T"/> has not been added to the current <see cref="EntitySetBuilder"/> <see cref="World"/> yet.</exception>
         public EntitySetBuilder With<T>()
         {
             ComponentPool<T> pool = World.ComponentManager<T>.Pools[_world.WorldId];
 
             if (pool == null)
             {
-                throw new InvalidOperationException($"The type of component {nameof(T)} has not been added to the current Entity World yet");
+                throw new InvalidOperationException($"The type of component {nameof(T)} has not been added to the current EntitySetBuilder World yet");
             }
 
             _withFilter[pool.Flag] = true;
@@ -59,13 +72,19 @@ namespace DefaultEcs
             return this;
         }
 
+        /// <summary>
+        /// Makes a rule to ignore <see cref="Entity"/> with a component of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of component.</typeparam>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        /// <exception cref="InvalidOperationException">The type of component <typeparamref name="T"/> has not been added to the current <see cref="EntitySetBuilder"/> <see cref="World"/> yet.</exception>
         public EntitySetBuilder Without<T>()
         {
             ComponentPool<T> pool = World.ComponentManager<T>.Pools[_world.WorldId];
 
             if (pool == null)
             {
-                throw new InvalidOperationException($"The type of component {nameof(T)} has not been added to the current Entity World yet");
+                throw new InvalidOperationException($"The type of component {nameof(T)} has not been added to the current EntitySetBuilder World yet");
             }
 
             _withoutFilter[pool.Flag] = true;

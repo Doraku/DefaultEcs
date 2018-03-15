@@ -22,11 +22,12 @@ namespace DefaultEcs
     {
         #region Fields
 
+        private static readonly object _locker;
         private static readonly IntDispenser _worldIdDispenser;
 
-        private static event Action<int> _newWorld;
-        private static event Action<int> _cleanPublisher;
         private static event Action<int> _cleanWorld;
+
+        internal static ComponentEnum[][] EntityComponents;
 
         private readonly IntDispenser _entityIdDispenser;
 
@@ -45,7 +46,9 @@ namespace DefaultEcs
 
         static World()
         {
+            _locker = new object();
             _worldIdDispenser = new IntDispenser(0);
+            EntityComponents = new ComponentEnum[0][];
         }
 
         /// <summary>
@@ -54,16 +57,24 @@ namespace DefaultEcs
         /// <param name="maxEntityCount">The maximum number of <see cref="Entity"/> that can exist in this <see cref="World"/>.</param>
         public World(int maxEntityCount)
         {
-            WorldId = _worldIdDispenser.GetFreeInt();
-            _newWorld?.Invoke(WorldId);
             _entityIdDispenser = new IntDispenser(-1);
             MaxEntityCount = maxEntityCount;
+
+            lock (_locker)
+            {
+                WorldId = _worldIdDispenser.GetFreeInt();
+                if (WorldId >= EntityComponents.Length)
+                {
+                    ComponentEnum[][] newEntityComponents = new ComponentEnum[(WorldId + 1) * 2][];
+                    Array.Copy(EntityComponents, newEntityComponents, EntityComponents.Length);
+                    EntityComponents = newEntityComponents;
+                }
+                EntityComponents[WorldId] = new ComponentEnum[MaxEntityCount];
+            }
 
             _nextFlag = default;
 
             Subscribe<EntityDisposedMessage>(On);
-
-            AddComponentType<ComponentEnum>(maxEntityCount);
         }
 
         #endregion
@@ -77,10 +88,13 @@ namespace DefaultEcs
         #region Methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static IDisposable Subscribe<T>(int worldId, SubscribeAction<T> action) => Publisher<T>.Subscribe(worldId, action);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Publish<T>(int worldId, in T arg) => Publisher<T>.Actions[worldId]?.Invoke(arg);
+        internal static void Publish<T>(int worldId, in T arg)
+        {
+            if (worldId < Publisher<T>.Actions.Length)
+            {
+                Publisher<T>.Actions[worldId]?.Invoke(arg);
+            }
+        }
 
         /// <summary>
         /// Subscribes an <see cref="SubscribeAction{T}"/> to be called back when a <typeparamref name="T"/> object is published.
@@ -89,7 +103,7 @@ namespace DefaultEcs
         /// <param name="action">The delegate to be called back.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IDisposable Subscribe<T>(SubscribeAction<T> action) => Subscribe(WorldId, action);
+        public IDisposable Subscribe<T>(SubscribeAction<T> action) => Publisher<T>.Subscribe(WorldId, action);
 
         /// <summary>
         /// Publishes a <typeparamref name="T"/> object.
@@ -115,7 +129,6 @@ namespace DefaultEcs
             }
 
             Entity entity = new Entity(WorldId, entityId);
-            ComponentManager<ComponentEnum>.Pools[WorldId].Set(entityId, default);
             Publish(new EntityCreatedMessage(entity));
 
             return entity;
@@ -136,13 +149,20 @@ namespace DefaultEcs
                 throw new ArgumentException("Argument can not be negative", nameof(maxComponentCount));
             }
 
+            ComponentManager<T>.Add(WorldId);
+
             ref ComponentPool<T> pool = ref ComponentManager<T>.Pools[WorldId];
-            if (pool != null)
+
+            lock (typeof(ComponentManager<T>))
             {
-                throw new InvalidOperationException("This component type has already been added");
+                if (pool != null)
+                {
+                    throw new InvalidOperationException("This component type has already been added");
+                }
+
+                pool = new ComponentPool<T>(_nextFlag, MaxEntityCount, maxComponentCount);
             }
 
-            pool = new ComponentPool<T>(_nextFlag, MaxEntityCount, maxComponentCount);
             _nextFlag = _nextFlag.GetNextFlag();
             Subscribe<EntityDisposedMessage>(pool.On);
         }
@@ -182,7 +202,10 @@ namespace DefaultEcs
         /// </summary>
         public void Dispose()
         {
-            _cleanPublisher?.Invoke(WorldId);
+            lock (_locker)
+            {
+                EntityComponents[WorldId] = null;
+            }
             _cleanWorld?.Invoke(WorldId);
             _worldIdDispenser.ReleaseInt(WorldId);
 

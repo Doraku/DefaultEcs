@@ -32,7 +32,7 @@ namespace DefaultEcs
 
                 public void Dispose()
                 {
-                    lock (_locker)
+                    lock (typeof(Publisher<T>))
                     {
                         Actions[_worldId] -= _action;
                     }
@@ -45,8 +45,6 @@ namespace DefaultEcs
 
             #region Fields
 
-            private static readonly object _locker;
-
             public static SubscribeAction<T>[] Actions;
 
             #endregion
@@ -55,44 +53,38 @@ namespace DefaultEcs
 
             static Publisher()
             {
-                _locker = new object();
+                Actions = new SubscribeAction<T>[0];
 
-                Actions = new SubscribeAction<T>[_worldIdDispenser.LastInt + 1];
-
-                _newWorld += Add;
-                _cleanPublisher += Clear;
+                _cleanWorld += Clear;
             }
 
             #endregion
 
             #region Methods
 
-            private static void Add(int worldId)
-            {
-                lock (_locker)
-                {
-                    if (Actions.Length < worldId + 1)
-                    {
-                        SubscribeAction<T>[] newActions = new SubscribeAction<T>[(worldId + 1) * 2];
-                        Array.Copy(Actions, newActions, Actions.Length);
-                        Actions = newActions;
-                    }
-                }
-            }
-
             private static void Clear(int worldId)
             {
-                lock (_locker)
+                lock (typeof(Publisher<T>))
                 {
-                    Actions[worldId] = null;
+                    if (worldId < Actions.Length)
+                    {
+                        Actions[worldId] = null;
+                    }
                 }
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static IDisposable Subscribe(int worldId, SubscribeAction<T> action)
             {
-                lock (_locker)
+                lock (typeof(Publisher<T>))
                 {
+                    if (worldId >= Actions.Length)
+                    {
+                        SubscribeAction<T>[] newActions = new SubscribeAction<T>[(worldId + 1) * 2];
+                        Array.Copy(Actions, newActions, Actions.Length);
+                        Actions = newActions;
+                    }
+
                     Actions[worldId] += action;
                 }
 
