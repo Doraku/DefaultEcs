@@ -58,7 +58,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">The type of component <typeparamref name="T"/> has not been added to the current <see cref="EntitySetBuilder"/> <see cref="World"/> yet.</exception>
         public EntitySetBuilder With<T>()
         {
-            ComponentPool<T> pool = World.ComponentManager<T>.Pools[_world.WorldId];
+            ComponentPool<T> pool = ComponentManager<T>.Pools[_world.WorldId];
 
             if (pool == null)
             {
@@ -80,7 +80,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">The type of component <typeparamref name="T"/> has not been added to the current <see cref="EntitySetBuilder"/> <see cref="World"/> yet.</exception>
         public EntitySetBuilder Without<T>()
         {
-            ComponentPool<T> pool = World.ComponentManager<T>.Pools[_world.WorldId];
+            ComponentPool<T> pool = ComponentManager<T>.Pools[_world.WorldId];
 
             if (pool == null)
             {

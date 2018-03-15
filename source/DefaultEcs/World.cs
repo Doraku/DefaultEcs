@@ -25,9 +25,9 @@ namespace DefaultEcs
         private static readonly object _locker;
         private static readonly IntDispenser _worldIdDispenser;
 
-        private static event Action<int> _cleanWorld;
-
         internal static ComponentEnum[][] EntityComponents;
+
+        internal static event Action<int> ClearWorld;
 
         private readonly IntDispenser _entityIdDispenser;
 
@@ -206,7 +206,7 @@ namespace DefaultEcs
             {
                 EntityComponents[WorldId] = null;
             }
-            _cleanWorld?.Invoke(WorldId);
+            ClearWorld?.Invoke(WorldId);
             _worldIdDispenser.ReleaseInt(WorldId);
 
             GC.SuppressFinalize(this);

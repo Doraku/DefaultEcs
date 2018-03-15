@@ -50,7 +50,7 @@ namespace DefaultEcs
         {
             ThrowIfNull();
 
-            return World.ComponentManager<T>.Pools[WorldId]?.Has(EntityId) ?? false;
+            return ComponentManager<T>.Pools[WorldId]?.Has(EntityId) ?? false;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace DefaultEcs
         {
             ThrowIfNull();
 
-            ComponentPool<T> pool = World.ComponentManager<T>.Pools[WorldId];
+            ComponentPool<T> pool = ComponentManager<T>.Pools[WorldId];
 
             if (pool == null)
             {
@@ -103,7 +103,7 @@ namespace DefaultEcs
                 throw new InvalidOperationException("Reference Entity comes from a different World");
             }
 
-            ComponentPool<T> pool = World.ComponentManager<T>.Pools[WorldId];
+            ComponentPool<T> pool = ComponentManager<T>.Pools[WorldId];
 
             if (pool == null)
             {
@@ -129,7 +129,7 @@ namespace DefaultEcs
         {
             ThrowIfNull();
 
-            ComponentPool<T> pool = World.ComponentManager<T>.Pools[WorldId];
+            ComponentPool<T> pool = ComponentManager<T>.Pools[WorldId];
 
             if (pool?.Remove(EntityId) ?? false)
             {
@@ -152,7 +152,7 @@ namespace DefaultEcs
         {
             ThrowIfNull();
 
-            ComponentPool<T> pool = World.ComponentManager<T>.Pools[WorldId];
+            ComponentPool<T> pool = ComponentManager<T>.Pools[WorldId];
 
             if (pool == null)
             {
