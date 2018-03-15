@@ -19,7 +19,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public void Setup()
         {
             _world = new World(EntityCount);
-            _set = _world.GetAllEntities();
+            _set = _world.GetEntities().Build();
 
             for (int i = 0; i < EntityCount; ++i)
             {

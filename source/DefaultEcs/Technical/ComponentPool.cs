@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using DefaultEcs.Message;
+using DefaultEcs.Technical.Message;
 
-namespace DefaultEcs
+namespace DefaultEcs.Technical
 {
     internal sealed class ComponentPool<T>
     {
@@ -16,12 +16,15 @@ namespace DefaultEcs
 
         private int _lastIndex;
 
+        public readonly ComponentFlag Flag;
+
         #endregion
 
         #region Initialisation
 
-        public ComponentPool(int maxEntityCount, int maxComponentCount)
+        public ComponentPool(ComponentFlag flag, int maxEntityCount, int maxComponentCount)
         {
+            Flag = flag;
             _mapping = Enumerable.Repeat(-1, maxEntityCount).ToArray();
             _refCount = new int[maxEntityCount];
             _reverseMapping = new int[maxComponentCount];

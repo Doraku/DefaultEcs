@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using DefaultEcs.Message;
 using NFluent;
 using Xunit;
 
@@ -102,46 +100,6 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Set_Should_publish_ComponentAddedMessage_When_setted_for_the_first_time()
-        {
-            using (World world = new World(2))
-            {
-                ComponentAddedMessage<bool> message = default;
-
-                world.Subscribe((in ComponentAddedMessage<bool> m) => message = m);
-
-                world.AddComponentType<bool>(1);
-                world.CreateEntity();
-                Entity entity = world.CreateEntity();
-
-                entity.Set(true);
-
-                Check.That(message.Entity).IsEqualTo(entity);
-            }
-        }
-
-        [Fact]
-        public void Set_Should_not_publish_ComponentAddedMessage_When_not_setted_for_the_first_time()
-        {
-            using (World world = new World(2))
-            {
-                bool done = false;
-
-                world.AddComponentType<bool>(1);
-                world.CreateEntity();
-                Entity entity = world.CreateEntity();
-
-                entity.Set(true);
-
-                world.Subscribe((in ComponentAddedMessage<bool> m) => done = true);
-
-                entity.Set(true);
-
-                Check.That(done).IsFalse();
-            }
-        }
-
-        [Fact]
         public void SetSameAs_Should_throw_When_Entity_not_created_from_World()
         {
             Entity entity = default;
@@ -225,49 +183,6 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SetSameAs_Should_publish_ComponentAddedMessage_When_setted_for_the_first_time()
-        {
-            using (World world = new World(2))
-            {
-                ComponentAddedMessage<bool> message = default;
-
-                world.AddComponentType<bool>(1);
-                Entity entity = world.CreateEntity();
-                Entity reference = world.CreateEntity();
-
-                reference.Set(true);
-
-                world.Subscribe((in ComponentAddedMessage<bool> m) => message = m);
-
-                entity.SetSameAs<bool>(reference);
-
-                Check.That(message.Entity).IsEqualTo(entity);
-            }
-        }
-
-        [Fact]
-        public void SetSameAs_Should_not_publish_ComponentAddedMessage_When_not_setted_for_the_first_time()
-        {
-            using (World world = new World(2))
-            {
-                bool done = false;
-
-                world.AddComponentType<bool>(2);
-                Entity entity = world.CreateEntity();
-                Entity reference = world.CreateEntity();
-
-                reference.Set(true);
-                entity.Set(true);
-
-                world.Subscribe((in ComponentAddedMessage<bool> m) => done = true);
-
-                entity.SetSameAs<bool>(reference);
-
-                Check.That(done).IsFalse();
-            }
-        }
-
-        [Fact]
         public void Remove_Should_throw_When_Entity_not_created_from_World()
         {
             Entity entity = default;
@@ -291,39 +206,6 @@ namespace DefaultEcs.Test
                 entity.Remove<bool>();
 
                 Check.That(entity.Has<bool>()).IsFalse();
-            }
-        }
-
-        [Fact]
-        public void Remove_Should_publish_ComponentRemovedMessage_When_component_removed()
-        {
-            using (World world = new World(1))
-            {
-                ComponentRemovedMessage<bool> message = default;
-
-                world.AddComponentType<bool>(1);
-                world.Subscribe((in ComponentRemovedMessage<bool> m) => message = m);
-
-                Entity entity = world.CreateEntity();
-
-                entity.Set(true);
-                entity.Remove<bool>();
-                Check.That(message.Entity).IsEqualTo(entity);
-            }
-        }
-
-        [Fact]
-        public void Remove_Should_not_publish_ComponentRemovedMessage_When_does_not_have_component()
-        {
-            using (World world = new World(1))
-            {
-                bool done = false;
-                world.Subscribe((in ComponentAddedMessage<bool> m) => done = true);
-
-                Entity entity = world.CreateEntity();
-
-                entity.Remove<bool>();
-                Check.That(done).IsFalse();
             }
         }
 
@@ -389,30 +271,6 @@ namespace DefaultEcs.Test
 
                 Check.That(entity.Has<bool>()).IsTrue();
                 Check.That(reference.Has<bool>()).IsFalse();
-            }
-        }
-
-        [Fact]
-        public void Remove_Should_not_publish_ComponentRemovedMessage_for_all_referenced_Entity()
-        {
-            using (World world = new World(4))
-            {
-                List<Entity> messages = new List<Entity>();
-                world.Subscribe((in ComponentRemovedMessage<bool> m) => messages.Add(m.Entity));
-
-                world.AddComponentType<bool>(1);
-
-                Entity entity = world.CreateEntity();
-                Entity entity2 = world.CreateEntity();
-                Entity reference = world.CreateEntity();
-
-                reference.Set(true);
-                entity.SetSameAs<bool>(reference);
-                entity2.SetSameAs<bool>(reference);
-
-                reference.Remove<bool>();
-
-                Check.That(messages).ContainsExactly(new[] { reference });
             }
         }
 
@@ -505,22 +363,6 @@ namespace DefaultEcs.Test
                 Entity entity = world.CreateEntity();
 
                 Check.That(entity).IsEqualTo(deletedEntity);
-            }
-        }
-
-        [Fact]
-        public void Dispose_Should_publish_EntityDisposedMessage()
-        {
-            using (World world = new World(2))
-            {
-                Entity deletedEntity = default;
-                Entity entity = world.CreateEntity();
-
-                world.Subscribe((in EntityDisposedMessage m) => deletedEntity = m.Entity);
-
-                entity.Dispose();
-
-                Check.That(deletedEntity).IsEqualTo(entity);
             }
         }
 

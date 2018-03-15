@@ -13,7 +13,7 @@ namespace DefaultEcs.Test
         public void CopyEntitiesTo_Should_copy_all_Entity_to_destination()
         {
             using (World world = new World(4))
-            using (EntitySet set = world.GetAllEntities())
+            using (EntitySet set = world.GetEntities().Build())
             {
                 List<Entity> entities = new List<Entity>
                 {
@@ -35,7 +35,7 @@ namespace DefaultEcs.Test
         public void CopyEntities_Should_return_an_array_with_all_Entity()
         {
             using (World world = new World(4))
-            using (EntitySet set = world.GetAllEntities())
+            using (EntitySet set = world.GetEntities().Build())
             {
                 List<Entity> entities = new List<Entity>
                 {

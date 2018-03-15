@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using DefaultEcs.Message;
 using DefaultEcs.Technical;
+using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs
 {
@@ -24,12 +24,15 @@ namespace DefaultEcs
 
         private static readonly IntDispenser _worldIdDispenser;
 
-        private static Action<int> _newWorld;
-        private static Action<int> _cleanPublisher;
-        private static Action<int> _cleanWorld;
+        private static event Action<int> _newWorld;
+        private static event Action<int> _cleanPublisher;
+        private static event Action<int> _cleanWorld;
 
-        private readonly int _worldId;
         private readonly IntDispenser _entityIdDispenser;
+
+        private ComponentFlag _nextFlag;
+
+        internal readonly int WorldId;
 
         /// <summary>
         /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can create.
@@ -51,12 +54,16 @@ namespace DefaultEcs
         /// <param name="maxEntityCount">The maximum number of <see cref="Entity"/> that can exist in this <see cref="World"/>.</param>
         public World(int maxEntityCount)
         {
-            _worldId = _worldIdDispenser.GetFreeInt();
-            _newWorld?.Invoke(_worldId);
+            WorldId = _worldIdDispenser.GetFreeInt();
+            _newWorld?.Invoke(WorldId);
             _entityIdDispenser = new IntDispenser(-1);
             MaxEntityCount = maxEntityCount;
 
+            _nextFlag = default;
+
             Subscribe<EntityDisposedMessage>(On);
+
+            AddComponentType<ComponentEnum>(maxEntityCount);
         }
 
         #endregion
@@ -82,7 +89,7 @@ namespace DefaultEcs
         /// <param name="action">The delegate to be called back.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IDisposable Subscribe<T>(SubscribeAction<T> action) => Subscribe(_worldId, action);
+        public IDisposable Subscribe<T>(SubscribeAction<T> action) => Subscribe(WorldId, action);
 
         /// <summary>
         /// Publishes a <typeparamref name="T"/> object.
@@ -90,7 +97,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the object to publish.</typeparam>
         /// <param name="arg">The object to publish.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Publish<T>(in T arg) => Publish(_worldId, arg);
+        public void Publish<T>(in T arg) => Publish(WorldId, arg);
 
         /// <summary>
         /// Creates a new instance of the <see cref="Entity"/> struct.
@@ -107,8 +114,8 @@ namespace DefaultEcs
                 throw new InvalidOperationException("Max number of Entity reached");
             }
 
-            Entity entity = new Entity(_worldId, entityId);
-
+            Entity entity = new Entity(WorldId, entityId);
+            ComponentManager<ComponentEnum>.Pools[WorldId].Set(entityId, default);
             Publish(new EntityCreatedMessage(entity));
 
             return entity;
@@ -129,13 +136,14 @@ namespace DefaultEcs
                 throw new ArgumentException("Argument can not be negative", nameof(maxComponentCount));
             }
 
-            ref ComponentPool<T> pool = ref ComponentManager<T>.Pools[_worldId];
+            ref ComponentPool<T> pool = ref ComponentManager<T>.Pools[WorldId];
             if (pool != null)
             {
                 throw new InvalidOperationException("This component type has already been added");
             }
 
-            pool = new ComponentPool<T>(MaxEntityCount, maxComponentCount);
+            pool = new ComponentPool<T>(_nextFlag, MaxEntityCount, maxComponentCount);
+            _nextFlag = _nextFlag.GetNextFlag();
             Subscribe<EntityDisposedMessage>(pool.On);
         }
 
@@ -148,7 +156,7 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> GetAllComponents<T>()
         {
-            ComponentPool<T> pool = ComponentManager<T>.Pools[_worldId];
+            ComponentPool<T> pool = ComponentManager<T>.Pools[WorldId];
 
             if (pool == null)
             {
@@ -159,141 +167,10 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>.
+        /// Gets an <see cref="EntitySetBuilder"/> to create a subset of <see cref="Entity"/> of the current <see cref="World"/>.
         /// </summary>
-        /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetAllEntities() => new AllEntitySet(this);
-
-        /// <summary>
-        /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>
-        /// which have a component <typeparamref name="T"/>.
-        /// </summary>
-        /// <typeparam name="T">A type of component needed.</typeparam>
-        /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntitiesWith<T>() => new EntitySet<T>(this);
-
-
-        /// <summary>
-        /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>
-        /// which have a component <typeparamref name="T1"/> and <typeparamref name="T2"/>.
-        /// </summary>
-        /// <typeparam name="T1">A type of component needed.</typeparam>
-        /// <typeparam name="T2">A type of component needed.</typeparam>
-        /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntitiesWith<T1, T2>() => new EntitySet<T1, T2>(this);
-
-        /// <summary>
-        /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>
-        /// which have a component <typeparamref name="T1"/>, <typeparamref name="T2"/> and <typeparamref name="T3"/>.
-        /// </summary>
-        /// <typeparam name="T1">A type of component needed.</typeparam>
-        /// <typeparam name="T2">A type of component needed.</typeparam>
-        /// <typeparam name="T3">A type of component needed.</typeparam>
-        /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntitiesWith<T1, T2, T3>() => new EntitySet<T1, T2, T3>(this);
-
-        /// <summary>
-        /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>
-        /// which have a component <typeparamref name="T1"/>, <typeparamref name="T2"/>, <typeparamref name="T3"/> and <typeparamref name="T4"/>.
-        /// </summary>
-        /// <typeparam name="T1">A type of component needed.</typeparam>
-        /// <typeparam name="T2">A type of component needed.</typeparam>
-        /// <typeparam name="T3">A type of component needed.</typeparam>
-        /// <typeparam name="T4">A type of component needed.</typeparam>
-        /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntitiesWith<T1, T2, T3, T4>() => new EntitySet<T1, T2, T3, T4>(this);
-
-        /// <summary>
-        /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>
-        /// which have a component <typeparamref name="T1"/>, <typeparamref name="T2"/>, <typeparamref name="T3"/>, <typeparamref name="T4"/> and <typeparamref name="T5"/>.
-        /// </summary>
-        /// <typeparam name="T1">A type of component needed.</typeparam>
-        /// <typeparam name="T2">A type of component needed.</typeparam>
-        /// <typeparam name="T3">A type of component needed.</typeparam>
-        /// <typeparam name="T4">A type of component needed.</typeparam>
-        /// <typeparam name="T5">A type of component needed.</typeparam>
-        /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntitiesWith<T1, T2, T3, T4, T5>() => new EntitySet<T1, T2, T3, T4, T5>(this);
-
-        /// <summary>
-        /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>
-        /// which have a component <typeparamref name="T1"/>, <typeparamref name="T2"/>, <typeparamref name="T3"/>, <typeparamref name="T4"/>, <typeparamref name="T5"/>
-        /// and <typeparamref name="T6"/>.
-        /// </summary>
-        /// <typeparam name="T1">A type of component needed.</typeparam>
-        /// <typeparam name="T2">A type of component needed.</typeparam>
-        /// <typeparam name="T3">A type of component needed.</typeparam>
-        /// <typeparam name="T4">A type of component needed.</typeparam>
-        /// <typeparam name="T5">A type of component needed.</typeparam>
-        /// <typeparam name="T6">A type of component needed.</typeparam>
-        /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntitiesWith<T1, T2, T3, T4, T5, T6>() => new EntitySet<T1, T2, T3, T4, T5, T6>(this);
-
-        /// <summary>
-        /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>
-        /// which have a component <typeparamref name="T1"/>, <typeparamref name="T2"/>, <typeparamref name="T3"/>, <typeparamref name="T4"/>, <typeparamref name="T5"/>,
-        /// <typeparamref name="T6"/> and <typeparamref name="T7"/>.
-        /// </summary>
-        /// <typeparam name="T1">A type of component needed.</typeparam>
-        /// <typeparam name="T2">A type of component needed.</typeparam>
-        /// <typeparam name="T3">A type of component needed.</typeparam>
-        /// <typeparam name="T4">A type of component needed.</typeparam>
-        /// <typeparam name="T5">A type of component needed.</typeparam>
-        /// <typeparam name="T6">A type of component needed.</typeparam>
-        /// <typeparam name="T7">A type of component needed.</typeparam>
-        /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntitiesWith<T1, T2, T3, T4, T5, T6, T7>() => new EntitySet<T1, T2, T3, T4, T5, T6, T7>(this);
-
-        /// <summary>
-        /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>
-        /// which have a component <typeparamref name="T1"/>, <typeparamref name="T2"/>, <typeparamref name="T3"/>, <typeparamref name="T4"/>, <typeparamref name="T5"/>,
-        /// <typeparamref name="T6"/>, <typeparamref name="T7"/> and <typeparamref name="T8"/>.
-        /// </summary>
-        /// <typeparam name="T1">A type of component needed.</typeparam>
-        /// <typeparam name="T2">A type of component needed.</typeparam>
-        /// <typeparam name="T3">A type of component needed.</typeparam>
-        /// <typeparam name="T4">A type of component needed.</typeparam>
-        /// <typeparam name="T5">A type of component needed.</typeparam>
-        /// <typeparam name="T6">A type of component needed.</typeparam>
-        /// <typeparam name="T7">A type of component needed.</typeparam>
-        /// <typeparam name="T8">A type of component needed.</typeparam>
-        /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntitiesWith<T1, T2, T3, T4, T5, T6, T7, T8>() => new EntitySet<T1, T2, T3, T4, T5, T6, T7, T8>(this);
-
-        /// <summary>
-        /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>
-        /// which have a component <typeparamref name="T1"/>, <typeparamref name="T2"/>, <typeparamref name="T3"/>, <typeparamref name="T4"/>, <typeparamref name="T5"/>,
-        /// <typeparamref name="T6"/>, <typeparamref name="T7"/>, <typeparamref name="T8"/> and <typeparamref name="T9"/>.
-        /// </summary>
-        /// <typeparam name="T1">A type of component needed.</typeparam>
-        /// <typeparam name="T2">A type of component needed.</typeparam>
-        /// <typeparam name="T3">A type of component needed.</typeparam>
-        /// <typeparam name="T4">A type of component needed.</typeparam>
-        /// <typeparam name="T5">A type of component needed.</typeparam>
-        /// <typeparam name="T6">A type of component needed.</typeparam>
-        /// <typeparam name="T7">A type of component needed.</typeparam>
-        /// <typeparam name="T8">A type of component needed.</typeparam>
-        /// <typeparam name="T9">A type of component needed.</typeparam>
-        /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntitiesWith<T1, T2, T3, T4, T5, T6, T7, T8, T9>() => new EntitySet<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this);
-
-        /// <summary>
-        /// Gets an <see cref="EntitySet"/> of all the <see cref="Entity"/> of the current <see cref="World"/>
-        /// which have a component <typeparamref name="T1"/>, <typeparamref name="T2"/>, <typeparamref name="T3"/>, <typeparamref name="T4"/>, <typeparamref name="T5"/>,
-        /// <typeparamref name="T6"/>, <typeparamref name="T7"/>, <typeparamref name="T8"/>, <typeparamref name="T9"/> and <typeparamref name="T10"/>.
-        /// </summary>
-        /// <typeparam name="T1">A type of component needed.</typeparam>
-        /// <typeparam name="T2">A type of component needed.</typeparam>
-        /// <typeparam name="T3">A type of component needed.</typeparam>
-        /// <typeparam name="T4">A type of component needed.</typeparam>
-        /// <typeparam name="T5">A type of component needed.</typeparam>
-        /// <typeparam name="T6">A type of component needed.</typeparam>
-        /// <typeparam name="T7">A type of component needed.</typeparam>
-        /// <typeparam name="T8">A type of component needed.</typeparam>
-        /// <typeparam name="T9">A type of component needed.</typeparam>
-        /// <typeparam name="T10">A type of component needed.</typeparam>
-        /// <returns>An <see cref="EntitySet"/>.</returns>
-        public EntitySet GetEntitiesWith<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>() => new EntitySet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this);
+        /// <returns>An <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder GetEntities() => new EntitySetBuilder(this);
 
         #endregion
 
@@ -305,9 +182,9 @@ namespace DefaultEcs
         /// </summary>
         public void Dispose()
         {
-            _cleanPublisher?.Invoke(_worldId);
-            _cleanWorld?.Invoke(_worldId);
-            _worldIdDispenser.ReleaseInt(_worldId);
+            _cleanPublisher?.Invoke(WorldId);
+            _cleanWorld?.Invoke(WorldId);
+            _worldIdDispenser.ReleaseInt(WorldId);
 
             GC.SuppressFinalize(this);
         }

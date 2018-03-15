@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using DefaultEcs.Message;
+using DefaultEcs.Technical;
+using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs
 {
@@ -75,7 +76,9 @@ namespace DefaultEcs
 
             if (pool.Set(EntityId, component))
             {
-                World.Publish(WorldId, new ComponentAddedMessage<T>(this));
+                ref ComponentEnum components = ref World.ComponentManager<ComponentEnum>.Pools[WorldId].Get(EntityId);
+                components[pool.Flag] = true;
+                World.Publish(WorldId, new ComponentAddedMessage<T>(this, components));
             }
         }
 
@@ -88,6 +91,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> comes from a different <see cref="World"/>.</exception>
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
+        /// <exception cref="InvalidOperationException">The type of component <typeparamref name="T"/> has not been added to the current <see cref="Entity"/> <see cref="World"/> yet.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetSameAs<T>(in Entity reference)
         {
@@ -108,7 +112,9 @@ namespace DefaultEcs
 
             if (pool.SetSameAs(EntityId, reference.EntityId))
             {
-                World.Publish(WorldId, new ComponentAddedMessage<T>(this));
+                ref ComponentEnum components = ref World.ComponentManager<ComponentEnum>.Pools[WorldId].Get(EntityId);
+                components[pool.Flag] = true;
+                World.Publish(WorldId, new ComponentAddedMessage<T>(this, components));
             }
         }
 
@@ -123,9 +129,13 @@ namespace DefaultEcs
         {
             ThrowIfNull();
 
-            if (World.ComponentManager<T>.Pools[WorldId]?.Remove(EntityId) ?? false)
+            ComponentPool<T> pool = World.ComponentManager<T>.Pools[WorldId];
+
+            if (pool?.Remove(EntityId) ?? false)
             {
-                World.Publish(WorldId, new ComponentRemovedMessage<T>(this));
+                ref ComponentEnum components = ref World.ComponentManager<ComponentEnum>.Pools[WorldId].Get(EntityId);
+                components[pool.Flag] = false;
+                World.Publish(WorldId, new ComponentRemovedMessage<T>(this, components));
             }
         }
 
