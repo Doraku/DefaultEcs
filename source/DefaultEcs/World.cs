@@ -139,10 +139,11 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
         /// <param name="maxComponentCount">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
+        /// <returns>The current <see cref="World"/>.</returns>
         /// <exception cref="ArgumentException"><paramref name="maxComponentCount"/> can not be negative.</exception>
         /// <exception cref="InvalidOperationException">This component type has already been added.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddComponentType<T>(int maxComponentCount)
+        public World AddComponentType<T>(int maxComponentCount)
         {
             if (maxComponentCount < 0)
             {
@@ -165,7 +166,18 @@ namespace DefaultEcs
 
             _nextFlag = _nextFlag.GetNextFlag();
             Subscribe<EntityDisposedMessage>(pool.On);
+
+            return this;
         }
+
+        /// <summary>
+        /// Sets up the current <see cref="World"/> to handle component of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of component.</typeparam>
+        /// <returns>The current <see cref="World"/>.</returns>
+        /// <exception cref="InvalidOperationException">This component type has already been added.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public World AddComponentType<T>() => AddComponentType<T>(MaxEntityCount);
 
         /// <summary>
         /// Gets all the component of a given type <typeparamref name="T"/>.

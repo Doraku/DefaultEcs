@@ -81,6 +81,15 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void AddComponentType_Should_return_same_World()
+        {
+            using (World world = new World(0))
+            {
+                Check.That(world.AddComponentType<bool>()).IsEqualTo(world);
+            }
+        }
+
+        [Fact]
         public void AddComponentType_Should_add()
         {
             using (World world = new World(0))
