@@ -6,7 +6,7 @@ using DefaultEcs.Technical.Message;
 namespace DefaultEcs
 {
     /// <summary>
-    /// Represents an item in the <see cref="WorldId"/>.
+    /// Represents an item in the <see cref="World"/>.
     /// Only use <see cref="Entity"/> generated from the <see cref="World.CreateEntity"/> method.
     /// </summary>
     public readonly struct Entity : IDisposable, IEquatable<Entity>
