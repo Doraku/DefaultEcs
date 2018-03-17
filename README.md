@@ -1,4 +1,4 @@
-[[https://github.com/Doraku/DefaultEcs/blob/master/DefaultEcsLogo.png|alt=DefaultEcs]]
+![DefaultEcs](https://github.com/Doraku/DefaultEcs/blob/master/DefaultEcsLogo.png)
 DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
 ## World
