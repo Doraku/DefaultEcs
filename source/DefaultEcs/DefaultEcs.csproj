@@ -14,10 +14,9 @@
     
     <Description>DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.</Description>
 
-    <Version>0.2.0-alpha</Version>
+    <Version>0.3.0-alpha</Version>
 
     <Authors>Paillat Laszlo</Authors>
-    <Copyright>Copyright © 2017-2018</Copyright>
 
     <PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Doraku/DefaultEcs/blob/master/LICENSE.md</PackageLicenseUrl>

@@ -1,4 +1,4 @@
-# DefaultEcs
+[[https://github.com/Doraku/DefaultEcs/blob/master/DefaultEcsLogo.png|alt=DefaultEcs]]
 DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
 ## World
@@ -30,10 +30,10 @@ public struct Example
 }
 ```
 
-Before being used, the component type should be added to the world instance
+To reduce memory, it is possible to set a maximum count for a given component type. If nothing is set, then the maximum entity count of the world will be used as needed.
 ```csharp
 int maxComponentCount = 42;
-world.AddComponentType<Example>(maxComponentCount);
+world.SetComponentTypeMaximumCount<Example>(maxComponentCount);
 ```
 
 It is then possible to add the component to the entity
@@ -50,10 +50,17 @@ If the component is removed from the entity used as reference, it will not remov
 ## System
 Like components, systems are not restricted by any heritage hierarchy, that way execution logic and optimisation can be fined tuned as required.
 
-To perform operation, systems should get EntitySet from the World instance. EntitySet are updated as components are added/removed from entities and are used to get a subset of entities with the required component
+To perform operation, systems should get EntitySet from the World instance. EntitySet are updated as components are added/removed from entities and are used to get a subset of entities with the required component.
+EntitySet are created from EntitySetBuilder and it is possible to apply rules for required components or excluded components
 ```C#
 // this set when enumerated will give all the entities with an Example component
-EntitySet<Example> set = world.GetEntityWith<Example>()
+EntitySet set = world.GetEntities().With<Example>().Build();
+
+// this set when enumerated will give all the entities without an Example component
+EntitySet set = world.GetEntities().Without<Example>().Build();
+
+// this set when enumerated will give all the entities with both an Example and an int component
+EntitySet set = world.GetEntities().With<Example>().With<int>().Build();
 ```
 
 EntitySet should be created before entities are instanced.
