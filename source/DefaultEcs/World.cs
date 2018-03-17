@@ -27,7 +27,6 @@ namespace DefaultEcs
         internal static readonly object Locker;
 
         internal static ComponentEnum[][] EntityComponents;
-        internal static int[] MaxEntityCounts;
 
         internal static event Action<int> ClearWorld;
 
@@ -42,7 +41,7 @@ namespace DefaultEcs
         /// <summary>
         /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can create.
         /// </summary>
-        public int MaxEntityCount => MaxEntityCounts[WorldId];
+        public int MaxEntityCount => EntityComponents[WorldId].Length;
 
         #endregion
 
@@ -52,7 +51,6 @@ namespace DefaultEcs
         {
             _worldIdDispenser = new IntDispenser(0);
             EntityComponents = new ComponentEnum[0][];
-            MaxEntityCounts = new int[0];
             Locker = new object();
         }
 
@@ -70,10 +68,8 @@ namespace DefaultEcs
                 if (WorldId >= EntityComponents.Length)
                 {
                     Helper.ResizeArray(ref EntityComponents, (WorldId + 1) * 2);
-                    Helper.ResizeArray(ref MaxEntityCounts, (WorldId + 1) * 2);
                 }
                 EntityComponents[WorldId] = new ComponentEnum[maxEntityCount];
-                MaxEntityCounts[WorldId] = maxEntityCount;
             }
 
             Subscribe<EntityDisposedMessage>(On);
