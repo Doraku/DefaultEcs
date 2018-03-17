@@ -4,6 +4,8 @@
     {
         #region Fields
 
+        private static ComponentFlag _lastFlag;
+
         public readonly short Index;
         public readonly short Bit;
 
@@ -21,7 +23,16 @@
 
         #region Methods
 
-        public ComponentFlag GetNextFlag() => Bit < 31 ? new ComponentFlag(Index, (short)(Bit + 1)) : new ComponentFlag((short)(Index + 1), 0);
+        public static ComponentFlag GetNextFlag()
+        {
+            lock (typeof(ComponentFlag))
+            {
+                ComponentFlag flag = _lastFlag;
+                _lastFlag = _lastFlag.Bit < 31 ? new ComponentFlag(_lastFlag.Index, (short)(_lastFlag.Bit + 1)) : new ComponentFlag((short)(_lastFlag.Index + 1), 0);
+
+                return flag;
+            }
+        }
 
         #endregion
     }

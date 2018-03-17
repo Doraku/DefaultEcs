@@ -53,7 +53,10 @@ namespace DefaultEcs.Technical
         {
             Actions = new SubscribeAction<T>[0];
 
-            World.ClearWorld += Clear;
+            lock (World.Locker)
+            {
+                World.ClearWorld += Clear;
+            }
         }
 
         #endregion
@@ -78,9 +81,7 @@ namespace DefaultEcs.Technical
             {
                 if (worldId >= Actions.Length)
                 {
-                    SubscribeAction<T>[] newActions = new SubscribeAction<T>[(worldId + 1) * 2];
-                    Array.Copy(Actions, newActions, Actions.Length);
-                    Actions = newActions;
+                    Helper.ResizeArray(ref Actions, (worldId + 1) * 2);
                 }
 
                 Actions[worldId] += action;

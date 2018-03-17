@@ -32,7 +32,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(1))
             {
-                world.AddComponentType<bool>(0);
+                world.SetComponentTypeMaximumCount<bool>(0);
 
                 Entity entity = world.CreateEntity();
 
@@ -45,7 +45,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(1))
             {
-                world.AddComponentType<bool>(1);
+                world.SetComponentTypeMaximumCount<bool>(1);
 
                 Entity entity = world.CreateEntity();
                 entity.Set(true);
@@ -63,22 +63,11 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Set_Should_throw_When_component_type_not_added_to_World()
-        {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
-
-                Check.ThatCode(() => entity.Set(true)).Throws<InvalidOperationException>();
-            }
-        }
-
-        [Fact]
         public void Set_Should_throw_When_max_number_of_component_reached()
         {
             using (World world = new World(1))
             {
-                world.AddComponentType<bool>(0);
+                world.SetComponentTypeMaximumCount<bool>(0);
                 Entity entity = world.CreateEntity();
 
                 Check.ThatCode(() => entity.Set(true)).Throws<InvalidOperationException>();
@@ -90,7 +79,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(1))
             {
-                world.AddComponentType<bool>(1);
+                world.SetComponentTypeMaximumCount<bool>(1);
                 Entity entity = world.CreateEntity();
 
                 entity.Set(true);
@@ -148,7 +137,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(2))
             {
-                world.AddComponentType<bool>(1);
+                world.SetComponentTypeMaximumCount<bool>(1);
 
                 Entity entity = world.CreateEntity();
                 Entity reference = world.CreateEntity();
@@ -162,7 +151,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(2))
             {
-                world.AddComponentType<bool>(1);
+                world.SetComponentTypeMaximumCount<bool>(1);
 
                 Entity entity = world.CreateEntity();
                 Entity reference = world.CreateEntity();
@@ -195,7 +184,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(1))
             {
-                world.AddComponentType<bool>(1);
+                world.SetComponentTypeMaximumCount<bool>(1);
 
                 Entity entity = world.CreateEntity();
 
@@ -214,7 +203,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(2))
             {
-                world.AddComponentType<bool>(1);
+                world.SetComponentTypeMaximumCount<bool>(1);
 
                 Entity entity = world.CreateEntity();
                 Entity reference = world.CreateEntity();
@@ -234,7 +223,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(3))
             {
-                world.AddComponentType<bool>(2);
+                world.SetComponentTypeMaximumCount<bool>(2);
 
                 Entity entity = world.CreateEntity();
                 Entity reference = world.CreateEntity();
@@ -258,7 +247,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(3))
             {
-                world.AddComponentType<bool>(1);
+                world.SetComponentTypeMaximumCount<bool>(1);
 
                 Entity entity = world.CreateEntity();
                 world.CreateEntity();
@@ -283,25 +272,18 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Get_Should_throw_When_component_type_not_added_to_World()
+        public void Get_Should_throw_When_Entity_does_not_have_component()
         {
             using (World world = new World(2))
             {
                 Entity entity = world.CreateEntity();
 
                 Check.ThatCode(() => entity.Get<bool>()).Throws<InvalidOperationException>();
-            }
-        }
 
-        [Fact]
-        public void Get_Should_throw_When_Entity_does_not_have_component()
-        {
-            using (World world = new World(2))
-            {
-                world.AddComponentType<bool>(0);
-                Entity entity = world.CreateEntity();
+                entity.Set(true);
+                entity.Remove<bool>();
 
-                Check.ThatCode(() => entity.Get<bool>()).Throws<IndexOutOfRangeException>();
+                Check.ThatCode(() => entity.Get<bool>()).Throws<InvalidOperationException>();
             }
         }
 
@@ -310,7 +292,6 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(2))
             {
-                world.AddComponentType<bool>(1);
                 Entity entity = world.CreateEntity();
 
                 entity.Set(true);
@@ -328,7 +309,6 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(2))
             {
-                world.AddComponentType<bool>(1);
                 Entity entity = world.CreateEntity();
                 Entity reference = world.CreateEntity();
 
@@ -371,7 +351,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(2))
             {
-                world.AddComponentType<bool>(1);
+                world.SetComponentTypeMaximumCount<bool>(1);
                 world.CreateEntity();
                 Entity deletedEntity = world.CreateEntity();
                 deletedEntity.Set(true);

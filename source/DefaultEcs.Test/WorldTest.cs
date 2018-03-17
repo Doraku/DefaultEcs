@@ -81,48 +81,48 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void AddComponentType_Should_return_same_World()
+        public void SetComponentTypeMaximumCount_Should_return_same_World()
         {
             using (World world = new World(0))
             {
-                Check.That(world.AddComponentType<bool>()).IsEqualTo(world);
+                Check.That(world.SetComponentTypeMaximumCount<bool>(0)).IsEqualTo(world);
             }
         }
 
         [Fact]
-        public void AddComponentType_Should_add()
+        public void SetComponentTypeMaximumCount_Should_add()
         {
             using (World world = new World(0))
             {
-                Check.ThatCode(() => world.AddComponentType<bool>(0)).DoesNotThrow();
+                Check.ThatCode(() => world.SetComponentTypeMaximumCount<bool>(0)).DoesNotThrow();
             }
         }
 
         [Fact]
-        public void AddComponentType_Should_throw_When_maxComponentCount_is_negative()
+        public void SetComponentTypeMaximumCount_Should_throw_When_maxComponentCount_is_negative()
         {
             using (World world = new World(0))
             {
-                Check.ThatCode(() => world.AddComponentType<bool>(-1)).Throws<ArgumentException>();
+                Check.ThatCode(() => world.SetComponentTypeMaximumCount<bool>(-1)).Throws<ArgumentException>();
             }
         }
 
         [Fact]
-        public void AddComponentType_Should_throw_When_already_added()
+        public void SetComponentTypeMaximumCount_Should_not_throw_When_already_added()
         {
             using (World world = new World(0))
             {
-                world.AddComponentType<bool>(0);
-                Check.ThatCode(() => world.AddComponentType<bool>(0)).Throws<InvalidOperationException>();
+                world.SetComponentTypeMaximumCount<bool>(0);
+                Check.ThatCode(() => world.SetComponentTypeMaximumCount<bool>(0)).DoesNotThrow();
             }
         }
 
         [Fact]
-        public void GetAllComponents_Should_throw_When_not_added()
+        public void GetAllComponents_Should_not_throw_When_not_added()
         {
             using (World world = new World(0))
             {
-                Check.ThatCode(() => world.GetAllComponents<bool>()).Throws<InvalidOperationException>();
+                Check.ThatCode(() => world.GetAllComponents<bool>()).DoesNotThrow();
             }
         }
 
@@ -131,7 +131,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(2))
             {
-                world.AddComponentType<int>(2);
+                world.SetComponentTypeMaximumCount<int>(2);
                 Entity entity = world.CreateEntity();
                 Entity entity2 = world.CreateEntity();
 

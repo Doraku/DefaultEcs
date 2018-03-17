@@ -55,17 +55,9 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        /// <exception cref="InvalidOperationException">The type of component <typeparamref name="T"/> has not been added to the current <see cref="EntitySetBuilder"/> <see cref="World"/> yet.</exception>
         public EntitySetBuilder With<T>()
         {
-            ComponentPool<T> pool = ComponentManager<T>.Pools[_world.WorldId];
-
-            if (pool == null)
-            {
-                throw new InvalidOperationException($"The type of component {nameof(T)} has not been added to the current EntitySetBuilder World yet");
-            }
-
-            _withFilter[pool.Flag] = true;
+            _withFilter[ComponentManager<T>.Flag] = true;
             _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.WithAdded));
             _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.WithRemoved));
 
@@ -77,17 +69,9 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        /// <exception cref="InvalidOperationException">The type of component <typeparamref name="T"/> has not been added to the current <see cref="EntitySetBuilder"/> <see cref="World"/> yet.</exception>
         public EntitySetBuilder Without<T>()
         {
-            ComponentPool<T> pool = ComponentManager<T>.Pools[_world.WorldId];
-
-            if (pool == null)
-            {
-                throw new InvalidOperationException($"The type of component {nameof(T)} has not been added to the current EntitySetBuilder World yet");
-            }
-
-            _withoutFilter[pool.Flag] = true;
+            _withoutFilter[ComponentManager<T>.Flag] = true;
             _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.WithoutAdded));
             _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.WithoutRemoved));
 

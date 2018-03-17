@@ -22,23 +22,27 @@ namespace DefaultEcs
     {
         #region Fields
 
-        private static readonly object _locker;
         private static readonly IntDispenser _worldIdDispenser;
 
+        internal static readonly object Locker;
+
         internal static ComponentEnum[][] EntityComponents;
+        internal static int[] MaxEntityCounts;
 
         internal static event Action<int> ClearWorld;
 
         private readonly IntDispenser _entityIdDispenser;
 
-        private ComponentFlag _nextFlag;
-
         internal readonly int WorldId;
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can create.
         /// </summary>
-        public readonly int MaxEntityCount;
+        public int MaxEntityCount => MaxEntityCounts[WorldId];
 
         #endregion
 
@@ -46,9 +50,10 @@ namespace DefaultEcs
 
         static World()
         {
-            _locker = new object();
             _worldIdDispenser = new IntDispenser(0);
             EntityComponents = new ComponentEnum[0][];
+            MaxEntityCounts = new int[0];
+            Locker = new object();
         }
 
         /// <summary>
@@ -58,21 +63,18 @@ namespace DefaultEcs
         public World(int maxEntityCount)
         {
             _entityIdDispenser = new IntDispenser(-1);
-            MaxEntityCount = maxEntityCount;
+            WorldId = _worldIdDispenser.GetFreeInt();
 
-            lock (_locker)
+            lock (typeof(ComponentEnum))
             {
-                WorldId = _worldIdDispenser.GetFreeInt();
                 if (WorldId >= EntityComponents.Length)
                 {
-                    ComponentEnum[][] newEntityComponents = new ComponentEnum[(WorldId + 1) * 2][];
-                    Array.Copy(EntityComponents, newEntityComponents, EntityComponents.Length);
-                    EntityComponents = newEntityComponents;
+                    Helper.ResizeArray(ref EntityComponents, (WorldId + 1) * 2);
+                    Helper.ResizeArray(ref MaxEntityCounts, (WorldId + 1) * 2);
                 }
-                EntityComponents[WorldId] = new ComponentEnum[MaxEntityCount];
+                EntityComponents[WorldId] = new ComponentEnum[maxEntityCount];
+                MaxEntityCounts[WorldId] = maxEntityCount;
             }
-
-            _nextFlag = default;
 
             Subscribe<EntityDisposedMessage>(On);
         }
@@ -135,68 +137,33 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Sets up the current <see cref="World"/> to handle component of type <typeparamref name="T"/>.
+        /// Sets up the current <see cref="World"/> to handle component of type <typeparamref name="T"/> with a different maximum count than <see cref="MaxEntityCount"/>.
+        /// If the type of component is already handled by the current <see cref="World"/>, does nothing.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
         /// <param name="maxComponentCount">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
         /// <returns>The current <see cref="World"/>.</returns>
         /// <exception cref="ArgumentException"><paramref name="maxComponentCount"/> can not be negative.</exception>
-        /// <exception cref="InvalidOperationException">This component type has already been added.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public World AddComponentType<T>(int maxComponentCount)
+        public World SetComponentTypeMaximumCount<T>(int maxComponentCount)
         {
             if (maxComponentCount < 0)
             {
                 throw new ArgumentException("Argument can not be negative", nameof(maxComponentCount));
             }
 
-            ComponentManager<T>.Add(WorldId);
-
-            ref ComponentPool<T> pool = ref ComponentManager<T>.Pools[WorldId];
-
-            lock (typeof(ComponentManager<T>))
-            {
-                if (pool != null)
-                {
-                    throw new InvalidOperationException("This component type has already been added");
-                }
-
-                pool = new ComponentPool<T>(_nextFlag, MaxEntityCount, maxComponentCount);
-            }
-
-            _nextFlag = _nextFlag.GetNextFlag();
-            Subscribe<EntityDisposedMessage>(pool.On);
+            ComponentManager<T>.GetOrCreate(WorldId, maxComponentCount);
 
             return this;
         }
-
-        /// <summary>
-        /// Sets up the current <see cref="World"/> to handle component of type <typeparamref name="T"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of component.</typeparam>
-        /// <returns>The current <see cref="World"/>.</returns>
-        /// <exception cref="InvalidOperationException">This component type has already been added.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public World AddComponentType<T>() => AddComponentType<T>(MaxEntityCount);
 
         /// <summary>
         /// Gets all the component of a given type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
         /// <returns>A <see cref="Span{T}"/> pointing directly to the component values to edit them.</returns>
-        /// <exception cref="InvalidOperationException">The type of component <typeparamref name="T"/> has not been added to the current <see cref="World"/> yet.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> GetAllComponents<T>()
-        {
-            ComponentPool<T> pool = ComponentManager<T>.Pools[WorldId];
-
-            if (pool == null)
-            {
-                throw new InvalidOperationException($"This type of component {nameof(T)} has not been added to the current World yet");
-            }
-
-            return pool.GetAll();
-        }
+        public Span<T> GetAllComponents<T>() => ComponentManager<T>.GetOrCreate(WorldId).GetAll();
 
         /// <summary>
         /// Gets an <see cref="EntitySetBuilder"/> to create a subset of <see cref="Entity"/> of the current <see cref="World"/>.
@@ -214,10 +181,11 @@ namespace DefaultEcs
         /// </summary>
         public void Dispose()
         {
-            lock (_locker)
+            lock (typeof(ComponentEnum))
             {
                 EntityComponents[WorldId] = null;
             }
+
             ClearWorld?.Invoke(WorldId);
             _worldIdDispenser.ReleaseInt(WorldId);
 
