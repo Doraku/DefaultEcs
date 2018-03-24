@@ -18,7 +18,7 @@ namespace DefaultEcs
     /// <summary>
     /// Represents a item use to create and manage <see cref="Entity"/> objects.
     /// </summary>
-    public sealed partial class World : IDisposable
+    public sealed class World : IDisposable
     {
         #region Fields
 
@@ -79,7 +79,11 @@ namespace DefaultEcs
 
         #region Callbacks
 
-        private void On(in EntityDisposedMessage message) => _entityIdDispenser.ReleaseInt(message.Entity.EntityId);
+        private void On(in EntityDisposedMessage message)
+        {
+            EntityComponents[WorldId][message.Entity.EntityId].Clear();
+            _entityIdDispenser.ReleaseInt(message.Entity.EntityId);
+        }
 
         #endregion
 

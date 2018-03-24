@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace DefaultEcs.Technical
 {
@@ -80,6 +81,27 @@ namespace DefaultEcs.Technical
             }
 
             return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ComponentEnum Copy()
+        {
+            ComponentEnum copy = default;
+            copy._bitArray = _bitArray?.ToArray();
+
+            return copy;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Clear()
+        {
+            if (!IsNull)
+            {
+                for (int i = 0; i < _bitArray.Length; ++i)
+                {
+                    _bitArray[i] = 0;
+                }
+            }
         }
 
         #endregion

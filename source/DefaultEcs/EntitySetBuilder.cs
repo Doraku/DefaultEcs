@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
 
@@ -41,13 +42,15 @@ namespace DefaultEcs
         /// <returns>The <see cref="EntitySet"/>.</returns>
         public EntitySet Build()
         {
-            if (_subscriptions.Count == 1
+            List<Func<EntitySet, World, IDisposable>> subscriptions = _subscriptions.ToList();
+
+            if (subscriptions.Count == 1
                 || (_withFilter.IsNull && !_withoutFilter.IsNull))
             {
-                _subscriptions.Add((s, w) => w.Subscribe((in EntityCreatedMessage m) => s.Add(m.Entity)));
+                subscriptions.Add((s, w) => w.Subscribe((in EntityCreatedMessage m) => s.Add(m.Entity)));
             }
 
-            return new EntitySet(_world, _withFilter, _withoutFilter, _subscriptions);
+            return new EntitySet(_world, _withFilter.Copy(), _withoutFilter.Copy(), subscriptions);
         }
 
         /// <summary>
