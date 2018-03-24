@@ -81,7 +81,7 @@ namespace DefaultEcs.Technical
             {
                 if (worldId >= Actions.Length)
                 {
-                    Helper.ResizeArray(ref Actions, (worldId + 1) * 2);
+                    Array.Resize(ref Actions, (worldId + 1) * 2);
                 }
 
                 Actions[worldId] += action;

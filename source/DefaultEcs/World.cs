@@ -67,7 +67,7 @@ namespace DefaultEcs
             {
                 if (WorldId >= EntityComponents.Length)
                 {
-                    Helper.ResizeArray(ref EntityComponents, (WorldId + 1) * 2);
+                    Array.Resize(ref EntityComponents, (WorldId + 1) * 2);
                 }
                 EntityComponents[WorldId] = new ComponentEnum[maxEntityCount];
             }

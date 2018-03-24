@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs.Technical
@@ -49,13 +50,13 @@ namespace DefaultEcs.Technical
             {
                 if (worldId >= Pools.Length)
                 {
-                    Helper.ResizeArray(ref Pools, (worldId + 1) * 2);
+                    Array.Resize(ref Pools, (worldId + 1) * 2);
                 }
 
                 ref ComponentPool<T> pool = ref Pools[worldId];
                 if (pool == null)
                 {
-                    pool = new ComponentPool<T>(Flag, maxEntityCount, maxComponentCount);
+                    pool = new ComponentPool<T>(maxEntityCount, maxComponentCount);
                     Publisher<EntityDisposedMessage>.Subscribe(worldId, pool.On);
                 }
 

@@ -16,15 +16,12 @@ namespace DefaultEcs.Technical
 
         private int _lastIndex;
 
-        public readonly ComponentFlag Flag;
-
         #endregion
 
         #region Initialisation
 
-        public ComponentPool(ComponentFlag flag, int maxEntityCount, int maxComponentCount)
+        public ComponentPool(int maxEntityCount, int maxComponentCount)
         {
-            Flag = flag;
             _mapping = Enumerable.Repeat(-1, maxEntityCount).ToArray();
             _refCount = new int[maxEntityCount];
             _reverseMapping = new int[maxComponentCount];
@@ -73,11 +70,7 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool SetSameAs(int entityId, int refId)
         {
-            ref int refIndex = ref _mapping[refId];
-            if (refIndex == -1)
-            {
-                throw new InvalidOperationException($"Reference Entity does not have a component of type {nameof(T)}");
-            }
+            int refIndex = _mapping[refId];
 
             bool isNew = true;
             ref int index = ref _mapping[entityId];
