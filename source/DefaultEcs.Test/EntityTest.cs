@@ -356,6 +356,8 @@ namespace DefaultEcs.Test
                 Entity deletedEntity = world.CreateEntity();
                 deletedEntity.Set(true);
 
+                Check.That(deletedEntity.Has<bool>()).IsTrue();
+
                 deletedEntity.Dispose();
                 Check.That(deletedEntity.Has<bool>()).IsFalse();
 

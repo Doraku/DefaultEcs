@@ -1,4 +1,6 @@
 ﻿/source/*/obj
+/source/Sample/*/bin
+/source/Sample/*/obj
 /source/*/bin
 /source/.vs
 /source/*/*.vspscc
@@ -6,3 +8,4 @@
 /source/*/*.user
 *.nupkg
 /source/DefaultEcs.Benchmark/BenchmarkDotNet.Artifacts
+/source/Sample/resource

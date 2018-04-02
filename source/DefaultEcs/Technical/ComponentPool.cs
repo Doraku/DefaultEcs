@@ -110,6 +110,8 @@ namespace DefaultEcs.Technical
                 {
                     int lastId = _reverseMapping[_lastIndex];
                     _items[index] = _items[_lastIndex];
+                    _refCount[index] = _refCount[_lastIndex];
+                    _refCount[_lastIndex] = 0;
                     _mapping[lastId] = index;
                     _reverseMapping[index] = lastId;
                 }
