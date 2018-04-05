@@ -10,11 +10,10 @@ namespace DefaultEcs.Technical
         #region Fields
 
         private readonly int[] _mapping;
-        private readonly int[] _refCount;
-        private readonly int[] _reverseMapping;
-        private readonly T[] _items;
+        private readonly ComponentLink[] _links;
+        private readonly T[] _components;
 
-        private int _lastIndex;
+        private int _lastComponentIndex;
 
         #endregion
 
@@ -23,11 +22,10 @@ namespace DefaultEcs.Technical
         public ComponentPool(int maxEntityCount, int maxComponentCount)
         {
             _mapping = Enumerable.Repeat(-1, maxEntityCount).ToArray();
-            _refCount = new int[maxEntityCount];
-            _reverseMapping = new int[maxComponentCount];
-            _items = new T[maxComponentCount];
+            _links = new ComponentLink[maxComponentCount];
+            _components = new T[maxComponentCount];
 
-            _lastIndex = -1;
+            _lastComponentIndex = -1;
         }
 
         #endregion
@@ -44,39 +42,38 @@ namespace DefaultEcs.Technical
         public bool Has(int entityId) => _mapping[entityId] != -1;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Set(int entityId, in T item)
+        public bool Set(int entityId, in T component)
         {
-            ref int index = ref _mapping[entityId];
-            if (index != -1)
+            ref int componentIndex = ref _mapping[entityId];
+            if (componentIndex != -1)
             {
-                _items[index] = item;
+                _components[componentIndex] = component;
 
                 return false;
             }
 
-            if (_lastIndex == _items.Length - 1)
+            if (_lastComponentIndex == _components.Length - 1)
             {
                 throw new InvalidOperationException($"Max number of component of type {nameof(T)} reached");
             }
 
-            _items[++_lastIndex] = item;
-            index = _lastIndex;
-            _reverseMapping[_lastIndex] = entityId;
-            ++_refCount[_lastIndex];
+            _components[++_lastComponentIndex] = component;
+            componentIndex = _lastComponentIndex;
+            _links[_lastComponentIndex] = new ComponentLink(entityId);
 
             return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool SetSameAs(int entityId, int refId)
+        public bool SetSameAs(int entityId, int referenceEntityId)
         {
-            int refIndex = _mapping[refId];
+            int referenceComponentIndex = _mapping[referenceEntityId];
 
             bool isNew = true;
-            ref int index = ref _mapping[entityId];
-            if (index != -1)
+            ref int componentIndex = ref _mapping[entityId];
+            if (componentIndex != -1)
             {
-                if (index == refIndex)
+                if (componentIndex == referenceComponentIndex)
                 {
                     return false;
                 }
@@ -85,12 +82,8 @@ namespace DefaultEcs.Technical
                 isNew = false;
             }
 
-            if (_reverseMapping[refIndex] == refId)
-            {
-                ++_refCount[refIndex];
-            }
-
-            index = refIndex;
+            ++_links[referenceComponentIndex].ReferenceCount;
+            componentIndex = referenceComponentIndex;
 
             return isNew;
         }
@@ -98,40 +91,39 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Remove(int entityId)
         {
-            ref int index = ref _mapping[entityId];
-            if (index == -1)
+            ref int componentIndex = ref _mapping[entityId];
+            if (componentIndex == -1)
             {
                 return false;
             }
 
-            if (--_refCount[index] == 0)
+            ref ComponentLink link = ref _links[componentIndex];
+            if (--link.ReferenceCount == 0)
             {
-                if (index != _lastIndex)
+                if (componentIndex != _lastComponentIndex)
                 {
-                    int lastId = _reverseMapping[_lastIndex];
-                    _items[index] = _items[_lastIndex];
-                    _refCount[index] = _refCount[_lastIndex];
-                    _refCount[_lastIndex] = 0;
-                    _mapping[lastId] = index;
-                    _reverseMapping[index] = lastId;
+                    int lastLinkEntityId = _links[_lastComponentIndex].EntityId;
+                    _links[componentIndex] = _links[_lastComponentIndex];
+                    _mapping[lastLinkEntityId] = componentIndex;
+                    _components[componentIndex] = _components[_lastComponentIndex];
                 }
 
-                --_lastIndex;
+                --_lastComponentIndex;
             }
-            else
+            else if (link.EntityId == entityId)
             {
-                int refIndex = index;
+                int linkIndex = componentIndex;
                 for (int i = 0; i < _mapping.Length; ++i)
                 {
-                    if (_mapping[i] == refIndex && i != entityId)
+                    if (_mapping[i] == linkIndex && i != entityId)
                     {
-                        _reverseMapping[index] = i;
+                        link.EntityId = i;
                         break;
                     }
                 }
             }
 
-            index = -1;
+            componentIndex = -1;
 
             return true;
         }
@@ -139,17 +131,17 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get(int entityId)
         {
-            int index = _mapping[entityId];
-            if (index == -1 || index > _lastIndex)
+            int componentIndex = _mapping[entityId];
+            if (componentIndex == -1)
             {
                 throw new InvalidOperationException($"Entity does not have a component of type {nameof(T)}");
             }
 
-            return ref _items[_mapping[entityId]];
+            return ref _components[componentIndex];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> GetAll() => new Span<T>(_items, 0, _lastIndex + 1);
+        public Span<T> GetAll() => new Span<T>(_components, 0, _lastComponentIndex + 1);
 
         #endregion
     }
