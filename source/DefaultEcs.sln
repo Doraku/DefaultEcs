@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultBrick", "Sample\Defa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{DC400F20-A383-4C0F-83D4-F19B4F45191A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultSlap", "Sample\DefaultSlap\DefaultSlap.csproj", "{95F4D6A0-FD01-4AA8-B603-5811C9FFAEEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,12 +47,17 @@ Global
 		{6D2BA0F6-177E-454B-8AD7-42AF0AD539B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D2BA0F6-177E-454B-8AD7-42AF0AD539B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D2BA0F6-177E-454B-8AD7-42AF0AD539B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95F4D6A0-FD01-4AA8-B603-5811C9FFAEEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95F4D6A0-FD01-4AA8-B603-5811C9FFAEEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95F4D6A0-FD01-4AA8-B603-5811C9FFAEEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95F4D6A0-FD01-4AA8-B603-5811C9FFAEEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6D2BA0F6-177E-454B-8AD7-42AF0AD539B7} = {DC400F20-A383-4C0F-83D4-F19B4F45191A}
+		{95F4D6A0-FD01-4AA8-B603-5811C9FFAEEA} = {DC400F20-A383-4C0F-83D4-F19B4F45191A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D44A5DBD-5CAD-4E51-BCC2-9AFAD5486CAD}

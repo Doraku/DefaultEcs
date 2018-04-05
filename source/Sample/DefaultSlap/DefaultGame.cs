@@ -1,13 +1,13 @@
 ﻿using System.IO;
-using DefaultBrick.Level;
-using DefaultBrick.Message;
-using DefaultBrick.System;
 using DefaultEcs;
+using DefaultSlap.Component;
+using DefaultSlap.Message;
+using DefaultSlap.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace DefaultBrick
+namespace DefaultSlap
 {
     public class DefaultGame : Game
     {
@@ -16,7 +16,7 @@ namespace DefaultBrick
         private readonly GraphicsDeviceManager _deviceManager;
         private readonly SpriteBatch _batch;
         private readonly Texture2D _square;
-        private readonly SoundEffect _breakSound;
+        private readonly SoundEffect _slapSound;
         private readonly SoundEffect _bounceSound;
         private readonly ISystem[] _systems;
 
@@ -44,39 +44,42 @@ namespace DefaultBrick
             {
                 _square = Texture2D.FromStream(GraphicsDevice, stream);
             }
-            _breakSound = Content.Load<SoundEffect>("Slap");
+            _slapSound = Content.Load<SoundEffect>("Slap");
             _bounceSound = Content.Load<SoundEffect>("Jump");
 
             _world = new World(1000);
 
+            _world.SetComponentTypeMaximumCount<PlayerState>(1);
+
             _systems = new ISystem[]
             {
-                new GameSystem(_world),
                 new PlayerSystem(Window, _world),
-                new BallToBarSystem(Window, _world),
-                new VelocitySystem(_world),
-                new CollisionSystem(_world),
-                new BallBoundSystem(_world),
+                new HitSystem(_world),
+                new GameSystem(_world),
+                new AISystem(_world),
                 new PositionSystem(_world),
                 new DrawSystem(_batch, _square, _world)
             };
 
-            _world.Subscribe<BrickBrokenMessage>(On);
-            _world.Subscribe<BarBounceMessage>(On);
+            Entity player = _world.CreateEntity();
+            player.Set<PlayerState>(default);
+            player.Set<Position>(default);
+            player.Set(new DrawInfo(new Point(100, 100), Color.Yellow, 1));
 
-            Level1.CreatePlayer(_world);
+            _world.Subscribe<SlapMessage>(On);
+            _world.Subscribe<PlayerHitMessage>(On);
         }
 
         #endregion
 
         #region Callbacks
 
-        private void On(in BrickBrokenMessage message)
+        private void On(in SlapMessage message)
         {
-            _breakSound.Play();
+            _slapSound.Play();
         }
 
-        private void On(in BarBounceMessage message)
+        private void On(in PlayerHitMessage message)
         {
             _bounceSound.Play();
         }
@@ -87,7 +90,7 @@ namespace DefaultBrick
 
         protected override void Update(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.White);
 
             float elaspedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             foreach (ISystem system in _systems)
@@ -101,7 +104,7 @@ namespace DefaultBrick
         protected override void Dispose(bool disposing)
         {
             _world.Dispose();
-            _breakSound.Dispose();
+            _slapSound.Dispose();
             _bounceSound.Dispose();
             _square.Dispose();
             _batch.Dispose();
