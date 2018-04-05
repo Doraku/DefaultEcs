@@ -14,7 +14,7 @@
     
     <Description>DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.</Description>
 
-    <Version>0.3.0-alpha</Version>
+    <Version>0.3.1-alpha</Version>
 
     <Authors>Paillat Laszlo</Authors>
 
@@ -35,6 +35,7 @@
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
     <DocumentationFile>bin\DefaultEcs.xml</DocumentationFile>
   </PropertyGroup>
+
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
     <PackageReference Include="Vsxmd" Version="1.2.0">
       <PrivateAssets>all</PrivateAssets>
