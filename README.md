@@ -76,3 +76,12 @@ world.Subscribe<bool>(On);
 
 world.Publish(true);
 ```
+
+## Sample
+Some sample projects are available to give a better picture on how to use DefaultEcs. Those exemples were done relatively fast so they are probably not the best representation of the Entity Component System framework application.
+
+[DefaultBrick](https://github.com/Doraku/DefaultEcs/tree/master/source/Sample/DefaultBrick)
+Basic breakout clone.
+
+[DefaultSlap](https://github.com/Doraku/DefaultEcs/tree/master/source/Sample/DefaultSlap)
+Basic fly swatter clone.
