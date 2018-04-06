@@ -38,6 +38,8 @@ namespace DefaultEcs
 
         #region Properties
 
+        internal int LastEntityId => _entityIdDispenser.LastInt;
+
         /// <summary>
         /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can create.
         /// </summary>

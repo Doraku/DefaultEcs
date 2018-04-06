@@ -1,30 +1,10 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-
-namespace DefaultEcs
+﻿namespace DefaultEcs
 {
     /// <summary>
     /// Provides a set of static methods for getting data from an <see cref="EntitySet"/>.
     /// </summary>
     public static class EntitySetExtension
     {
-        /// <summary>
-        /// Copies <see cref="Entity"/> of an <see cref="EntitySet"/> to a destination <see cref="Span{Entity}"/>.
-        /// Passed parameter destination should be created with the correct length.
-        /// </summary>
-        /// <param name="entitySet">The <see cref="EntitySet"/> from which to get <see cref="Entity"/>.</param>
-        /// <param name="destination">The <see cref="Span{Entity}"/> on which to copy <see cref="Entity"/>.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void CopyEntitiesTo(this EntitySet entitySet, Span<Entity> destination) => entitySet.GetEntities().CopyTo(destination);
-
-        /// <summary>
-        /// Copies <see cref="Entity"/> of an <see cref="EntitySet"/> to an <see cref="Array"/>.
-        /// </summary>
-        /// <param name="entitySet">The <see cref="EntitySet"/> from which to get <see cref="Entity"/>.</param>
-        /// <returns>The <see cref="Array"/> with all the <see cref="Entity"/>.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Entity[] CopyEntities(this EntitySet entitySet) => entitySet.GetEntities().ToArray();
-
         //public static IEnumerable<(Entity, T)> CopyWithComponents<T>(this EntitySet entitySet)
         //{
         //    (Entity, T)[] items = new(Entity, T)[entitySet.Count];
@@ -64,6 +44,54 @@ namespace DefaultEcs
         //    }
 
         //    return items;
+        //}
+
+        //public static void CopyComponentsTo<T>(this EntitySet entitySet, Span<T> destination)
+        //    where T : struct
+        //{
+        //    Span<int> ids = stackalloc int[destination.Length];
+        //    ComponentPool<T> pool = ComponentManager<T>.GetOrCreate(entitySet.WorldId);
+
+        //    //ReadOnlySpan<Entity> entities = entitySet.GetEntities();
+        //    //for (int i = 0; i < ids.Length; ++i)
+        //    //{
+        //    //    ids[i] = entities[i].EntityId;
+        //    //}
+        //    //ReadOnlySpan<int> componentIds = pool.Mapping;
+        //    //for (int i = 0; i < ids.Length; ++i)
+        //    //{
+        //    //    ids[i] = componentIds[ids[i]];
+        //    //}
+        //    //ReadOnlySpan<T> components = pool.Items.AsReadOnlySpan();
+        //    //for (int i = 0; i < ids.Length; ++i)
+        //    //{
+        //    //    destination[i] = components[ids[i]];
+        //    //}
+        //    unsafe
+        //    {
+        //        //fixed (Entity* entityP = entitySet.Entities)
+        //        //{
+        //        //    Entity* entity = entityP;
+        //        //    for (int i = 0; i < ids.Length; ++i)
+        //        //    {
+        //        //        ids[i] = (*entity).EntityId;
+        //        //        ++entity;
+        //        //    }
+        //        //}
+        //        fixed (int* componentIds = pool.Mapping)
+        //        {
+        //            for (int i = 0; i < ids.Length; ++i)
+        //            {
+        //                ids[i] = *(componentIds + entitySet.Entities[i].EntityId);
+        //            }
+        //        }
+
+        //        ReadOnlySpan<T> components = pool.Items.AsReadOnlySpan();
+        //        for (int i = 0; i < ids.Length; ++i)
+        //        {
+        //            destination[i] = components[ids[i]];
+        //        }
+        //    }
         //}
 
         //public static IEnumerable<(Entity, T1, T2, T3)> CopyWithComponents<T1, T2, T3>(this EntitySet entitySet)

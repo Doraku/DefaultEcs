@@ -5,7 +5,7 @@ using Xunit;
 
 namespace DefaultEcs.Test
 {
-    public class EntitySetExtensionTest
+    public class EntitySetTest
     {
         #region Tests
 
@@ -46,6 +46,27 @@ namespace DefaultEcs.Test
                 };
 
                 Check.That(set.CopyEntities()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
+        public void Should_return_previously_created_Entity()
+        {
+            using (World world = new World(4))
+            {
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                using (EntitySet set = world.GetEntities().Build())
+                {
+
+                    Check.That(set.CopyEntities()).ContainsExactly(entities);
+                }
             }
         }
 

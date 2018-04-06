@@ -44,6 +44,16 @@ namespace DefaultEcs
             _subscriptions = subscriptions.Select(s => s(this, world)).ToArray();
 
             _lastIndex = -1;
+
+            for (int i = 0; i <= world.LastEntityId; ++i)
+            {
+                ref ComponentEnum components = ref World.EntityComponents[world.WorldId][i];
+                if (components.Contains(_withFilter)
+                    && components.DoNotContains(_withoutFilter))
+                {
+                    Add(new Entity(world.WorldId, i));
+                }
+            }
         }
 
         #endregion
@@ -107,6 +117,21 @@ namespace DefaultEcs
         /// <returns>A <see cref="ReadOnlySpan{T}"/> of the <see cref="Entity"/> contained in the current <see cref="EntitySet"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<Entity> GetEntities() => new ReadOnlySpan<Entity>(_entities, 0, Count);
+
+        /// <summary>
+        /// Copies <see cref="Entity"/> of current <see cref="EntitySet"/> to a destination <see cref="Span{Entity}"/>.
+        /// Passed parameter destination should be created with the correct length.
+        /// </summary>
+        /// <param name="destination">The <see cref="Span{Entity}"/> on which to copy <see cref="Entity"/>.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CopyEntitiesTo(Span<Entity> destination) => GetEntities().CopyTo(destination);
+
+        /// <summary>
+        /// Copies <see cref="Entity"/> of current <see cref="EntitySet"/> to an <see cref="Array"/>.
+        /// </summary>
+        /// <returns>The <see cref="Array"/> with all the <see cref="Entity"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Entity[] CopyEntities() => GetEntities().ToArray();
 
         #endregion
 
