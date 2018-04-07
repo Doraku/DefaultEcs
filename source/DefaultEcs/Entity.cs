@@ -62,7 +62,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="WorldId"/>.</exception>
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set<T>(in T component)
+        public void Set<T>(in T component = default)
         {
             ThrowIfNull();
 
