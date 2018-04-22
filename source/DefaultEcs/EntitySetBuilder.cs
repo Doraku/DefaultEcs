@@ -28,7 +28,7 @@ namespace DefaultEcs
             _world = world;
             _subscriptions = new List<Func<EntitySet, World, IDisposable>>
             {
-                (s, w) => w.Subscribe((in EntityDisposedMessage m) => s.Remove(m.Entity))
+                (s, w) => w.Subscribe<EntityDisposedMessage>(s.Disposed)
             };
         }
 
@@ -47,7 +47,7 @@ namespace DefaultEcs
             if (subscriptions.Count == 1
                 || (_withFilter.IsNull && !_withoutFilter.IsNull))
             {
-                subscriptions.Add((s, w) => w.Subscribe((in EntityCreatedMessage m) => s.Add(m.Entity)));
+                subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Created));
             }
 
             return new EntitySet(_world, _withFilter.Copy(), _withoutFilter.Copy(), subscriptions);

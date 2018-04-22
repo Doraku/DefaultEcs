@@ -61,7 +61,7 @@ namespace DefaultEcs
         #region Methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Add(Entity item)
+        private void Add(Entity item)
         {
             ref int index = ref _mapping[item.EntityId];
             if (index == -1)
@@ -72,7 +72,7 @@ namespace DefaultEcs
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Remove(Entity item)
+        private void Remove(Entity item)
         {
             ref int index = ref _mapping[item.EntityId];
             if (index != -1)
@@ -87,6 +87,16 @@ namespace DefaultEcs
                 --_lastIndex;
                 index = -1;
             }
+        }
+
+        internal void Created(in EntityCreatedMessage message)
+        {
+            Add(message.Entity);
+        }
+
+        internal void Disposed(in EntityDisposedMessage message)
+        {
+            Remove(message.Entity);
         }
 
         internal void WithAdded<T>(in ComponentAddedMessage<T> message)
