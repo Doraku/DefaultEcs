@@ -102,10 +102,23 @@ namespace DefaultEcs.Technical
             {
                 if (componentIndex != _lastComponentIndex)
                 {
-                    int lastLinkEntityId = _links[_lastComponentIndex].EntityId;
-                    _links[componentIndex] = _links[_lastComponentIndex];
-                    _mapping[lastLinkEntityId] = componentIndex;
+                    ComponentLink lastLink = _links[_lastComponentIndex];
+                    _links[componentIndex] = lastLink;
                     _components[componentIndex] = _components[_lastComponentIndex];
+                    if (lastLink.ReferenceCount == 1)
+                    {
+                        _mapping[lastLink.EntityId] = componentIndex;
+                    }
+                    else
+                    {
+                        for (int i = 0; i < _mapping.Length; ++i)
+                        {
+                            if (_mapping[i] == _lastComponentIndex)
+                            {
+                                _mapping[i] = componentIndex;
+                            }
+                        }
+                    }
                 }
 
                 --_lastComponentIndex;
