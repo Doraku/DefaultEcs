@@ -1,32 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
+  <PropertyGroup Label="Compilation">
     <LangVersion>latest</LangVersion>
     <TargetFrameworks>
       netstandard1.1;
       netstandard2.0;
     </TargetFrameworks>
-    <DefineConstants></DefineConstants>
     <Optimize>true</Optimize>
     <Configurations>Debug;Release</Configurations>
-
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
-    
-    <Description>DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.</Description>
+  </PropertyGroup>
 
-    <Version>0.3.1-alpha</Version>
-
+  <PropertyGroup Label="Package">
     <Authors>Paillat Laszlo</Authors>
-
+    <PackageId>DefaultEcs</PackageId>
+    <Description>DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.</Description>
+    <PackageIconUrl>https://github.com/Doraku/DefaultEcs/raw/master/logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Doraku/DefaultEcs/blob/master/LICENSE.md</PackageLicenseUrl>
-    <PackageId>DefaultEcs</PackageId>
     <PackageTags>
       gamedev game-development game-engine ecs entity-component-system
     </PackageTags>
-    <PackageIconUrl>https://github.com/Doraku/DefaultEcs/raw/master/logo.png</PackageIconUrl>
-  </PropertyGroup>
 
+    <Version>0.3.2-alpha</Version>
+    <PackageReleaseNotes>
+      relaxed the need to create EntitySet before creating Entity
+      added default value to Entity.Set
+
+      fixed leak with EntitySetBuilder
+      fixed Entity.Remove for multiple entity with the same component
+    </PackageReleaseNotes>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG</DefineConstants>
@@ -35,7 +40,6 @@
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
     <DocumentationFile>bin\DefaultEcs.xml</DocumentationFile>
   </PropertyGroup>
-
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
     <PackageReference Include="Vsxmd" Version="1.2.0">
       <PrivateAssets>all</PrivateAssets>
@@ -47,6 +51,6 @@
   </ItemGroup>-->
   
   <ItemGroup>
-    <PackageReference Include="System.Memory" Version="4.5.0-preview1-26216-02" />
+    <PackageReference Include="System.Memory" Version="4.5.0-preview2-26406-04" />
   </ItemGroup>
 </Project>

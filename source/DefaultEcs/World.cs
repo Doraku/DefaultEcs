@@ -60,8 +60,14 @@ namespace DefaultEcs
         /// Initializes a new instance of the <see cref="World"/> class.
         /// </summary>
         /// <param name="maxEntityCount">The maximum number of <see cref="Entity"/> that can exist in this <see cref="World"/>.</param>
+        /// <exception cref="ArgumentException"><paramref name="maxEntityCount"/> cannot be negative.</exception>
         public World(int maxEntityCount)
         {
+            if (maxEntityCount < 0)
+            {
+                throw new ArgumentException("Argument cannot be negative", nameof(maxEntityCount));
+            }
+
             _entityIdDispenser = new IntDispenser(-1);
             WorldId = _worldIdDispenser.GetFreeInt();
 
@@ -145,13 +151,13 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of component.</typeparam>
         /// <param name="maxComponentCount">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
         /// <returns>The current <see cref="World"/>.</returns>
-        /// <exception cref="ArgumentException"><paramref name="maxComponentCount"/> can not be negative.</exception>
+        /// <exception cref="ArgumentException"><paramref name="maxComponentCount"/> cannot be negative.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public World SetComponentTypeMaximumCount<T>(int maxComponentCount)
         {
             if (maxComponentCount < 0)
             {
-                throw new ArgumentException("Argument can not be negative", nameof(maxComponentCount));
+                throw new ArgumentException("Argument cannot be negative", nameof(maxComponentCount));
             }
 
             ComponentManager<T>.GetOrCreate(WorldId, maxComponentCount);

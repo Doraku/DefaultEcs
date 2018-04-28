@@ -63,8 +63,6 @@ EntitySet set = world.GetEntities().Without<Example>().Build();
 EntitySet set = world.GetEntities().With<Example>().With<int>().Build();
 ```
 
-EntitySet should be created before entities are instanced.
-
 ## Message
 It is possible to send and receive message transiting in a World.
 ```C#
