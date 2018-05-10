@@ -1,15 +1,25 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="MSBuild.Sdk.Extras/1.2.2">
   <PropertyGroup Label="Compilation">
     <LangVersion>latest</LangVersion>
     <TargetFrameworks>
       netstandard1.1;
       netstandard2.0;
+      MonoAndroid71;
     </TargetFrameworks>
     <Optimize>true</Optimize>
     <Configurations>Debug;Release</Configurations>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+
+  <PropertyGroup Label="Debug" Condition="'$(Configuration)'=='Debug'">
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Label="Reference">
+    <PackageReference Include="System.Memory" Version="4.5.0-rc1" />
+  </ItemGroup>
 
   <PropertyGroup Label="Package">
     <Authors>Paillat Laszlo</Authors>
@@ -22,35 +32,19 @@
       gamedev game-development game-engine ecs entity-component-system
     </PackageTags>
 
-    <Version>0.3.2-alpha</Version>
+    <Version>0.3.3-alpha</Version>
     <PackageReleaseNotes>
-      relaxed the need to create EntitySet before creating Entity
-      added default value to Entity.Set
-
-      fixed leak with EntitySetBuilder
-      fixed Entity.Remove for multiple entity with the same component
     </PackageReleaseNotes>
   </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG</DefineConstants>
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
+  <PropertyGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
     <DocumentationFile>bin\DefaultEcs.xml</DocumentationFile>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="Vsxmd" Version="1.2.0">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+  <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
+    <PackageReference Include="Vsxmd" Version="1.2.0" PrivateAssets="All" />
   </ItemGroup>
 
   <!--<ItemGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>-->
-  
-  <ItemGroup>
-    <PackageReference Include="System.Memory" Version="4.5.0-preview2-26406-04" />
-  </ItemGroup>
 </Project>
