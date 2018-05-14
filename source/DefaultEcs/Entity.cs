@@ -40,17 +40,18 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Determines whether the current <see cref="Entity"/> has a component of type <typeparamref name="T"/>.
+        /// Returns whether the current <see cref="Entity"/> has a component of type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="WorldId"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has<T>()
+        //where T : unmanaged
         {
             ThrowIfNull();
 
-            return (WorldId < ComponentManager<T>.Pools.Length ? ComponentManager<T>.Pools[WorldId] : null)?.Has(EntityId) ?? false;
+            return WorldId < ComponentManager<T>.Pools.Length && (ComponentManager<T>.Pools[WorldId]?.Has(EntityId) ?? false);
         }
 
         /// <summary>
@@ -147,6 +148,48 @@ namespace DefaultEcs
 
             return ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
         }
+
+        //public void SetChildren(params Entity[] children)
+        //{
+
+        //}
+
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public bool IsEnable<T>()
+        //{
+        //    ThrowIfNull();
+
+        //    return World.EntityComponents[WorldId][EntityId][ComponentManager<T>.Flag];
+        //}
+
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public void Disable<T>()
+        //{
+        //    ThrowIfNull();
+
+        //    ref ComponentEnum components = ref World.EntityComponents[WorldId][EntityId];
+        //    if (components[ComponentManager<T>.Flag])
+        //    {
+        //        components[ComponentManager<T>.Flag] = false;
+        //        World.Publish(WorldId, new ComponentRemovedMessage<T>(this, components));
+        //    }
+        //}
+
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public void Enable<T>()
+        //{
+        //    ThrowIfNull();
+
+        //    if (Has<T>())
+        //    {
+        //        ref ComponentEnum components = ref World.EntityComponents[WorldId][EntityId];
+        //        if (!components[ComponentManager<T>.Flag])
+        //        {
+        //            components[ComponentManager<T>.Flag] = true;
+        //            World.Publish(WorldId, new ComponentAddedMessage<T>(this, components));
+        //        }
+        //    }
+        //}
 
         #endregion
 
