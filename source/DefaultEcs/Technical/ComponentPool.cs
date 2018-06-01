@@ -142,16 +142,7 @@ namespace DefaultEcs.Technical
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get(int entityId)
-        {
-            int componentIndex = _mapping[entityId];
-            if (componentIndex == -1)
-            {
-                throw new InvalidOperationException($"Entity does not have a component of type {nameof(T)}");
-            }
-
-            return ref _components[componentIndex];
-        }
+        public ref T Get(int entityId) => ref _components[_mapping[entityId]];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> GetAll() => new Span<T>(_components, 0, _lastComponentIndex + 1);

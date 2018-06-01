@@ -4,12 +4,15 @@
     <TargetFrameworks>
       netstandard1.1;
       netstandard2.0;
-      monoandroid81;
+      <!--monoandroid81;-->
     </TargetFrameworks>
     <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release</Configurations>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
+
+    <DocumentationFile Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">bin\DefaultEcs.xml</DocumentationFile>
   </PropertyGroup>
  
   <PropertyGroup Label="Debug" Condition="'$(Configuration)'=='Debug'">
@@ -18,9 +21,12 @@
   </PropertyGroup>
   
   <ItemGroup Label="Reference">
-    <PackageReference Include="System.Memory" Version="4.5.0-rc1" />
+    <PackageReference Condition="'$(TargetFramework)'=='netstandard1.1'" Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="System.Memory" Version="4.5.0" />
+    
+    <PackageReference Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'" Include="Vsxmd" Version="1.2.0" PrivateAssets="All" />
   </ItemGroup>
-
+    
   <PropertyGroup Label="Package">
     <Authors>Paillat Laszlo</Authors>
     <PackageId>DefaultEcs</PackageId>
@@ -32,19 +38,8 @@
       gamedev game-development game-engine ecs entity-component-system
     </PackageTags>
 
-    <Version>0.3.3-alpha</Version>
+    <Version>0.4.0</Version>
     <PackageReleaseNotes>
     </PackageReleaseNotes>
   </PropertyGroup>
-
-  <PropertyGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <DocumentationFile>bin\DefaultEcs.xml</DocumentationFile>
-  </PropertyGroup>
-  <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="Vsxmd" Version="1.2.0" PrivateAssets="All" />
-  </ItemGroup>
-
-  <!--<ItemGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
-  </ItemGroup>-->
 </Project>

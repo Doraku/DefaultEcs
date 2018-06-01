@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
 
@@ -9,11 +10,14 @@ namespace DefaultEcs
     /// Represents an item in the <see cref="World"/>.
     /// Only use <see cref="Entity"/> generated from the <see cref="World.CreateEntity"/> method.
     /// </summary>
+    [StructLayout(LayoutKind.Explicit)]
     public readonly struct Entity : IDisposable, IEquatable<Entity>
     {
         #region Fields
 
+        [FieldOffset(0)]
         internal readonly int WorldId;
+        [FieldOffset(4)]
         internal readonly int EntityId;
 
         #endregion
@@ -133,21 +137,28 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>A reference to the component.</returns>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="WorldId"/>.</exception>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
+        /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="WorldId"/> or does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get<T>()
-        {
-            ThrowIfNull();
+        public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
+        //{
+        //    ThrowIfNull();
 
-            if (WorldId >= ComponentManager<T>.Pools.Length
-                || ComponentManager<T>.Pools[WorldId] == null)
-            {
-                throw new InvalidOperationException($"Entity does not have a component of type {nameof(T)}");
-            }
+        //    if (WorldId >= ComponentManager<T>.Pools.Length
+        //        || ComponentManager<T>.Pools[WorldId] == null)
+        //    {
+        //        throw new InvalidOperationException($"Entity does not have a component of type {nameof(T)}");
+        //    }
 
-            return ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
-        }
+        //    return ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
+        //}
+
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <typeparam name="T"></typeparam>
+        ///// <returns></returns>
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public ref T FuckItGet<T>() => ref ComponentManager<T>.Pools[WorldId].FuckItGet(EntityId);
 
         //public void SetChildren(params Entity[] children)
         //{
@@ -217,7 +228,7 @@ namespace DefaultEcs
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the other parameter; otherwise, false.</returns>
-        public bool Equals(Entity other) => EntityId == other.EntityId;
+        public bool Equals(Entity other) => EntityId == other.EntityId && WorldId == other.WorldId;
 
         #endregion
 
