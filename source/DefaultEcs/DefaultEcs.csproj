@@ -4,7 +4,6 @@
     <TargetFrameworks>
       netstandard1.1;
       netstandard2.0;
-      <!--monoandroid81;-->
     </TargetFrameworks>
     <Optimize>true</Optimize>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

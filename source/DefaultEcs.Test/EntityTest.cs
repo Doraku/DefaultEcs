@@ -268,7 +268,7 @@ namespace DefaultEcs.Test
         {
             Entity entity = default;
 
-            Check.ThatCode(() => entity.Get<bool>()).Throws<InvalidOperationException>();
+            Check.ThatCode(() => entity.Get<bool>()).Throws<Exception>();
         }
 
         [Fact]
@@ -278,12 +278,12 @@ namespace DefaultEcs.Test
             {
                 Entity entity = world.CreateEntity();
 
-                Check.ThatCode(() => entity.Get<bool>()).Throws<InvalidOperationException>();
+                Check.ThatCode(() => entity.Get<bool>()).Throws<Exception>();
 
                 entity.Set(true);
                 entity.Remove<bool>();
 
-                Check.ThatCode(() => entity.Get<bool>()).Throws<InvalidOperationException>();
+                Check.ThatCode(() => entity.Get<bool>()).Throws<Exception>();
             }
         }
 

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFrameworks>
-      netcoreapp2.0;
+      netcoreapp2.1;
       net471;
     </TargetFrameworks>
     <DefineConstants></DefineConstants>
