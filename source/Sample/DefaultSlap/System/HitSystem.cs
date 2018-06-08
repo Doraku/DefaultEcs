@@ -1,11 +1,12 @@
 ﻿using System;
 using DefaultEcs;
+using DefaultEcs.System;
 using DefaultSlap.Component;
 using DefaultSlap.Message;
 
 namespace DefaultSlap.System
 {
-    public class HitSystem : ISystem
+    public class HitSystem : ISystem<float>
     {
         private readonly World _world;
 

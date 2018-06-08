@@ -2,26 +2,26 @@
 using DefaultBrick.Component;
 using DefaultBrick.Message;
 using DefaultEcs;
+using DefaultEcs.System;
 
 namespace DefaultBrick.System
 {
-    public class BallBoundSystem : ISystem
+    public class BallBoundSystem : ASystem<float>
     {
         private readonly World _world;
-        private readonly EntitySet _set;
 
         public BallBoundSystem(World world)
+            : base(world.GetEntities().With<Velocity>().With<Position>().With<Ball>().Build())
         {
             _world = world;
-            _set = _world.GetEntities().With<Velocity>().With<Position>().With<Ball>().Build();
         }
 
-        public void Update(float elaspedTime)
+        protected override void InternalUpdate(float elaspedTime, ReadOnlySpan<Entity> entities)
         {
-            Span<Entity> entities = stackalloc Entity[_set.Count];
-            _set.CopyEntitiesTo(entities);
+            Span<Entity> entityCopies = stackalloc Entity[entities.Length];
+            entities.CopyTo(entityCopies);
 
-            foreach (Entity entity in entities)
+            foreach (Entity entity in entityCopies)
             {
                 ref Position position = ref entity.Get<Position>();
                 ref Velocity velocity = ref entity.Get<Velocity>();

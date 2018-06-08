@@ -1,8 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using DefaultBrick.Level;
 using DefaultBrick.Message;
 using DefaultBrick.System;
 using DefaultEcs;
+using DefaultEcs.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,7 +20,8 @@ namespace DefaultBrick
         private readonly Texture2D _square;
         private readonly SoundEffect _breakSound;
         private readonly SoundEffect _bounceSound;
-        private readonly ISystem[] _systems;
+        private readonly SystemRunner<float> _runner;
+        private readonly ISystem<float> _system;
 
         private World _world;
 
@@ -49,17 +52,16 @@ namespace DefaultBrick
 
             _world = new World(1000);
 
-            _systems = new ISystem[]
-            {
+            _runner = new SystemRunner<float>(Environment.ProcessorCount);
+            _system = new SequentialSystem<float>(
                 new GameSystem(_world),
                 new PlayerSystem(Window, _world),
                 new BallToBarSystem(Window, _world),
-                new VelocitySystem(_world),
+                new VelocitySystem(_world, _runner),
                 new CollisionSystem(_world),
                 new BallBoundSystem(_world),
-                new PositionSystem(_world),
-                new DrawSystem(_batch, _square, _world)
-            };
+                new PositionSystem(_world, _runner),
+                new DrawSystem(_batch, _square, _world));
 
             _world.Subscribe<BrickBrokenMessage>(On);
             _world.Subscribe<BarBounceMessage>(On);
@@ -89,17 +91,14 @@ namespace DefaultBrick
         {
             GraphicsDevice.Clear(Color.Black);
 
-            float elaspedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            foreach (ISystem system in _systems)
-            {
-                system.Update(elaspedTime);
-            }
+            _system.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
         }
 
         protected override void Draw(GameTime gameTime) { }
 
         protected override void Dispose(bool disposing)
         {
+            _runner.Dispose();
             _world.Dispose();
             _breakSound.Dispose();
             _bounceSound.Dispose();

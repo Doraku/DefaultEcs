@@ -2,26 +2,26 @@
 using DefaultBrick.Component;
 using DefaultBrick.Message;
 using DefaultEcs;
+using DefaultEcs.System;
 using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
-    public class CollisionSystem : ISystem
+    public class CollisionSystem : ASystem<float>
     {
         private readonly World _world;
-        private readonly EntitySet _ballSet;
         private readonly EntitySet _solidSet;
 
         public CollisionSystem(World world)
+            : base(world.GetEntities().With<Ball>().With<Position>().With<Velocity>().Build())
         {
             _world = world;
-            _ballSet = _world.GetEntities().With<Ball>().With<Position>().With<Velocity>().Build();
             _solidSet = _world.GetEntities().With<Solid>().With<DrawInfo>().Build();
         }
 
-        public void Update(float elaspedTime)
+        protected override void InternalUpdate(float elaspedTime, ReadOnlySpan<Entity> entities)
         {
-            foreach (Entity ball in _ballSet.GetEntities())
+            foreach (Entity ball in entities)
             {
                 ref Position position = ref ball.Get<Position>();
                 ref Velocity velocity = ref ball.Get<Velocity>();

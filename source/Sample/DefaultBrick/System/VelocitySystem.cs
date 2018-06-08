@@ -1,21 +1,21 @@
-﻿using DefaultEcs;
+﻿using System;
 using DefaultBrick.Component;
+using DefaultEcs;
+using DefaultEcs.System;
 using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
-    public class VelocitySystem : ISystem
+    public class VelocitySystem : ASystem<float>
     {
-        private readonly EntitySet _set;
-
-        public VelocitySystem(World world)
+        public VelocitySystem(World world, SystemRunner<float> runner)
+            : base(world.GetEntities().With<Velocity>().With<Position>().Build())
         {
-            _set = world.GetEntities().With<Velocity>().With<Position>().Build();
         }
 
-        public void Update(float elaspedTime)
+        protected override void InternalUpdate(float elaspedTime, ReadOnlySpan<Entity> entities)
         {
-            foreach (Entity entity in _set.GetEntities())
+            foreach (Entity entity in entities)
             {
                 ref Velocity velocity = ref entity.Get<Velocity>();
                 ref Position position = ref entity.Get<Position>();

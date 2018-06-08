@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using DefaultEcs;
+using DefaultEcs.System;
 using DefaultSlap.Component;
 using DefaultSlap.Message;
 using DefaultSlap.System;
@@ -18,7 +20,8 @@ namespace DefaultSlap
         private readonly Texture2D _square;
         private readonly SoundEffect _slapSound;
         private readonly SoundEffect _bounceSound;
-        private readonly ISystem[] _systems;
+        private readonly ISystem<float> _system;
+        private readonly SystemRunner<float> _runner;
 
         private World _world;
 
@@ -51,15 +54,14 @@ namespace DefaultSlap
 
             _world.SetComponentTypeMaximumCount<PlayerState>(1);
 
-            _systems = new ISystem[]
-            {
+            _runner = new SystemRunner<float>(Environment.ProcessorCount);
+            _system = new SequentialSystem<float>(
                 new PlayerSystem(Window, _world),
                 new HitSystem(_world),
                 new GameSystem(_world),
                 new AISystem(_world),
-                new PositionSystem(_world),
-                new DrawSystem(_batch, _square, _world)
-            };
+                new PositionSystem(_world, _runner),
+                new DrawSystem(_batch, _square, _world));
 
             Entity player = _world.CreateEntity();
             player.Set<PlayerState>(default);
@@ -92,17 +94,14 @@ namespace DefaultSlap
         {
             GraphicsDevice.Clear(Color.White);
 
-            float elaspedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            foreach (ISystem system in _systems)
-            {
-                system.Update(elaspedTime);
-            }
+            _system.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
         }
 
         protected override void Draw(GameTime gameTime) { }
 
         protected override void Dispose(bool disposing)
         {
+            _runner.Dispose();
             _world.Dispose();
             _slapSound.Dispose();
             _bounceSound.Dispose();

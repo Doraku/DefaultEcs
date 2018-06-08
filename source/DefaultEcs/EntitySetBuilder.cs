@@ -9,7 +9,7 @@ namespace DefaultEcs
     /// <summary>
     /// Represent an helper object to create an <see cref="EntitySet"/> to retrieve specific subset of <see cref="Entity"/>.
     /// </summary>
-    public class EntitySetBuilder
+    public sealed class EntitySetBuilder
     {
         #region Fields
 

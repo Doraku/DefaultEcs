@@ -3,11 +3,12 @@ using DefaultBrick.Component;
 using DefaultBrick.Level;
 using DefaultBrick.Message;
 using DefaultEcs;
+using DefaultEcs.System;
 using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
-    public class GameSystem : ISystem
+    public class GameSystem : ISystem<float>
     {
         private readonly Random _random;
         private readonly World _world;

@@ -1,11 +1,12 @@
 ﻿using System;
-using DefaultEcs;
 using DefaultBrick.Component;
+using DefaultEcs;
+using DefaultEcs.System;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace DefaultBrick.System
 {
-    public class DrawSystem : ISystem
+    public class DrawSystem : ISystem<float>
     {
         private readonly SpriteBatch _batch;
         private readonly Texture2D _square;

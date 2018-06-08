@@ -1,21 +1,21 @@
-﻿using DefaultEcs;
+﻿using System;
 using DefaultBrick.Component;
+using DefaultEcs;
+using DefaultEcs.System;
 using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
-    public class PositionSystem : ISystem
+    public class PositionSystem : ASystem<float>
     {
-        private readonly EntitySet _set;
-
-        public PositionSystem(World world)
+        public PositionSystem(World world, SystemRunner<float> runner)
+            : base(world.GetEntities().With<Position>().With<DrawInfo>().Build(), runner)
         {
-            _set = world.GetEntities().With<Position>().With<DrawInfo>().Build();
         }
 
-        public void Update(float elaspedTime)
+        protected override void InternalUpdate(float elaspedTime, ReadOnlySpan<Entity> entities)
         {
-            foreach (Entity entity in _set.GetEntities())
+            foreach (Entity entity in entities)
             {
                 Vector2 position = entity.Get<Position>().Value;
                 ref DrawInfo drawInfo = ref entity.Get<DrawInfo>();

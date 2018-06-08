@@ -1,24 +1,24 @@
 ﻿using System;
 using DefaultEcs;
+using DefaultEcs.System;
 using DefaultSlap.Component;
 using Microsoft.Xna.Framework;
 
 namespace DefaultSlap.System
 {
-    public class AISystem : ISystem
+    public class AISystem : ASystem<float>
     {
         private readonly Random _random;
-        private readonly EntitySet _set;
 
         public AISystem(World world)
+            : base(world.GetEntities().With<PositionFloat>().With<TargetPosition>().With<Speed>().Build())
         {
             _random = new Random();
-            _set = world.GetEntities().With<PositionFloat>().With<TargetPosition>().With<Speed>().Build();
         }
 
-        public void Update(float elaspedTime)
+        protected override void InternalUpdate(float elaspedTime, ReadOnlySpan<Entity> entities)
         {
-            foreach (Entity entity in _set.GetEntities())
+            foreach (Entity entity in entities)
             {
                 Point target = entity.Get<TargetPosition>().Value;
                 ref Vector2 position = ref entity.Get<PositionFloat>().Value;

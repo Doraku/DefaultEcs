@@ -1,30 +1,27 @@
 ﻿using System;
 using DefaultBrick.Component;
 using DefaultEcs;
+using DefaultEcs.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace DefaultBrick.System
 {
-    public class BallToBarSystem : ISystem
+    public class BallToBarSystem : ASystem<float>
     {
         private readonly GameWindow _window;
-        private readonly EntitySet _set;
 
         public BallToBarSystem(GameWindow window, World world)
+            : base(world.GetEntities().With<BallStart>().With<DrawInfo>().Build())
         {
             _window = window;
-            _set = world.GetEntities().With<BallStart>().With<DrawInfo>().Build();
         }
 
-        public void Update(float elaspedTime)
+        protected override void InternalUpdate(float elaspedTime, ReadOnlySpan<Entity> entities)
         {
-            if (_set.Count > 0)
+            if (entities.Length > 0)
             {
                 MouseState state = Mouse.GetState(_window);
-
-                Span<Entity> entities = stackalloc Entity[_set.Count];
-                _set.CopyEntitiesTo(entities);
 
                 foreach (Entity entity in entities)
                 {

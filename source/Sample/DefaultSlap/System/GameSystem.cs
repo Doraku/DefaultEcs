@@ -1,12 +1,13 @@
 ﻿using System;
 using DefaultEcs;
+using DefaultEcs.System;
 using DefaultSlap.Component;
 using DefaultSlap.Message;
 using Microsoft.Xna.Framework;
 
 namespace DefaultSlap.System
 {
-    public class GameSystem : ISystem
+    public class GameSystem : ISystem<float>
     {
         private readonly World _world;
         private readonly EntitySet _bugsSet;
