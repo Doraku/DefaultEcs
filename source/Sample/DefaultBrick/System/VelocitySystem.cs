@@ -9,7 +9,7 @@ namespace DefaultBrick.System
     public sealed class VelocitySystem : AEntitySetSystem<float>
     {
         public VelocitySystem(World world, SystemRunner<float> runner)
-            : base(world.GetEntities().With<Velocity>().With<Position>().Build())
+            : base(world.GetEntities().With<Velocity>().With<Position>().Build(), runner)
         {
         }
 

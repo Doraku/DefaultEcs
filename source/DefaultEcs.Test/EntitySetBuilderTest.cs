@@ -9,7 +9,7 @@ namespace DefaultEcs.Test
         #region Tests
 
         [Fact]
-        public void AsAnEntitySet_Should_return_EntitySet_with_all_Entity()
+        public void Build_Should_return_EntitySet_with_all_Entity()
         {
             using (World world = new World(4))
             using (EntitySet set = world.GetEntities().Build())
@@ -32,7 +32,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void AsAnEntitySet_With_T_Should_return_EntitySet_with_all_Entity_with_component_T()
+        public void Build_With_T_Should_return_EntitySet_with_all_Entity_with_component_T()
         {
             using (World world = new World(4))
             using (EntitySet set = world.GetEntities().With<bool>().Build())
@@ -62,7 +62,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void AsAnEntitySet_With_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_T2()
+        public void Build_With_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_T2()
         {
             using (World world = new World(4))
             using (EntitySet set = world.GetEntities().With<bool>().With<int>().Build())
@@ -105,7 +105,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void AsAnEntitySet_Without_T_Should_return_EntitySet_with_all_Entity_without_component_T()
+        public void Build_Without_T_Should_return_EntitySet_with_all_Entity_without_component_T()
         {
             using (World world = new World(4))
             using (EntitySet set = world.GetEntities().Without<int>().Build())

@@ -37,9 +37,12 @@
       gamedev game-development game-engine ecs entity-component-system
     </PackageTags>
 
-    <Version>0.4.0</Version>
+    <Version>0.5.0</Version>
     <PackageReleaseNotes>
-added system classes
+added base system class to update an EntitySet
+added base system class to update a component type on a World
+added system class to process custom Action as update
+added system class to update sequentially multiple system
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

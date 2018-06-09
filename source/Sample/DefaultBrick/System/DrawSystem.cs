@@ -6,27 +6,25 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DefaultBrick.System
 {
-    public class DrawSystem : ISystem<float>
+    public class DrawSystem : AComponentSystem<float, DrawInfo>
     {
         private readonly SpriteBatch _batch;
         private readonly Texture2D _square;
-        private readonly World _world;
 
         public DrawSystem(SpriteBatch batch, Texture2D square, World world)
+            : base(world)
         {
             _batch = batch;
             _square = square;
-            _world = world;
         }
 
-        public void Update(float elaspedTime)
+        protected override void Update(float elaspedTime, Span<DrawInfo> components)
         {
             _batch.Begin();
 
-            Span<DrawInfo> drawInfos = _world.GetAllComponents<DrawInfo>();
-            for (int i = 0; i < drawInfos.Length; ++i)
+            for (int i = 0; i < components.Length; ++i)
             {
-                _batch.Draw(_square, drawInfos[i].Destination, drawInfos[i].Color);
+                _batch.Draw(_square, components[i].Destination, components[i].Color);
             }
 
             _batch.End();

@@ -34,10 +34,7 @@ namespace DefaultEcs.System
         /// Updates the system once.
         /// </summary>
         /// <param name="state">The state to use.</param>
-        public void Update(T state)
-        {
-            _action(state);
-        }
+        public void Update(T state) => _action(state);
 
         #endregion
     }
