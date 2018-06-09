@@ -6,14 +6,14 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
-    public class VelocitySystem : ASystem<float>
+    public sealed class VelocitySystem : AEntitySetSystem<float>
     {
         public VelocitySystem(World world, SystemRunner<float> runner)
             : base(world.GetEntities().With<Velocity>().With<Position>().Build())
         {
         }
 
-        protected override void InternalUpdate(float elaspedTime, ReadOnlySpan<Entity> entities)
+        protected override void Update(float elaspedTime, ReadOnlySpan<Entity> entities)
         {
             foreach (Entity entity in entities)
             {

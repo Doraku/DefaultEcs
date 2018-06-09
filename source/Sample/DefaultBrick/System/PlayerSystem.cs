@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace DefaultBrick.System
 {
-    public class PlayerSystem : ASystem<float>
+    public sealed class PlayerSystem : AEntitySetSystem<float>
     {
         private readonly GameWindow _window;
 
@@ -17,7 +17,7 @@ namespace DefaultBrick.System
             _window = window;
         }
 
-        protected override void InternalUpdate(float elaspedTime, ReadOnlySpan<Entity> entities)
+        protected override void Update(float elaspedTime, ReadOnlySpan<Entity> entities)
         {
             MouseState state = Mouse.GetState(_window);
 

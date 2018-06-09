@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
-    public class CollisionSystem : ASystem<float>
+    public sealed class CollisionSystem : AEntitySetSystem<float>
     {
         private readonly World _world;
         private readonly EntitySet _solidSet;
@@ -19,7 +19,7 @@ namespace DefaultBrick.System
             _solidSet = _world.GetEntities().With<Solid>().With<DrawInfo>().Build();
         }
 
-        protected override void InternalUpdate(float elaspedTime, ReadOnlySpan<Entity> entities)
+        protected override void Update(float elaspedTime, ReadOnlySpan<Entity> entities)
         {
             foreach (Entity ball in entities)
             {

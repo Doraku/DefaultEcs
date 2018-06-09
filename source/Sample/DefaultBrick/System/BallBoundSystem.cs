@@ -6,7 +6,7 @@ using DefaultEcs.System;
 
 namespace DefaultBrick.System
 {
-    public class BallBoundSystem : ASystem<float>
+    public sealed class BallBoundSystem : AEntitySetSystem<float>
     {
         private readonly World _world;
 
@@ -16,7 +16,7 @@ namespace DefaultBrick.System
             _world = world;
         }
 
-        protected override void InternalUpdate(float elaspedTime, ReadOnlySpan<Entity> entities)
+        protected override void Update(float elaspedTime, ReadOnlySpan<Entity> entities)
         {
             Span<Entity> entityCopies = stackalloc Entity[entities.Length];
             entities.CopyTo(entityCopies);

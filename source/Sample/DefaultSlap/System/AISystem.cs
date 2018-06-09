@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultSlap.System
 {
-    public class AISystem : ASystem<float>
+    public sealed class AISystem : AEntitySetSystem<float>
     {
         private readonly Random _random;
 
@@ -16,7 +16,7 @@ namespace DefaultSlap.System
             _random = new Random();
         }
 
-        protected override void InternalUpdate(float elaspedTime, ReadOnlySpan<Entity> entities)
+        protected override void Update(float elaspedTime, ReadOnlySpan<Entity> entities)
         {
             foreach (Entity entity in entities)
             {

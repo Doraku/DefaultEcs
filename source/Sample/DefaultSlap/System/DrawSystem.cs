@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DefaultSlap.System
 {
-    public class DrawSystem : ASystem<float>
+    public sealed class DrawSystem : AEntitySetSystem<float>
     {
         private readonly SpriteBatch _batch;
         private readonly Texture2D _square;
@@ -19,7 +19,7 @@ namespace DefaultSlap.System
             _square = square;
         }
 
-        protected override void InternalUpdate(float elaspedTime, ReadOnlySpan<Entity> entities)
+        protected override void Update(float elaspedTime, ReadOnlySpan<Entity> entities)
         {
             _batch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
 

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace DefaultBrick.System
 {
-    public class BallToBarSystem : ASystem<float>
+    public sealed class BallToBarSystem : AEntitySetSystem<float>
     {
         private readonly GameWindow _window;
 
@@ -17,7 +17,7 @@ namespace DefaultBrick.System
             _window = window;
         }
 
-        protected override void InternalUpdate(float elaspedTime, ReadOnlySpan<Entity> entities)
+        protected override void Update(float elaspedTime, ReadOnlySpan<Entity> entities)
         {
             if (entities.Length > 0)
             {
