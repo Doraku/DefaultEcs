@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFramework>net471</TargetFramework>
@@ -15,18 +15,17 @@
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
-    <PackageReference Include="BenchmarkDotNet.Core" Version="0.10.12" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.12" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.14" />
+    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.10.14" />
     
-    <PackageReference Include="MonoGame.Extended.Entities" Version="1.0.617" />
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" NoWarn="NU1603" />
+    <!--<PackageReference Include="MonoGame.Extended.Entities" Version="1.1.0" />
     
-    <PackageReference Include="Primal" Version="1.3.0.15" />
-    <PackageReference Include="Styxtwo-Utilities" Version="1.0.0.4" NoWarn="NU1603" />
+    <PackageReference Include="Primal" Version="1.3.0.15" />-->
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DefaultEcs\DefaultEcs.csproj" />

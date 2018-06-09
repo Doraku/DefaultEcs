@@ -12,7 +12,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private EntitySet _set;
         private int _count;
 
-        [Params(100000)]
+        [Params(1000, 100000)]
         public int EntityCount { get; set; }
 
         [IterationSetup]
