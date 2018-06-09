@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
 
@@ -10,14 +9,11 @@ namespace DefaultEcs
     /// Represents an item in the <see cref="World"/>.
     /// Only use <see cref="Entity"/> generated from the <see cref="World.CreateEntity"/> method.
     /// </summary>
-    [StructLayout(LayoutKind.Explicit)]
     public readonly struct Entity : IDisposable, IEquatable<Entity>
     {
         #region Fields
 
-        [FieldOffset(0)]
         internal readonly int WorldId;
-        [FieldOffset(4)]
         internal readonly int EntityId;
 
         #endregion

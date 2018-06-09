@@ -39,20 +39,7 @@ namespace DefaultEcs.System
 
         #endregion
 
-        #region ASystem
-
-        private protected sealed override void DefaultUpdate(T state)
-        {
-            Update(state, _set.GetEntities());
-        }
-
-        internal override void Update(T state, int index, int maxIndex)
-        {
-            ReadOnlySpan<Entity> entities = _set.GetEntities();
-            int entitiesToUpdate = entities.Length / (maxIndex + 1);
-
-            Update(state, index == maxIndex ? entities.Slice(index * entitiesToUpdate) : entities.Slice(index * entitiesToUpdate, entitiesToUpdate));
-        }
+        #region Methods
 
         /// <summary>
         /// Update the given <see cref="Entity"/> instances once.
@@ -60,6 +47,23 @@ namespace DefaultEcs.System
         /// <param name="state">The state to use.</param>
         /// <param name="entities">The <see cref="Entity"/> instances to update.</param>
         protected abstract void Update(T state, ReadOnlySpan<Entity> entities);
+
+        #endregion
+
+        #region ASystem
+
+        private protected sealed override void DefaultUpdate(T state)
+        {
+            Update(state, _set.GetEntities());
+        }
+
+        internal sealed override void Update(T state, int index, int maxIndex)
+        {
+            ReadOnlySpan<Entity> entities = _set.GetEntities();
+            int entitiesToUpdate = entities.Length / (maxIndex + 1);
+
+            Update(state, index == maxIndex ? entities.Slice(index * entitiesToUpdate) : entities.Slice(index * entitiesToUpdate, entitiesToUpdate));
+        }
 
         #endregion
     }

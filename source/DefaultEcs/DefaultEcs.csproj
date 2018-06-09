@@ -42,7 +42,8 @@
 added base system class to update an EntitySet
 added base system class to update a component type on a World
 added system class to process custom Action as update
-added system class to update sequentially multiple system
+added system class to update sequentially multiple systems
+added systel class to update in parallel multiple systems
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

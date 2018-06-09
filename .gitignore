@@ -7,5 +7,6 @@
 /source/*/*.vssscc
 /source/*/*.user
 *.nupkg
+*.xml
 /source/DefaultEcs.Benchmark/BenchmarkDotNet.Artifacts
 /source/Sample/resource

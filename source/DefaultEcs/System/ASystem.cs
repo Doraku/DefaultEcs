@@ -1,7 +1,7 @@
 ﻿namespace DefaultEcs.System
 {
     /// <summary>
-    /// Represents a base class to process updates.
+    /// Represents a base class to process updates. Do not inherit from this class directly.
     /// </summary>
     /// <typeparam name="T">The type of the object used as state to update the system.</typeparam>
     public abstract class ASystem<T> : ISystem<T>
@@ -38,6 +38,18 @@
 
         internal abstract void Update(T state, int index, int maxIndex);
 
+        /// <summary>
+        /// Performs a pre-update treatment.
+        /// </summary>
+        /// <param name="state">The state to use.</param>
+        protected virtual void PreUpdate(T state) { }
+
+        /// <summary>
+        /// Performs a post-update treatment.
+        /// </summary>
+        /// <param name="state">The state to use.</param>
+        protected virtual void PostUpdate(T state) { }
+
         #endregion
 
         #region ISystem
@@ -48,6 +60,8 @@
         /// <param name="state">The state to use.</param>
         public void Update(T state)
         {
+            PreUpdate(state);
+
             if (_runner != null)
             {
                 _runner.Update(state, this);
@@ -56,6 +70,8 @@
             {
                 DefaultUpdate(state);
             }
+
+            PostUpdate(state);
         }
 
         #endregion

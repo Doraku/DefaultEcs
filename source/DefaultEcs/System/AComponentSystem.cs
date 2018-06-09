@@ -40,20 +40,7 @@ namespace DefaultEcs.System
 
         #endregion
 
-        #region ASystem
-
-        private protected sealed override void DefaultUpdate(TState state)
-        {
-            Update(state, _world.GetAllComponents<TComponent>());
-        }
-
-        internal override void Update(TState state, int index, int maxIndex)
-        {
-            Span<TComponent> components = _world.GetAllComponents<TComponent>();
-            int componentsToUpdate = components.Length / (maxIndex + 1);
-
-            Update(state, index == maxIndex ? components.Slice(index * componentsToUpdate) : components.Slice(index * componentsToUpdate, componentsToUpdate));
-        }
+        #region Methods
 
         /// <summary>
         /// Update the given <typeparamref name="TComponent"/> instances once.
@@ -61,6 +48,23 @@ namespace DefaultEcs.System
         /// <param name="state">The state to use.</param>
         /// <param name="components">The <see cref="Entity"/> instances to update.</param>
         protected abstract void Update(TState state, Span<TComponent> components);
+
+        #endregion
+
+        #region ASystem
+
+        private protected sealed override void DefaultUpdate(TState state)
+        {
+            Update(state, _world.GetAllComponents<TComponent>());
+        }
+
+        internal sealed override void Update(TState state, int index, int maxIndex)
+        {
+            Span<TComponent> components = _world.GetAllComponents<TComponent>();
+            int componentsToUpdate = components.Length / (maxIndex + 1);
+
+            Update(state, index == maxIndex ? components.Slice(index * componentsToUpdate) : components.Slice(index * componentsToUpdate, componentsToUpdate));
+        }
 
         #endregion
     }
