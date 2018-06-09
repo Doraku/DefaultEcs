@@ -43,7 +43,7 @@ namespace DefaultEcs.System
 
             foreach (Task task in _tasks)
             {
-                task.Start();
+                task.Start(TaskScheduler.Default);
             }
         }
 

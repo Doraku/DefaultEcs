@@ -106,7 +106,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private ISystem<float> _system2;
         private ISystem<float> _systemTPL;
 
-        [Params(1000000)]
+        [Params(100000)]
         public int EntityCount { get; set; }
 
         [IterationSetup]
