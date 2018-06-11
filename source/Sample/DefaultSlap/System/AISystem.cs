@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using DefaultEcs;
 using DefaultEcs.System;
 using DefaultSlap.Component;
@@ -8,33 +9,30 @@ namespace DefaultSlap.System
 {
     public sealed class AISystem : AEntitySetSystem<float>
     {
-        private readonly Random _random;
+        private readonly ThreadLocal<Random> _random;
 
-        public AISystem(World world)
-            : base(world.GetEntities().With<PositionFloat>().With<TargetPosition>().With<Speed>().Build())
+        public AISystem(World world, SystemRunner<float> runner)
+            : base(world.GetEntities().With<PositionFloat>().With<TargetPosition>().With<Speed>().Build(), runner)
         {
-            _random = new Random();
+            _random = new ThreadLocal<Random>(() => new Random());
         }
 
-        protected override void Update(float elaspedTime, ReadOnlySpan<Entity> entities)
+        protected override void Update(float elaspedTime, in Entity entity)
         {
-            foreach (Entity entity in entities)
+            Point target = entity.Get<TargetPosition>().Value;
+            ref Vector2 position = ref entity.Get<PositionFloat>().Value;
+            Vector2 offset = new Vector2(target.X, target.Y) - position;
+            if (target == Point.Zero
+                || offset.Length() < 10f)
             {
-                Point target = entity.Get<TargetPosition>().Value;
-                ref Vector2 position = ref entity.Get<PositionFloat>().Value;
-                Vector2 offset = new Vector2(target.X, target.Y) - position;
-                if (target == Point.Zero
-                    || offset.Length() < 10f)
-                {
-                    target = new Point(_random.Next(10, 790), _random.Next(10, 590));
-                    entity.Get<TargetPosition>().Value = target;
-                    offset = new Vector2(target.X, target.Y) - position;
-                }
-
-                offset.Normalize();
-
-                position += offset * elaspedTime * entity.Get<Speed>().Value;
+                target = new Point(_random.Value.Next(10, 790), _random.Value.Next(10, 590));
+                entity.Get<TargetPosition>().Value = target;
+                offset = new Vector2(target.X, target.Y) - position;
             }
+
+            offset.Normalize();
+
+            position += offset * elaspedTime * entity.Get<Speed>().Value;
         }
     }
 }

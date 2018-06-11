@@ -59,7 +59,7 @@ namespace DefaultSlap
                 new PlayerSystem(Window, _world),
                 new HitSystem(_world),
                 new GameSystem(_world),
-                new AISystem(_world),
+                new AISystem(_world, _runner),
                 new PositionSystem(_world, _runner),
                 new DrawSystem(_batch, _square, _world));
 

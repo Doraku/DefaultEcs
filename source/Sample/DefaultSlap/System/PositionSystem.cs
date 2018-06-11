@@ -1,5 +1,4 @@
-﻿using System;
-using DefaultEcs;
+﻿using DefaultEcs;
 using DefaultEcs.System;
 using DefaultSlap.Component;
 using Microsoft.Xna.Framework;
@@ -12,13 +11,10 @@ namespace DefaultSlap.System
             : base(world.GetEntities().With<Position>().With<PositionFloat>().Build(), runner)
         { }
 
-        protected override void Update(float elaspedTime, ReadOnlySpan<Entity> entities)
+        protected override void Update(float elaspedTime, in Entity entity)
         {
-            foreach (Entity entity in entities)
-            {
-                Vector2 positionFloat = entity.Get<PositionFloat>().Value;
-                entity.Get<Position>().Value = new Point((int)positionFloat.X, (int)positionFloat.Y);
-            }
+            Vector2 positionFloat = entity.Get<PositionFloat>().Value;
+            entity.Get<Position>().Value = new Point((int)positionFloat.X, (int)positionFloat.Y);
         }
     }
 }

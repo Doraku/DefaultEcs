@@ -42,21 +42,26 @@ namespace DefaultEcs.System
 
         #region Methods
 
+        private void Update(TState state, Span<TComponent> components)
+        {
+            for (int i = 0; i < components.Length; ++i)
+            {
+                Update(state, ref components[i]);
+            }
+        }
+
         /// <summary>
-        /// Update the given <typeparamref name="TComponent"/> instances once.
+        /// Update the given <typeparamref name="TComponent"/> once.
         /// </summary>
         /// <param name="state">The state to use.</param>
-        /// <param name="components">The <see cref="Entity"/> instances to update.</param>
-        protected abstract void Update(TState state, Span<TComponent> components);
+        /// <param name="component">The <typeparamref name="TComponent"/> to update.</param>
+        protected abstract void Update(TState state, ref TComponent component);
 
         #endregion
 
         #region ASystem
 
-        private protected sealed override void DefaultUpdate(TState state)
-        {
-            Update(state, _world.GetAllComponents<TComponent>());
-        }
+        private protected sealed override void DefaultUpdate(TState state) => Update(state, _world.GetAllComponents<TComponent>());
 
         internal sealed override void Update(TState state, int index, int maxIndex)
         {

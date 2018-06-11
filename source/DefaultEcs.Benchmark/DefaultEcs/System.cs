@@ -22,7 +22,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
     }
 
-    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 10, invocationCount: 10)]
+    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 20, invocationCount: 10)]
     public class System
     {
         private struct Position
@@ -43,15 +43,12 @@ namespace DefaultEcs.Benchmark.DefaultEcs
                 : base(world.GetEntities().With<Position>().With<Speed>().Build(), runner)
             { }
 
-            protected override void Update(float state, ReadOnlySpan<Entity> entities)
+            protected override void Update(float state, in Entity entity)
             {
-                foreach (Entity entity in entities)
-                {
-                    ref Position position = ref entity.Get<Position>();
+                ref Position position = ref entity.Get<Position>();
 
-                    position.X += entity.Get<Speed>().X * state;
-                    position.Y += entity.Get<Speed>().Y * state;
-                }
+                position.X += entity.Get<Speed>().X * state;
+                position.Y += entity.Get<Speed>().Y * state;
             }
         }
 
@@ -61,16 +58,13 @@ namespace DefaultEcs.Benchmark.DefaultEcs
                 : base(world.GetEntities().With<Position>().With<Speed>().Build(), runner)
             { }
 
-            protected override void Update(float state, ReadOnlySpan<Entity> entities)
+            protected override void Update(float state, in Entity entity)
             {
-                foreach (Entity entity in entities)
-                {
-                    Speed speed = entity.Get<Speed>();
-                    ref Position position = ref entity.Get<Position>();
+                Speed speed = entity.Get<Speed>();
+                ref Position position = ref entity.Get<Position>();
 
-                    position.X += speed.X * state;
-                    position.Y += speed.Y * state;
-                }
+                position.X += speed.X * state;
+                position.Y += speed.Y * state;
             }
         }
 

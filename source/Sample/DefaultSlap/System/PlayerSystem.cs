@@ -1,5 +1,4 @@
-﻿using System;
-using DefaultEcs;
+﻿using DefaultEcs;
 using DefaultEcs.System;
 using DefaultSlap.Component;
 using DefaultSlap.Message;
@@ -13,6 +12,9 @@ namespace DefaultSlap.System
         private readonly GameWindow _window;
         private readonly World _world;
 
+        private MouseState _mouseState;
+        private bool _isSlaping;
+
         public PlayerSystem(GameWindow window, World world)
             : base(world.GetEntities().With<PlayerState>().With<DrawInfo>().With<Position>().Build())
         {
@@ -20,25 +22,25 @@ namespace DefaultSlap.System
             _world = world;
         }
 
-        protected override void Update(float elaspedTime, ReadOnlySpan<Entity> entities)
+        protected override void PreUpdate(float state)
         {
-            MouseState mouseState = Mouse.GetState(_window);
-            bool isSlaping = mouseState.LeftButton == ButtonState.Pressed;
+            _mouseState = Mouse.GetState(_window);
+            _isSlaping = _mouseState.LeftButton == ButtonState.Pressed;
+        }
 
-            foreach (Entity entity in entities)
+        protected override void Update(float elaspedTime, in Entity entity)
+        {
+            entity.Get<Position>().Value = _mouseState.Position;
+            ref PlayerState playerState = ref entity.Get<PlayerState>();
+            if (_isSlaping
+                && !playerState.IsSlaping)
             {
-                entity.Get<Position>().Value = mouseState.Position;
-                ref PlayerState playerState = ref entity.Get<PlayerState>();
-                if (isSlaping
-                    && !playerState.IsSlaping)
-                {
-                    Point size = entity.Get<DrawInfo>().Size;
-                    _world.Publish(new SlapMessage(new Rectangle(mouseState.Position - size / new Point(2), size)));
-                }
-
-                playerState.IsSlaping = isSlaping;
-                entity.Get<DrawInfo>().Color.A = isSlaping ? (byte)0xFF : (byte)0x7F;
+                Point size = entity.Get<DrawInfo>().Size;
+                _world.Publish(new SlapMessage(new Rectangle(_mouseState.Position - size / new Point(2), size)));
             }
+
+            playerState.IsSlaping = _isSlaping;
+            entity.Get<DrawInfo>().Color.A = _isSlaping ? (byte)0xFF : (byte)0x7F;
         }
     }
 }

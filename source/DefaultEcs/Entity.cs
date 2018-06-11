@@ -47,7 +47,6 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="WorldId"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has<T>()
-        //where T : unmanaged
         {
             ThrowIfNull();
 
@@ -136,25 +135,6 @@ namespace DefaultEcs
         /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="WorldId"/> or does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
-        //{
-        //    ThrowIfNull();
-
-        //    if (WorldId >= ComponentManager<T>.Pools.Length
-        //        || ComponentManager<T>.Pools[WorldId] == null)
-        //    {
-        //        throw new InvalidOperationException($"Entity does not have a component of type {nameof(T)}");
-        //    }
-
-        //    return ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
-        //}
-
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <typeparam name="T"></typeparam>
-        ///// <returns></returns>
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //public ref T FuckItGet<T>() => ref ComponentManager<T>.Pools[WorldId].FuckItGet(EntityId);
 
         //public void SetChildren(params Entity[] children)
         //{

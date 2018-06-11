@@ -17,12 +17,9 @@ namespace DefaultEcs.Test.System
                 : base(world, runner)
             { }
 
-            protected override void Update(int state, Span<bool> components)
+            protected override void Update(int state, ref bool component)
             {
-                for (int i = 0; i < components.Length; ++i)
-                {
-                    components[i] = true;
-                }
+                component = true;
             }
         }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using DefaultBrick.Component;
+﻿using DefaultBrick.Component;
 using DefaultEcs;
 using DefaultEcs.System;
 using Microsoft.Xna.Framework;
@@ -13,16 +12,13 @@ namespace DefaultBrick.System
         {
         }
 
-        protected override void Update(float elaspedTime, ReadOnlySpan<Entity> entities)
+        protected override void Update(float elaspedTime, in Entity entity)
         {
-            foreach (Entity entity in entities)
-            {
-                Vector2 position = entity.Get<Position>().Value;
-                ref DrawInfo drawInfo = ref entity.Get<DrawInfo>();
+            Vector2 position = entity.Get<Position>().Value;
+            ref DrawInfo drawInfo = ref entity.Get<DrawInfo>();
 
-                drawInfo.Destination.X = (int)position.X;
-                drawInfo.Destination.Y = (int)position.Y;
-            }
+            drawInfo.Destination.X = (int)position.X;
+            drawInfo.Destination.Y = (int)position.Y;
         }
     }
 }

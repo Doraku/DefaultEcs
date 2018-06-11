@@ -1,5 +1,4 @@
-﻿using System;
-using DefaultBrick.Component;
+﻿using DefaultBrick.Component;
 using DefaultEcs;
 using DefaultEcs.System;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,15 +17,18 @@ namespace DefaultBrick.System
             _square = square;
         }
 
-        protected override void Update(float elaspedTime, Span<DrawInfo> components)
+        protected override void PreUpdate(float state)
         {
             _batch.Begin();
+        }
 
-            for (int i = 0; i < components.Length; ++i)
-            {
-                _batch.Draw(_square, components[i].Destination, components[i].Color);
-            }
+        protected override void Update(float elaspedTime, ref DrawInfo component)
+        {
+            _batch.Draw(_square, component.Destination, component.Color);
+        }
 
+        protected override void PostUpdate(float state)
+        {
             _batch.End();
         }
     }

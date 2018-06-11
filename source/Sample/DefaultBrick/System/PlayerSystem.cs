@@ -1,5 +1,4 @@
-﻿using System;
-using DefaultBrick.Component;
+﻿using DefaultBrick.Component;
 using DefaultEcs;
 using DefaultEcs.System;
 using Microsoft.Xna.Framework;
@@ -11,22 +10,24 @@ namespace DefaultBrick.System
     {
         private readonly GameWindow _window;
 
+        private MouseState _state;
+
         public PlayerSystem(GameWindow window, World world)
             : base(world.GetEntities().With<PlayerInput>().With<DrawInfo>().Build())
         {
             _window = window;
         }
 
-        protected override void Update(float elaspedTime, ReadOnlySpan<Entity> entities)
+        protected override void PreUpdate(float state)
         {
-            MouseState state = Mouse.GetState(_window);
+            _state = Mouse.GetState(_window);
+        }
 
-            foreach (Entity entity in entities)
-            {
-                ref DrawInfo drawInfo = ref entity.Get<DrawInfo>();
+        protected override void Update(float elaspedTime, in Entity entity)
+        {
+            ref DrawInfo drawInfo = ref entity.Get<DrawInfo>();
 
-                drawInfo.Destination.X = MathHelper.Clamp(state.X - (drawInfo.Destination.Width / 2), 0, _window.ClientBounds.Width - drawInfo.Destination.Width);
-            }
+            drawInfo.Destination.X = MathHelper.Clamp(_state.X - (drawInfo.Destination.Width / 2), 0, _window.ClientBounds.Width - drawInfo.Destination.Width);
         }
     }
 }

@@ -21,12 +21,9 @@ namespace DefaultEcs.Test.System
                 : base(world.GetEntities().With<bool>().Build(), runner)
             { }
 
-            protected override void Update(int state, ReadOnlySpan<Entity> entities)
+            protected override void Update(int state, in Entity entity)
             {
-                foreach (Entity entity in entities)
-                {
-                    entity.Get<bool>() = true;
-                }
+                entity.Get<bool>() = true;
             }
         }
 

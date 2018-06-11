@@ -46,16 +46,26 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="state">The state to use.</param>
         /// <param name="entities">The <see cref="Entity"/> instances to update.</param>
-        protected abstract void Update(T state, ReadOnlySpan<Entity> entities);
+        protected virtual void Update(T state, ReadOnlySpan<Entity> entities)
+        {
+            for (int i = 0; i < entities.Length; ++i)
+            {
+                Update(state, entities[i]);
+            }
+        }
+
+        /// <summary>
+        /// Update the given <see cref="Entity"/> instance once.
+        /// </summary>
+        /// <param name="state">The state to use.</param>
+        /// <param name="entity">The <see cref="Entity"/> instance to update.</param>
+        protected abstract void Update(T state, in Entity entity);
 
         #endregion
 
         #region ASystem
 
-        private protected sealed override void DefaultUpdate(T state)
-        {
-            Update(state, _set.GetEntities());
-        }
+        private protected sealed override void DefaultUpdate(T state) => Update(state, _set.GetEntities());
 
         internal sealed override void Update(T state, int index, int maxIndex)
         {
