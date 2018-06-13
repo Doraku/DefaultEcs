@@ -2,12 +2,12 @@
 {
     internal readonly struct ComponentAddedMessage<T>
     {
+        public readonly int EntityId;
         public readonly ComponentEnum Components;
-        public readonly Entity Entity;
 
-        public ComponentAddedMessage(in Entity entity, ComponentEnum components)
+        public ComponentAddedMessage(int entityId, ComponentEnum components)
         {
-            Entity = entity;
+            EntityId = entityId;
             Components = components;
         }
     }

@@ -14,6 +14,7 @@ namespace DefaultEcs
     {
         #region Fields
 
+        private readonly int _worldId;
         private readonly ComponentEnum _withFilter;
         private readonly ComponentEnum _withoutFilter;
         private readonly int[] _mapping;
@@ -37,9 +38,11 @@ namespace DefaultEcs
 
         internal EntitySet(World world, ComponentEnum withFilter, ComponentEnum withoutFilter, List<Func<EntitySet, World, IDisposable>> subscriptions)
         {
+            _worldId = world.WorldId;
             _withFilter = withFilter;
             _withoutFilter = withoutFilter;
-            _mapping = Enumerable.Repeat(-1, world.MaxEntityCount).ToArray();
+            _mapping = new int[world.MaxEntityCount];
+            _mapping.Fill(-1);
             _entities = new Entity[world.MaxEntityCount];
             _subscriptions = subscriptions.Select(s => s(this, world)).ToArray();
 
@@ -51,7 +54,7 @@ namespace DefaultEcs
                 if (components.Contains(_withFilter)
                     && components.DoNotContains(_withoutFilter))
                 {
-                    Add(new Entity(world.WorldId, i));
+                    Add(i);
                 }
             }
         }
@@ -61,20 +64,20 @@ namespace DefaultEcs
         #region Methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Add(Entity item)
+        private void Add(int entityId)
         {
-            ref int index = ref _mapping[item.EntityId];
+            ref int index = ref _mapping[entityId];
             if (index == -1)
             {
                 index = ++_lastIndex;
-                _entities[index] = item;
+                _entities[index] = new Entity(_worldId, entityId);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Remove(Entity item)
+        private void Remove(int entityId)
         {
-            ref int index = ref _mapping[item.EntityId];
+            ref int index = ref _mapping[entityId];
             if (index != -1)
             {
                 if (index != _lastIndex)
@@ -89,35 +92,29 @@ namespace DefaultEcs
             }
         }
 
-        internal void Created(in EntityCreatedMessage message)
-        {
-            Add(message.Entity);
-        }
+        internal void Created(in EntityCreatedMessage message) => Add(message.EntityId);
 
-        internal void Disposed(in EntityDisposedMessage message)
-        {
-            Remove(message.Entity);
-        }
+        internal void Disposed(in EntityDisposedMessage message) => Remove(message.EntityId);
 
         internal void WithAdded<T>(in ComponentAddedMessage<T> message)
         {
             if (message.Components.Contains(_withFilter)
                 && message.Components.DoNotContains(_withoutFilter))
             {
-                Add(message.Entity);
+                Add(message.EntityId);
             }
         }
 
-        internal void WithRemoved<T>(in ComponentRemovedMessage<T> message) => Remove(message.Entity);
+        internal void WithRemoved<T>(in ComponentRemovedMessage<T> message) => Remove(message.EntityId);
 
-        internal void WithoutAdded<T>(in ComponentAddedMessage<T> message) => Remove(message.Entity);
+        internal void WithoutAdded<T>(in ComponentAddedMessage<T> message) => Remove(message.EntityId);
 
         internal void WithoutRemoved<T>(in ComponentRemovedMessage<T> message)
         {
             if (message.Components.Contains(_withFilter)
                 && message.Components.DoNotContains(_withoutFilter))
             {
-                Add(message.Entity);
+                Add(message.EntityId);
             }
         }
 

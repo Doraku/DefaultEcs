@@ -65,8 +65,6 @@ namespace DefaultEcs.System
 
         #region ASystem
 
-        private protected sealed override void DefaultUpdate(T state) => Update(state, _set.GetEntities());
-
         internal sealed override void Update(T state, int index, int maxIndex)
         {
             ReadOnlySpan<Entity> entities = _set.GetEntities();

@@ -1,7 +1,7 @@
 ﻿namespace DefaultEcs.System
 {
     /// <summary>
-    /// Represents a base class to process updates. Do not inherit from this class directly.
+    /// Represents a base class to process updates, supporting a <see cref="SystemRunner{T}"/>. Do not inherit from this class directly.
     /// </summary>
     /// <typeparam name="T">The type of the object used as state to update the system.</typeparam>
     public abstract class ASystem<T> : ISystem<T>
@@ -33,8 +33,6 @@
         #endregion
 
         #region Methods
-
-        private protected abstract void DefaultUpdate(T state);
 
         internal abstract void Update(T state, int index, int maxIndex);
 
@@ -68,7 +66,7 @@
             }
             else
             {
-                DefaultUpdate(state);
+                Update(state, 0, 0);
             }
 
             PostUpdate(state);

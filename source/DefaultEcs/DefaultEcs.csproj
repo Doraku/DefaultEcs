@@ -20,7 +20,6 @@
   </PropertyGroup>
   
   <ItemGroup Label="Reference">
-    <PackageReference Condition="'$(TargetFramework)'=='netstandard1.1'" Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="System.Memory" Version="4.5.0" />
     
     <PackageReference Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'" Include="Vsxmd" Version="1.2.0" PrivateAssets="All" />

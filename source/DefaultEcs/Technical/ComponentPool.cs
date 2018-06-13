@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Technical.Message;
 
@@ -21,7 +20,8 @@ namespace DefaultEcs.Technical
 
         public ComponentPool(int maxEntityCount, int maxComponentCount)
         {
-            _mapping = Enumerable.Repeat(-1, maxEntityCount).ToArray();
+            _mapping = new int[maxEntityCount];
+            _mapping.Fill(-1);
             _links = new ComponentLink[maxComponentCount];
             _components = new T[maxComponentCount];
 
@@ -32,7 +32,7 @@ namespace DefaultEcs.Technical
 
         #region Callbacks
 
-        public void On(in EntityDisposedMessage message) => Remove(message.Entity.EntityId);
+        public void On(in EntityDisposedMessage message) => Remove(message.EntityId);
 
         #endregion
 

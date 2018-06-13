@@ -61,8 +61,6 @@ namespace DefaultEcs.System
 
         #region ASystem
 
-        private protected sealed override void DefaultUpdate(TState state) => Update(state, _world.GetAllComponents<TComponent>());
-
         internal sealed override void Update(TState state, int index, int maxIndex)
         {
             Span<TComponent> components = _world.GetAllComponents<TComponent>();

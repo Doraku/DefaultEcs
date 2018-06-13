@@ -2,11 +2,11 @@
 {
     internal readonly struct EntityCreatedMessage
     {
-        public readonly Entity Entity;
+        public readonly int EntityId;
 
-        public EntityCreatedMessage(in Entity entity)
+        public EntityCreatedMessage(int entityId)
         {
-            Entity = entity;
+            EntityId = entityId;
         }
     }
 }

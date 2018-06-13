@@ -4,7 +4,7 @@
     /// Represents a collection of <see cref="ISystem{T}"/> to update sequentially.
     /// </summary>
     /// <typeparam name="T">The type of the object used as state to update the systems.</typeparam>
-    public class SequentialSystem<T> : ISystem<T>
+    public sealed class SequentialSystem<T> : ISystem<T>
     {
         #region Fields
 

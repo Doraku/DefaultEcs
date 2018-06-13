@@ -71,7 +71,7 @@ namespace DefaultEcs
                 ref ComponentEnum components = ref World.EntityComponents[WorldId][EntityId];
                 components[ComponentManager<T>.Flag] = true;
 
-                World.Publish(WorldId, new ComponentAddedMessage<T>(this, components));
+                World.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
             }
         }
 
@@ -104,7 +104,7 @@ namespace DefaultEcs
                 ref ComponentEnum components = ref World.EntityComponents[WorldId][EntityId];
                 components[ComponentManager<T>.Flag] = true;
 
-                World.Publish(WorldId, new ComponentAddedMessage<T>(this, components));
+                World.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
             }
         }
 
@@ -123,7 +123,7 @@ namespace DefaultEcs
             {
                 ref ComponentEnum components = ref World.EntityComponents[WorldId][EntityId];
                 components[ComponentManager<T>.Flag] = false;
-                World.Publish(WorldId, new ComponentRemovedMessage<T>(this, components));
+                World.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
             }
         }
 
@@ -192,7 +192,7 @@ namespace DefaultEcs
         {
             ThrowIfNull();
 
-            World.Publish(WorldId, new EntityDisposedMessage(this));
+            World.Publish(WorldId, new EntityDisposedMessage(EntityId));
         }
 
         #endregion

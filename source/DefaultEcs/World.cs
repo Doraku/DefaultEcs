@@ -25,8 +25,8 @@ namespace DefaultEcs
         private static readonly IntDispenser _worldIdDispenser;
 
         internal static readonly object Locker;
-
         internal static ComponentEnum[][] EntityComponents;
+        internal static Action[][] EntityChildren;
 
         internal static event Action<int> ClearWorld;
 
@@ -53,6 +53,7 @@ namespace DefaultEcs
         {
             _worldIdDispenser = new IntDispenser(0);
             EntityComponents = new ComponentEnum[0][];
+            EntityChildren = new Action[0][];
             Locker = new object();
         }
 
@@ -76,8 +77,10 @@ namespace DefaultEcs
                 if (WorldId >= EntityComponents.Length)
                 {
                     Array.Resize(ref EntityComponents, (WorldId + 1) * 2);
+                    Array.Resize(ref EntityChildren, (WorldId + 1) * 2);
                 }
                 EntityComponents[WorldId] = new ComponentEnum[maxEntityCount];
+                EntityChildren[WorldId] = new Action[maxEntityCount];
             }
 
             Subscribe<EntityDisposedMessage>(On);
@@ -89,8 +92,10 @@ namespace DefaultEcs
 
         private void On(in EntityDisposedMessage message)
         {
-            EntityComponents[WorldId][message.Entity.EntityId].Clear();
-            _entityIdDispenser.ReleaseInt(message.Entity.EntityId);
+            EntityComponents[WorldId][message.EntityId].Clear();
+            _entityIdDispenser.ReleaseInt(message.EntityId);
+
+            EntityChildren[WorldId][message.EntityId]?.Invoke();
         }
 
         #endregion
@@ -138,10 +143,9 @@ namespace DefaultEcs
                 throw new InvalidOperationException("Max number of Entity reached");
             }
 
-            Entity entity = new Entity(WorldId, entityId);
-            Publish(new EntityCreatedMessage(entity));
+            Publish(new EntityCreatedMessage(entityId));
 
-            return entity;
+            return new Entity(WorldId, entityId);
         }
 
         /// <summary>
@@ -192,6 +196,7 @@ namespace DefaultEcs
             lock (typeof(ComponentEnum))
             {
                 EntityComponents[WorldId] = null;
+                EntityChildren[WorldId] = null;
             }
 
             ClearWorld?.Invoke(WorldId);

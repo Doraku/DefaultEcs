@@ -10,6 +10,7 @@ namespace DefaultEcs.System
     {
         #region Fields
 
+        private readonly ISystem<T> _mainSystem;
         private readonly ISystem<T>[] _systems;
 
         private int _lastIndex;
@@ -21,31 +22,39 @@ namespace DefaultEcs.System
         /// <summary>
         /// Initialises a new instance of the <see cref="ParallelSystem{T}"/> class.
         /// </summary>
+        /// <param name="mainSystem">The <see cref="ISystem{T}"/> instance to be updated on the calling thread.</param>
+        /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
+        /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
+        public ParallelSystem(ISystem<T> mainSystem, SystemRunner<T> runner, params ISystem<T>[] systems)
+            : base(runner)
+        {
+            _mainSystem = mainSystem;
+            _systems = systems ?? new ISystem<T>[0];
+        }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="ParallelSystem{T}"/> class.
+        /// </summary>
         /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
         public ParallelSystem(SystemRunner<T> runner, params ISystem<T>[] systems)
-            : base(runner)
-        {
-            _systems = systems ?? new ISystem<T>[0];
-        }
+            : this(null, runner, systems)
+        { }
 
         #endregion
 
         #region ASystem
 
-        private protected override void DefaultUpdate(T state)
-        {
-            foreach (ISystem<T> system in _systems)
-            {
-                system?.Update(state);
-            }
-        }
-
         internal override void Update(T state, int index, int maxIndex)
         {
+            if (index == maxIndex)
+            {
+                _mainSystem?.Update(state);
+            }
+
             while ((index = Interlocked.Increment(ref _lastIndex)) < _systems.Length)
             {
-                _systems[index].Update(state);
+                _systems[index]?.Update(state);
             }
         }
 
