@@ -157,7 +157,7 @@ namespace DefaultEcs
         /// </summary>
         /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetAsParentOf(Entity child) => child.SetAsChildOf(this);
+        public void SetAsParentOf(in Entity child) => child.SetAsChildOf(this);
 
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         //public bool IsEnable<T>()

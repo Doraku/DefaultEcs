@@ -16,9 +16,27 @@ It should be noted that the World class also implement the IDisposable interface
 ## Entity
 Entities are simple struct wraping above two Int32, acting as a key to manage components.
 
-Entities are created s such
+Entities are created as such
 ```csharp
 Entity entity = world.CreateEntity();
+```
+
+To clear an entity, simply call its Dispose method
+```csharp
+entity.Dispose();
+```
+
+It is possible to create a relationship between entities
+```csharp
+Entity parentEntity = world.CreateEntity();
+Entity childEntity = world.CreateEntity();
+
+// both lines have the same outcome
+parentEntity.SetAsParentOf(childEntity);
+childEntity.SetAsChildOf(parentEntity);
+
+// disposing the parent will also dispose the child
+parentEntity.Dispose();
 ```
 
 ## Component
@@ -30,7 +48,7 @@ public struct Example
 }
 ```
 
-To reduce memory, it is possible to set a maximum count for a given component type. If nothing is set, then the maximum entity count of the world will be used as needed.
+To reduce memory, it is possible to set a maximum count for a given component type. If nothing is set, then the maximum entity count of the world will be used.
 ```csharp
 int maxComponentCount = 42;
 world.SetComponentTypeMaximumCount<Example>(maxComponentCount);
@@ -79,10 +97,10 @@ This class is used to quickly make a system with a given custom action to be cal
 ```C#
 private void Exit(float elaspedTime)
 {
-	if (EscapedIsPressed)
-	{
-		// escape code
-	}
+    if (EscapedIsPressed)
+    {
+        // escape code
+    }
 }
 
 ...
@@ -99,12 +117,11 @@ system.Update(elapsedTime);
 This class is used to easily create a list of system to be updated in a sequential order.
 ```C#
 ISystem<float> system = new SequentialSystem<float>(
-		new InputSystem(),
-		new AISystem(),
-		new PositionSystem(),
-		new DrawSystem()
-	);
-
+        new InputSystem(),
+        new AISystem(),
+        new PositionSystem(),
+        new DrawSystem()
+    );
 ...
 
 // this will call in order InputSystem, AISystem, PositionSystem and DrawSystem
@@ -121,18 +138,15 @@ public sealed class VelocitySystem : AEntitySetSystem<float>
     {
     }
 
-    protected override void Update(float elaspedTime, ReadOnlySpan<Entity> entities)
+    protected override void Update(float elaspedTime, in Entity entity)
     {
-        foreach (Entity entity in entities)
-        {
-            ref Velocity velocity = ref entity.Get<Velocity>();
-            ref Position position = ref entity.Get<Position>();
+        ref Velocity velocity = ref entity.Get<Velocity>();
+        ref Position position = ref entity.Get<Position>();
 
-            Vector2 offset = velocity.Value * elaspedTime;
+        Vector2 offset = velocity.Value * elaspedTime;
 
-            position.Value.X += offset.X;
-            position.Value.Y += offset.Y;
-        }
+        position.Value.X += offset.X;
+        position.Value.Y += offset.Y;
     }
 }
 ```
@@ -152,15 +166,18 @@ public class DrawSystem : AComponentSystem<float, DrawInfo>
         _square = square;
     }
 
-    protected override void Update(float elaspedTime, Span<DrawInfo> components)
+    protected override void PreUpdate()
     {
         _batch.Begin();
+    }
 
-        for (int i = 0; i < components.Length; ++i)
-        {
-            _batch.Draw(_square, components[i].Destination, components[i].Color);
-        }
+    protected override void Update(float elaspedTime, ref DrawInfo component)
+    {
+        _batch.Draw(_square, component.Destination, component.Color);
+    }
 
+    protected override void PostUpdate()
+    {
         _batch.End();
     }
 }
