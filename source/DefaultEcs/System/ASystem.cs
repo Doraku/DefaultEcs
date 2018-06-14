@@ -20,7 +20,7 @@
         /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
         protected ASystem(SystemRunner<T> runner)
         {
-            _runner = runner;
+            _runner = runner ?? SystemRunner<T>.Default;
         }
 
         /// <summary>
@@ -60,14 +60,7 @@
         {
             PreUpdate(state);
 
-            if (_runner != null)
-            {
-                _runner.Update(state, this);
-            }
-            else
-            {
-                Update(state, 0, 0);
-            }
+            _runner.Update(state, this);
 
             PostUpdate(state);
         }

@@ -15,6 +15,8 @@ namespace DefaultEcs.System
     {
         #region Fields
 
+        internal static readonly SystemRunner<T> Default = new SystemRunner<T>(1);
+
         private readonly CancellationTokenSource _disposeHandle;
         private readonly ManualResetEventSlim[] _startHandles;
         private readonly ManualResetEventSlim[] _endHandles;
@@ -81,7 +83,7 @@ namespace DefaultEcs.System
                 handle.Set();
             }
 
-            _currentSystem.Update(_currentState, _tasks.Length, _tasks.Length);
+            system.Update(state, _tasks.Length, _tasks.Length);
 
             foreach (ManualResetEventSlim handle in _endHandles)
             {
