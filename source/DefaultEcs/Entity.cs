@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
@@ -88,12 +89,10 @@ namespace DefaultEcs
         public void SetSameAs<T>(in Entity reference)
         {
             ThrowIfNull();
-
             if (WorldId != reference.WorldId)
             {
                 throw new InvalidOperationException("Reference Entity comes from a different World");
             }
-
             if (!reference.Has<T>())
             {
                 throw new InvalidOperationException($"Reference Entity does not have a componenet of type {nameof(T)}");
@@ -136,10 +135,29 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
 
-        //public void SetChildren(params Entity[] children)
-        //{
+        /// <summary>
+        /// Makes it so when given <see cref="Entity"/> is disposed, current <see cref="Entity"/> will also be disposed.
+        /// </summary>
+        /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetAsChildOf(in Entity parent)
+        {
+            HashSet<int> children = World.EntityChildren[WorldId][parent.EntityId];
+            if (children == null)
+            {
+                children = new HashSet<int>();
+                World.EntityChildren[WorldId][parent.EntityId] = children;
+            }
+            children.Add(EntityId);
+            World.EntityParents[WorldId][EntityId] += children.Remove;
+        }
 
-        //}
+        /// <summary>
+        /// Makes it so when current <see cref="Entity"/> is disposed, given <see cref="Entity"/> will also be disposed.
+        /// </summary>
+        /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetAsParentOf(Entity child) => child.SetAsChildOf(this);
 
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         //public bool IsEnable<T>()

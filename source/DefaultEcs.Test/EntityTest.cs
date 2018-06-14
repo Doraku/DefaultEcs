@@ -367,6 +367,76 @@ namespace DefaultEcs.Test
             }
         }
 
+        [Fact]
+        public void Dispose_Should_dispose_children_When_SetAsChildOf()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().Build())
+            {
+                Entity parent = world.CreateEntity();
+                Entity other = world.CreateEntity();
+                Entity child1 = world.CreateEntity();
+                Entity child2 = world.CreateEntity();
+
+                child1.SetAsChildOf(parent);
+                child2.SetAsChildOf(parent);
+
+                Check.That(set.GetEntities().Length).IsEqualTo(4);
+
+                parent.Dispose();
+
+                Check.That(set.GetEntities().Length).IsEqualTo(1);
+                Check.That(set.GetEntities()[0]).IsEqualTo(other);
+            }
+        }
+
+        [Fact]
+        public void Dispose_Should_dispose_children_When_SetAsParentOf()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().Build())
+            {
+                Entity parent = world.CreateEntity();
+                Entity other = world.CreateEntity();
+                Entity child1 = world.CreateEntity();
+                Entity child2 = world.CreateEntity();
+
+                parent.SetAsParentOf(child1);
+                parent.SetAsParentOf(child2);
+
+                Check.That(set.GetEntities().Length).IsEqualTo(4);
+
+                parent.Dispose();
+
+                Check.That(set.GetEntities().Length).IsEqualTo(1);
+                Check.That(set.GetEntities()[0]).IsEqualTo(other);
+            }
+        }
+
+        [Fact]
+        public void Dispose_Should_not_throw_When_dependency_graph_is_circular()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().Build())
+            {
+                Entity entity1 = world.CreateEntity();
+                Entity other = world.CreateEntity();
+                Entity entity2 = world.CreateEntity();
+                Entity entity3 = world.CreateEntity();
+
+                entity1.SetAsParentOf(entity2);
+                entity2.SetAsParentOf(entity3);
+                entity3.SetAsParentOf(entity1);
+
+                Check.That(set.GetEntities().Length).IsEqualTo(4);
+
+                Check.ThatCode(entity1.Dispose).Not.ThrowsAny();
+
+                Check.That(set.GetEntities().Length).IsEqualTo(1);
+                Check.That(set.GetEntities()[0]).IsEqualTo(other);
+            }
+        }
+
         #endregion
     }
 }

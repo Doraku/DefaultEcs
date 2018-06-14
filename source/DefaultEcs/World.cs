@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
@@ -26,7 +27,8 @@ namespace DefaultEcs
 
         internal static readonly object Locker;
         internal static ComponentEnum[][] EntityComponents;
-        internal static Action[][] EntityChildren;
+        internal static HashSet<int>[][] EntityChildren;
+        internal static Func<int, bool>[][] EntityParents;
 
         internal static event Action<int> ClearWorld;
 
@@ -53,7 +55,8 @@ namespace DefaultEcs
         {
             _worldIdDispenser = new IntDispenser(0);
             EntityComponents = new ComponentEnum[0][];
-            EntityChildren = new Action[0][];
+            EntityChildren = new HashSet<int>[0][];
+            EntityParents = new Func<int, bool>[0][];
             Locker = new object();
         }
 
@@ -78,9 +81,11 @@ namespace DefaultEcs
                 {
                     Array.Resize(ref EntityComponents, (WorldId + 1) * 2);
                     Array.Resize(ref EntityChildren, (WorldId + 1) * 2);
+                    Array.Resize(ref EntityParents, (WorldId + 1) * 2);
                 }
                 EntityComponents[WorldId] = new ComponentEnum[maxEntityCount];
-                EntityChildren[WorldId] = new Action[maxEntityCount];
+                EntityChildren[WorldId] = new HashSet<int>[maxEntityCount];
+                EntityParents[WorldId] = new Func<int, bool>[maxEntityCount];
             }
 
             Subscribe<EntityDisposedMessage>(On);
@@ -95,7 +100,21 @@ namespace DefaultEcs
             EntityComponents[WorldId][message.EntityId].Clear();
             _entityIdDispenser.ReleaseInt(message.EntityId);
 
-            EntityChildren[WorldId][message.EntityId]?.Invoke();
+            Func<int, bool> cleanParent = EntityParents[WorldId][message.EntityId];
+            EntityParents[WorldId][message.EntityId] = null;
+            cleanParent?.Invoke(message.EntityId);
+
+            HashSet<int> children = EntityChildren[WorldId][message.EntityId];
+            if (children != null)
+            {
+                EntityChildren[WorldId][message.EntityId] = null;
+                int[] childrenIds = new int[children.Count];
+                children.CopyTo(childrenIds);
+                foreach (int childId in childrenIds)
+                {
+                    Publish(new EntityDisposedMessage(childId));
+                }
+            }
         }
 
         #endregion
@@ -117,7 +136,6 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the object to be called back with.</typeparam>
         /// <param name="action">The delegate to be called back.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IDisposable Subscribe<T>(SubscribeAction<T> action) => Publisher<T>.Subscribe(WorldId, action);
 
         /// <summary>
@@ -133,7 +151,6 @@ namespace DefaultEcs
         /// </summary>
         /// <returns>The created <see cref="Entity"/>.</returns>
         /// <exception cref="InvalidOperationException">Max number of <see cref="Entity"/> reached.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Entity CreateEntity()
         {
             int entityId = _entityIdDispenser.GetFreeInt();
@@ -156,7 +173,6 @@ namespace DefaultEcs
         /// <param name="maxComponentCount">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
         /// <returns>The current <see cref="World"/>.</returns>
         /// <exception cref="ArgumentException"><paramref name="maxComponentCount"/> cannot be negative.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public World SetComponentTypeMaximumCount<T>(int maxComponentCount)
         {
             if (maxComponentCount < 0)
@@ -197,6 +213,7 @@ namespace DefaultEcs
             {
                 EntityComponents[WorldId] = null;
                 EntityChildren[WorldId] = null;
+                EntityParents[WorldId] = null;
             }
 
             ClearWorld?.Invoke(WorldId);
