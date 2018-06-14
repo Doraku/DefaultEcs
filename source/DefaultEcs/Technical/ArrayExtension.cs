@@ -2,16 +2,12 @@
 {
     internal static class ArrayExtension
     {
-        public static unsafe void Fill<T>(this T[] array, in T value)
+        public static void Fill<T>(this T[] array, in T value)
             where T : unmanaged
         {
-            fixed (T* source = array)
+            for (int i = 0; i < array.Length; ++i)
             {
-                T* item = source;
-                for (int i = 0; i < array.Length; ++i, ++item)
-                {
-                    *item = value;
-                }
+                array[i] = value;
             }
         }
     }
