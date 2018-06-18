@@ -7,7 +7,7 @@ namespace DefaultEcs.Technical
     {
         #region Fields
 
-        private int[] _bitArray;
+        private uint[] _bitArray;
 
         #endregion
 
@@ -18,24 +18,24 @@ namespace DefaultEcs.Technical
         public bool this[ComponentFlag flag]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => flag.Index < _bitArray?.Length && (_bitArray[flag.Index] & (1 << flag.Bit)) != 0;
+            get => flag.Index < _bitArray?.Length && (_bitArray[flag.Index] & flag.Bit) != 0;
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 if ((_bitArray?.Length ?? 0) < flag.Index + 1)
                 {
-                    int[] newBitArray = new int[flag.Index + 1];
+                    uint[] newBitArray = new uint[flag.Index + 1];
                     _bitArray?.CopyTo(newBitArray, 0);
                     _bitArray = newBitArray;
                 }
 
                 if (value)
                 {
-                    _bitArray[flag.Index] |= 1 << flag.Bit;
+                    _bitArray[flag.Index] |= flag.Bit;
                 }
                 else
                 {
-                    _bitArray[flag.Index] &= ~(1 << flag.Bit);
+                    _bitArray[flag.Index] &= ~flag.Bit;
                 }
             }
         }
@@ -51,7 +51,7 @@ namespace DefaultEcs.Technical
             {
                 for (int i = 0; i < filter._bitArray.Length; ++i)
                 {
-                    int part = filter._bitArray[i];
+                    uint part = filter._bitArray[i];
                     if (part != 0
                         && (i >= _bitArray?.Length || (_bitArray[i] & part) != part))
                     {
@@ -70,7 +70,7 @@ namespace DefaultEcs.Technical
             {
                 for (int i = 0; i < filter._bitArray.Length; ++i)
                 {
-                    int part = filter._bitArray[i];
+                    uint part = filter._bitArray[i];
                     if (part != 0
                         && i <= _bitArray?.Length
                         && (_bitArray[i] & part) != 0)
@@ -97,7 +97,7 @@ namespace DefaultEcs.Technical
         {
             if (!IsNull)
             {
-                _bitArray.Fill(0);
+                _bitArray.Fill(0u);
             }
         }
 

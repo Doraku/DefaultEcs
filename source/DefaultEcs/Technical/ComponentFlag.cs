@@ -6,14 +6,19 @@
 
         private static ComponentFlag _lastFlag;
 
-        public readonly short Index;
-        public readonly short Bit;
+        public readonly int Index;
+        public readonly uint Bit;
 
         #endregion
 
         #region Initialisation
 
-        public ComponentFlag(short index, short bit)
+        static ComponentFlag()
+        {
+            _lastFlag = new ComponentFlag(0, 1u);
+        }
+
+        public ComponentFlag(int index, uint bit)
         {
             Index = index;
             Bit = bit;
@@ -28,7 +33,7 @@
             lock (typeof(ComponentFlag))
             {
                 ComponentFlag flag = _lastFlag;
-                _lastFlag = _lastFlag.Bit < 31 ? new ComponentFlag(_lastFlag.Index, (short)(_lastFlag.Bit + 1)) : new ComponentFlag((short)(_lastFlag.Index + 1), 0);
+                _lastFlag = _lastFlag.Bit != 0x8000_0000 ? new ComponentFlag(_lastFlag.Index, _lastFlag.Bit << 1) : new ComponentFlag(_lastFlag.Index + 1, 1u);
 
                 return flag;
             }
