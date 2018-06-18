@@ -26,9 +26,7 @@ namespace DefaultEcs
         private static readonly IntDispenser _worldIdDispenser;
 
         internal static readonly object Locker;
-        internal static ComponentEnum[][] EntityComponents;
-        internal static HashSet<int>[][] EntityChildren;
-        internal static Func<int, bool>[][] EntityParents;
+        internal static EntityInfo[][] EntityInfos;
 
         internal static event Action<int> ClearWorld;
 
@@ -45,7 +43,7 @@ namespace DefaultEcs
         /// <summary>
         /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can create.
         /// </summary>
-        public int MaxEntityCount => EntityComponents[WorldId].Length;
+        public int MaxEntityCount => EntityInfos[WorldId].Length;
 
         #endregion
 
@@ -54,9 +52,7 @@ namespace DefaultEcs
         static World()
         {
             _worldIdDispenser = new IntDispenser(0);
-            EntityComponents = new ComponentEnum[0][];
-            EntityChildren = new HashSet<int>[0][];
-            EntityParents = new Func<int, bool>[0][];
+            EntityInfos = new EntityInfo[0][];
             Locker = new object();
         }
 
@@ -77,15 +73,11 @@ namespace DefaultEcs
 
             lock (typeof(ComponentEnum))
             {
-                if (WorldId >= EntityComponents.Length)
+                if (WorldId >= EntityInfos.Length)
                 {
-                    Array.Resize(ref EntityComponents, (WorldId + 1) * 2);
-                    Array.Resize(ref EntityChildren, (WorldId + 1) * 2);
-                    Array.Resize(ref EntityParents, (WorldId + 1) * 2);
+                    Array.Resize(ref EntityInfos, (WorldId + 1) * 2);
                 }
-                EntityComponents[WorldId] = new ComponentEnum[maxEntityCount];
-                EntityChildren[WorldId] = new HashSet<int>[maxEntityCount];
-                EntityParents[WorldId] = new Func<int, bool>[maxEntityCount];
+                EntityInfos[WorldId] = new EntityInfo[maxEntityCount];
             }
 
             Subscribe<EntityDisposedMessage>(On);
@@ -97,17 +89,17 @@ namespace DefaultEcs
 
         private void On(in EntityDisposedMessage message)
         {
-            EntityComponents[WorldId][message.EntityId].Clear();
+            EntityInfos[WorldId][message.EntityId].Components.Clear();
             _entityIdDispenser.ReleaseInt(message.EntityId);
 
-            Func<int, bool> cleanParent = EntityParents[WorldId][message.EntityId];
-            EntityParents[WorldId][message.EntityId] = null;
+            Func<int, bool> cleanParent = EntityInfos[WorldId][message.EntityId].Parents;
+            EntityInfos[WorldId][message.EntityId].Parents = null;
             cleanParent?.Invoke(message.EntityId);
 
-            HashSet<int> children = EntityChildren[WorldId][message.EntityId];
+            HashSet<int> children = EntityInfos[WorldId][message.EntityId].Children;
             if (children != null)
             {
-                EntityChildren[WorldId][message.EntityId] = null;
+                EntityInfos[WorldId][message.EntityId].Children = null;
                 int[] childrenIds = new int[children.Count];
                 children.CopyTo(childrenIds);
                 foreach (int childId in childrenIds)
@@ -211,9 +203,7 @@ namespace DefaultEcs
         {
             lock (typeof(ComponentEnum))
             {
-                EntityComponents[WorldId] = null;
-                EntityChildren[WorldId] = null;
-                EntityParents[WorldId] = null;
+                EntityInfos[WorldId] = null;
             }
 
             ClearWorld?.Invoke(WorldId);

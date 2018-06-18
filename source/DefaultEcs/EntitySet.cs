@@ -50,7 +50,7 @@ namespace DefaultEcs
 
             for (int i = 0; i <= world.LastEntityId; ++i)
             {
-                ref ComponentEnum components = ref World.EntityComponents[world.WorldId][i];
+                ref ComponentEnum components = ref World.EntityInfos[world.WorldId][i].Components;
                 if (components.Contains(_withFilter)
                     && components.DoNotContains(_withoutFilter))
                 {

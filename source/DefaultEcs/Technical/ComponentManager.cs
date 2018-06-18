@@ -65,10 +65,10 @@ namespace DefaultEcs.Technical
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static ComponentPool<T> Add(int worldId) => Add(worldId, World.EntityComponents[worldId].Length, World.EntityComponents[worldId].Length);
+        private static ComponentPool<T> Add(int worldId) => Add(worldId, World.EntityInfos[worldId].Length, World.EntityInfos[worldId].Length);
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static ComponentPool<T> Add(int worldId, int maxComponentCount) => Add(worldId, World.EntityComponents[worldId].Length, maxComponentCount);
+        private static ComponentPool<T> Add(int worldId, int maxComponentCount) => Add(worldId, World.EntityInfos[worldId].Length, maxComponentCount);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComponentPool<T> GetOrCreate(int worldId, int maxComponentCount)

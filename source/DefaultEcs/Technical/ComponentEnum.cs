@@ -97,10 +97,7 @@ namespace DefaultEcs.Technical
         {
             if (!IsNull)
             {
-                for (int i = 0; i < _bitArray.Length; ++i)
-                {
-                    _bitArray[i] = 0;
-                }
+                _bitArray.Fill(0);
             }
         }
 

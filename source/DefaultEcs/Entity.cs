@@ -69,7 +69,7 @@ namespace DefaultEcs
 
             if (ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component))
             {
-                ref ComponentEnum components = ref World.EntityComponents[WorldId][EntityId];
+                ref ComponentEnum components = ref World.EntityInfos[WorldId][EntityId].Components;
                 components[ComponentManager<T>.Flag] = true;
 
                 World.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
@@ -100,7 +100,7 @@ namespace DefaultEcs
 
             if (ComponentManager<T>.Pools[WorldId].SetSameAs(EntityId, reference.EntityId))
             {
-                ref ComponentEnum components = ref World.EntityComponents[WorldId][EntityId];
+                ref ComponentEnum components = ref World.EntityInfos[WorldId][EntityId].Components;
                 components[ComponentManager<T>.Flag] = true;
 
                 World.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
@@ -120,7 +120,7 @@ namespace DefaultEcs
 
             if ((WorldId < ComponentManager<T>.Pools.Length ? ComponentManager<T>.Pools[WorldId] : null)?.Remove(EntityId) ?? false)
             {
-                ref ComponentEnum components = ref World.EntityComponents[WorldId][EntityId];
+                ref ComponentEnum components = ref World.EntityInfos[WorldId][EntityId].Components;
                 components[ComponentManager<T>.Flag] = false;
                 World.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
             }
@@ -142,14 +142,16 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetAsChildOf(in Entity parent)
         {
-            HashSet<int> children = World.EntityChildren[WorldId][parent.EntityId];
+            ref HashSet<int> children = ref World.EntityInfos[WorldId][parent.EntityId].Children;
             if (children == null)
             {
                 children = new HashSet<int>();
-                World.EntityChildren[WorldId][parent.EntityId] = children;
             }
-            children.Add(EntityId);
-            World.EntityParents[WorldId][EntityId] += children.Remove;
+
+            if (children.Add(EntityId))
+            {
+                World.EntityInfos[WorldId][EntityId].Parents += children.Remove;
+            }
         }
 
         /// <summary>
