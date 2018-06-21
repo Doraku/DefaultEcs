@@ -26,6 +26,7 @@ namespace DefaultEcs
         private static readonly IntDispenser _worldIdDispenser;
 
         internal static readonly object Locker;
+        internal static readonly ComponentFlag AliveFlag;
         internal static EntityInfo[][] EntityInfos;
 
         internal static event Action<int> ClearWorld;
@@ -152,6 +153,7 @@ namespace DefaultEcs
                 throw new InvalidOperationException("Max number of Entity reached");
             }
 
+            EntityInfos[WorldId][entityId].Components[AliveFlag] = true;
             Publish(new EntityCreatedMessage(entityId));
 
             return new Entity(WorldId, entityId);

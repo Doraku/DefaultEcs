@@ -48,6 +48,8 @@ namespace DefaultEcs
 
             _lastIndex = -1;
 
+            _withFilter[World.AliveFlag] = true;
+
             for (int i = 0; i <= world.LastEntityId; ++i)
             {
                 ref ComponentEnum components = ref World.EntityInfos[world.WorldId][i].Components;

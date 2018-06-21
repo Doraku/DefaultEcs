@@ -18,7 +18,7 @@
             _lastFlag = new ComponentFlag(0, 1u);
         }
 
-        public ComponentFlag(int index, uint bit)
+        private ComponentFlag(int index, uint bit)
         {
             Index = index;
             Bit = bit;
