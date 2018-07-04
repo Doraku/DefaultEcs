@@ -55,6 +55,7 @@ namespace DefaultEcs
             _worldIdDispenser = new IntDispenser(0);
             EntityInfos = new EntityInfo[0][];
             Locker = new object();
+            AliveFlag = ComponentFlag.GetNextFlag();
         }
 
         /// <summary>
