@@ -9,14 +9,6 @@ namespace DefaultEcs.Test
         #region Tests
 
         [Fact]
-        public void Has_Should_throw_When_Entity_not_created_from_World()
-        {
-            Entity entity = default;
-
-            Check.ThatCode(() => entity.Has<bool>()).Throws<InvalidOperationException>();
-        }
-
-        [Fact]
         public void Has_Should_return_false_When_World_does_not_have_component()
         {
             using (World world = new World(1))
@@ -434,6 +426,29 @@ namespace DefaultEcs.Test
 
                 Check.That(set.GetEntities().Length).IsEqualTo(1);
                 Check.That(set.GetEntities()[0]).IsEqualTo(other);
+            }
+        }
+
+        [Fact]
+        public void SetAsParentOf_Should_throw_When_Entity_not_created_from_a_World()
+        {
+            Entity parent = default;
+            Entity child = default;
+
+            Check.ThatCode(() => parent.SetAsParentOf(child)).Throws<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void SetAsParentOf_Should_throw_When_parent_and_child_not_created_from_same_World()
+        {
+            using (World world1 = new World(1))
+            using (World world2 = new World(1))
+            {
+
+                Entity parent = world1.CreateEntity();
+                Entity child = world2.CreateEntity();
+
+                Check.ThatCode(() => parent.SetAsParentOf(child)).Throws<InvalidOperationException>();
             }
         }
 

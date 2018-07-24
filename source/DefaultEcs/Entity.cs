@@ -45,14 +45,8 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="WorldId"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has<T>()
-        {
-            ThrowIfNull();
-
-            return WorldId < ComponentManager<T>.Pools.Length && (ComponentManager<T>.Pools[WorldId]?.Has(EntityId) ?? false);
-        }
+        public bool Has<T>() => WorldId < ComponentManager<T>.Pools.Length && (ComponentManager<T>.Pools[WorldId]?.Has(EntityId) ?? false);
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
@@ -60,7 +54,7 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="WorldId"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set<T>(in T component = default)
@@ -82,8 +76,8 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="reference">The other <see cref="Entity"/> used as reference.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="WorldId"/>.</exception>
-        /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> comes from a different <see cref="WorldId"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> comes from a different <see cref="World"/>.</exception>
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetSameAs<T>(in Entity reference)
@@ -112,7 +106,7 @@ namespace DefaultEcs
         /// If current <see cref="Entity"/> had a component of type <typeparamref name="T"/>, a <see cref="ComponentRemovedMessage{T}"/> message is published.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
-        /// <exception cref="InvalidOperationException">Entity was not created from a <see cref="WorldId"/>.</exception>
+        /// <exception cref="InvalidOperationException">Entity was not created from a <see cref="World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Remove<T>()
         {
@@ -131,7 +125,7 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>A reference to the component.</returns>
-        /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="WorldId"/> or does not have a component of type <typeparamref name="T"/>.</exception>
+        /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="World"/> or does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
 
@@ -139,9 +133,17 @@ namespace DefaultEcs
         /// Makes it so when given <see cref="Entity"/> is disposed, current <see cref="Entity"/> will also be disposed.
         /// </summary>
         /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetAsChildOf(in Entity parent)
         {
+            ThrowIfNull();
+            if (WorldId != parent.WorldId)
+            {
+                throw new InvalidOperationException("Child and parent Entity come from a different World");
+            }
+
             ref HashSet<int> children = ref World.EntityInfos[WorldId][parent.EntityId].Children;
             if (children == null)
             {
@@ -158,6 +160,8 @@ namespace DefaultEcs
         /// Makes it so when current <see cref="Entity"/> is disposed, given <see cref="Entity"/> will also be disposed.
         /// </summary>
         /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetAsParentOf(in Entity child) => child.SetAsChildOf(this);
 
@@ -206,7 +210,7 @@ namespace DefaultEcs
         /// Clean the current <see cref="Entity"/> of all its components and a <see cref="EntityDisposedMessage"/> message is published.
         /// The current <see cref="Entity"/> should not be used again after calling this method.
         /// </summary>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="WorldId"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
@@ -238,7 +242,7 @@ namespace DefaultEcs
         /// true if obj and this instance are the same type and represent the same value;
         /// otherwise, false.
         /// </returns>
-        public override bool Equals(object obj) => obj is Entity entity ? Equals(entity) : false;
+        public override bool Equals(object obj) => obj is Entity entity && Equals(entity);
 
         /// <summary>
         /// Returns the hash code for this instance.
