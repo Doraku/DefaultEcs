@@ -53,7 +53,7 @@ namespace DefaultEcs
         static World()
         {
             _worldIdDispenser = new IntDispenser(0);
-            EntityInfos = new EntityInfo[0][];
+            EntityInfos = new EntityInfo[1][];
             Locker = new object();
             AliveFlag = ComponentFlag.GetNextFlag();
         }
@@ -77,7 +77,7 @@ namespace DefaultEcs
             {
                 if (WorldId >= EntityInfos.Length)
                 {
-                    Array.Resize(ref EntityInfos, (WorldId + 1) * 2);
+                    Array.Resize(ref EntityInfos, WorldId * 2);
                 }
                 EntityInfos[WorldId] = new EntityInfo[maxEntityCount];
             }

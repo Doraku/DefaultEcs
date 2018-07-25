@@ -51,7 +51,7 @@ namespace DefaultEcs.Technical
 
         static Publisher()
         {
-            Actions = new SubscribeAction<T>[0];
+            Actions = new SubscribeAction<T>[1];
 
             lock (World.Locker)
             {
@@ -81,7 +81,7 @@ namespace DefaultEcs.Technical
             {
                 if (worldId >= Actions.Length)
                 {
-                    Array.Resize(ref Actions, (worldId + 1) * 2);
+                    Array.Resize(ref Actions, worldId * 2);
                 }
 
                 Actions[worldId] += action;

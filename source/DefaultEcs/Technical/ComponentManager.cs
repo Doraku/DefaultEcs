@@ -20,7 +20,7 @@ namespace DefaultEcs.Technical
         {
             Flag = ComponentFlag.GetNextFlag();
 
-            Pools = new ComponentPool<T>[0];
+            Pools = new ComponentPool<T>[1];
 
             lock (World.Locker)
             {
@@ -50,7 +50,7 @@ namespace DefaultEcs.Technical
             {
                 if (worldId >= Pools.Length)
                 {
-                    Array.Resize(ref Pools, (worldId + 1) * 2);
+                    Array.Resize(ref Pools, worldId * 2);
                 }
 
                 ref ComponentPool<T> pool = ref Pools[worldId];
