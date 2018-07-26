@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras/1.2.2">
+﻿<Project Sdk="MSBuild.Sdk.Extras/1.6.41">
   <PropertyGroup Label="Compilation">
     <LangVersion>latest</LangVersion>
     <TargetFrameworks>
@@ -33,7 +33,7 @@
     <PackageLicenseUrl>https://github.com/Doraku/DefaultEcs/blob/master/LICENSE.md</PackageLicenseUrl>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.5.0</Version>
+    <Version>0.5.1</Version>
     <PackageReleaseNotes>
     </PackageReleaseNotes>
   </PropertyGroup>

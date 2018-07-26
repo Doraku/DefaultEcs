@@ -164,14 +164,6 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Remove_Should_throw_When_Entity_not_created_from_World()
-        {
-            Entity entity = default;
-
-            Check.ThatCode(() => entity.Remove<bool>()).Throws<InvalidOperationException>();
-        }
-
-        [Fact]
         public void Remove_Should_remove_component()
         {
             using (World world = new World(1))
@@ -313,14 +305,6 @@ namespace DefaultEcs.Test
 
                 Check.That(entity.Get<bool>()).IsFalse();
             }
-        }
-
-        [Fact]
-        public void Dispose_Should_throw_When_Entity_not_created_from_World()
-        {
-            Entity entity = default;
-
-            Check.ThatCode(() => entity.Dispose()).Throws<InvalidOperationException>();
         }
 
         [Fact]

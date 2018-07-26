@@ -38,6 +38,9 @@ namespace DefaultEcs.Technical
 
         #region Methods
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void ThrowMaxNumberOfComponentReached() => throw new InvalidOperationException($"Max number of component of type {nameof(T)} reached");
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has(int entityId) => _mapping[entityId] != -1;
 
@@ -54,7 +57,7 @@ namespace DefaultEcs.Technical
 
             if (_lastComponentIndex == _components.Length - 1)
             {
-                throw new InvalidOperationException($"Max number of component of type {nameof(T)} reached");
+                ThrowMaxNumberOfComponentReached();
             }
 
             _components[++_lastComponentIndex] = component;

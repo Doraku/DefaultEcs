@@ -45,21 +45,6 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 
             protected override void Update(float state, in Entity entity)
             {
-                ref Position position = ref entity.Get<Position>();
-
-                position.X += entity.Get<Speed>().X * state;
-                position.Y += entity.Get<Speed>().Y * state;
-            }
-        }
-
-        private sealed class TestSystem2 : AEntitySetSystem<float>
-        {
-            public TestSystem2(World world, SystemRunner<float> runner)
-                : base(world.GetEntities().With<Position>().With<Speed>().Build(), runner)
-            { }
-
-            protected override void Update(float state, in Entity entity)
-            {
                 Speed speed = entity.Get<Speed>();
                 ref Position position = ref entity.Get<Position>();
 
@@ -97,7 +82,6 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private SystemRunner<float> _runner;
         private ISystem<float> _systemSingle;
         private ISystem<float> _system;
-        private ISystem<float> _system2;
         private ISystem<float> _systemTPL;
 
         [Params(100000)]
@@ -110,7 +94,6 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             _runner = new SystemRunner<float>(Environment.ProcessorCount);
             _systemSingle = new TestSystem(_world, null);
             _system = new TestSystem(_world, _runner);
-            _system2 = new TestSystem2(_world, _runner);
             _systemTPL = new TestSystemTPL(_world);
 
             for (int i = 0; i < EntityCount; ++i)
@@ -132,10 +115,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public void DefaultEcs_UpdateSingle() => _systemSingle.Update(1f / 60f);
 
         [Benchmark]
-        public void DefaultEcs_Update() => _system.Update(1f / 60f);
-
-        [Benchmark]
-        public void DefaultEcs_Update2() => _system2.Update(1f / 60f);
+        public void DefaultEcs_UpdateMulti() => _system.Update(1f / 60f);
 
         [Benchmark]
         public void DefaultEcs_UpdateTPL() => _systemTPL.Update(1f / 60f);

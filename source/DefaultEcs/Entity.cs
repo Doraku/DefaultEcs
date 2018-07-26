@@ -31,35 +31,19 @@ namespace DefaultEcs
 
         #region Methods
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ThrowIfNull()
-        {
-            if (WorldId == 0)
-            {
-                throw new InvalidOperationException("Entity was not created from a World");
-            }
-        }
-
-        /// <summary>
-        /// Returns whether the current <see cref="Entity"/> has a component of type <typeparamref name="T"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
-        /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has<T>() => WorldId < ComponentManager<T>.Pools.Length && (ComponentManager<T>.Pools[WorldId]?.Has(EntityId) ?? false);
-
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
         /// If current <see cref="Entity"/> did not have a component of type <typeparamref name="T"/>, a <see cref="ComponentAddedMessage{T}"/> message is published.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set<T>(in T component = default)
         {
-            ThrowIfNull();
+            if (WorldId == 0)
+            {
+                throw new InvalidOperationException("Entity was not created from a World");
+            }
 
             if (ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component))
             {
@@ -79,20 +63,23 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> comes from a different <see cref="World"/>.</exception>
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetSameAs<T>(in Entity reference)
         {
-            ThrowIfNull();
+            if (WorldId == 0)
+            {
+                throw new InvalidOperationException("Entity was not created from a World");
+            }
             if (WorldId != reference.WorldId)
             {
                 throw new InvalidOperationException("Reference Entity comes from a different World");
             }
-            if (!reference.Has<T>())
+            ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
+            if (!(pool?.Has(reference.EntityId) ?? false))
             {
-                throw new InvalidOperationException($"Reference Entity does not have a componenet of type {nameof(T)}");
+                throw new InvalidOperationException($"Reference Entity does not have a component of type {nameof(T)}");
             }
 
-            if (ComponentManager<T>.Pools[WorldId].SetSameAs(EntityId, reference.EntityId))
+            if (pool.SetSameAs(EntityId, reference.EntityId))
             {
                 ref ComponentEnum components = ref World.EntityInfos[WorldId][EntityId].Components;
                 components[ComponentManager<T>.Flag] = true;
@@ -106,19 +93,23 @@ namespace DefaultEcs
         /// If current <see cref="Entity"/> had a component of type <typeparamref name="T"/>, a <see cref="ComponentRemovedMessage{T}"/> message is published.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
-        /// <exception cref="InvalidOperationException">Entity was not created from a <see cref="World"/>.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Remove<T>()
         {
-            ThrowIfNull();
-
-            if ((WorldId < ComponentManager<T>.Pools.Length ? ComponentManager<T>.Pools[WorldId] : null)?.Remove(EntityId) ?? false)
+            if (ComponentManager<T>.Get(WorldId)?.Remove(EntityId) ?? false)
             {
                 ref ComponentEnum components = ref World.EntityInfos[WorldId][EntityId].Components;
                 components[ComponentManager<T>.Flag] = false;
                 World.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
             }
         }
+
+        /// <summary>
+        /// Returns whether the current <see cref="Entity"/> has a component of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Has<T>() => WorldId < ComponentManager<T>.Pools.Length && (ComponentManager<T>.Pools[WorldId]?.Has(EntityId) ?? false);
 
         /// <summary>
         /// Gets the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
@@ -135,10 +126,12 @@ namespace DefaultEcs
         /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetAsChildOf(in Entity parent)
         {
-            ThrowIfNull();
+            if (WorldId == 0)
+            {
+                throw new InvalidOperationException("Entity was not created from a World");
+            }
             if (WorldId != parent.WorldId)
             {
                 throw new InvalidOperationException("Child and parent Entity come from a different World");
@@ -210,12 +203,9 @@ namespace DefaultEcs
         /// Clean the current <see cref="Entity"/> of all its components and a <see cref="EntityDisposedMessage"/> message is published.
         /// The current <see cref="Entity"/> should not be used again after calling this method.
         /// </summary>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
-            ThrowIfNull();
-
             World.Publish(WorldId, new EntityDisposedMessage(EntityId));
         }
 
