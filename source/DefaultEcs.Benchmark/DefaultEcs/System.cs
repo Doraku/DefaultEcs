@@ -22,7 +22,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
     }
 
-    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 20, invocationCount: 10)]
+    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 20, invocationCount: 20)]
     public class System
     {
         private struct Position

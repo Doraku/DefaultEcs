@@ -18,8 +18,7 @@ namespace DefaultEcs.System
         internal static readonly SystemRunner<T> Default = new SystemRunner<T>(1);
 
         private readonly CancellationTokenSource _disposeHandle;
-        private readonly ManualResetEventSlim[] _startHandles;
-        private readonly ManualResetEventSlim[] _endHandles;
+        private readonly Barrier _barrier;
         private readonly Task[] _tasks;
 
         private volatile ASystem<T> _currentSystem;
@@ -38,8 +37,7 @@ namespace DefaultEcs.System
             IEnumerable<int> indices = degreeOfParallelism >= 1 ? Enumerable.Range(0, degreeOfParallelism - 1) : throw new ArgumentException("Argument cannot be inferior to one", nameof(degreeOfParallelism));
 
             _disposeHandle = new CancellationTokenSource();
-            _startHandles = indices.Select(_ => new ManualResetEventSlim()).ToArray();
-            _endHandles = indices.Select(_ => new ManualResetEventSlim()).ToArray();
+            _barrier = degreeOfParallelism > 1 ? new Barrier(degreeOfParallelism) : null;
             _tasks = indices.Select(index => new Task(Update, index, TaskCreationOptions.LongRunning)).ToArray();
 
             foreach (Task task in _tasks)
@@ -55,19 +53,15 @@ namespace DefaultEcs.System
         private void Update(object state)
         {
             int index = (int)state;
-            ManualResetEventSlim startHandle = _startHandles[index];
-            ManualResetEventSlim endHandle = _endHandles[index];
 
-            startHandle.Wait();
+            _barrier.SignalAndWait();
 
             while (!_disposeHandle.IsCancellationRequested)
             {
-                startHandle.Reset();
-
                 _currentSystem.Update(index, _tasks.Length);
 
-                endHandle.Set();
-                startHandle.Wait();
+                _barrier.SignalAndWait();
+                _barrier.SignalAndWait();
             }
         }
 
@@ -76,18 +70,11 @@ namespace DefaultEcs.System
         {
             _currentSystem = system;
 
-            foreach (ManualResetEventSlim handle in _startHandles)
-            {
-                handle.Set();
-            }
+            _barrier?.SignalAndWait();
 
             system.Update(_tasks.Length, _tasks.Length);
 
-            foreach (ManualResetEventSlim handle in _endHandles)
-            {
-                handle.Wait();
-                handle.Reset();
-            }
+            _barrier?.SignalAndWait();
         }
 
         #endregion
@@ -101,20 +88,11 @@ namespace DefaultEcs.System
         {
             _disposeHandle.Cancel();
 
-            foreach (ManualResetEventSlim handle in _startHandles)
-            {
-                handle.Set();
-            }
+            _barrier?.SignalAndWait();
+
             Task.WaitAll(_tasks);
 
-            foreach (ManualResetEventSlim handle in _startHandles)
-            {
-                handle.Dispose();
-            }
-            foreach (ManualResetEventSlim handle in _endHandles)
-            {
-                handle.Dispose();
-            }
+            _barrier?.Dispose();
             _disposeHandle.Dispose();
         }
 
