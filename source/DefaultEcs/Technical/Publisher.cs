@@ -59,7 +59,7 @@ namespace DefaultEcs.Technical
 
         #endregion
 
-        #region Methods
+        #region Callbacks
 
         private static void On(in WorldDisposedMessage message)
         {
@@ -71,6 +71,10 @@ namespace DefaultEcs.Technical
                 }
             }
         }
+
+        #endregion
+
+        #region Methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IDisposable Subscribe(int worldId, SubscribeAction<T> action)

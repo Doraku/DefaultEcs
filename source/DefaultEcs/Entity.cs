@@ -158,6 +158,28 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetAsParentOf(in Entity child) => child.SetAsChildOf(this);
 
+        /// <summary>
+        /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="World"/>.
+        /// </summary>
+        /// <param name="world">The <see cref="World"/> instance to which copy current <see cref="Entity"/> and its components.</param>
+        /// <returns>The created <see cref="Entity"/> in the given <see cref="World"/>.</returns>
+        public Entity CopyTo(World world)
+        {
+            Entity copy = world.CreateEntity();
+            try
+            {
+                World.Publish(WorldId, new EntityCopyMessage(EntityId, copy));
+            }
+            catch
+            {
+                copy.Dispose();
+
+                throw;
+            }
+
+            return copy;
+        }
+
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         //public bool IsEnable<T>()
         //{

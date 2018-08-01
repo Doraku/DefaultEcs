@@ -26,7 +26,7 @@ namespace DefaultEcs.Technical
             _isReferenceType = !typeof(T).GetTypeInfo().IsValueType;
         }
 
-        public ComponentPool(int maxEntityCount, int maxComponentCount)
+        public ComponentPool(int worldId, int maxEntityCount, int maxComponentCount)
         {
             _mapping = new int[maxEntityCount];
             _mapping.Fill(-1);
@@ -34,13 +34,24 @@ namespace DefaultEcs.Technical
             _components = new T[maxComponentCount];
 
             _lastComponentIndex = -1;
+
+            Publisher<EntityDisposedMessage>.Subscribe(worldId, On);
+            Publisher<EntityCopyMessage>.Subscribe(worldId, On);
         }
 
         #endregion
 
         #region Callbacks
 
-        public void On(in EntityDisposedMessage message) => Remove(message.EntityId);
+        private void On(in EntityDisposedMessage message) => Remove(message.EntityId);
+
+        private void On(in EntityCopyMessage message)
+        {
+            if (Has(message.EntityId))
+            {
+                message.Copy.Set(Get(message.EntityId));
+            }
+        }
 
         #endregion
 

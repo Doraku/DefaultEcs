@@ -27,7 +27,7 @@ namespace DefaultEcs.Technical
 
         #endregion
 
-        #region Methods
+        #region Callbacks
 
         private static void On(in WorldDisposedMessage message)
         {
@@ -39,6 +39,10 @@ namespace DefaultEcs.Technical
                 }
             }
         }
+
+        #endregion
+
+        #region Methods
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ComponentPool<T> Add(int worldId, int maxEntityCount, int maxComponentCount)
@@ -53,8 +57,7 @@ namespace DefaultEcs.Technical
                 ref ComponentPool<T> pool = ref Pools[worldId];
                 if (pool == null)
                 {
-                    pool = new ComponentPool<T>(maxEntityCount, maxComponentCount);
-                    Publisher<EntityDisposedMessage>.Subscribe(worldId, pool.On);
+                    pool = new ComponentPool<T>(worldId, maxEntityCount, maxComponentCount);
                 }
 
                 return pool;

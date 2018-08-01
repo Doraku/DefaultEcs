@@ -428,11 +428,47 @@ namespace DefaultEcs.Test
             using (World world1 = new World(1))
             using (World world2 = new World(1))
             {
-
                 Entity parent = world1.CreateEntity();
                 Entity child = world2.CreateEntity();
 
                 Check.ThatCode(() => parent.SetAsParentOf(child)).Throws<InvalidOperationException>();
+            }
+        }
+
+        [Fact]
+        public void CopyTo_Should_copy_entity_with_its_components()
+        {
+            using (World world1 = new World(1))
+            using (World world2 = new World(1))
+            {
+                Entity main = world1.CreateEntity();
+
+                main.Set(42);
+                main.Set("kikoo");
+
+                Entity copy = main.CopyTo(world2);
+
+                Check.That(copy.Get<int>()).IsEqualTo(main.Get<int>());
+                Check.That(copy.Get<string>()).IsEqualTo(main.Get<string>());
+            }
+        }
+
+        [Fact]
+        public void CopyTo_Should_left_no_trace_When_there_is_an_exception()
+        {
+            using (World world1 = new World(1))
+            using (World world2 = new World(1))
+            {
+                Entity main = world1.CreateEntity();
+
+                main.Set(42);
+                main.Set("kikoo");
+
+                world2.SetComponentTypeMaximumCount<string>(0);
+
+                Check.ThatCode(() => main.CopyTo(world2)).ThrowsAny();
+                Check.That(world2.GetAllComponents<int>().Length).IsEqualTo(0);
+                Check.That(world2.GetEntities().Build().Count).IsEqualTo(0);
             }
         }
 
