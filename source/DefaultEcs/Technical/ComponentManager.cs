@@ -22,23 +22,20 @@ namespace DefaultEcs.Technical
 
             Pools = new ComponentPool<T>[1];
 
-            lock (World.Locker)
-            {
-                World.ClearWorld += Clear;
-            }
+            Publisher<WorldDisposedMessage>.Subscribe(0, On);
         }
 
         #endregion
 
         #region Methods
 
-        private static void Clear(int worldId)
+        private static void On(in WorldDisposedMessage message)
         {
             lock (typeof(ComponentManager<T>))
             {
-                if (worldId < Pools.Length)
+                if (message.WorldId < Pools.Length)
                 {
-                    Pools[worldId] = null;
+                    Pools[message.WorldId] = null;
                 }
             }
         }

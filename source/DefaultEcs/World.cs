@@ -25,11 +25,8 @@ namespace DefaultEcs
 
         private static readonly IntDispenser _worldIdDispenser;
 
-        internal static readonly object Locker;
         internal static readonly ComponentFlag AliveFlag;
         internal static EntityInfo[][] EntityInfos;
-
-        internal static event Action<int> ClearWorld;
 
         private readonly IntDispenser _entityIdDispenser;
 
@@ -54,7 +51,6 @@ namespace DefaultEcs
         {
             _worldIdDispenser = new IntDispenser(0);
             EntityInfos = new EntityInfo[1][];
-            Locker = new object();
             AliveFlag = ComponentFlag.GetNextFlag();
         }
 
@@ -209,7 +205,7 @@ namespace DefaultEcs
                 EntityInfos[WorldId] = null;
             }
 
-            ClearWorld?.Invoke(WorldId);
+            Publish(0, new WorldDisposedMessage(WorldId));
             _worldIdDispenser.ReleaseInt(WorldId);
 
             GC.SuppressFinalize(this);

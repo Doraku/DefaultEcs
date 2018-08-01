@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs.Technical
 {
@@ -53,23 +54,20 @@ namespace DefaultEcs.Technical
         {
             Actions = new SubscribeAction<T>[1];
 
-            lock (World.Locker)
-            {
-                World.ClearWorld += Clear;
-            }
+            Publisher<WorldDisposedMessage>.Subscribe(0, On);
         }
 
         #endregion
 
         #region Methods
 
-        private static void Clear(int worldId)
+        private static void On(in WorldDisposedMessage message)
         {
             lock (typeof(Publisher<T>))
             {
-                if (worldId < Actions.Length)
+                if (message.WorldId < Actions.Length)
                 {
-                    Actions[worldId] = null;
+                    Actions[message.WorldId] = null;
                 }
             }
         }
