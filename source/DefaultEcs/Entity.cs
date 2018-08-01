@@ -163,8 +163,14 @@ namespace DefaultEcs
         /// </summary>
         /// <param name="world">The <see cref="World"/> instance to which copy current <see cref="Entity"/> and its components.</param>
         /// <returns>The created <see cref="Entity"/> in the given <see cref="World"/>.</returns>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
         public Entity CopyTo(World world)
         {
+            if (WorldId == 0)
+            {
+                throw new InvalidOperationException("Entity was not created from a World");
+            }
+
             Entity copy = world.CreateEntity();
             try
             {

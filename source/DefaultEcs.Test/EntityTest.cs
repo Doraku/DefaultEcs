@@ -472,6 +472,16 @@ namespace DefaultEcs.Test
             }
         }
 
+        [Fact]
+        public void CopyTo_Should_throw_When_not_created_from_same_World()
+        {
+            using (World world = new World(1))
+            {
+                Entity entity = default;
+                Check.ThatCode(() => entity.CopyTo(world)).Throws<InvalidOperationException>();
+            }
+        }
+
         #endregion
     }
 }
