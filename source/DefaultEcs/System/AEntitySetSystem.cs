@@ -65,12 +65,12 @@ namespace DefaultEcs.System
 
         #region ASystem
 
-        internal sealed override void Update(T state, int index, int maxIndex)
+        internal sealed override void Update(int index, int maxIndex)
         {
             ReadOnlySpan<Entity> entities = _set.GetEntities();
             int entitiesToUpdate = entities.Length / (maxIndex + 1);
 
-            Update(state, index == maxIndex ? entities.Slice(index * entitiesToUpdate) : entities.Slice(index * entitiesToUpdate, entitiesToUpdate));
+            Update(CurrentState, index == maxIndex ? entities.Slice(index * entitiesToUpdate) : entities.Slice(index * entitiesToUpdate, entitiesToUpdate));
         }
 
         #endregion

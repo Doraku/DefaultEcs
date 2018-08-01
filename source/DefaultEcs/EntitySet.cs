@@ -127,21 +127,6 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<Entity> GetEntities() => new ReadOnlySpan<Entity>(_entities, 0, Count);
 
-        /// <summary>
-        /// Copies <see cref="Entity"/> of current <see cref="EntitySet"/> to a destination <see cref="Span{Entity}"/>.
-        /// Passed parameter destination should be created with the correct length.
-        /// </summary>
-        /// <param name="destination">The <see cref="Span{Entity}"/> on which to copy <see cref="Entity"/>.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyEntitiesTo(Span<Entity> destination) => GetEntities().CopyTo(destination);
-
-        /// <summary>
-        /// Copies <see cref="Entity"/> of current <see cref="EntitySet"/> to an <see cref="Array"/>.
-        /// </summary>
-        /// <returns>The <see cref="Array"/> with all the <see cref="Entity"/>.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Entity[] CopyEntities() => GetEntities().ToArray();
-
         #endregion
 
         #region IDisposable

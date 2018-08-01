@@ -23,7 +23,6 @@ namespace DefaultEcs.System
         private readonly Task[] _tasks;
 
         private volatile ASystem<T> _currentSystem;
-        private T _currentState;
 
         #endregion
 
@@ -65,7 +64,7 @@ namespace DefaultEcs.System
             {
                 startHandle.Reset();
 
-                _currentSystem.Update(_currentState, index, _tasks.Length);
+                _currentSystem.Update(index, _tasks.Length);
 
                 endHandle.Set();
                 startHandle.Wait();
@@ -73,9 +72,8 @@ namespace DefaultEcs.System
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Update(T state, ASystem<T> system)
+        internal void Update(ASystem<T> system)
         {
-            _currentState = state;
             _currentSystem = system;
 
             foreach (ManualResetEventSlim handle in _startHandles)
@@ -83,7 +81,7 @@ namespace DefaultEcs.System
                 handle.Set();
             }
 
-            system.Update(state, _tasks.Length, _tasks.Length);
+            system.Update(_tasks.Length, _tasks.Length);
 
             foreach (ManualResetEventSlim handle in _endHandles)
             {

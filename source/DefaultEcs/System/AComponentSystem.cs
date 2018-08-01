@@ -61,12 +61,12 @@ namespace DefaultEcs.System
 
         #region ASystem
 
-        internal sealed override void Update(TState state, int index, int maxIndex)
+        internal sealed override void Update(int index, int maxIndex)
         {
             Span<TComponent> components = _world.GetAllComponents<TComponent>();
             int componentsToUpdate = components.Length / (maxIndex + 1);
 
-            Update(state, index == maxIndex ? components.Slice(index * componentsToUpdate) : components.Slice(index * componentsToUpdate, componentsToUpdate));
+            Update(CurrentState, index == maxIndex ? components.Slice(index * componentsToUpdate) : components.Slice(index * componentsToUpdate, componentsToUpdate));
         }
 
         #endregion

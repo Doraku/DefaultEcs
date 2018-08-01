@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Technical.Message;
 
@@ -7,6 +8,8 @@ namespace DefaultEcs.Technical
     internal sealed class ComponentPool<T>
     {
         #region Fields
+
+        private readonly static bool _isReferenceType;
 
         private readonly int[] _mapping;
         private readonly ComponentLink[] _links;
@@ -17,6 +20,11 @@ namespace DefaultEcs.Technical
         #endregion
 
         #region Initialisation
+
+        static ComponentPool()
+        {
+            _isReferenceType = !typeof(T).GetTypeInfo().IsValueType;
+        }
 
         public ComponentPool(int maxEntityCount, int maxComponentCount)
         {
@@ -124,6 +132,10 @@ namespace DefaultEcs.Technical
                     }
                 }
 
+                if (_isReferenceType)
+                {
+                    _components[_lastComponentIndex] = default;
+                }
                 --_lastComponentIndex;
             }
             else if (link.EntityId == entityId)

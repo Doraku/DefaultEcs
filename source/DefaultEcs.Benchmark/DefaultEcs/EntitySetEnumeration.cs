@@ -46,7 +46,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         [Benchmark]
         public void CopyEnumeration()
         {
-            foreach (Entity entity in _set.CopyEntities())
+            foreach (Entity entity in _set.GetEntities().ToArray())
             {
                 ++_count;
             }
@@ -56,7 +56,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public void StackCopyEnumeration()
         {
             Span<Entity> entities = stackalloc Entity[_set.Count];
-            _set.CopyEntitiesTo(entities);
+            _set.GetEntities().CopyTo(entities);
             foreach (Entity entity in entities)
             {
                 ++_count;
@@ -67,7 +67,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public void HeapCopyEnumeration()
         {
             Span<Entity> entities = new Entity[_set.Count];
-            _set.CopyEntitiesTo(entities);
+            _set.GetEntities().CopyTo(entities);
             foreach (Entity entity in entities)
             {
                 ++_count;

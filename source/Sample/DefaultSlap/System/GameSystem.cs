@@ -38,7 +38,7 @@ namespace DefaultSlap.System
         private void Init()
         {
             Span<Entity> bugs = stackalloc Entity[_bugsSet.Count];
-            _bugsSet.CopyEntitiesTo(bugs);
+            _bugsSet.GetEntities().CopyTo(bugs);
             foreach (Entity bug in bugs)
             {
                 bug.Dispose();
@@ -54,7 +54,7 @@ namespace DefaultSlap.System
         private void On(in SlapMessage message)
         {
             Span<Entity> bugs = stackalloc Entity[_bugsSet.Count];
-            _bugsSet.CopyEntitiesTo(bugs);
+            _bugsSet.GetEntities().CopyTo(bugs);
             foreach (Entity bug in bugs)
             {
                 Point position = bug.Get<Position>().Value;

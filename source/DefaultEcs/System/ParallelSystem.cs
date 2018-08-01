@@ -45,16 +45,16 @@ namespace DefaultEcs.System
 
         #region ASystem
 
-        internal override void Update(T state, int index, int maxIndex)
+        internal override void Update(int index, int maxIndex)
         {
             if (index == maxIndex)
             {
-                _mainSystem?.Update(state);
+                _mainSystem?.Update(CurrentState);
             }
 
             while ((index = Interlocked.Increment(ref _lastIndex)) < _systems.Length)
             {
-                _systems[index]?.Update(state);
+                _systems[index]?.Update(CurrentState);
             }
         }
 

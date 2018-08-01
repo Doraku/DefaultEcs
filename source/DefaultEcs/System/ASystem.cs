@@ -10,6 +10,8 @@
 
         private readonly SystemRunner<T> _runner;
 
+        internal T CurrentState;
+
         #endregion
 
         #region Initialisation
@@ -34,7 +36,7 @@
 
         #region Methods
 
-        internal abstract void Update(T state, int index, int maxIndex);
+        internal abstract void Update(int index, int maxIndex);
 
         /// <summary>
         /// Performs a pre-update treatment.
@@ -58,11 +60,13 @@
         /// <param name="state">The state to use.</param>
         public void Update(T state)
         {
-            PreUpdate(state);
+            CurrentState = state;
 
-            _runner.Update(state, this);
+            PreUpdate(CurrentState);
 
-            PostUpdate(state);
+            _runner.Update(this);
+
+            PostUpdate(CurrentState);
         }
 
         #endregion
