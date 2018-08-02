@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
-    public sealed class CollisionSystem : AEntitySetSystem<float>
+    public sealed class CollisionSystem : AEntitySystem<float>
     {
         private readonly World _world;
         private readonly EntitySet _solidSet;

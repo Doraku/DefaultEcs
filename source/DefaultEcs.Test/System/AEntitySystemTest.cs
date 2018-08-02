@@ -5,9 +5,9 @@ using Xunit;
 
 namespace DefaultEcs.Test.System
 {
-    public class AEntitySetSystemTest
+    public class AEntitySystemTest
     {
-        private sealed class System : AEntitySetSystem<int>
+        private sealed class System : AEntitySystem<int>
         {
             public System(EntitySet set)
                 : base(set)

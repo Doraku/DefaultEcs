@@ -6,7 +6,7 @@ namespace DefaultEcs.System
     /// Represents a base class to process updates on a given <see cref="EntitySet"/> instance.
     /// </summary>
     /// <typeparam name="T">The type of the object used as state to update the system.</typeparam>
-    public abstract class AEntitySetSystem<T> : ASystem<T>
+    public abstract class AEntitySystem<T> : ASystem<T>
     {
         #region Fields
 
@@ -17,23 +17,23 @@ namespace DefaultEcs.System
         #region Initialisation
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySetSystem{T}"/> class with the given <see cref="EntitySet"/> and <see cref="SystemRunner{T}"/>.
+        /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="EntitySet"/> and <see cref="SystemRunner{T}"/>.
         /// </summary>
         /// <param name="set">The <see cref="EntitySet"/> on which to process the update.</param>
         /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
-        protected AEntitySetSystem(EntitySet set, SystemRunner<T> runner)
+        protected AEntitySystem(EntitySet set, SystemRunner<T> runner)
             : base(runner)
         {
             _set = set ?? throw new ArgumentNullException(nameof(set));
         }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySetSystem{T}"/> class with the given <see cref="EntitySet"/>.
+        /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="EntitySet"/>.
         /// </summary>
         /// <param name="set">The <see cref="EntitySet"/> on which to process the update.</param>
         /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
-        protected AEntitySetSystem(EntitySet set)
+        protected AEntitySystem(EntitySet set)
             : this(set, null)
         { }
 
@@ -70,7 +70,14 @@ namespace DefaultEcs.System
             ReadOnlySpan<Entity> entities = _set.GetEntities();
             int entitiesToUpdate = entities.Length / (maxIndex + 1);
 
-            Update(CurrentState, index == maxIndex ? entities.Slice(index * entitiesToUpdate) : entities.Slice(index * entitiesToUpdate, entitiesToUpdate));
+            if (index == maxIndex)
+            {
+                Update(CurrentState, index == 0 ? entities : entities.Slice(index * entitiesToUpdate));
+            }
+            else
+            {
+                Update(CurrentState, entities.Slice(index * entitiesToUpdate, entitiesToUpdate));
+            }
         }
 
         #endregion

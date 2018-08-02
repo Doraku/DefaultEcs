@@ -128,10 +128,10 @@ ISystem<float> system = new SequentialSystem<float>(
 system.Update(elaspedTime);
 ```
 
-### AEntitySetSystem<T>
+### AEntitySystem<T>
 This is a base class to create system to update a given EntitySet.
 ```C#
-public sealed class VelocitySystem : AEntitySetSystem<float>
+public sealed class VelocitySystem : AEntitySystem<float>
 {
     public VelocitySystem(World world, SystemRunner<float> runner)
         : base(world.GetEntities().With<Velocity>().With<Position>().Build(), runner)
@@ -195,7 +195,7 @@ system.Update(elaspedTime);
 ```
 
 It is safe to run a system with multithreading when:
-* for an AEntitySetSystem
+* for an AEntitySystem
   * each entity can be safely updated separately with no dependency to an other entity
   * there is no new Set, Remove or Dispose action on entity (only read or update)
 * for an AComponentSystem

@@ -6,7 +6,7 @@ using DefaultEcs.System;
 
 namespace DefaultBrick.System
 {
-    public sealed class BallBoundSystem : AEntitySetSystem<float>
+    public sealed class BallBoundSystem : AEntitySystem<float>
     {
         private readonly World _world;
         private readonly List<Entity> _toRemove;

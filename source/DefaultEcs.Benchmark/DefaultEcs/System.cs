@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Jobs;
 using BenchmarkDotNet.Engines;
 using DefaultEcs.System;
 
@@ -37,7 +36,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             public float Y;
         }
 
-        private sealed class TestSystem : AEntitySetSystem<float>
+        private sealed class TestSystem : AEntitySystem<float>
         {
             public TestSystem(World world, SystemRunner<float> runner)
                 : base(world.GetEntities().With<Position>().With<Speed>().Build(), runner)
@@ -51,6 +50,28 @@ namespace DefaultEcs.Benchmark.DefaultEcs
                 position.X += speed.X * state;
                 position.Y += speed.Y * state;
             }
+        }
+
+        private sealed class Test2System : AEntitySystem<float>
+        {
+            public Test2System(World world, SystemRunner<float> runner)
+                : base(world.GetEntities().With<Position>().With<Speed>().Build(), runner)
+            { }
+
+            protected override void Update(float state, ReadOnlySpan<Entity> entities)
+            {
+                for (int i = 0; i < entities.Length; i++)
+                {
+                    Speed speed = entities[i].Get<Speed>();
+                    ref Position position = ref entities[i].Get<Position>();
+
+                    position.X += speed.X * state;
+                    position.Y += speed.Y * state;
+                }
+            }
+
+            protected override void Update(float state, in Entity entity)
+            { }
         }
 
         private sealed class TestSystemTPL : ISystem<float>
@@ -82,6 +103,8 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private SystemRunner<float> _runner;
         private ISystem<float> _systemSingle;
         private ISystem<float> _system;
+        private ISystem<float> _system2Single;
+        private ISystem<float> _system2;
         private ISystem<float> _systemTPL;
 
         [Params(100000)]
@@ -94,6 +117,8 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             _runner = new SystemRunner<float>(Environment.ProcessorCount);
             _systemSingle = new TestSystem(_world, null);
             _system = new TestSystem(_world, _runner);
+            _system2Single = new Test2System(_world, null);
+            _system2 = new Test2System(_world, _runner);
             _systemTPL = new TestSystemTPL(_world);
 
             for (int i = 0; i < EntityCount; ++i)
@@ -116,6 +141,12 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 
         [Benchmark]
         public void DefaultEcs_UpdateMulti() => _system.Update(1f / 60f);
+
+        [Benchmark]
+        public void DefaultEcs_Update2Single() => _system2Single.Update(1f / 60f);
+
+        [Benchmark]
+        public void DefaultEcs_Update2Multi() => _system2.Update(1f / 60f);
 
         [Benchmark]
         public void DefaultEcs_UpdateTPL() => _systemTPL.Update(1f / 60f);

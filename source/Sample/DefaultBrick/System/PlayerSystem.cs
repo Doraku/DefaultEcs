@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace DefaultBrick.System
 {
-    public sealed class PlayerSystem : AEntitySetSystem<float>
+    public sealed class PlayerSystem : AEntitySystem<float>
     {
         private readonly GameWindow _window;
 

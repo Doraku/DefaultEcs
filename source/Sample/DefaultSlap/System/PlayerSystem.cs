@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace DefaultSlap.System
 {
-    sealed class PlayerSystem : AEntitySetSystem<float>
+    sealed class PlayerSystem : AEntitySystem<float>
     {
         private readonly GameWindow _window;
         private readonly World _world;

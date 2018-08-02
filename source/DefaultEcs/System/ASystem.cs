@@ -26,7 +26,7 @@
         }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySetSystem{T}"/> class.
+        /// Initialise a new instance of the <see cref="ASystem{T}"/> class.
         /// </summary>
         protected ASystem()
             : this(null)
