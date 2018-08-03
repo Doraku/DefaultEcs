@@ -46,6 +46,13 @@ namespace DefaultEcs.System
         /// Update the given <typeparamref name="TComponent"/> once.
         /// </summary>
         /// <param name="state">The state to use.</param>
+        /// <param name="component">The <typeparamref name="TComponent"/> to update.</param>
+        protected virtual void Update(TState state, ref TComponent component) { }
+
+        /// <summary>
+        /// Update the given <typeparamref name="TComponent"/> once.
+        /// </summary>
+        /// <param name="state">The state to use.</param>
         /// <param name="components">The <typeparamref name="TComponent"/> to update.</param>
         protected virtual void Update(TState state, Span<TComponent> components)
         {
@@ -54,13 +61,6 @@ namespace DefaultEcs.System
                 Update(state, ref components[i]);
             }
         }
-
-        /// <summary>
-        /// Update the given <typeparamref name="TComponent"/> once.
-        /// </summary>
-        /// <param name="state">The state to use.</param>
-        /// <param name="component">The <typeparamref name="TComponent"/> to update.</param>
-        protected abstract void Update(TState state, ref TComponent component);
 
         #endregion
 

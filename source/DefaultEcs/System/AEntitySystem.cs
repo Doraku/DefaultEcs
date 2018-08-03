@@ -42,6 +42,13 @@ namespace DefaultEcs.System
         #region Methods
 
         /// <summary>
+        /// Update the given <see cref="Entity"/> instance once.
+        /// </summary>
+        /// <param name="state">The state to use.</param>
+        /// <param name="entity">The <see cref="Entity"/> instance to update.</param>
+        protected virtual void Update(T state, in Entity entity) { }
+
+        /// <summary>
         /// Update the given <see cref="Entity"/> instances once.
         /// </summary>
         /// <param name="state">The state to use.</param>
@@ -53,13 +60,6 @@ namespace DefaultEcs.System
                 Update(state, entities[i]);
             }
         }
-
-        /// <summary>
-        /// Update the given <see cref="Entity"/> instance once.
-        /// </summary>
-        /// <param name="state">The state to use.</param>
-        /// <param name="entity">The <see cref="Entity"/> instance to update.</param>
-        protected abstract void Update(T state, in Entity entity);
 
         #endregion
 
