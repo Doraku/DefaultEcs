@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using DefaultEcs.System;
@@ -44,6 +43,30 @@ namespace DefaultEcs.Benchmark.Performance
             //}
         }
 
+        private sealed class DefaultEcsComponentSystem : AComponentSystem<int, DefaultComponent>
+        {
+            public DefaultEcsComponentSystem(DefaultWorld world, SystemRunner<int> runner)
+                : base(world, runner)
+            { }
+
+            public DefaultEcsComponentSystem(DefaultWorld world)
+                : this(world, null)
+            { }
+
+            protected override void Update(int state, ref DefaultComponent component)
+            {
+                ++component.Value;
+            }
+            
+            //protected override void Update(int state, Span<DefaultComponent> components)
+            //{
+            //    for (int i = 0; i < components.Length; i++)
+            //    {
+            //        ++components[i].Value;
+            //    }
+            //}
+        }
+
         private class EntitasComponent : IComponent
         {
             public int Value;
@@ -69,6 +92,8 @@ namespace DefaultEcs.Benchmark.Performance
         private DefaultEcsSystem _defaultSystem;
         private SystemRunner<int> _defaultRunner;
         private DefaultEcsSystem _defaultMultiSystem;
+        private DefaultEcsComponentSystem _defaultComponentSystem;
+        private DefaultEcsComponentSystem _defaultComponentMultiSystem;
 
         private EntitiasWorld _entitasWorld;
         private EntitasSystem _entitasSystem;
@@ -85,6 +110,8 @@ namespace DefaultEcs.Benchmark.Performance
             _defaultSystem = new DefaultEcsSystem(_defaultWorld);
             _defaultRunner = new SystemRunner<int>(Environment.ProcessorCount);
             _defaultMultiSystem = new DefaultEcsSystem(_defaultWorld, _defaultRunner);
+            _defaultComponentSystem = new DefaultEcsComponentSystem(_defaultWorld);
+            _defaultComponentMultiSystem = new DefaultEcsComponentSystem(_defaultWorld, _defaultRunner);
 
             _entitasWorld = new Context<EntitasEntity>(1);
             _entitasSystem = new EntitasSystem(_entitasWorld);
@@ -127,6 +154,28 @@ namespace DefaultEcs.Benchmark.Performance
         public void DefaultEcs_MultiSystem()
         {
             _defaultMultiSystem.Update(42);
+        }
+
+        [Benchmark]
+        public void DefaultEcs_Component()
+        {
+            Span<DefaultComponent> components = _defaultWorld.GetAllComponents<DefaultComponent>();
+            for (int i = 0; i < components.Length; i++)
+            {
+                ++components[i].Value;
+            }
+        }
+
+        [Benchmark]
+        public void DefaultEcs_ComponentSystem()
+        {
+            _defaultComponentSystem.Update(42);
+        }
+
+        [Benchmark]
+        public void DefaultEcs_ComponentMultiSystem()
+        {
+            _defaultComponentMultiSystem.Update(42);
         }
 
         [Benchmark]

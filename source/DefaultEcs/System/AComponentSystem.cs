@@ -42,7 +42,12 @@ namespace DefaultEcs.System
 
         #region Methods
 
-        private void Update(TState state, Span<TComponent> components)
+        /// <summary>
+        /// Update the given <typeparamref name="TComponent"/> once.
+        /// </summary>
+        /// <param name="state">The state to use.</param>
+        /// <param name="components">The <typeparamref name="TComponent"/> to update.</param>
+        protected virtual void Update(TState state, Span<TComponent> components)
         {
             for (int i = 0; i < components.Length; ++i)
             {

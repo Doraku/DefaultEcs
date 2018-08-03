@@ -1,6 +1,36 @@
 ![DefaultEcs](https://github.com/Doraku/DefaultEcs/blob/master/DefaultEcsLogo.png)
 DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
+## Performance
+Feel free to correct my use of the compared ecs libraries as I looked only for basic uses which may not be the most performant way.
+
+BenchmarkDotNet=v0.11.0, OS=Windows 10.0.17134.165 (1803/April2018Update/Redstone4)
+Intel Core i5-3570K CPU 3.40GHz (Ivy Bridge), 1 CPU, 4 logical and 4 physical cores
+Frequency=3320337 Hz, Resolution=301.1742 ns, Timer=TSC
+  [Host]     : .NET Framework 4.7.2 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.3131.0
+  Job-UJZYDN : .NET Framework 4.7.2 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.3131.0
+
+InvocationCount=10  IterationCount=10  LaunchCount=1
+RunStrategy=Monitoring  UnrollFactor=1  WarmupCount=10
+
+Add one to the basic component (containing one int) of 100000 entities
+                          Method | EntityCount |        Mean |       Error |     StdDev |
+-------------------------------- |------------ |------------:|------------:|-----------:|
+            DefaultEcs_EntitySet |      100000 |   292.30 us |   0.6382 us |  0.4221 us | using directly the EntitySet class (single threaded)
+               DefaultEcs_System |      100000 |   365.22 us |   7.6181 us |  5.0389 us | using the AEntitySystem base class (single threaded)
+              *DefaultEcs_System |      100000 |   293.36 us |   0.5569 us |  0.3684 us | same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one
+          DefaultEcs_MultiSystem |      100000 |   105.90 us |  18.5030 us | 12.2386 us | using the AEntitySystem base class (multi threaded)
+         *DefaultEcs_MultiSystem |      100000 |    84.15 us |   6.8169 us |  4.5090 us | same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one
+            DefaultEcs_Component |      100000 |   110.81 us |   7.0749 us |  4.6796 us | using directly the World class (single threaded)
+      DefaultEcs_ComponentSystem |      100000 |   250.65 us |   0.3340 us |  0.2210 us | using the AComponentSystem base class (single threaded)
+     *DefaultEcs_ComponentSystem |      100000 |    84.49 us |   0.2756 us |  0.1823 us | same as above but overriding Span<Component> Update method instead of the single Component one
+ DefaultEcs_ComponentMultiSystem |      100000 |    68.72 us |   4.8234 us |  3.1904 us | using the AComponentSystem base class (multi threaded)
+*DefaultEcs_ComponentMultiSystem |      100000 |    29.02 us |   5.3375 us |  3.5304 us | same as above but overriding Span<Component> Update method instead of the single Component one
+ 
+[Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp)
+                  Entitas_System |      100000 | 3,404.56 us | 101.3847 us | 67.0597 us | using the JobSystem base class (single threaded)
+             Entitas_MultiSystem |      100000 | 2,107.79 us |  79.0974 us | 52.3180 us | using the JobSystem base class (multi threaded)
+
 ## World
 The World class act as a manager to create entity, get a selection of specific entities, get a family of component or publish and subscribe to messages that can be used to communicate in a decoupled way between the different elements.
 Multiple World objects can be used in parallel, each instance being thread-safe from one an other but operations performed on a single instance and all of its created items should be thought as non thread-safe but depending on what is done, it is still possible to process operations concurrently to optimise performance.
