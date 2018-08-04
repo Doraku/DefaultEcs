@@ -1,7 +1,7 @@
 ![DefaultEcs](https://github.com/Doraku/DefaultEcs/blob/master/DefaultEcsLogo.png)
 DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
-[![NuGet](https://img.shields.io/badge/nuget-V0.5.0-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
+[![NuGet](https://img.shields.io/badge/nuget-v0.5.0-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
 
 ## Requirement
 DefaultEcs use heavily features from C#7.0 and Span from the System.Memory package, compatible with .NETStandard 1.1 and .NETStandard 2.0.
@@ -20,7 +20,7 @@ InvocationCount=10  IterationCount=10  LaunchCount=1
 RunStrategy=Monitoring  UnrollFactor=1  WarmupCount=10
 ```
 
-Add one to the basic component (containing one int) of 100000 entities
+SingleComponentEntityEnumeration: add one to the basic component (containing one int) of 100000 entities
 ```
                           Method | EntityCount |        Mean |       Error |     StdDev |
 -------------------------------- |------------ |------------:|------------:|-----------:|
@@ -39,6 +39,22 @@ Add one to the basic component (containing one int) of 100000 entities
 ```
                   Entitas_System |      100000 | 3,404.56 us | 101.3847 us | 67.0597 us | using the JobSystem base class (single threaded)
              Entitas_MultiSystem |      100000 | 2,107.79 us |  79.0974 us | 52.3180 us | using the JobSystem base class (multi threaded)
+```
+
+DoubleComponentEntityEnumeration: do basic movement with two component (position, speed) on 100000 entities
+```
+                 Method | EntityCount |       Mean |      Error |     StdDev |
+----------------------- |------------ |-----------:|-----------:|-----------:|
+   DefaultEcs_EntitySet |      100000 |   600.6 us |  0.8557 us |  0.5660 us | using directly the EntitySet class (single threaded)
+      DefaultEcs_System |      100000 |   657.9 us |  0.6519 us |  0.4312 us | using the AEntitySystem base class (single threaded)
+     *DefaultEcs_System |      100000 |   598.2 us |  7.0261 us |  4.6473 us | same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one
+ DefaultEcs_MultiSystem |      100000 |   185.4 us | 13.9892 us |  9.2530 us | using the AEntitySystem base class (multi threaded)
+*DefaultEcs_MultiSystem |      100000 |   169.8 us | 21.8569 us | 14.4570 us | same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one
+ ```
+[Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp)
+```
+         Entitas_System |      100000 | 3,087.1 us | 25.3565 us | 16.7718 us | using the JobSystem base class (single threaded)
+    Entitas_MultiSystem |      100000 | 2,239.0 us | 36.4984 us | 24.1415 us | using the JobSystem base class (multi threaded)
 ```
 
 ## World
