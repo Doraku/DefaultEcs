@@ -24,7 +24,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(1))
             {
-                world.SetComponentTypeMaximumCount<bool>(0);
+                world.SetMaximumComponentCount<bool>(0);
 
                 Entity entity = world.CreateEntity();
 
@@ -37,7 +37,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(1))
             {
-                world.SetComponentTypeMaximumCount<bool>(1);
+                world.SetMaximumComponentCount<bool>(1);
 
                 Entity entity = world.CreateEntity();
                 entity.Set(true);
@@ -59,7 +59,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(1))
             {
-                world.SetComponentTypeMaximumCount<bool>(0);
+                world.SetMaximumComponentCount<bool>(0);
                 Entity entity = world.CreateEntity();
 
                 Check.ThatCode(() => entity.Set(true)).Throws<InvalidOperationException>();
@@ -71,7 +71,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(1))
             {
-                world.SetComponentTypeMaximumCount<bool>(1);
+                world.SetMaximumComponentCount<bool>(1);
                 Entity entity = world.CreateEntity();
 
                 entity.Set(true);
@@ -129,7 +129,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(2))
             {
-                world.SetComponentTypeMaximumCount<bool>(1);
+                world.SetMaximumComponentCount<bool>(1);
 
                 Entity entity = world.CreateEntity();
                 Entity reference = world.CreateEntity();
@@ -143,7 +143,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(2))
             {
-                world.SetComponentTypeMaximumCount<bool>(1);
+                world.SetMaximumComponentCount<bool>(1);
 
                 Entity entity = world.CreateEntity();
                 Entity reference = world.CreateEntity();
@@ -168,7 +168,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(1))
             {
-                world.SetComponentTypeMaximumCount<bool>(1);
+                world.SetMaximumComponentCount<bool>(1);
 
                 Entity entity = world.CreateEntity();
 
@@ -187,7 +187,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(2))
             {
-                world.SetComponentTypeMaximumCount<bool>(1);
+                world.SetMaximumComponentCount<bool>(1);
 
                 Entity entity = world.CreateEntity();
                 Entity reference = world.CreateEntity();
@@ -207,7 +207,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(3))
             {
-                world.SetComponentTypeMaximumCount<bool>(2);
+                world.SetMaximumComponentCount<bool>(2);
 
                 Entity entity = world.CreateEntity();
                 Entity reference = world.CreateEntity();
@@ -231,7 +231,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(3))
             {
-                world.SetComponentTypeMaximumCount<bool>(1);
+                world.SetMaximumComponentCount<bool>(1);
 
                 Entity entity = world.CreateEntity();
                 world.CreateEntity();
@@ -327,7 +327,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(2))
             {
-                world.SetComponentTypeMaximumCount<bool>(1);
+                world.SetMaximumComponentCount<bool>(1);
                 world.CreateEntity();
                 Entity deletedEntity = world.CreateEntity();
                 deletedEntity.Set(true);
@@ -464,7 +464,7 @@ namespace DefaultEcs.Test
                 main.Set(42);
                 main.Set("kikoo");
 
-                world2.SetComponentTypeMaximumCount<string>(0);
+                world2.SetMaximumComponentCount<string>(0);
 
                 Check.ThatCode(() => main.CopyTo(world2)).ThrowsAny();
                 Check.That(world2.GetAllComponents<int>().Length).IsEqualTo(0);

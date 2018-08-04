@@ -52,7 +52,7 @@ namespace DefaultSlap
 
             _world = new World(1000);
 
-            _world.SetComponentTypeMaximumCount<PlayerState>(1);
+            _world.SetMaximumComponentCount<PlayerState>(1);
 
             _runner = new SystemRunner<float>(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(

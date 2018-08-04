@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NFluent;
 using Xunit;
 
@@ -81,39 +82,39 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SetComponentTypeMaximumCount_Should_return_same_World()
+        public void SetMaximumComponentCount_Should_return_same_World()
         {
             using (World world = new World(0))
             {
-                Check.That(world.SetComponentTypeMaximumCount<bool>(0)).IsEqualTo(world);
+                Check.That(world.SetMaximumComponentCount<bool>(0)).IsEqualTo(world);
             }
         }
 
         [Fact]
-        public void SetComponentTypeMaximumCount_Should_add()
+        public void SetMaximumComponentCount_Should_add()
         {
             using (World world = new World(0))
             {
-                Check.ThatCode(() => world.SetComponentTypeMaximumCount<bool>(0)).DoesNotThrow();
+                Check.ThatCode(() => world.SetMaximumComponentCount<bool>(0)).DoesNotThrow();
             }
         }
 
         [Fact]
-        public void SetComponentTypeMaximumCount_Should_throw_When_maxComponentCount_is_negative()
+        public void SetMaximumComponentCount_Should_throw_When_maxComponentCount_is_negative()
         {
             using (World world = new World(0))
             {
-                Check.ThatCode(() => world.SetComponentTypeMaximumCount<bool>(-1)).Throws<ArgumentException>();
+                Check.ThatCode(() => world.SetMaximumComponentCount<bool>(-1)).Throws<ArgumentException>();
             }
         }
 
         [Fact]
-        public void SetComponentTypeMaximumCount_Should_not_throw_When_already_added()
+        public void SetMaximumComponentCount_Should_not_throw_When_already_added()
         {
             using (World world = new World(0))
             {
-                world.SetComponentTypeMaximumCount<bool>(0);
-                Check.ThatCode(() => world.SetComponentTypeMaximumCount<bool>(0)).DoesNotThrow();
+                world.SetMaximumComponentCount<bool>(0);
+                Check.ThatCode(() => world.SetMaximumComponentCount<bool>(0)).DoesNotThrow();
             }
         }
 
@@ -131,7 +132,7 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(2))
             {
-                world.SetComponentTypeMaximumCount<int>(2);
+                world.SetMaximumComponentCount<int>(2);
                 Entity entity = world.CreateEntity();
                 Entity entity2 = world.CreateEntity();
 
@@ -157,6 +158,22 @@ namespace DefaultEcs.Test
             using (World world = new World(4))
             {
                 Check.That(world.GetEntities()).IsNotNull();
+            }
+        }
+
+        [Fact]
+        public void GetAllEntities_Should_all_entities()
+        {
+            using (World world = new World(4))
+            {
+                List<Entity> entities = new List<Entity>();
+                entities.Add(world.CreateEntity());
+                entities.Add(world.CreateEntity());
+                Entity entity = world.CreateEntity();
+                entities.Add(world.CreateEntity());
+                entity.Dispose();
+
+                Check.That(world.GetAllEntities()).ContainsExactly(entities);
             }
         }
 

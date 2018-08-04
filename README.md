@@ -1,6 +1,11 @@
 ![DefaultEcs](https://github.com/Doraku/DefaultEcs/blob/master/DefaultEcsLogo.png)
 DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
+[![NuGet](https://img.shields.io/badge/nuget-V0.5.0-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
+
+## Requirement
+DefaultEcs use heavily features from C#7.0 and Span from the System.Memory package, compatible with .NETStandard 1.1 and .NETStandard 2.0.
+
 ## Performance
 Feel free to correct my use of the compared ecs libraries as I looked only for basic uses which may not be the most performant way.
 
@@ -86,7 +91,7 @@ public struct Example
 To reduce memory, it is possible to set a maximum count for a given component type. If nothing is set, then the maximum entity count of the world will be used.
 ```csharp
 int maxComponentCount = 42;
-world.SetComponentTypeMaximumCount<Example>(maxComponentCount);
+world.SetMaximumComponentCount<Example>(maxComponentCount);
 ```
 
 It is then possible to add the component to the entity
@@ -219,7 +224,7 @@ public class DrawSystem : AComponentSystem<float, DrawInfo>
 ```
 
 ### SystemRunner
-While not directly a system, an instance of this class can be given to base constructor of AEntitySetSystem and AComponentSystem to provide multithreading processing of system.
+While not directly a system, an instance of this class can be given to base constructor of AEntitySystem and AComponentSystem to provide multithreading processing of system.
 ```C#
 SystemRunner runner = new SystemRunner(Environment.ProcessorCount);
 

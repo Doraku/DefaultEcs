@@ -164,7 +164,7 @@ namespace DefaultEcs
         /// <param name="maxComponentCount">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
         /// <returns>The current <see cref="World"/>.</returns>
         /// <exception cref="ArgumentException"><paramref name="maxComponentCount"/> cannot be negative.</exception>
-        public World SetComponentTypeMaximumCount<T>(int maxComponentCount)
+        public World SetMaximumComponentCount<T>(int maxComponentCount)
         {
             if (maxComponentCount < 0)
             {
@@ -183,6 +183,21 @@ namespace DefaultEcs
         /// <returns>A <see cref="Span{T}"/> pointing directly to the component values to edit them.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> GetAllComponents<T>() => ComponentManager<T>.GetOrCreate(WorldId).GetAll();
+
+        /// <summary>
+        /// Get all the <see cref="Entity"/> of the current <see cref="World"/>.
+        /// </summary>
+        /// <returns>All the <see cref="Entity"/> of the current <see cref="World"/>.</returns>
+        public IEnumerable<Entity> GetAllEntities()
+        {
+            for (int i = 0; i <= LastEntityId; ++i)
+            {
+                if (EntityInfos[WorldId][i].Components[AliveFlag])
+                {
+                    yield return new Entity(WorldId, i);
+                }
+            }
+        }
 
         /// <summary>
         /// Gets an <see cref="EntitySetBuilder"/> to create a subset of <see cref="Entity"/> of the current <see cref="World"/>.

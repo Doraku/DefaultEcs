@@ -186,6 +186,11 @@ namespace DefaultEcs
             return copy;
         }
 
+        public IEnumerable<object> GetAllComponents()
+        {
+            yield break;
+        }
+
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         //public bool IsEnable<T>()
         //{

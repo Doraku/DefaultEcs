@@ -36,6 +36,7 @@
     <Version>0.5.1</Version>
     <PackageReleaseNotes>
 renamed AEntitySetSystem base class to AEntitySystem
+renamed World.SetComponentTypeMaximumCount method to SetMaximumComponentCount
 inner improvements
     </PackageReleaseNotes>
   </PropertyGroup>
