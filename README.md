@@ -3,21 +3,21 @@ DefaultEcs is an Entity Component System framework which aims to be accessible w
 
 [![NuGet](https://img.shields.io/badge/nuget-v0.5.0-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
 
-- [Requirement](#Requirement 'Requirement')
-- [Quick look](#Quick_look 'Quick look')
-  - [World](#Quick_look_World 'World')
-  - [Entity](#Quick_look_Entity 'Entity')
-  - [Component](#Quick_look_Component 'Component')
-  - [System](#Quick_look_System 'System')
-    - [ISystem](#Quick_look_System_ISystem 'ISystem')
-    - [ActionSystem](#Quick_look_System_ActionSystem 'ActionSystem')
-    - [SequentialSystem](#Quick_look_System_SequentialSystem 'SequentialSystem')
-    - [AEntitySystem](#Quick_look_System_AEntitySystem 'AEntitySystem')
-    - [AComponentSystem](#Quick_look_System_AComponentSystem 'AComponentSystem')
-    - [SystemRunner](#Quick_look_System_SystemRunner 'SystemRunner')
-  - [Message](#Quick_look_Message 'Message')
-- [Sample](#Sample 'Sample')
-- [Performance](#Performance 'Performance')
+- [Requirement](#Requirement)
+- [Quick look](#Quick_look)
+  - [World](#Quick_look_World)
+  - [Entity](#Quick_look_Entity)
+  - [Component](#Quick_look_Component)
+  - [System](#Quick_look_System)
+    - [ISystem](#Quick_look_System_ISystem)
+    - [ActionSystem](#Quick_look_System_ActionSystem)
+    - [SequentialSystem](#Quick_look_System_SequentialSystem)
+    - [AEntitySystem](#Quick_look_System_AEntitySystem)
+    - [AComponentSystem](#Quick_look_System_AComponentSystem)
+    - [SystemRunner](#Quick_look_System_SystemRunner)
+  - [Message](#Quick_look_Message)
+- [Sample](#Sample)
+- [Performance](#Performance)
 
 <a name='Requirement'></a>
 # Requirement
@@ -275,38 +275,32 @@ RunStrategy=Monitoring  UnrollFactor=1  WarmupCount=10
 ```
 
 SingleComponentEntityEnumeration: add one to the basic component (containing one int) of 100000 entities
-```
-                          Method |        Mean |       Error |     StdDev |
--------------------------------- |------------:|------------:|-----------:|
-            DefaultEcs_EntitySet |   292.30 us |   0.6382 us |  0.4221 us | using directly the EntitySet class (single threaded)
-               DefaultEcs_System |   365.22 us |   7.6181 us |  5.0389 us | using the AEntitySystem base class (single threaded)
-              *DefaultEcs_System |   293.36 us |   0.5569 us |  0.3684 us | same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one
-          DefaultEcs_MultiSystem |   105.90 us |  18.5030 us | 12.2386 us | using the AEntitySystem base class (multi threaded)
-         *DefaultEcs_MultiSystem |    84.15 us |   6.8169 us |  4.5090 us | same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one
-            DefaultEcs_Component |   110.81 us |   7.0749 us |  4.6796 us | using directly the World class (single threaded)
-      DefaultEcs_ComponentSystem |   250.65 us |   0.3340 us |  0.2210 us | using the AComponentSystem base class (single threaded)
-     *DefaultEcs_ComponentSystem |    84.49 us |   0.2756 us |  0.1823 us | same as above but overriding Span<Component> Update method instead of the single Component one
- DefaultEcs_ComponentMultiSystem |    68.72 us |   4.8234 us |  3.1904 us | using the AComponentSystem base class (multi threaded)
-*DefaultEcs_ComponentMultiSystem |    29.02 us |   5.3375 us |  3.5304 us | same as above but overriding Span<Component> Update method instead of the single Component one
-```
-[Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp)
-```
-                  Entitas_System | 3,404.56 us | 101.3847 us | 67.0597 us | using the JobSystem base class (single threaded)
-             Entitas_MultiSystem | 2,107.79 us |  79.0974 us | 52.3180 us | using the JobSystem base class (multi threaded)
-```
+
+ Method | Mean | Error | StdDev
+---:|---:|---:|---:
+[DefaultEcs_EntitySet](# 'using directly the EntitySet class (single threaded)')                                                       |   292.30 us |   0.6382 us |  0.4221 us
+[DefaultEcs_System](# 'using the AEntitySystem base class (single threaded)')                                                          |   365.22 us |   7.6181 us |  5.0389 us
+[*DefaultEcs_System](# 'same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one')             |   293.36 us |   0.5569 us |  0.3684 us
+[DefaultEcs_MultiSystem](# 'using the AEntitySystem base class (multi threaded)')                                                      |   105.90 us |  18.5030 us | 12.2386 us
+[*DefaultEcs_MultiSystem](# 'same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one')        |    84.15 us |   6.8169 us |  4.5090 us
+[DefaultEcs_Component](# 'using directly the World class (single threaded)')                                                           |   110.81 us |   7.0749 us |  4.6796 us
+[DefaultEcs_ComponentSystem](# 'using the AComponentSystem base class (single threaded)')                                              |   250.65 us |   0.3340 us |  0.2210 us
+[*DefaultEcs_ComponentSystem](# 'same as above but overriding Span<Component> Update method instead of the single Component one')      |    84.49 us |   0.2756 us |  0.1823 us
+[DefaultEcs_ComponentMultiSystem](# 'using the AComponentSystem base class (multi threaded)')                                          |    68.72 us |   4.8234 us |  3.1904 us
+[*DefaultEcs_ComponentMultiSystem](# 'same as above but overriding Span<Component> Update method instead of the single Component one') |    29.02 us |   5.3375 us |  3.5304 us
+[Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp)|
+[Entitas_System](# 'using the JobSystem base class (single threaded)')                                                                 | 3,404.56 us | 101.3847 us | 67.0597 us
+[Entitas_MultiSystem](# 'using the JobSystem base class (multi threaded)')                                                             | 2,107.79 us |  79.0974 us | 52.3180 us
 
 DoubleComponentEntityEnumeration: do basic movement with two component (position, speed) on 100000 entities
-```
-                 Method |       Mean |      Error |     StdDev |
------------------------ |-----------:|-----------:|-----------:|
-   DefaultEcs_EntitySet |   600.6 us |  0.8557 us |  0.5660 us | using directly the EntitySet class (single threaded)
-      DefaultEcs_System |   657.9 us |  0.6519 us |  0.4312 us | using the AEntitySystem base class (single threaded)
-     *DefaultEcs_System |   598.2 us |  7.0261 us |  4.6473 us | same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one
- DefaultEcs_MultiSystem |   185.4 us | 13.9892 us |  9.2530 us | using the AEntitySystem base class (multi threaded)
-*DefaultEcs_MultiSystem |   169.8 us | 21.8569 us | 14.4570 us | same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one
- ```
-[Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp)
-```
-         Entitas_System | 3,087.1 us | 25.3565 us | 16.7718 us | using the JobSystem base class (single threaded)
-    Entitas_MultiSystem | 2,239.0 us | 36.4984 us | 24.1415 us | using the JobSystem base class (multi threaded)
-```
+
+ Method | Mean | Error | StdDev
+---:|---:|---:|---:
+[DefaultEcs_EntitySet](# 'using directly the EntitySet class (single threaded)')                                                |   600.6 us |  0.8557 us |  0.5660 us
+[DefaultEcs_System](# 'using the AEntitySystem base class (single threaded)')                                                   |   657.9 us |  0.6519 us |  0.4312 us
+[*DefaultEcs_System](# 'same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one')      |   598.2 us |  7.0261 us |  4.6473 us
+[DefaultEcs_MultiSystem](# 'using the AEntitySystem base class (multi threaded)')                                               |   185.4 us | 13.9892 us |  9.2530 us
+[*DefaultEcs_MultiSystem](# 'same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one') |   169.8 us | 21.8569 us | 14.4570 us
+[Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp)|
+[Entitas_System](# 'using the JobSystem base class (single threaded)')                                                          | 3,087.1 us | 25.3565 us | 16.7718 us
+[Entitas_MultiSystem](# 'using the JobSystem base class (multi threaded)')                                                      | 2,239.0 us | 36.4984 us | 24.1415 us
