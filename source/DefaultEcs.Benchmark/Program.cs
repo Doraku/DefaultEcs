@@ -12,7 +12,8 @@ namespace DefaultEcs.Benchmark
                 //typeof(DefaultEcs.EntitySetEnumeration),
                 //typeof(DefaultEcs.EntitySetWithComponentEnumeration),
                 //typeof(DefaultEcs.System),
-                typeof(Performance.SingleComponentEntityEnumeration),
+                typeof(DefaultEcs.Serialization),
+                //typeof(Performance.SingleComponentEntityEnumeration),
                 //typeof(Performance.DoubleComponentEntityEnumeration),
                 //typeof(Message.Publish),
             }).RunAll();

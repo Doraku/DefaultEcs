@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using DefaultEcs.Serialization;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
 
@@ -185,7 +186,14 @@ namespace DefaultEcs
         public Span<T> GetAllComponents<T>() => ComponentManager<T>.GetOrCreate(WorldId).GetAll();
 
         /// <summary>
+        /// Gets an <see cref="EntitySetBuilder"/> to create a subset of <see cref="Entity"/> of the current <see cref="World"/>.
+        /// </summary>
+        /// <returns>An <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder GetEntities() => new EntitySetBuilder(this);
+
+        /// <summary>
         /// Get all the <see cref="Entity"/> of the current <see cref="World"/>.
+        /// This method is primiraly used for serialization purpose and should not be called in game logic.
         /// </summary>
         /// <returns>All the <see cref="Entity"/> of the current <see cref="World"/>.</returns>
         public IEnumerable<Entity> GetAllEntities()
@@ -200,10 +208,11 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Gets an <see cref="EntitySetBuilder"/> to create a subset of <see cref="Entity"/> of the current <see cref="World"/>.
+        /// Calls on <paramref name="reader"/> with all the maximum number of component of the current <see cref="World"/>.
+        /// This method is primiraly used for serialization purpose and should not be called in game logic.
         /// </summary>
-        /// <returns>An <see cref="EntitySetBuilder"/>.</returns>
-        public EntitySetBuilder GetEntities() => new EntitySetBuilder(this);
+        /// <param name="reader">The <see cref="IComponentTypeReader"/> instance to be used as callback with the current <see cref="World"/> maximum number of component.</param>
+        public void ReadAllComponentTypes(IComponentTypeReader reader) => Publish(new ComponentTypeReadMessage(reader ?? throw new ArgumentNullException(nameof(reader))));
 
         #endregion
 

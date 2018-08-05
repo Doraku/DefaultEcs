@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using DefaultEcs.Serialization;
 using NFluent;
+using NSubstitute;
 using Xunit;
 
 namespace DefaultEcs.Test
@@ -174,6 +176,40 @@ namespace DefaultEcs.Test
                 entity.Dispose();
 
                 Check.That(world.GetAllEntities()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
+        public void ReadAllComponentTypes_Should_throw_ArgumentNullException_When_reader_is_null()
+        {
+            using (World world = new World(0))
+            {
+                Check.ThatCode(() => world.ReadAllComponentTypes(null)).Throws<ArgumentNullException>();
+            }
+        }
+
+        [Fact]
+        public void ReadAllComponentTypes_Should_callback_reader()
+        {
+            using (World world = new World(42))
+            {
+                bool intIsOk = false;
+                bool longIsOk = false;
+                bool floatIsOk = true;
+
+                world.SetMaximumComponentCount<int>(1);
+                world.GetAllComponents<long>();
+
+                IComponentTypeReader reader = Substitute.For<IComponentTypeReader>();
+                reader.When(m => m.OnRead<int>(1)).Do(_ => intIsOk = true);
+                reader.When(m => m.OnRead<long>(42)).Do(_ => longIsOk = true);
+                reader.When(m => m.OnRead<float>(Arg.Any<int>())).Do(_ => floatIsOk = false);
+
+                world.ReadAllComponentTypes(reader);
+
+                Check.That(intIsOk).IsTrue();
+                Check.That(longIsOk).IsTrue();
+                Check.That(floatIsOk).IsTrue();
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using DefaultEcs.Serialization;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
 
@@ -186,10 +187,12 @@ namespace DefaultEcs
             return copy;
         }
 
-        public IEnumerable<object> GetAllComponents()
-        {
-            yield break;
-        }
+        /// <summary>
+        /// Calls on <paramref name="reader"/> with all the component of the current <see cref="Entity"/>.
+        /// This method is primiraly used for serialization purpose and should not be called in game logic.
+        /// </summary>
+        /// <param name="reader">The <see cref="IComponentReader"/> instance to be used as callback with the current <see cref="Entity"/> components.</param>
+        public void ReadAllComponents(IComponentReader reader) => World.Publish(WorldId, new ComponentReadMessage(EntityId, reader ?? throw new ArgumentNullException(nameof(reader))));
 
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         //public bool IsEnable<T>()

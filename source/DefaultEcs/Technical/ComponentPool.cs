@@ -28,6 +28,8 @@ namespace DefaultEcs.Technical
 
         public ComponentPool(int worldId, int maxEntityCount, int maxComponentCount)
         {
+            maxComponentCount = Math.Min(maxEntityCount, maxComponentCount);
+
             _mapping = new int[maxEntityCount];
             _mapping.Fill(-1);
             _links = new ComponentLink[maxComponentCount];
@@ -35,13 +37,20 @@ namespace DefaultEcs.Technical
 
             _lastComponentIndex = -1;
 
+            Publisher<ComponentTypeReadMessage>.Subscribe(worldId, On);
             Publisher<EntityDisposedMessage>.Subscribe(worldId, On);
             Publisher<EntityCopyMessage>.Subscribe(worldId, On);
+            Publisher<ComponentReadMessage>.Subscribe(worldId, On);
         }
 
         #endregion
 
         #region Callbacks
+
+        private void On(in ComponentTypeReadMessage message)
+        {
+            message.Reader.OnRead<T>(_components.Length);
+        }
 
         private void On(in EntityDisposedMessage message) => Remove(message.EntityId);
 
@@ -50,6 +59,15 @@ namespace DefaultEcs.Technical
             if (Has(message.EntityId))
             {
                 message.Copy.Set(Get(message.EntityId));
+            }
+        }
+
+        private void On(in ComponentReadMessage message)
+        {
+            int componentIndex = _mapping[message.EntityId];
+            if (componentIndex != -1)
+            {
+                message.Reader.OnRead(_components[componentIndex], _links[componentIndex].EntityId);
             }
         }
 

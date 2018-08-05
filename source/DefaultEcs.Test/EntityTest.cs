@@ -1,4 +1,5 @@
 ﻿using System;
+using DefaultEcs.Serialization;
 using NFluent;
 using Xunit;
 
@@ -6,6 +7,24 @@ namespace DefaultEcs.Test
 {
     public class EntityTest
     {
+        #region Types
+
+        private class ComponentReader : IComponentReader
+        {
+            public int? IntValue;
+            public long? LongValue;
+            public float? FloatValue;
+
+            public void OnRead<T>(in T component, int componentKey)
+            {
+                if (typeof(T) == typeof(int)) IntValue = (int)(object)component;
+                if (typeof(T) == typeof(long)) LongValue = (long)(object)component;
+                if (typeof(T) == typeof(float)) FloatValue = (float)(object)component;
+            }
+        }
+
+        #endregion
+
         #region Tests
 
         [Fact]
@@ -479,6 +498,35 @@ namespace DefaultEcs.Test
             {
                 Entity entity = default;
                 Check.ThatCode(() => entity.CopyTo(world)).Throws<InvalidOperationException>();
+            }
+        }
+
+        [Fact]
+        public void ReadAllComponents_Should_throw_ArgumentNullException_When_reader_is_null()
+        {
+            using (World world = new World(1))
+            {
+                Entity entity = world.CreateEntity();
+                Check.ThatCode(() => entity.ReadAllComponents(null)).Throws<ArgumentNullException>();
+            }
+        }
+
+        [Fact]
+        public void ReadAllComponents_Should_callback_reader()
+        {
+            using (World world = new World(42))
+            {
+                Entity entity = world.CreateEntity();
+                entity.Set(42);
+                entity.Set(1337L);
+
+                ComponentReader reader = new ComponentReader();
+
+                entity.ReadAllComponents(reader);
+
+                Check.That(reader.IntValue).IsEqualTo(42);
+                Check.That(reader.LongValue).IsEqualTo(1337L);
+                Check.That(reader.FloatValue.HasValue).IsFalse();
             }
         }
 

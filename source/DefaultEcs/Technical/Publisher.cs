@@ -54,7 +54,10 @@ namespace DefaultEcs.Technical
         {
             Actions = new SubscribeAction<T>[1];
 
-            Publisher<WorldDisposedMessage>.Subscribe(0, On);
+            if (typeof(T) != typeof(WorldDisposedMessage))
+            {
+                Publisher<WorldDisposedMessage>.Subscribe(0, On);
+            }
         }
 
         #endregion
