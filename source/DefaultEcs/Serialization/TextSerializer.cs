@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text.RegularExpressions;
 
 namespace DefaultEcs.Serialization
 {
@@ -130,8 +131,8 @@ namespace DefaultEcs.Serialization
 
                     foreach (FieldInfo fieldInfo in typeof(T).GetTypeInfo().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                     {
-                        // use more readable name for backing field
-                        writeExpressions.Add(Expression.Call(writer, write, Expression.Call(stringConcat, space, Expression.Constant(fieldInfo.Name))));
+                        string name = GetFriendlyName(fieldInfo.Name);
+                        writeExpressions.Add(Expression.Call(writer, write, Expression.Call(stringConcat, space, Expression.Constant(name))));
                         writeExpressions.Add(Expression.Call(writer, write, Expression.Constant(" ")));
                         writeExpressions.Add(Expression.Call(
                             typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetMethod(nameof(Write)),
@@ -148,7 +149,7 @@ namespace DefaultEcs.Serialization
                         generator.Emit(OpCodes.Stfld, fieldInfo);
                         generator.Emit(OpCodes.Ret);
 
-                        _readFieldActions.Add(fieldInfo.Name, (ReadFieldAction)dynMethod.CreateDelegate(typeof(ReadFieldAction)));
+                        _readFieldActions.Add(name, (ReadFieldAction)dynMethod.CreateDelegate(typeof(ReadFieldAction)));
                     }
 
                     writeExpressions.Add(Expression.PreDecrementAssign(indentation));
@@ -169,6 +170,16 @@ namespace DefaultEcs.Serialization
             #endregion
 
             #region Methods
+
+            private static string GetFriendlyName(string name)
+            {
+                Match match = Regex.Match(name, "^<(.+)>k__BackingField$");
+                if (match.Success)
+                {
+                    name = match.Groups[1].Value;
+                }
+                return name;
+            }
 
             private static string CreateIndentation(int indentation) => string.Join(string.Empty, Enumerable.Repeat(_indentation, indentation));
 
@@ -260,6 +271,11 @@ namespace DefaultEcs.Serialization
 
             private readonly StreamWriter _writer;
             private readonly Dictionary<Type, string> _types;
+            private readonly Dictionary<Entity, int> _entities;
+            private readonly Dictionary<Tuple<Entity, Type>, int> _components;
+
+            private int _entityCount;
+            private Entity _currentEntity;
 
             #endregion
 
@@ -269,17 +285,41 @@ namespace DefaultEcs.Serialization
             {
                 _writer = writer;
                 _types = types;
+                _entities = new Dictionary<Entity, int>();
+                _components = new Dictionary<Tuple<Entity, Type>, int>();
+            }
+
+            #endregion
+
+            #region Methods
+
+            public void WriteEntity(in Entity entity)
+            {
+                _entities.Add(entity, ++_entityCount);
+                _currentEntity = entity;
+
+                _writer.WriteLine();
+                _writer.WriteLine($"{_entity} {_entityCount}");
+
+                entity.ReadAllComponents(this);
             }
 
             #endregion
 
             #region IComponentReader
 
-            public void OnRead<T>(in T component, int componentKey)
+            public void OnRead<T>(in T component, in Entity componentOwner)
             {
-                // handle component ref
-                _writer.Write($"{_component} {_types[typeof(T)]} ");
-                Converter<T>.Write(component, _writer, 0);
+                if (_components.TryGetValue(Tuple.Create(componentOwner, typeof(T)), out int key))
+                {
+                    _writer.WriteLine($"{_componentSameAs} {_types[typeof(T)]} {key}");
+                }
+                else
+                {
+                    _components.Add(Tuple.Create(componentOwner, typeof(T)), _entityCount);
+                    _writer.Write($"{_component} {_types[typeof(T)]} ");
+                    Converter<T>.Write(component, _writer, 0);
+                }
             }
 
             #endregion
@@ -289,6 +329,7 @@ namespace DefaultEcs.Serialization
         {
             void SetMaximumComponentCount(World world, int maxComponentCount);
             void SetComponent(string line, StreamReader reader, in Entity entity);
+            void SetSameAsComponent(in Entity entity, in Entity reference);
         }
 
         private sealed class Operation<T> : IOperation
@@ -314,6 +355,11 @@ namespace DefaultEcs.Serialization
                 }
             }
 
+            public void SetSameAsComponent(in Entity entity, in Entity reference)
+            {
+                entity.SetSameAs<T>(reference);
+            }
+
             #endregion
         }
 
@@ -326,6 +372,7 @@ namespace DefaultEcs.Serialization
         private const string _maxComponentCount = "MaxComponentCount";
         private const string _entity = "Entity";
         private const string _component = "Component";
+        private const string _componentSameAs = "ComponentSameAs";
         private const string _objectBegin = "{";
         private const string _objectEnd = "}";
         private const string _indentation = "    ";
@@ -405,6 +452,29 @@ namespace DefaultEcs.Serialization
             operation.SetComponent(componentEntry.Length > 1 ? componentEntry[1] : null, reader, entity);
         }
 
+        private static void SetSameAsComponent(in Entity entity, string entry, Dictionary<string, Entity> entities, Dictionary<string, IOperation> operations)
+        {
+            if (entity.Equals(default))
+            {
+                throw new ArgumentException($"Encountered a component before creation of an Entity");
+            }
+            string[] componentEntry = entry.Split(_space, StringSplitOptions.RemoveEmptyEntries);
+            if (componentEntry.Length < 2)
+            {
+                throw new ArgumentException($"Unable to get component type information from '{entry}'");
+            }
+            if (!operations.TryGetValue(componentEntry[0], out IOperation operation))
+            {
+                throw new ArgumentException($"Unknown component type used '{componentEntry[0]}'");
+            }
+            if (!entities.TryGetValue(componentEntry[1], out Entity reference))
+            {
+                throw new ArgumentException($"Unknown reference Entity '{componentEntry[1]}'");
+            }
+
+            operation.SetSameAsComponent(entity, reference);
+        }
+
         #endregion
 
         #region ISerializer
@@ -430,10 +500,7 @@ namespace DefaultEcs.Serialization
 
                 foreach (Entity entity in world.GetAllEntities())
                 {
-                    writer.WriteLine();
-                    writer.WriteLine(_entity);
-
-                    entity.ReadAllComponents(componentReader);
+                    componentReader.WriteEntity(entity);
                 }
             }
         }
@@ -451,7 +518,7 @@ namespace DefaultEcs.Serialization
             {
                 World world = CreateWorld(reader) ?? throw new ArgumentException("Could not create a World instance from the provided Stream");
                 Entity currentEntity = default;
-
+                Dictionary<string, Entity> entities = new Dictionary<string, Entity>();
                 Dictionary<string, IOperation> operations = new Dictionary<string, IOperation>();
 
                 do
@@ -463,8 +530,12 @@ namespace DefaultEcs.Serialization
                         if (_entity.Equals(entry))
                         {
                             currentEntity = world.CreateEntity();
+                            if (lineParts.Length > 1)
+                            {
+                                entities.Add(lineParts[1], currentEntity);
+                            }
                         }
-                        else if (lineParts?.Length > 1)
+                        else if (lineParts.Length > 1)
                         {
                             if (_componentType.Equals(entry))
                             {
@@ -477,6 +548,10 @@ namespace DefaultEcs.Serialization
                             else if (_component.Equals(entry))
                             {
                                 SetComponent(reader, currentEntity, lineParts[1], operations);
+                            }
+                            else if (_componentSameAs.Equals(entry))
+                            {
+                                SetSameAsComponent(currentEntity, lineParts[1], entities, operations);
                             }
                         }
                     }

@@ -66,6 +66,8 @@ namespace DefaultEcs.Test.Serialization
 
                 Entity[] entities = new[]
                 {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
                     world.CreateEntity()
                 };
                 entities[0].Set<bool>(true);
@@ -83,6 +85,10 @@ namespace DefaultEcs.Test.Serialization
                 entities[0].Set<float>(-1);
                 entities[0].Set<string>("kikoo");
                 entities[0].Set(new Test(666));
+                entities[2].Set(new InnerTest { Lol = 313 });
+                entities[1].SetSameAs<InnerTest>(entities[2]);
+                entities[1].Set(new Test(42));
+                entities[2].SetSameAs<Test>(entities[1]);
 
                 ISerializer serializer = new TextSerializer();
 
@@ -121,10 +127,13 @@ namespace DefaultEcs.Test.Serialization
                         Check.That(entitiesCopy[0].Get<float>()).IsEqualTo(entities[0].Get<float>());
                         Check.That(entitiesCopy[0].Get<string>()).IsEqualTo(entities[0].Get<string>());
 
-                        Test test = entities[0].Get<Test>();
-                        Test testCopy = entitiesCopy[0].Get<Test>();
+                        Check.That(entities[0].Get<Test>()).IsEqualTo(entitiesCopy[0].Get<Test>());
 
-                        Check.That(testCopy).IsEqualTo(test);
+                        Check.That(entitiesCopy[1].Get<Test>()).IsEqualTo(entities[1].Get<Test>());
+                        Check.That(entitiesCopy[1].Get<InnerTest>()).IsEqualTo(entities[1].Get<InnerTest>());
+
+                        Check.That(entitiesCopy[1].Get<Test>()).IsEqualTo(entitiesCopy[2].Get<Test>());
+                        Check.That(entitiesCopy[1].Get<InnerTest>()).IsEqualTo(entitiesCopy[2].Get<InnerTest>());
                     }
                 }
                 finally

@@ -11,6 +11,7 @@ namespace DefaultEcs.Technical
 
         private readonly static bool _isReferenceType;
 
+        private readonly int _worldId;
         private readonly int[] _mapping;
         private readonly ComponentLink[] _links;
         private readonly T[] _components;
@@ -30,6 +31,7 @@ namespace DefaultEcs.Technical
         {
             maxComponentCount = Math.Min(maxEntityCount, maxComponentCount);
 
+            _worldId = worldId;
             _mapping = new int[maxEntityCount];
             _mapping.Fill(-1);
             _links = new ComponentLink[maxComponentCount];
@@ -37,10 +39,10 @@ namespace DefaultEcs.Technical
 
             _lastComponentIndex = -1;
 
-            Publisher<ComponentTypeReadMessage>.Subscribe(worldId, On);
-            Publisher<EntityDisposedMessage>.Subscribe(worldId, On);
-            Publisher<EntityCopyMessage>.Subscribe(worldId, On);
-            Publisher<ComponentReadMessage>.Subscribe(worldId, On);
+            Publisher<ComponentTypeReadMessage>.Subscribe(_worldId, On);
+            Publisher<EntityDisposedMessage>.Subscribe(_worldId, On);
+            Publisher<EntityCopyMessage>.Subscribe(_worldId, On);
+            Publisher<ComponentReadMessage>.Subscribe(_worldId, On);
         }
 
         #endregion
@@ -67,7 +69,7 @@ namespace DefaultEcs.Technical
             int componentIndex = _mapping[message.EntityId];
             if (componentIndex != -1)
             {
-                message.Reader.OnRead(_components[componentIndex], _links[componentIndex].EntityId);
+                message.Reader.OnRead(_components[componentIndex], new Entity(_worldId, _links[componentIndex].EntityId));
             }
         }
 

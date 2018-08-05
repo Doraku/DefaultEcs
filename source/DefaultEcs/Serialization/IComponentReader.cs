@@ -10,7 +10,7 @@
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
         /// <param name="component">The component.</param>
-        /// <param name="componentKey">The key of the component instance, in case it is used by multiple entity.</param>
-        void OnRead<T>(in T component, int componentKey);
+        /// <param name="componentOwner">The owner of the component instance, in case it is used by multiple <see cref="Entity"/>.</param>
+        void OnRead<T>(in T component, in Entity componentOwner);
     }
 }

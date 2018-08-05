@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using DefaultEcs.Serialization;
@@ -53,6 +54,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public void Cleanup()
         {
             _world.Dispose();
+            Console.WriteLine($"file size {new FileInfo(_filePath).Length / 1024f / 1024f} mo");
             File.Delete(_filePath);
         }
 
