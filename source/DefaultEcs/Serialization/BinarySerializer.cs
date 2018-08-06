@@ -36,6 +36,8 @@ namespace DefaultEcs.Serialization
             {
                 if (typeof(T) == typeof(string))
                 {
+                    _writeAction = (WriteAction)new Converter<string>.WriteAction(WriteString);
+                    _readAction = (ReadAction)new Converter<string>.ReadAction(ReadString);
                 }
                 else
                 {
@@ -46,6 +48,16 @@ namespace DefaultEcs.Serialization
             #endregion
 
             #region Methods
+
+            public static void WriteString(in string value, Stream stream, byte[] buffer, byte* bufferP)
+            {
+
+            }
+
+            public static string ReadString(Stream stream, byte[] buffer, byte* bufferP)
+            {
+                return default;
+            }
 
             public static void Write(in T value, Stream stream, byte[] buffer, byte* bufferP) => _writeAction(value, stream, buffer, bufferP);
 

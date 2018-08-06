@@ -39,56 +39,85 @@ namespace DefaultEcs.Serialization
 
             static Converter()
             {
-                #region Filters
-
-                bool Parameters_string(MethodInfo methodInfo)
-                {
-                    ParameterInfo[] parameters = methodInfo.GetParameters();
-
-                    return parameters.Length == 1
-                        && parameters[0].ParameterType == typeof(string);
-                }
-
-                bool Parameters_string_string(MethodInfo methodInfo)
-                {
-                    ParameterInfo[] parameters = methodInfo.GetParameters();
-
-                    return parameters.Length == 2
-                        && parameters[0].ParameterType == typeof(string)
-                        && parameters[1].ParameterType == typeof(string);
-                }
-
-                #endregion
-
                 _readFieldActions = new Dictionary<string, ReadFieldAction>();
 
-                ParameterExpression value = Expression.Parameter(typeof(T).MakeByRefType());
-                ParameterExpression writer = Expression.Parameter(typeof(StreamWriter));
-                ParameterExpression indentation = Expression.Parameter(typeof(int));
-
-                MethodInfo write = typeof(StreamWriter).GetTypeInfo().GetDeclaredMethods(nameof(StreamWriter.Write)).First(Parameters_string);
-                MethodInfo writeLineString = typeof(StreamWriter).GetTypeInfo().GetDeclaredMethods(nameof(StreamWriter.WriteLine)).First(Parameters_string);
-                MethodInfo stringConcat = typeof(string).GetTypeInfo().GetDeclaredMethods(nameof(string.Concat)).First(Parameters_string_string);
-
-                ParameterExpression line = Expression.Parameter(typeof(string));
-                ParameterExpression reader = Expression.Parameter(typeof(StreamReader));
-
-                Expression readIfNull = Expression.Condition(
-                    Expression.Equal(line, Expression.Constant(null, typeof(string))),
-                    Expression.Call(reader, typeof(StreamReader).GetTypeInfo().GetDeclaredMethod(nameof(StreamReader.ReadLine))),
-                    line);
-
-                Expression writeBody = Expression.Call(writer, writeLineString, Expression.Call(value, typeof(object).GetTypeInfo().GetDeclaredMethod(nameof(object.ToString))));
-                Expression readBody = null;
+                _writeAction = (in T v, StreamWriter w, int i) => w.WriteLine(v.ToString());
 
                 #region clr types
                 if (typeof(T) == typeof(bool))
                 {
-                    readBody = Expression.Call(typeof(bool).GetTypeInfo().GetDeclaredMethods(nameof(bool.Parse)).First(Parameters_string), readIfNull);
+                    _readAction = (ReadAction)Converter<bool>.GetReadAction(bool.Parse);
                 }
                 else if (typeof(T) == typeof(sbyte))
                 {
-                    bool Is_SByte_Parse(MethodInfo methodInfo)
+                    _readAction = (ReadAction)Converter<sbyte>.GetReadAction(sbyte.Parse);
+                }
+                else if (typeof(T) == typeof(byte))
+                {
+                    _readAction = (ReadAction)Converter<byte>.GetReadAction(byte.Parse);
+                }
+                else if (typeof(T) == typeof(short))
+                {
+                    _readAction = (ReadAction)Converter<short>.GetReadAction(short.Parse);
+                }
+                else if (typeof(T) == typeof(ushort))
+                {
+                    _readAction = (ReadAction)Converter<ushort>.GetReadAction(ushort.Parse);
+                }
+                else if (typeof(T) == typeof(int))
+                {
+                    _readAction = (ReadAction)Converter<int>.GetReadAction(int.Parse);
+                }
+                else if (typeof(T) == typeof(uint))
+                {
+                    _readAction = (ReadAction)Converter<uint>.GetReadAction(uint.Parse);
+                }
+                else if (typeof(T) == typeof(long))
+                {
+                    _readAction = (ReadAction)Converter<long>.GetReadAction(long.Parse);
+                }
+                else if (typeof(T) == typeof(ulong))
+                {
+                    _readAction = (ReadAction)Converter<ulong>.GetReadAction(ulong.Parse);
+                }
+                else if (typeof(T) == typeof(char))
+                {
+                    _readAction = (ReadAction)Converter<char>.GetReadAction(CharParse);
+                }
+                else if (typeof(T) == typeof(decimal))
+                {
+                    _readAction = (ReadAction)Converter<decimal>.GetReadAction(decimal.Parse);
+                }
+                else if (typeof(T) == typeof(double))
+                {
+                    _readAction = (ReadAction)Converter<double>.GetReadAction(double.Parse);
+                }
+                else if (typeof(T) == typeof(float))
+                {
+                    _readAction = (ReadAction)Converter<float>.GetReadAction(float.Parse);
+                }
+                else if (typeof(T) == typeof(string))
+                {
+                    _readAction = (ReadAction)Converter<string>.GetReadAction(s => s);
+                }
+                else if (typeof(T).GetTypeInfo().IsEnum)
+                {
+                    ParameterExpression line = Expression.Parameter(typeof(string));
+                    ParameterExpression reader = Expression.Parameter(typeof(StreamReader));
+
+                    Expression readIfNull = Expression.Condition(
+                        Expression.Equal(line, Expression.Constant(null, typeof(string))),
+                        Expression.Call(reader, typeof(StreamReader).GetTypeInfo().GetDeclaredMethod(nameof(StreamReader.ReadLine))),
+                        line);
+
+                    _readAction = Expression.Lambda<ReadAction>(Expression.Call(typeof(Converter<T>).GetTypeInfo().GetDeclaredMethod(nameof(ReadEnum)).MakeGenericMethod(typeof(T)), readIfNull), line, reader).Compile();
+                }
+                else
+                #endregion
+                {
+                    #region Filters
+
+                    bool Parameters_string(MethodInfo methodInfo)
                     {
                         ParameterInfo[] parameters = methodInfo.GetParameters();
 
@@ -96,69 +125,31 @@ namespace DefaultEcs.Serialization
                             && parameters[0].ParameterType == typeof(string);
                     }
 
-                    readBody = Expression.Call(typeof(sbyte).GetTypeInfo().GetDeclaredMethods(nameof(sbyte.Parse)).First(Is_SByte_Parse), readIfNull);
-                }
-                else if (typeof(T) == typeof(byte))
-                {
-                    readBody = Expression.Call(typeof(byte).GetTypeInfo().GetDeclaredMethods(nameof(byte.Parse)).First(Parameters_string), readIfNull);
-                }
-                else if (typeof(T) == typeof(short))
-                {
-                    readBody = Expression.Call(typeof(short).GetTypeInfo().GetDeclaredMethods(nameof(short.Parse)).First(Parameters_string), readIfNull);
-                }
-                else if (typeof(T) == typeof(ushort))
-                {
-                    readBody = Expression.Call(typeof(ushort).GetTypeInfo().GetDeclaredMethods(nameof(ushort.Parse)).First(Parameters_string), readIfNull);
-                }
-                else if (typeof(T) == typeof(int))
-                {
-                    readBody = Expression.Call(typeof(int).GetTypeInfo().GetDeclaredMethods(nameof(int.Parse)).First(Parameters_string), readIfNull);
-                }
-                else if (typeof(T) == typeof(uint))
-                {
-                    readBody = Expression.Call(typeof(uint).GetTypeInfo().GetDeclaredMethods(nameof(uint.Parse)).First(Parameters_string), readIfNull);
-                }
-                else if (typeof(T) == typeof(long))
-                {
-                    readBody = Expression.Call(typeof(long).GetTypeInfo().GetDeclaredMethods(nameof(long.Parse)).First(Parameters_string), readIfNull);
-                }
-                else if (typeof(T) == typeof(ulong))
-                {
-                    readBody = Expression.Call(typeof(ulong).GetTypeInfo().GetDeclaredMethods(nameof(ulong.Parse)).First(Parameters_string), readIfNull);
-                }
-                else if (typeof(T) == typeof(char))
-                {
-                    readBody = Expression.Call(typeof(Converter<T>).GetTypeInfo().GetDeclaredMethod(nameof(CharParse)), readIfNull);
-                }
-                else if (typeof(T) == typeof(decimal))
-                {
-                    readBody = Expression.Call(typeof(decimal).GetTypeInfo().GetDeclaredMethods(nameof(decimal.Parse)).First(Parameters_string), readIfNull);
-                }
-                else if (typeof(T) == typeof(double))
-                {
-                    readBody = Expression.Call(typeof(double).GetTypeInfo().GetDeclaredMethods(nameof(double.Parse)).First(Parameters_string), readIfNull);
-                }
-                else if (typeof(T) == typeof(float))
-                {
-                    readBody = Expression.Call(typeof(float).GetTypeInfo().GetDeclaredMethods(nameof(float.Parse)).First(Parameters_string), readIfNull);
-                }
-                else if (typeof(T) == typeof(string))
-                {
-                    readBody = readIfNull;
-                }
-                else if (typeof(T).GetTypeInfo().IsEnum)
-                {
-                    readBody = Expression.Call(typeof(Converter<T>).GetTypeInfo().GetDeclaredMethod(nameof(ReadEnum)).MakeGenericMethod(typeof(T)), readIfNull);
-                }
-                else
-                #endregion
-                {
+                    bool Parameters_string_string(MethodInfo methodInfo)
+                    {
+                        ParameterInfo[] parameters = methodInfo.GetParameters();
+
+                        return parameters.Length == 2
+                            && parameters[0].ParameterType == typeof(string)
+                            && parameters[1].ParameterType == typeof(string);
+                    }
+
+                    #endregion
+
+                    MethodInfo write = typeof(StreamWriter).GetTypeInfo().GetDeclaredMethods(nameof(StreamWriter.Write)).First(Parameters_string);
+                    MethodInfo writeLineString = typeof(Converter<T>).GetTypeInfo().GetDeclaredMethod(nameof(StreamWriterWriteLine));
+                    MethodInfo stringConcat = typeof(string).GetTypeInfo().GetDeclaredMethods(nameof(string.Concat)).First(Parameters_string_string);
+
+                    ParameterExpression value = Expression.Parameter(typeof(T).MakeByRefType());
+                    ParameterExpression writer = Expression.Parameter(typeof(StreamWriter));
+                    ParameterExpression indentation = Expression.Parameter(typeof(int));
+
                     ParameterExpression space = Expression.Variable(typeof(string));
                     Expression assignSpace = Expression.Assign(space, Expression.Call(typeof(Converter<T>).GetTypeInfo().GetDeclaredMethod(nameof(CreateIndentation)), indentation));
 
                     List<Expression> writeExpressions = new List<Expression>
                     {
-                        Expression.Call(writer, writeLineString, Expression.Constant(_objectBegin)),
+                        Expression.Call(writeLineString, writer,Expression.Constant(_objectBegin)),
                         Expression.PreIncrementAssign(indentation),
                         assignSpace
                     };
@@ -188,16 +179,10 @@ namespace DefaultEcs.Serialization
 
                     writeExpressions.Add(Expression.PreDecrementAssign(indentation));
                     writeExpressions.Add(assignSpace);
-                    writeExpressions.Add(Expression.Call(writer, writeLineString, Expression.Call(stringConcat, space, Expression.Constant(_objectEnd))));
+                    writeExpressions.Add(Expression.Call(writeLineString, writer, Expression.Call(stringConcat, space, Expression.Constant(_objectEnd))));
 
-                    writeBody = Expression.Block(new[] { space }, writeExpressions);
+                    _writeAction = Expression.Lambda<WriteAction>(Expression.Block(new[] { space }, writeExpressions), value, writer, indentation).Compile();
                     _readAction = ReadAnyType;
-                }
-
-                _writeAction = Expression.Lambda<WriteAction>(writeBody, value, writer, indentation).Compile();
-                if (readBody != null)
-                {
-                    _readAction = Expression.Lambda<ReadAction>(readBody, line, reader).Compile();
                 }
             }
 
@@ -205,23 +190,7 @@ namespace DefaultEcs.Serialization
 
             #region Methods
 
-            public static char CharParse(string entry)
-            {
-                if (!char.TryParse(entry, out char result))
-                {
-                    throw new ArgumentException($"Could not convert '{entry}' to a char");
-                }
-
-                return result;
-            }
-
-            public static TEnum ReadEnum<TEnum>(string entry)
-                where TEnum : struct
-            {
-                return Enum.TryParse(entry, out TEnum value) ? value : throw new ArgumentException($"Unable to convert '{entry}' to enum type {typeof(TEnum).AssemblyQualifiedName}");
-            }
-
-            public static string GetFriendlyName(string name)
+            private static string GetFriendlyName(string name)
             {
                 Match match = Regex.Match(name, "^<(.+)>k__BackingField$");
                 if (match.Success)
@@ -231,14 +200,24 @@ namespace DefaultEcs.Serialization
                 return name.Trim('_');
             }
 
-            public static string CreateIndentation(int indentation) => string.Join(string.Empty, Enumerable.Repeat(_indentation, indentation));
+            private static ReadAction GetReadAction(Func<string, T> parser) => new ReadAction((l, r) => parser(l ?? r.ReadLine()));
+
+            private static char CharParse(string entry)
+            {
+                if (!char.TryParse(entry, out char result))
+                {
+                    throw new ArgumentException($"Could not convert '{entry}' to a char");
+                }
+
+                return result;
+            }
 
             private static T ReadAnyType(string line, StreamReader reader)
             {
                 // handle ref type
                 T value = default;
 
-                while ((string.IsNullOrWhiteSpace(line) || line.Split(_space, StringSplitOptions.RemoveEmptyEntries)[0] != _objectBegin) && !reader.EndOfStream)
+                while ((string.IsNullOrWhiteSpace(line) || line.Split(_split, StringSplitOptions.RemoveEmptyEntries)[0] != _objectBegin) && !reader.EndOfStream)
                 {
                     line = reader.ReadLine();
                 }
@@ -246,7 +225,7 @@ namespace DefaultEcs.Serialization
                 while (!reader.EndOfStream)
                 {
                     line = reader.ReadLine();
-                    string[] parts = line.Split(_space, 2, StringSplitOptions.RemoveEmptyEntries);
+                    string[] parts = line.Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
                     if (parts.Length > 0)
                     {
                         if (parts[0] == _objectEnd)
@@ -262,6 +241,16 @@ namespace DefaultEcs.Serialization
 
                 return value;
             }
+
+            public static TEnum ReadEnum<TEnum>(string entry)
+                where TEnum : struct
+            {
+                return Enum.TryParse(entry, out TEnum value) ? value : throw new ArgumentException($"Unable to convert '{entry}' to enum type {typeof(TEnum).AssemblyQualifiedName}");
+            }
+
+            public static string CreateIndentation(int indentation) => string.Join(string.Empty, Enumerable.Repeat(_indentation, indentation));
+
+            public static void StreamWriterWriteLine(StreamWriter writer, string line) => writer.Write(line);
 
             public static void Write(in T value, StreamWriter writer, int indentation) => _writeAction(value, writer, indentation);
 
@@ -420,7 +409,7 @@ namespace DefaultEcs.Serialization
         private const string _objectEnd = "}";
         private const string _indentation = "    ";
 
-        private static readonly char[] _space = new[] { ' ' };
+        private static readonly char[] _split = new[] { ' ', '\t' };
         private static readonly ConcurrentDictionary<Type, IOperation> _operations = new ConcurrentDictionary<Type, IOperation>();
 
         #endregion
@@ -432,7 +421,7 @@ namespace DefaultEcs.Serialization
             World world = null;
             do
             {
-                string[] lineParts = reader.ReadLine()?.Split(_space, StringSplitOptions.RemoveEmptyEntries);
+                string[] lineParts = reader.ReadLine()?.Split(_split, StringSplitOptions.RemoveEmptyEntries);
                 if (lineParts?.Length > 1
                     && _maxEntityCount.Equals(lineParts[0]))
                 {
@@ -454,7 +443,7 @@ namespace DefaultEcs.Serialization
 
         private static void CreateOperation(string entry, Dictionary<string, IOperation> operations)
         {
-            string[] componentTypeEntry = entry.Split(_space, 2, StringSplitOptions.RemoveEmptyEntries);
+            string[] componentTypeEntry = entry.Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
             Type type = Type.GetType(componentTypeEntry[1], false) ?? throw new ArgumentException($"Unable to get type from '{componentTypeEntry[1]}'");
 
             operations.Add(componentTypeEntry[0], _operations.GetOrAdd(type, CreateOperation));
@@ -462,7 +451,7 @@ namespace DefaultEcs.Serialization
 
         private static void SetMaxComponentCount(World world, string entry, Dictionary<string, IOperation> operations)
         {
-            string[] maxComponentCountEntry = entry.Split(_space, StringSplitOptions.RemoveEmptyEntries);
+            string[] maxComponentCountEntry = entry.Split(_split, StringSplitOptions.RemoveEmptyEntries);
             if (maxComponentCountEntry.Length < 2)
             {
                 throw new ArgumentException($"Unable to get {_maxComponentCount} information from '{entry}'");
@@ -485,7 +474,7 @@ namespace DefaultEcs.Serialization
             {
                 throw new ArgumentException($"Encountered a component before creation of an Entity");
             }
-            string[] componentEntry = entry.Split(_space, 2, StringSplitOptions.RemoveEmptyEntries);
+            string[] componentEntry = entry.Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
             if (componentEntry.Length < 1)
             {
                 throw new ArgumentException($"Unable to get component type information from '{entry}'");
@@ -504,7 +493,7 @@ namespace DefaultEcs.Serialization
             {
                 throw new ArgumentException($"Encountered a component before creation of an Entity");
             }
-            string[] componentEntry = entry.Split(_space, StringSplitOptions.RemoveEmptyEntries);
+            string[] componentEntry = entry.Split(_split, StringSplitOptions.RemoveEmptyEntries);
             if (componentEntry.Length < 2)
             {
                 throw new ArgumentException($"Unable to get component type information from '{entry}'");
@@ -569,8 +558,8 @@ namespace DefaultEcs.Serialization
 
                 do
                 {
-                    string[] lineParts = reader.ReadLine()?.Split(_space, 2, StringSplitOptions.RemoveEmptyEntries);
-                    if (lineParts.Length > 0)
+                    string[] lineParts = reader.ReadLine()?.Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
+                    if (lineParts?.Length > 0)
                     {
                         string entry = lineParts[0];
                         if (_entity.Equals(entry))
