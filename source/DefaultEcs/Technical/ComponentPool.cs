@@ -69,7 +69,7 @@ namespace DefaultEcs.Technical
             int componentIndex = _mapping[message.EntityId];
             if (componentIndex != -1)
             {
-                message.Reader.OnRead(_components[componentIndex], new Entity(_worldId, _links[componentIndex].EntityId));
+                message.Reader.OnRead(ref _components[componentIndex], new Entity(_worldId, _links[componentIndex].EntityId));
             }
         }
 

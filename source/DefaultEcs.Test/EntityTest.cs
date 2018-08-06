@@ -15,7 +15,7 @@ namespace DefaultEcs.Test
             public long? LongValue;
             public float? FloatValue;
 
-            public void OnRead<T>(in T component, in Entity componentOwner)
+            public void OnRead<T>(ref T component, in Entity componentOwner)
             {
                 if (typeof(T) == typeof(int)) IntValue = (int)(object)component;
                 if (typeof(T) == typeof(long)) LongValue = (long)(object)component;

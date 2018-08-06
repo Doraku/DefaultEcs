@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -116,6 +117,10 @@ namespace DefaultEcs.Serialization
                 {
                     readBody = readIfNull;
                 }
+                else if (typeof(T).GetTypeInfo().IsEnum)
+                {
+                    readBody = Expression.Call(typeof(Converter<T>).GetTypeInfo().GetMethod(nameof(ReadEnum), BindingFlags.Static | BindingFlags.NonPublic).MakeGenericMethod(typeof(T)), readIfNull);
+                }
                 else
                 #endregion
                 {
@@ -149,7 +154,7 @@ namespace DefaultEcs.Serialization
                         generator.Emit(OpCodes.Stfld, fieldInfo);
                         generator.Emit(OpCodes.Ret);
 
-                        _readFieldActions.Add(name, (ReadFieldAction)dynMethod.CreateDelegate(typeof(ReadFieldAction)));
+                        _readFieldActions.Add(name.ToUpperInvariant(), (ReadFieldAction)dynMethod.CreateDelegate(typeof(ReadFieldAction)));
                     }
 
                     writeExpressions.Add(Expression.PreDecrementAssign(indentation));
@@ -171,6 +176,12 @@ namespace DefaultEcs.Serialization
 
             #region Methods
 
+            private static TEnum ReadEnum<TEnum>(string entry)
+                where TEnum : struct
+            {
+                return Enum.TryParse(entry, out TEnum value) ? value : throw new ArgumentException($"Unable to convert '{entry}' to enum type {typeof(TEnum).AssemblyQualifiedName}");
+            }
+
             private static string GetFriendlyName(string name)
             {
                 Match match = Regex.Match(name, "^<(.+)>k__BackingField$");
@@ -178,7 +189,7 @@ namespace DefaultEcs.Serialization
                 {
                     name = match.Groups[1].Value;
                 }
-                return name;
+                return name.Trim('_');
             }
 
             private static string CreateIndentation(int indentation) => string.Join(string.Empty, Enumerable.Repeat(_indentation, indentation));
@@ -203,7 +214,7 @@ namespace DefaultEcs.Serialization
                         {
                             break;
                         }
-                        else if (_readFieldActions.TryGetValue(parts[0], out ReadFieldAction action))
+                        else if (_readFieldActions.TryGetValue(parts[0].ToUpperInvariant(), out ReadFieldAction action))
                         {
                             action(parts.Length > 1 ? parts[1] : null, reader, ref value);
                         }
@@ -220,7 +231,7 @@ namespace DefaultEcs.Serialization
             #endregion
         }
 
-        private sealed class ComponentTypeReader : IComponentTypeReader
+        private sealed class ComponentTypeWriter : IComponentTypeReader
         {
             #region Fields
 
@@ -232,7 +243,7 @@ namespace DefaultEcs.Serialization
 
             #region Initialisation
 
-            public ComponentTypeReader(StreamWriter writer, Dictionary<Type, string> types, int maxEntityCount)
+            public ComponentTypeWriter(StreamWriter writer, Dictionary<Type, string> types, int maxEntityCount)
             {
                 _writer = writer;
                 _types = types;
@@ -265,7 +276,7 @@ namespace DefaultEcs.Serialization
             #endregion
         }
 
-        private sealed class ComponentReader : IComponentReader
+        private sealed class ComponentWriter : IComponentReader
         {
             #region Fields
 
@@ -281,7 +292,7 @@ namespace DefaultEcs.Serialization
 
             #region Initialisation
 
-            public ComponentReader(StreamWriter writer, Dictionary<Type, string> types)
+            public ComponentWriter(StreamWriter writer, Dictionary<Type, string> types)
             {
                 _writer = writer;
                 _types = types;
@@ -308,15 +319,16 @@ namespace DefaultEcs.Serialization
 
             #region IComponentReader
 
-            public void OnRead<T>(in T component, in Entity componentOwner)
+            public void OnRead<T>(ref T component, in Entity componentOwner)
             {
-                if (_components.TryGetValue(Tuple.Create(componentOwner, typeof(T)), out int key))
+                Tuple<Entity, Type> componentKey = Tuple.Create(componentOwner, typeof(T));
+                if (_components.TryGetValue(componentKey, out int key))
                 {
                     _writer.WriteLine($"{_componentSameAs} {_types[typeof(T)]} {key}");
                 }
                 else
                 {
-                    _components.Add(Tuple.Create(componentOwner, typeof(T)), _entityCount);
+                    _components.Add(componentKey, _entityCount);
                     _writer.Write($"{_component} {_types[typeof(T)]} ");
                     Converter<T>.Write(component, _writer, 0);
                 }
@@ -336,29 +348,21 @@ namespace DefaultEcs.Serialization
         {
             #region IOperation
 
-            public void SetMaximumComponentCount(World world, int maxComponentCount)
-            {
-                world.SetMaximumComponentCount<T>(maxComponentCount);
-            }
+            public void SetMaximumComponentCount(World world, int maxComponentCount) => world.SetMaximumComponentCount<T>(maxComponentCount);
 
             public void SetComponent(string line, StreamReader reader, in Entity entity)
             {
-                int lineCount = 0;
-
                 try
                 {
                     entity.Set(Converter<T>.Read(line, reader));
                 }
                 catch (Exception exception)
                 {
-                    throw new ArgumentException($"Error while parsing line {lineCount}", exception);
+                    throw new ArgumentException("Error while parsing", exception);
                 }
             }
 
-            public void SetSameAsComponent(in Entity entity, in Entity reference)
-            {
-                entity.SetSameAs<T>(reference);
-            }
+            public void SetSameAsComponent(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
 
             #endregion
         }
@@ -378,6 +382,7 @@ namespace DefaultEcs.Serialization
         private const string _indentation = "    ";
 
         private static readonly char[] _space = new[] { ' ' };
+        private static readonly ConcurrentDictionary<Type, IOperation> _operations = new ConcurrentDictionary<Type, IOperation>();
 
         #endregion
 
@@ -406,12 +411,14 @@ namespace DefaultEcs.Serialization
             return world;
         }
 
+        private static IOperation CreateOperation(Type type) => (IOperation)Activator.CreateInstance(typeof(Operation<>).MakeGenericType(type));
+
         private static void CreateOperation(string entry, Dictionary<string, IOperation> operations)
         {
             string[] componentTypeEntry = entry.Split(_space, 2, StringSplitOptions.RemoveEmptyEntries);
             Type type = Type.GetType(componentTypeEntry[1], false) ?? throw new ArgumentException($"Unable to get type from '{componentTypeEntry[1]}'");
 
-            operations.Add(componentTypeEntry[0], (IOperation)Activator.CreateInstance(typeof(Operation<>).MakeGenericType(type)));
+            operations.Add(componentTypeEntry[0], _operations.GetOrAdd(type, CreateOperation));
         }
 
         private static void SetMaxComponentCount(World world, string entry, Dictionary<string, IOperation> operations)
@@ -494,9 +501,9 @@ namespace DefaultEcs.Serialization
                 Dictionary<Type, string> types = new Dictionary<Type, string>();
 
                 writer.WriteLine($"{_maxEntityCount} {world.MaxEntityCount}");
-                world.ReadAllComponentTypes(new ComponentTypeReader(writer, types, world.MaxEntityCount));
+                world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxEntityCount));
 
-                ComponentReader componentReader = new ComponentReader(writer, types);
+                ComponentWriter componentReader = new ComponentWriter(writer, types);
 
                 foreach (Entity entity in world.GetAllEntities())
                 {

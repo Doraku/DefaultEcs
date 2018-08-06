@@ -11,6 +11,6 @@
         /// <typeparam name="T">The type of component.</typeparam>
         /// <param name="component">The component.</param>
         /// <param name="componentOwner">The owner of the component instance, in case it is used by multiple <see cref="Entity"/>.</param>
-        void OnRead<T>(in T component, in Entity componentOwner);
+        void OnRead<T>(ref T component, in Entity componentOwner);
     }
 }

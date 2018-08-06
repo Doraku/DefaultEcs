@@ -33,6 +33,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public void Setup()
         {
             _serializer = new TextSerializer();
+            //_serializer = new BinarySerializer();
             _world = new World(EntityCount);
             for (int i = 0; i < EntityCount; ++i)
             {
