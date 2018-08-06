@@ -52,6 +52,41 @@ namespace DefaultEcs.Test.Serialization
             Lol
         }
 
+        private class ClassTest
+        {
+            public int Id;
+            public Test Inner;
+            public InnerTest2 Test;
+
+            public override bool Equals(object obj)
+            {
+                return obj is ClassTest t
+                    && Id == t.Id
+                    && Inner.Equals(t.Inner)
+                    && Test.Equals(t.Test);
+            }
+
+            public override int GetHashCode() => Id;
+        }
+
+        private struct InnerTest2
+        {
+            public InnerClass C;
+
+            public override bool Equals(object obj)
+            {
+                return obj is InnerTest2 t
+                    && C?.I == t.C?.I;
+            }
+
+            public override int GetHashCode() => C?.I ?? 0;
+        }
+
+        private class InnerClass
+        {
+            public int I;
+        }
+
         #endregion
 
         #region Methods
@@ -91,6 +126,7 @@ namespace DefaultEcs.Test.Serialization
                 entities[0].Set<float>(-1);
                 entities[0].Set<string>("kikoo");
                 entities[0].Set(new Test(666));
+                entities[0].Set(new ClassTest { Id = 12345, Inner = new Test(66), Test = new InnerTest2() });
                 entities[2].Set(new InnerTest { Lol = 313 });
                 entities[1].SetSameAs<InnerTest>(entities[2]);
                 entities[1].Set(new Test(42));
@@ -132,6 +168,7 @@ namespace DefaultEcs.Test.Serialization
                         Check.That(entitiesCopy[0].Get<double>()).IsEqualTo(entities[0].Get<double>());
                         Check.That(entitiesCopy[0].Get<float>()).IsEqualTo(entities[0].Get<float>());
                         Check.That(entitiesCopy[0].Get<string>()).IsEqualTo(entities[0].Get<string>());
+                        Check.That(entitiesCopy[0].Get<ClassTest>()).IsEqualTo(entities[0].Get<ClassTest>());
 
                         Check.That(entities[0].Get<Test>()).IsEqualTo(entitiesCopy[0].Get<Test>());
 

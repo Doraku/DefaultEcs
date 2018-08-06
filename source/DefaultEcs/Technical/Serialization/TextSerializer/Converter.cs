@@ -164,6 +164,10 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                     DynamicMethod dynMethod = new DynamicMethod($"Set_{nameof(T)}_{fieldInfo.Name}", typeof(void), new[] { typeof(string), typeof(StreamReader), typeof(T).MakeByRefType() }, typeof(Converter<T>), true);
                     ILGenerator generator = dynMethod.GetILGenerator();
                     generator.Emit(OpCodes.Ldarg_2);
+                    if (!typeof(T).GetTypeInfo().IsValueType)
+                    {
+                        generator.Emit(OpCodes.Ldind_Ref);
+                    }
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldarg_1);
                     generator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Converter<T>.Read)));
@@ -210,8 +214,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         private static T ReadAnyType(string line, StreamReader reader)
         {
-            // handle ref type
-            T value = default;
+            T value = Activator.CreateInstance<T>();
 
             while ((string.IsNullOrWhiteSpace(line) || line.Split(_split, StringSplitOptions.RemoveEmptyEntries)[0] != _objectBegin) && !reader.EndOfStream)
             {
