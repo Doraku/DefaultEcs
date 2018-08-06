@@ -118,7 +118,7 @@ namespace DefaultEcs.Serialization
             #endregion
         }
 
-        private sealed class ComponentWriter : IComponentReader, IDisposable
+        private sealed class ComponentWriter : IComponentReader
         {
             #region Fields
 
@@ -193,19 +193,6 @@ namespace DefaultEcs.Serialization
 
                     _operations.GetOrAdd(typeof(T), CreateOperation).WriteComponent(ref component, _stream, _buffer, _bufferP);
                 }
-            }
-
-            #endregion
-
-            #region IDisposable
-
-            public void Dispose()
-            {
-                _stream.Flush();
-                _stream.Position = sizeof(int);
-
-                *(int*)_bufferP = _entityCount + 1;
-                _stream.Write(_buffer, 0, sizeof(int));
             }
 
             #endregion
@@ -411,23 +398,24 @@ namespace DefaultEcs.Serialization
             world = world ?? throw new ArgumentNullException(nameof(world));
 
             using (stream)
+            using (EntitySet set = world.GetEntities().Build())
             {
+                ReadOnlySpan<Entity> entities = set.GetEntities();
                 byte[] buffer = new byte[1024];
                 fixed (byte* bufferP = buffer)
                 {
                     *(int*)bufferP = world.MaxEntityCount;
+                    *(((int*)bufferP) + 1) = entities.Length;
                     stream.Write(buffer, 0, sizeof(int) * 2);
 
                     Dictionary<Type, ushort> types = new Dictionary<Type, ushort>();
 
                     world.ReadAllComponentTypes(new ComponentTypeWriter(stream, buffer, bufferP, types, world.MaxEntityCount));
 
-                    using (ComponentWriter componentReader = new ComponentWriter(stream, buffer, bufferP, types))
+                    ComponentWriter componentReader = new ComponentWriter(stream, buffer, bufferP, types);
+                    for (int i = 0; i < entities.Length; i++)
                     {
-                        foreach (Entity entity in world.GetAllEntities())
-                        {
-                            componentReader.WriteEntity(entity);
-                        }
+                        componentReader.WriteEntity(entities[i]);
                     }
                 }
             }
