@@ -16,15 +16,18 @@ DefaultEcs is an Entity Component System framework which aims to be accessible w
     - [AComponentSystem](#Overview_System_AComponentSystem)
     - [SystemRunner](#Overview_System_SystemRunner)
   - [Message](#Overview_Message)
+  - [Serialization](#Overview_Serialization)
+    - [TextSerializer](#Overview_Serialization_TextSerializer)
+    - [BinarySerializer](#Overview_Serialization_BinarySerializer)
 - [Sample](#Sample)
 - [Performance](#Performance)
 
 <a name='Requirement'></a>
 # Requirement
-DefaultEcs use heavily features from C#7.0 and Span from the System.Memory package, compatible with .NETStandard 1.1 and .NETStandard 2.0.
+DefaultEcs use heavily features from C#7.0 and Span from the System.Memory package, compatible from .NETStandard 1.1.
 
 <a name='Overview'></a>
-# Quick look
+# Overview
 <a name='Overview_World'></a>
 ## World
 The World class act as a manager to create entity, get a selection of specific entities, get a family of component or publish and subscribe to messages that can be used to communicate in a decoupled way between the different elements.
@@ -248,6 +251,16 @@ world.Subscribe<bool>(On);
 world.Publish(true);
 ```
 Note that the Subscribe method return an IDisposable object acting as a subscription. To unsubscripe, simple dispose this object.
+
+<a name='Overview_Serialization'></a>
+## Serialization
+
+<a name='Overview_Serialization_TextSerializer'></a>
+### TextSerializer
+
+<a name='Overview_Serialization_BinarySerializer'></a>
+### BinarySerializer
+
 
 <a name='Sample'></a>
 # Sample

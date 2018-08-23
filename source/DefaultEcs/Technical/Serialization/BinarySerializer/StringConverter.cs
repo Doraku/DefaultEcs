@@ -8,26 +8,37 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         public static void Write(in string value, Stream stream, byte[] buffer, byte* bufferP)
         {
-            int* lengthP = (int*)bufferP;
-            *(lengthP++) = value.Length;
-            char* valueP = (char*)lengthP;
-            foreach (char c in value)
+            if (value == null)
             {
-                *(valueP++) = c;
+                stream.WriteByte(0);
             }
+            else
+            {
+                stream.WriteByte(1);
+                int* lengthP = (int*)bufferP;
+                *(lengthP++) = value.Length;
+                char* valueP = (char*)lengthP;
+                foreach (char c in value)
+                {
+                    *(valueP++) = c;
+                }
 
-            stream.Write(buffer, 0, sizeof(int) + value.Length * sizeof(char));
+                stream.Write(buffer, 0, sizeof(int) + value.Length * sizeof(char));
+            }
         }
 
         public static string Read(Stream stream, byte[] buffer, byte* bufferP)
         {
-            if (stream.Read(buffer, 0, sizeof(int)) == sizeof(int))
+            if (stream.ReadByte() > 0)
             {
-                int length = *(int*)bufferP;
-
-                if (stream.Read(buffer, 0, length * sizeof(char)) == length * sizeof(char))
+                if (stream.Read(buffer, 0, sizeof(int)) == sizeof(int))
                 {
-                    return new string((char*)bufferP, 0, length);
+                    int length = *(int*)bufferP;
+
+                    if (stream.Read(buffer, 0, length * sizeof(char)) == length * sizeof(char))
+                    {
+                        return new string((char*)bufferP, 0, length);
+                    }
                 }
             }
 

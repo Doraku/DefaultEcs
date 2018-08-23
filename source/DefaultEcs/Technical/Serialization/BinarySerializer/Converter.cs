@@ -89,9 +89,20 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region Methods
 
-        public static void Write(in T value, Stream stream, byte[] buffer, byte* bufferP) => _writeAction(value, stream, buffer, bufferP);
+        public static void Write(in T value, Stream stream, byte[] buffer, byte* bufferP)
+        {
+            if (value == null)
+            {
+                stream.WriteByte(0);
+            }
+            else
+            {
+                stream.WriteByte(1);
+                _writeAction(value, stream, buffer, bufferP);
+            }
+        }
 
-        public static T Read(Stream stream, byte[] buffer, byte* bufferP) => _readAction(stream, buffer, bufferP);
+        public static T Read(Stream stream, byte[] buffer, byte* bufferP) => stream.ReadByte() > 0 ? _readAction(stream, buffer, bufferP) : default;
 
         #endregion
     }

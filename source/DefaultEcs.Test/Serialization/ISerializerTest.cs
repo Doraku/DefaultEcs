@@ -132,6 +132,8 @@ namespace DefaultEcs.Test.Serialization
                 entities[1].Set(new Test(42));
                 entities[2].SetSameAs<Test>(entities[1]);
 
+                entities[0].Set<InnerClass>();
+
                 ISerializer serializer = GetSerializer();
 
                 string filePath = Path.GetRandomFileName();
@@ -177,6 +179,8 @@ namespace DefaultEcs.Test.Serialization
 
                         Check.That(entitiesCopy[1].Get<Test>()).IsEqualTo(entitiesCopy[2].Get<Test>());
                         Check.That(entitiesCopy[1].Get<InnerTest>()).IsEqualTo(entitiesCopy[2].Get<InnerTest>());
+
+                        Check.That(entitiesCopy[0].Get<InnerClass>()).IsEqualTo(entities[0].Get<InnerClass>());
                     }
                 }
                 finally

@@ -49,16 +49,8 @@ namespace DefaultEcs.Serialization
                 *_bufferP = _componentType;
                 ushort* entryType = (ushort*)(_bufferP + 1);
                 *(entryType++) = _currentType;
-                int* typeSize = (int*)entryType;
-                string typeName = typeof(T).AssemblyQualifiedName;
-                *(typeSize++) = typeName.Length;
-                char* type = (char*)typeSize;
-                foreach (char c in typeName)
-                {
-                    *(type++) = c;
-                }
-
-                _stream.Write(_buffer, 0, sizeof(byte) + sizeof(ushort) + sizeof(int) + sizeof(char) * typeName.Length);
+                _stream.Write(_buffer, 0, sizeof(byte) + sizeof(ushort));
+                Converter<string>.Write(typeof(T).AssemblyQualifiedName, _stream, _buffer, _bufferP);
 
                 if (maxComponentCount != _maxEntityCount)
                 {
@@ -212,15 +204,13 @@ namespace DefaultEcs.Serialization
             return world;
         }
 
-        private static IOperation CreateOperation(Type type) => (IOperation)Activator.CreateInstance(typeof(Operation<>).MakeGenericType(type));
-
         private static void CreateOperation(Stream stream, byte[] buffer, byte* bufferP, Dictionary<ushort, IOperation> operations)
         {
             if (stream.Read(buffer, 0, sizeof(ushort)) == sizeof(ushort))
             {
                 ushort typeId = *(ushort*)bufferP;
 
-                operations.Add(typeId, _operations.GetOrAdd(Type.GetType(Converter<string>.Read(stream, buffer, bufferP), true), CreateOperation));
+                operations.Add(typeId, _operations.GetOrAdd(Type.GetType(Converter<string>.Read(stream, buffer, bufferP), true), t => (IOperation)Activator.CreateInstance(typeof(Operation<>).MakeGenericType(t))));
             }
         }
 

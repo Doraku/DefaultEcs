@@ -74,6 +74,18 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [Benchmark]
+        public void Struct_Creation()
+        {
+            using (World world = new World(EntityCount))
+            {
+                for (int i = 0; i < EntityCount; ++i)
+                {
+                    world.CreateEntity().Set(new BigStruct());
+                }
+            }
+        }
+
+        [Benchmark]
         public void Struct_Serialize()
         {
             using (Stream stream = File.Create(_filePathS))
@@ -88,6 +100,18 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             using (Stream stream = File.OpenRead(_filePathS))
             {
                 _worldSCopy = _serializer.Deserialize(stream);
+            }
+        }
+
+        [Benchmark]
+        public void Class_Creation()
+        {
+            using (World world = new World(EntityCount))
+            {
+                for (int i = 0; i < EntityCount; ++i)
+                {
+                    world.CreateEntity().Set(new BigClass());
+                }
             }
         }
 

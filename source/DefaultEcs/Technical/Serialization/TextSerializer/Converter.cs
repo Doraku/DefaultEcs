@@ -144,44 +144,52 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 Expression assignSpace = Expression.Assign(space, Expression.Call(typeof(Converter<T>).GetTypeInfo().GetDeclaredMethod(nameof(CreateIndentation)), indentation));
 
                 List<Expression> writeExpressions = new List<Expression>
-                    {
-                        Expression.Call(writeLineString, writer,Expression.Constant(_objectBegin)),
-                        Expression.PreIncrementAssign(indentation),
-                        assignSpace
-                    };
+                {
+                    Expression.Call(writeLineString, writer,Expression.Constant(_objectBegin)),
+                    Expression.PreIncrementAssign(indentation),
+                    assignSpace
+                };
 
                 foreach (FieldInfo fieldInfo in typeof(T).GetTypeInfo().DeclaredFields.Where(f => !f.IsStatic))
                 {
                     string name = GetFriendlyName(fieldInfo.Name);
-                    writeExpressions.Add(Expression.Call(writer, write, Expression.Call(stringConcat, space, Expression.Constant(name))));
-                    writeExpressions.Add(Expression.Call(writer, write, Expression.Constant(" ")));
-                    writeExpressions.Add(Expression.Call(
-                        typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Write)),
-                        Expression.Field(value, fieldInfo),
-                        writer,
-                        indentation));
+                    Expression writeField = Expression.Block(
+                        Expression.Call(writer, write, Expression.Call(stringConcat, space, Expression.Constant(name))),
+                        Expression.Call(writer, write, Expression.Constant(" ")),
+                        Expression.Call(
+                            typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Write)),
+                            Expression.Field(value, fieldInfo),
+                            writer,
+                            indentation));
 
-                    DynamicMethod dynMethod = new DynamicMethod($"Set_{nameof(T)}_{fieldInfo.Name}", typeof(void), new[] { typeof(string), typeof(StreamReader), typeof(T).MakeByRefType() }, typeof(Converter<T>), true);
-                    ILGenerator generator = dynMethod.GetILGenerator();
-                    generator.Emit(OpCodes.Ldarg_2);
+                    writeExpressions.Add(writeField);
+
+                    DynamicMethod readMethod = new DynamicMethod($"Set_{nameof(T)}_{fieldInfo.Name}", typeof(void), new[] { typeof(string), typeof(StreamReader), typeof(T).MakeByRefType() }, typeof(Converter<T>), true);
+                    ILGenerator readGenerator = readMethod.GetILGenerator();
+                    readGenerator.Emit(OpCodes.Ldarg_2);
                     if (!typeof(T).GetTypeInfo().IsValueType)
                     {
-                        generator.Emit(OpCodes.Ldind_Ref);
+                        readGenerator.Emit(OpCodes.Ldind_Ref);
                     }
-                    generator.Emit(OpCodes.Ldarg_0);
-                    generator.Emit(OpCodes.Ldarg_1);
-                    generator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Converter<T>.Read)));
-                    generator.Emit(OpCodes.Stfld, fieldInfo);
-                    generator.Emit(OpCodes.Ret);
+                    readGenerator.Emit(OpCodes.Ldarg_0);
+                    readGenerator.Emit(OpCodes.Ldarg_1);
+                    readGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Converter<T>.Read)));
+                    readGenerator.Emit(OpCodes.Stfld, fieldInfo);
+                    readGenerator.Emit(OpCodes.Ret);
 
-                    _readFieldActions.Add(name.ToUpperInvariant(), (ReadFieldAction)dynMethod.CreateDelegate(typeof(ReadFieldAction)));
+                    _readFieldActions.Add(name.ToUpperInvariant(), (ReadFieldAction)readMethod.CreateDelegate(typeof(ReadFieldAction)));
                 }
 
                 writeExpressions.Add(Expression.PreDecrementAssign(indentation));
                 writeExpressions.Add(assignSpace);
                 writeExpressions.Add(Expression.Call(writeLineString, writer, Expression.Call(stringConcat, space, Expression.Constant(_objectEnd))));
 
-                _writeAction = Expression.Lambda<WriteAction>(Expression.Block(new[] { space }, writeExpressions), value, writer, indentation).Compile();
+                _writeAction = Expression.Lambda<WriteAction>(
+                    Expression.IfThenElse(
+                        Expression.Call(typeof(Converter<T>).GetTypeInfo().GetDeclaredMethod(nameof(IsNull)), value),
+                        Expression.Call(writeLineString, writer, Expression.Constant("null")),
+                        Expression.Block(new[] { space }, writeExpressions)),
+                    value, writer, indentation).Compile();
                 _readAction = ReadAnyType;
             }
         }
@@ -214,6 +222,11 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         private static T ReadAnyType(string line, StreamReader reader)
         {
+            if (line.StartsWith("null"))
+            {
+                return default;
+            }
+
             T value = Activator.CreateInstance<T>();
 
             while ((string.IsNullOrWhiteSpace(line) || line.Split(_split, StringSplitOptions.RemoveEmptyEntries)[0] != _objectBegin) && !reader.EndOfStream)
@@ -240,6 +253,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
             return value;
         }
+
+        public static bool IsNull(in T value) => value == null;
 
         public static TEnum ReadEnum<TEnum>(string entry)
             where TEnum : struct
