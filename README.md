@@ -283,7 +283,49 @@ using (Stream stream = File.OpenRead(filePath))
 <a name='Overview_Serialization_TextSerializer'></a>
 ### TextSerializer
 The prupose of this serializer is to provide a readable save format which can be edited by hand.
+```
+// this must be the first line of the file and will be used to create the World
+MaxEntityCount 42
 
+// this line is used to define an alias for a type used as component inside the world and must be declared before being used
+ComponentType Int32 System.Int32, System.Private.CoreLib
+
+// this line is used to set the maxComponentCount for the given type, in case it is different from the maxEntityCount
+MaxComponentCount Int32 13
+
+// this line create an entity with the id "MyEntity"
+Entity MyEntity
+
+// this line set the component of the type with the alias Int32 on the previously created Entity to the value 13
+Component Int32 13
+
+// let's say we have the type defined as such already declared with the alias Test
+// struct Test
+// {
+//     int Hello
+//     int World
+// }
+// composite objects are setted like this
+Component Test {
+	Hello 666
+	// this line is ignored since the type does not have a member with the name Wow
+	// also the World member will have its default value since not present
+	Wow 42
+}
+
+// this create a new entity with no id
+Entity
+Component Int32 1337
+
+// this create a new entity with the id "Foo"
+Entity Foo
+
+// this sets the component of the type with the alias Test of the previously created Entity as the same as the one of the Entity with the id MyEntity
+ComponentSameAs Test MyEntity
+
+// this sets the entity with the id MyEntity as the parent of the entity with the id Foo
+ParentChild MyEntity Foo
+```
 <a name='Overview_Serialization_BinarySerializer'></a>
 ### BinarySerializer
 This serializer is optimized for speed and file space.
