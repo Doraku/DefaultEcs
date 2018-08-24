@@ -254,13 +254,38 @@ Note that the Subscribe method return an IDisposable object acting as a subscrip
 
 <a name='Overview_Serialization'></a>
 ## Serialization
+DefaultEcs support serialization to save and load a World state. Two implementations are provided which are equals in feature and it is possible to create a custom serialization engine using the framework of your choice by implementing a set of interfaces.
+
+- ISerializer is the base interface
+- IComponentTypeReader is used to get the settings of the serialized World in case a maxComponentCount has been set for a specific type different from the maxEntityCount
+- IComponentReader is used to get all the components of an Entity
+
+The provided implementation TextSerializer and BinarySerializer are still in development and do not support serialization of interface nor abstract types and member. Types without a default constructor are not supported either.
+Nonetheless both are highly permissive and will serialize every fields and properties even if the are private or readonly and do not require any attribute decoration to work.
+This was a target from the get go as graphic and framework libraries do not always have well decorated type which would be used as component.
+If you have knownledge of a serialization framework which works with everything without decoration or external schema file, please tell me because serialization is pain and I should not have started this thing.
+
+```C#
+ISerializer serializer = new TextSerializer();
+
+using (Stream stream = File.Create(filePath))
+{
+    serializer.Serialize(stream, world);
+}
+
+using (Stream stream = File.OpenRead(filePath))
+{
+    World worldCopy = serializer.Deserialize(stream);
+}
+```
 
 <a name='Overview_Serialization_TextSerializer'></a>
 ### TextSerializer
+The prupose of this serializer is to provide a readable save format which can be edited by hand.
 
 <a name='Overview_Serialization_BinarySerializer'></a>
 ### BinarySerializer
-
+This serializer is optimized for speed and file space.
 
 <a name='Sample'></a>
 # Sample
