@@ -115,6 +115,20 @@ namespace DefaultEcs.Serialization
                 entity.ReadAllComponents(this);
             }
 
+            public void WriteChildren(in Entity entity)
+            {
+                *_bufferP = _parentChild;
+                int* ids = (int*)(_bufferP + 1);
+                *ids++ = _entities[entity];
+
+                foreach (Entity child in entity.GetChildren())
+                {
+                    *ids = _entities[child];
+
+                    _stream.Write(_buffer, 0, sizeof(byte) + sizeof(int) * 2);
+                }
+            }
+
             #endregion
 
             #region IComponentReader
@@ -185,6 +199,7 @@ namespace DefaultEcs.Serialization
         private const byte _entity = 3;
         private const byte _component = 4;
         private const byte _componentSameAs = 5;
+        private const byte _parentChild = 6;
 
         private static readonly ConcurrentDictionary<Type, IOperation> _operations = new ConcurrentDictionary<Type, IOperation>();
 
@@ -264,6 +279,14 @@ namespace DefaultEcs.Serialization
             }
         }
 
+        private static void SetAsParentOf(Stream stream, byte[] buffer, int* bufferP, Entity[] entities)
+        {
+            if (stream.Read(buffer, 0, sizeof(int) * 2) == sizeof(int) * 2)
+            {
+                entities[*bufferP++].SetAsParentOf(entities[*bufferP]);
+            }
+        }
+
         /// <summary>
         /// Writes an object of type <typeparamref name="T"/> on the given stream.
         /// </summary>
@@ -338,6 +361,10 @@ namespace DefaultEcs.Serialization
                     {
                         componentReader.WriteEntity(entities[i]);
                     }
+                    for (int i = 0; i < entities.Length; i++)
+                    {
+                        componentReader.WriteChildren(entities[i]);
+                    }
                 }
             }
         }
@@ -391,6 +418,10 @@ namespace DefaultEcs.Serialization
 
                                 case _componentSameAs:
                                     SetSameAsComponent(currentEntity, stream, buffer, bufferP, entities, operations);
+                                    break;
+
+                                case _parentChild:
+                                    SetAsParentOf(stream, buffer, (int*)bufferP, entities);
                                     break;
                             }
                         }

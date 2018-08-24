@@ -58,7 +58,7 @@ namespace DefaultEcs.Serialization
             #endregion
         }
 
-        private sealed class ComponentWriter : IComponentReader
+        private sealed class EntityWriter : IComponentReader
         {
             #region Fields
 
@@ -74,7 +74,7 @@ namespace DefaultEcs.Serialization
 
             #region Initialisation
 
-            public ComponentWriter(StreamWriter writer, Dictionary<Type, string> types)
+            public EntityWriter(StreamWriter writer, Dictionary<Type, string> types)
             {
                 _writer = writer;
                 _types = types;
@@ -95,6 +95,16 @@ namespace DefaultEcs.Serialization
                 _writer.WriteLine($"{_entity} {_entityCount}");
 
                 entity.ReadAllComponents(this);
+            }
+
+            public void WriteChildren(in Entity entity)
+            {
+                int parentId = _entities[entity];
+
+                foreach (Entity child in entity.GetChildren())
+                {
+                    _writer.WriteLine($"{_parentChild} {parentId} {_entities[child]}");
+                }
             }
 
             #endregion
@@ -159,6 +169,7 @@ namespace DefaultEcs.Serialization
         private const string _entity = "Entity";
         private const string _component = "Component";
         private const string _componentSameAs = "ComponentSameAs";
+        private const string _parentChild = "ParentChild";
 
         private static readonly char[] _split = new[] { ' ', '\t' };
         private static readonly ConcurrentDictionary<Type, IOperation> _operations = new ConcurrentDictionary<Type, IOperation>();
@@ -261,6 +272,25 @@ namespace DefaultEcs.Serialization
             operation.SetSameAsComponent(entity, reference);
         }
 
+        private static void SetAsParentOf(string entry, Dictionary<string, Entity> entities)
+        {
+            string[] componentEntry = entry.Split(_split, StringSplitOptions.RemoveEmptyEntries);
+            if (componentEntry.Length < 2)
+            {
+                throw new ArgumentException($"Unable to get Entity ids from '{entry}'");
+            }
+            if (!entities.TryGetValue(componentEntry[0], out Entity parent))
+            {
+                throw new ArgumentException($"Unknown parent Entity '{componentEntry[0]}'");
+            }
+            if (!entities.TryGetValue(componentEntry[1], out Entity child))
+            {
+                throw new ArgumentException($"Unknown child Entity '{componentEntry[1]}'");
+            }
+
+            parent.SetAsParentOf(child);
+        }
+
         /// <summary>
         /// Writes an object of type <typeparamref name="T"/> on the given stream.
         /// </summary>
@@ -314,11 +344,19 @@ namespace DefaultEcs.Serialization
                 writer.WriteLine($"{_maxEntityCount} {world.MaxEntityCount}");
                 world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxEntityCount));
 
-                ComponentWriter componentReader = new ComponentWriter(writer, types);
+                EntityWriter componentReader = new EntityWriter(writer, types);
 
-                foreach (Entity entity in world.GetAllEntities())
+                using (EntitySet set = world.GetEntities().Build())
                 {
-                    componentReader.WriteEntity(entity);
+                    ReadOnlySpan<Entity> entities = set.GetEntities();
+                    for (int i = 0; i < entities.Length; i++)
+                    {
+                        componentReader.WriteEntity(entities[i]);
+                    }
+                    for (int i = 0; i < entities.Length; i++)
+                    {
+                        componentReader.WriteChildren(entities[i]);
+                    }
                 }
             }
         }
@@ -372,6 +410,10 @@ namespace DefaultEcs.Serialization
                             else if (_componentSameAs.Equals(entry))
                             {
                                 SetSameAsComponent(currentEntity, lineParts[1], entities, operations);
+                            }
+                            else if (_parentChild.Equals(entry))
+                            {
+                                SetAsParentOf(lineParts[1], entities);
                             }
                         }
                     }

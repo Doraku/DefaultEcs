@@ -160,6 +160,23 @@ namespace DefaultEcs
         public void SetAsParentOf(in Entity child) => child.SetAsChildOf(this);
 
         /// <summary>
+        /// Gets all the <see cref="Entity"/> setted as children of the current <see cref="Entity"/>.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Entity> GetChildren()
+        {
+            HashSet<int> children = World.EntityInfos[WorldId][EntityId].Children;
+
+            if (children != null)
+            {
+                foreach (int childId in children)
+                {
+                    yield return new Entity(WorldId, childId);
+                }
+            }
+        }
+
+        /// <summary>
         /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="World"/>.
         /// </summary>
         /// <param name="world">The <see cref="World"/> instance to which copy current <see cref="Entity"/> and its components.</param>

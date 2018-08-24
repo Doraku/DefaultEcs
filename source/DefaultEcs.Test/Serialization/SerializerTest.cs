@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DefaultEcs.Serialization;
@@ -130,7 +131,9 @@ namespace DefaultEcs.Test.Serialization
                 entities[2].SetSameAs<Test>(entities[1]);
 
                 entities[0].Set<InnerClass>();
-                entities[0].Set(new int[] { 1, 2, 3 });
+                entities[0].Set(new List<int> { 1, 2, 3 });
+
+                entities[0].SetAsParentOf(entities[1]);
 
                 ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
 
@@ -179,7 +182,11 @@ namespace DefaultEcs.Test.Serialization
                         Check.That(entitiesCopy[1].Get<InnerTest>()).IsEqualTo(entitiesCopy[2].Get<InnerTest>());
 
                         Check.That(entitiesCopy[0].Get<InnerClass>()).IsEqualTo(entities[0].Get<InnerClass>());
-                        Check.That(entitiesCopy[0].Get<int[]>()).ContainsExactly(entities[0].Get<int[]>());
+                        Check.That(entitiesCopy[0].Get<List<int>>()).ContainsExactly(entities[0].Get<List<int>>());
+
+                        entitiesCopy[0].Dispose();
+
+                        Check.That(copyWorld.GetAllEntities().Count()).IsEqualTo(1);
                     }
                 }
                 finally
