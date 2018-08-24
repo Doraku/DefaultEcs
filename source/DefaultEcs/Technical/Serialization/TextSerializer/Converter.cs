@@ -278,7 +278,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         public static void WriteArray(in T[] values, StreamWriter writer, int indentation)
         {
             writer.WriteLine(_arrayBegin);
-            string indentationString = CreateIndentation(indentation);
+            string indentationString = CreateIndentation(indentation + 1);
 
             foreach (T value in values)
             {
@@ -286,7 +286,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 Write(value, writer, indentation + 1);
             }
 
-            writer.Write(indentationString);
+            writer.Write(CreateIndentation(indentation));
             writer.WriteLine(_arrayEnd);
         }
 
