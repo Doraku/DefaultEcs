@@ -261,6 +261,36 @@ namespace DefaultEcs.Serialization
             operation.SetSameAsComponent(entity, reference);
         }
 
+        /// <summary>
+        /// Writes an object of type <typeparamref name="T"/> on the given stream.
+        /// </summary>
+        /// <typeparam name="T">The type of the object serialized.</typeparam>
+        /// <param name="stream">The <see cref="Stream"/> instance on which the object is to be serialized.</param>
+        /// <param name="obj">The object to serialize.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
+        public static void Write<T>(Stream stream, in T obj)
+        {
+            using (StreamWriter writer = new StreamWriter(stream ?? throw new ArgumentNullException(nameof(stream))))
+            {
+                Converter<T>.Write(obj, writer, 0);
+            }
+        }
+
+        /// <summary>
+        /// Read an object of type <typeparamref name="T"/> from the given stream.
+        /// </summary>
+        /// <typeparam name="T">The type of the object deserialized.</typeparam>
+        /// <param name="stream">The <see cref="Stream"/> instance from which the object is to be deserialized.</param>
+        /// <returns>The object deserialized.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
+        public static T Read<T>(Stream stream)
+        {
+            using (StreamReader reader = new StreamReader(stream ?? throw new ArgumentNullException(nameof(stream))))
+            {
+                return Converter<T>.Read(string.Empty, reader);
+            }
+        }
+
         #endregion
 
         #region ISerializer
@@ -270,6 +300,8 @@ namespace DefaultEcs.Serialization
         /// </summary>
         /// <param name="stream">The <see cref="Stream"/> in which the data will be saved.</param>
         /// <param name="world">The <see cref="World"/> instance to save.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         public void Serialize(Stream stream, World world)
         {
             stream = stream ?? throw new ArgumentNullException(nameof(stream));
@@ -296,6 +328,8 @@ namespace DefaultEcs.Serialization
         /// </summary>
         /// <param name="stream">The <see cref="Stream"/> from which the data will be loaded.</param>
         /// <returns>The <see cref="World"/> instance loaded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         public World Deserialize(Stream stream)
         {
             stream = stream ?? throw new ArgumentNullException(nameof(stream));

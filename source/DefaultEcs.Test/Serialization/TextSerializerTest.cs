@@ -1,9 +1,6 @@
-﻿using DefaultEcs.Serialization;
-
-namespace DefaultEcs.Test.Serialization
+﻿namespace DefaultEcs.Test.Serialization
 {
-    public class TextSerializerTest : ISerializerTest
+    public class TextSerializerTest
     {
-        protected override ISerializer GetSerializer() => new TextSerializer();
     }
 }

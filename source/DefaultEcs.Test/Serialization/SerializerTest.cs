@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using DefaultEcs.Serialization;
 using NFluent;
@@ -6,7 +7,7 @@ using Xunit;
 
 namespace DefaultEcs.Test.Serialization
 {
-    public abstract class ISerializerTest
+    public class SerializerTest
     {
         #region Types
 
@@ -89,16 +90,12 @@ namespace DefaultEcs.Test.Serialization
 
         #endregion
 
-        #region Methods
-
-        protected abstract ISerializer GetSerializer();
-
-        #endregion
-
         #region Tests
 
-        [Fact]
-        public void Serialize_Should_serialize_World()
+        [Theory]
+        [InlineData(typeof(BinarySerializer))]
+        [InlineData(typeof(TextSerializer))]
+        public void Serialize_Should_serialize_World(Type serializerType)
         {
             using (World world = new World(42))
             {
@@ -133,8 +130,9 @@ namespace DefaultEcs.Test.Serialization
                 entities[2].SetSameAs<Test>(entities[1]);
 
                 entities[0].Set<InnerClass>();
+                entities[0].Set(new int[] { 1, 2, 3 });
 
-                ISerializer serializer = GetSerializer();
+                ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
 
                 string filePath = Path.GetRandomFileName();
                 try
@@ -181,6 +179,7 @@ namespace DefaultEcs.Test.Serialization
                         Check.That(entitiesCopy[1].Get<InnerTest>()).IsEqualTo(entitiesCopy[2].Get<InnerTest>());
 
                         Check.That(entitiesCopy[0].Get<InnerClass>()).IsEqualTo(entities[0].Get<InnerClass>());
+                        Check.That(entitiesCopy[0].Get<int[]>()).ContainsExactly(entities[0].Get<int[]>());
                     }
                 }
                 finally

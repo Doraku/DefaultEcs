@@ -36,11 +36,13 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         [Params(100000)]
         public int EntityCount { get; set; }
 
+        [Params(typeof(BinarySerializer), typeof(TextSerializer))]
+        public Type SerializerType { get; set; }
+
         [GlobalSetup]
         public void Setup()
         {
-            //_serializer = new TextSerializer();
-            _serializer = new BinarySerializer();
+            _serializer = (ISerializer)Activator.CreateInstance(SerializerType);
             _worldS = new World(EntityCount);
             _worldC = new World(EntityCount);
             for (int i = 0; i < EntityCount; ++i)
@@ -74,18 +76,6 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [Benchmark]
-        public void Struct_Creation()
-        {
-            using (World world = new World(EntityCount))
-            {
-                for (int i = 0; i < EntityCount; ++i)
-                {
-                    world.CreateEntity().Set(new BigStruct());
-                }
-            }
-        }
-
-        [Benchmark]
         public void Struct_Serialize()
         {
             using (Stream stream = File.Create(_filePathS))
@@ -100,18 +90,6 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             using (Stream stream = File.OpenRead(_filePathS))
             {
                 _worldSCopy = _serializer.Deserialize(stream);
-            }
-        }
-
-        [Benchmark]
-        public void Class_Creation()
-        {
-            using (World world = new World(EntityCount))
-            {
-                for (int i = 0; i < EntityCount; ++i)
-                {
-                    world.CreateEntity().Set(new BigClass());
-                }
             }
         }
 

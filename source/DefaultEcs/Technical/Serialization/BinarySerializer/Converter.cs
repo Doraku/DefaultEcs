@@ -32,6 +32,13 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 _writeAction = (WriteAction)new Converter<string>.WriteAction(StringConverter.Write);
                 _readAction = (ReadAction)new Converter<string>.ReadAction(StringConverter.Read);
             }
+            else if (typeof(T).GetTypeInfo().IsArray)
+            {
+                Type elementType = typeof(T).GetTypeInfo().GetElementType();
+
+                _writeAction = (WriteAction)typeof(Converter<>).MakeGenericType(elementType).GetTypeInfo().GetDeclaredMethod(nameof(WriteArray)).CreateDelegate(typeof(WriteAction));
+                _readAction = (ReadAction)typeof(Converter<>).MakeGenericType(elementType).GetTypeInfo().GetDeclaredMethod(nameof(ReadArray)).CreateDelegate(typeof(ReadAction));
+            }
             else if (!typeof(T).GetTypeInfo().IsValueType)
             {
                 DynamicMethod writeMethod = new DynamicMethod($"Write_{nameof(T)}", typeof(void), new[] { typeof(T).MakeByRefType(), typeof(Stream), typeof(byte[]), typeof(byte*) }, typeof(Converter<T>), true);
@@ -89,6 +96,20 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region Methods
 
+        public static void WriteArray(in T[] values, Stream stream, byte[] buffer, byte* bufferP)
+        {
+            *(int*)bufferP = values?.Length ?? -1;
+            stream.Write(buffer, 0, sizeof(int));
+
+            if (values != null)
+            {
+                for (int i = 0; i < values.Length; ++i)
+                {
+                    Write(values[i], stream, buffer, bufferP);
+                }
+            }
+        }
+
         public static void Write(in T value, Stream stream, byte[] buffer, byte* bufferP)
         {
             if (value == null)
@@ -100,6 +121,27 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 stream.WriteByte(1);
                 _writeAction(value, stream, buffer, bufferP);
             }
+        }
+
+        public static T[] ReadArray(Stream stream, byte[] buffer, byte* bufferP)
+        {
+            T[] values = default;
+
+            if (stream.Read(buffer, 0, sizeof(int)) == sizeof(int))
+            {
+                int length = *(int*)bufferP;
+                if (length >= 0)
+                {
+                    values = new T[length];
+
+                    for (int i = 0; i < values.Length; ++i)
+                    {
+                        values[i] = Read(stream, buffer, bufferP);
+                    }
+                }
+            }
+
+            return values;
         }
 
         public static T Read(Stream stream, byte[] buffer, byte* bufferP) => stream.ReadByte() > 0 ? _readAction(stream, buffer, bufferP) : default;

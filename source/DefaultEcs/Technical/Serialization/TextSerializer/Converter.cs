@@ -23,6 +23,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         private const string _objectBegin = "{";
         private const string _objectEnd = "}";
+        private const string _arrayBegin = "[";
+        private const string _arrayEnd = "]";
 
         private static readonly char[] _split = new[] { ' ', '\t' };
         private static readonly Dictionary<string, ReadFieldAction> _readFieldActions;
@@ -107,6 +109,13 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                     line);
 
                 _readAction = Expression.Lambda<ReadAction>(Expression.Call(typeof(Converter<T>).GetTypeInfo().GetDeclaredMethod(nameof(ReadEnum)).MakeGenericMethod(typeof(T)), readIfNull), line, reader).Compile();
+            }
+            else if (typeof(T).GetTypeInfo().IsArray)
+            {
+                Type elementType = typeof(T).GetTypeInfo().GetElementType();
+
+                _writeAction = (WriteAction)typeof(Converter<>).MakeGenericType(elementType).GetTypeInfo().GetDeclaredMethod(nameof(WriteArray)).CreateDelegate(typeof(WriteAction));
+                _readAction = (ReadAction)typeof(Converter<>).MakeGenericType(elementType).GetTypeInfo().GetDeclaredMethod(nameof(ReadArray)).CreateDelegate(typeof(ReadAction));
             }
             else
             #endregion
@@ -265,6 +274,51 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         public static string CreateIndentation(int indentation) => string.Join(string.Empty, Enumerable.Repeat('\t', indentation));
 
         public static void StreamWriterWriteLine(StreamWriter writer, string line) => writer.WriteLine(line);
+
+        public static void WriteArray(in T[] values, StreamWriter writer, int indentation)
+        {
+            writer.WriteLine(_arrayBegin);
+            string indentationString = CreateIndentation(indentation);
+
+            foreach (T value in values)
+            {
+                writer.Write(indentationString);
+                Write(value, writer, indentation + 1);
+            }
+
+            writer.Write(indentationString);
+            writer.WriteLine(_arrayEnd);
+        }
+
+        private static T[] ReadArray(string line, StreamReader reader)
+        {
+            if (line.StartsWith("null"))
+            {
+                return default;
+            }
+
+            List<T> values = new List<T>();
+
+            while ((string.IsNullOrWhiteSpace(line) || !line.StartsWith(_arrayBegin)) && !reader.EndOfStream)
+            {
+                line = reader.ReadLine().TrimStart(_split);
+            }
+
+            while (!reader.EndOfStream)
+            {
+                line = reader.ReadLine().TrimStart(_split);
+                if (line.StartsWith(_arrayEnd))
+                {
+                    break;
+                }
+                else
+                {
+                    values.Add(Read(line, reader));
+                }
+            }
+
+            return values.ToArray();
+        }
 
         public static void Write(in T value, StreamWriter writer, int indentation) => _writeAction(value, writer, indentation);
 
