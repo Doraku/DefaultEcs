@@ -375,7 +375,6 @@ namespace DefaultEcs.Serialization
         /// <param name="stream">The <see cref="Stream"/> from which the data will be loaded.</param>
         /// <returns>The <see cref="World"/> instance loaded.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         public World Deserialize(Stream stream)
         {
             stream = stream ?? throw new ArgumentNullException(nameof(stream));

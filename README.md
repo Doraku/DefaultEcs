@@ -1,7 +1,7 @@
 ![DefaultEcs](https://github.com/Doraku/DefaultEcs/blob/master/DefaultEcsLogo.png)
 DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
-[![NuGet](https://img.shields.io/badge/nuget-v0.5.0-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
+[![NuGet](https://img.shields.io/badge/nuget-v0.6.0-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
 
 - [Requirement](#Requirement)
 - [Overview](#Overview)
@@ -263,6 +263,7 @@ DefaultEcs support serialization to save and load a World state. Two implementat
 The provided implementation TextSerializer and BinarySerializer are still in development and do not support serialization of interface nor abstract types and member. Types without a default constructor are not supported either.
 Nonetheless both are highly permissive and will serialize every fields and properties even if the are private or readonly and do not require any attribute decoration to work.
 This was a target from the get go as graphic and framework libraries do not always have well decorated type which would be used as component.
+
 If you have knownledge of a serialization framework which works with everything without decoration or external schema file, please tell me because serialization is pain and I should not have started this thing.
 
 ```C#

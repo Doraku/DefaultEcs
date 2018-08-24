@@ -32,7 +32,7 @@
     <PackageLicenseUrl>https://github.com/Doraku/DefaultEcs/blob/master/LICENSE.md</PackageLicenseUrl>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.5.1</Version>
+    <Version>0.6.0</Version>
     <PackageReleaseNotes>
 added serialize feature to World and Entity
 renamed AEntitySetSystem base class to AEntitySystem
