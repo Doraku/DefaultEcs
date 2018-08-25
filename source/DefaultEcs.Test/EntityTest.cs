@@ -17,9 +17,20 @@ namespace DefaultEcs.Test
 
             public void OnRead<T>(ref T component, in Entity componentOwner)
             {
-                if (typeof(T) == typeof(int)) IntValue = (int)(object)component;
-                if (typeof(T) == typeof(long)) LongValue = (long)(object)component;
-                if (typeof(T) == typeof(float)) FloatValue = (float)(object)component;
+                if (typeof(T) == typeof(int))
+                {
+                    IntValue = (int)(object)component;
+                }
+
+                if (typeof(T) == typeof(long))
+                {
+                    LongValue = (long)(object)component;
+                }
+
+                if (typeof(T) == typeof(float))
+                {
+                    FloatValue = (float)(object)component;
+                }
             }
         }
 
@@ -433,6 +444,30 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void Dispose_Should_not_dispose_children_When_RemoveFromParentsOf()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().Build())
+            {
+                Entity parent = world.CreateEntity();
+                Entity other = world.CreateEntity();
+                Entity child1 = world.CreateEntity();
+                Entity child2 = world.CreateEntity();
+
+                child1.SetAsChildOf(parent);
+                child2.SetAsChildOf(parent);
+
+                Check.That(set.GetEntities().Length).IsEqualTo(4);
+
+                parent.RemoveFromParentsOf(child1);
+                parent.Dispose();
+
+                Check.That(set.GetEntities().Length).IsEqualTo(2);
+                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(new[] { other, child1 });
+            }
+        }
+
+        [Fact]
         public void SetAsParentOf_Should_throw_When_Entity_not_created_from_a_World()
         {
             Entity parent = default;
@@ -451,6 +486,28 @@ namespace DefaultEcs.Test
                 Entity child = world2.CreateEntity();
 
                 Check.ThatCode(() => parent.SetAsParentOf(child)).Throws<InvalidOperationException>();
+            }
+        }
+
+        [Fact]
+        public void RemoveFromParentsOf_Should_throw_When_Entity_not_created_from_a_World()
+        {
+            Entity parent = default;
+            Entity child = default;
+
+            Check.ThatCode(() => parent.RemoveFromParentsOf(child)).Throws<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void RemoveFromParentsOf_Should_throw_When_parent_and_child_not_created_from_same_World()
+        {
+            using (World world1 = new World(1))
+            using (World world2 = new World(1))
+            {
+                Entity parent = world1.CreateEntity();
+                Entity child = world2.CreateEntity();
+
+                Check.ThatCode(() => parent.RemoveFromParentsOf(child)).Throws<InvalidOperationException>();
             }
         }
 

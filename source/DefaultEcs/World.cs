@@ -99,10 +99,9 @@ namespace DefaultEcs
             if (children != null)
             {
                 EntityInfos[WorldId][message.EntityId].Children = null;
-                int[] childrenIds = new int[children.Count];
-                children.CopyTo(childrenIds);
-                foreach (int childId in childrenIds)
+                foreach (int childId in children)
                 {
+                    EntityInfos[WorldId][childId].Parents -= children.Remove;
                     Publish(new EntityDisposedMessage(childId));
                 }
             }

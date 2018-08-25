@@ -165,7 +165,7 @@ namespace DefaultEcs
         /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
-        public void RemoveFromParents(in Entity parent)
+        public void RemoveFromChildrenOf(in Entity parent)
         {
             if (WorldId != parent.WorldId)
             {
@@ -190,7 +190,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveFromChildren(in Entity child) => child.RemoveFromParents(this);
+        public void RemoveFromParentsOf(in Entity child) => child.RemoveFromChildrenOf(this);
 
         /// <summary>
         /// Gets all the <see cref="Entity"/> setted as children of the current <see cref="Entity"/>.

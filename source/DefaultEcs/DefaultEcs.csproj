@@ -34,7 +34,7 @@
 
     <Version>0.6.0</Version>
     <PackageReleaseNotes>
-added RemoveFromParents and RemoveFromChildren methods on Entity to remove hierarchy of dispose chain
+added RemoveFromChildrenOf and RemoveFromParentsOf methods on Entity to remove hierarchy of dispose chain
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
