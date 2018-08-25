@@ -129,13 +129,13 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
         public void SetAsChildOf(in Entity parent)
         {
-            if (WorldId == 0)
-            {
-                throw new InvalidOperationException("Entity was not created from a World");
-            }
             if (WorldId != parent.WorldId)
             {
                 throw new InvalidOperationException("Child and parent Entity come from a different World");
+            }
+            if (WorldId == 0)
+            {
+                throw new InvalidOperationException("Entity was not created from a World");
             }
 
             ref HashSet<int> children = ref World.EntityInfos[WorldId][parent.EntityId].Children;
@@ -158,6 +158,39 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetAsParentOf(in Entity child) => child.SetAsChildOf(this);
+
+        /// <summary>
+        /// Remove the given <see cref="Entity"/> from current <see cref="Entity"/> parents.
+        /// </summary>
+        /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
+        public void RemoveFromParents(in Entity parent)
+        {
+            if (WorldId != parent.WorldId)
+            {
+                throw new InvalidOperationException("Child and parent Entity come from a different World");
+            }
+            if (WorldId == 0)
+            {
+                throw new InvalidOperationException("Entity was not created from a World");
+            }
+
+            HashSet<int> children = World.EntityInfos[WorldId][parent.EntityId].Children;
+            if (children?.Remove(EntityId) ?? false)
+            {
+                World.EntityInfos[WorldId][EntityId].Parents -= children.Remove;
+            }
+        }
+
+        /// <summary>
+        /// Remove the given <see cref="Entity"/> from current <see cref="Entity"/> children.
+        /// </summary>
+        /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void RemoveFromChildren(in Entity child) => child.RemoveFromParents(this);
 
         /// <summary>
         /// Gets all the <see cref="Entity"/> setted as children of the current <see cref="Entity"/>.

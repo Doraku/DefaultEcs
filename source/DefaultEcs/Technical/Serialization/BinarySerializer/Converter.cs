@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 
 namespace DefaultEcs.Technical.Serialization.BinarySerializer
 {
-    unsafe internal static class Converter<T>
+    internal static unsafe class Converter<T>
     {
         #region Types
 
@@ -17,8 +17,8 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region Fields
 
-        private readonly static WriteAction _writeAction;
-        private readonly static ReadAction _readAction;
+        private static readonly WriteAction _writeAction;
+        private static readonly ReadAction _readAction;
 
         #endregion
 
@@ -112,7 +112,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         public static void Write(in T value, Stream stream, byte[] buffer, byte* bufferP)
         {
-            if (value == null)
+            if (value == default)
             {
                 stream.WriteByte(0);
             }

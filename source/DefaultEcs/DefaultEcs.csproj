@@ -34,10 +34,7 @@
 
     <Version>0.6.0</Version>
     <PackageReleaseNotes>
-added serialize feature to World and Entity
-renamed AEntitySetSystem base class to AEntitySystem
-renamed World.SetComponentTypeMaximumCount method to SetMaximumComponentCount
-inner improvements
+added RemoveFromParents and RemoveFromChildren methods on Entity to remove hierarchy of dispose chain
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
