@@ -58,7 +58,7 @@ namespace DefaultEcs.Serialization
             #endregion
         }
 
-        private sealed class EntityWriter : IComponentReader
+        private sealed class ComponentWriter : IComponentReader
         {
             #region Fields
 
@@ -74,7 +74,7 @@ namespace DefaultEcs.Serialization
 
             #region Initialisation
 
-            public EntityWriter(StreamWriter writer, Dictionary<Type, string> types)
+            public ComponentWriter(StreamWriter writer, Dictionary<Type, string> types)
             {
                 _writer = writer;
                 _types = types;
@@ -97,13 +97,17 @@ namespace DefaultEcs.Serialization
                 entity.ReadAllComponents(this);
             }
 
-            public void WriteChildren(in Entity entity)
+            public void WriteChildren()
             {
-                int parentId = _entities[entity];
-
-                foreach (Entity child in entity.GetChildren())
+                foreach (KeyValuePair<Entity, int> pair in _entities)
                 {
-                    _writer.WriteLine($"{_parentChild} {parentId} {_entities[child]}");
+                    foreach (Entity child in pair.Key.GetChildren())
+                    {
+                        if (_entities.TryGetValue(child, out int childId))
+                        {
+                            _writer.WriteLine($"{_parentChild} {pair.Value} {childId}");
+                        }
+                    }
                 }
             }
 
@@ -321,6 +325,11 @@ namespace DefaultEcs.Serialization
             }
         }
 
+        //public static Func<Entity> GetFactory(Stream stream)
+        //{
+
+        //}
+
         #endregion
 
         #region ISerializer
@@ -344,19 +353,17 @@ namespace DefaultEcs.Serialization
                 writer.WriteLine($"{_maxEntityCount} {world.MaxEntityCount}");
                 world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxEntityCount));
 
-                EntityWriter componentReader = new EntityWriter(writer, types);
+                ComponentWriter componentWriter = new ComponentWriter(writer, types);
 
                 using (EntitySet set = world.GetEntities().Build())
                 {
                     ReadOnlySpan<Entity> entities = set.GetEntities();
                     for (int i = 0; i < entities.Length; i++)
                     {
-                        componentReader.WriteEntity(entities[i]);
+                        componentWriter.WriteEntity(entities[i]);
                     }
-                    for (int i = 0; i < entities.Length; i++)
-                    {
-                        componentReader.WriteChildren(entities[i]);
-                    }
+
+                    componentWriter.WriteChildren();
                 }
             }
         }
@@ -420,6 +427,86 @@ namespace DefaultEcs.Serialization
                 while (!reader.EndOfStream);
 
                 return world;
+            }
+        }
+
+        /// <summary>
+        /// Serializes the given <see cref="Entity"/> instances with their components into the provided <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="stream">The <see cref="Stream"/> in which the data will be saved.</param>
+        /// <param name="entities">The <see cref="Entity"/> instances to save.</param>
+        public void Serialize(Stream stream, IEnumerable<Entity> entities)
+        {
+            stream = stream ?? throw new ArgumentNullException(nameof(stream));
+            entities = entities ?? throw new ArgumentNullException(nameof(entities));
+
+            using (StreamWriter writer = new StreamWriter(stream))
+            {
+                ComponentWriter entityWriter = new ComponentWriter(writer, new Dictionary<Type, string>());
+
+                foreach (Entity entity in entities)
+                {
+                    entityWriter.WriteEntity(entity);
+                }
+
+                entityWriter.WriteChildren();
+            }
+        }
+
+        /// <summary>
+        /// Deserializes <see cref="Entity"/> instances with their components from the given <see cref="Stream"/> into the given <see cref="World"/>.
+        /// </summary>
+        /// <param name="stream">The <see cref="Stream"/> from which the data will be loaded.</param>
+        /// <param name="world">The <see cref="World"/> instance on which the <see cref="Entity"/> will be created.</param>
+        /// <returns>The <see cref="Entity"/> instances loaded.</returns>
+        public ICollection<Entity> Deserialize(Stream stream, World world)
+        {
+            stream = stream ?? throw new ArgumentNullException(nameof(stream));
+            world = world ?? throw new ArgumentNullException(nameof(world));
+
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                Entity currentEntity = default;
+                Dictionary<string, Entity> entities = new Dictionary<string, Entity>();
+                Dictionary<string, IOperation> operations = new Dictionary<string, IOperation>();
+
+                int unnamedCount = 0;
+
+                do
+                {
+                    string[] lineParts = reader.ReadLine()?.Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
+                    if (lineParts?.Length > 0)
+                    {
+                        string entry = lineParts[0];
+                        if (_entity.Equals(entry))
+                        {
+                            currentEntity = world.CreateEntity();
+                            entities.Add(lineParts.Length > 1 ? lineParts[1] : $" {++unnamedCount}", currentEntity);
+                        }
+                        else if (lineParts.Length > 1)
+                        {
+                            if (_componentType.Equals(entry))
+                            {
+                                CreateOperation(lineParts[1], operations);
+                            }
+                            else if (_component.Equals(entry))
+                            {
+                                SetComponent(reader, currentEntity, lineParts[1], operations);
+                            }
+                            else if (_componentSameAs.Equals(entry))
+                            {
+                                SetSameAsComponent(currentEntity, lineParts[1], entities, operations);
+                            }
+                            else if (_parentChild.Equals(entry))
+                            {
+                                SetAsParentOf(lineParts[1], entities);
+                            }
+                        }
+                    }
+                }
+                while (!reader.EndOfStream);
+
+                return entities.Values;
             }
         }
 

@@ -9,7 +9,7 @@ namespace DefaultEcs.Serialization
     /// <summary>
     /// Provides a basic implementation of the <see cref="ISerializer"/> interface using a binary format.
     /// </summary>
-    public unsafe sealed class BinarySerializer : ISerializer
+    public sealed unsafe class BinarySerializer : ISerializer
     {
         #region Types
 
@@ -115,17 +115,20 @@ namespace DefaultEcs.Serialization
                 entity.ReadAllComponents(this);
             }
 
-            public void WriteChildren(in Entity entity)
+            public void WriteChildren()
             {
-                *_bufferP = _parentChild;
-                int* ids = (int*)(_bufferP + 1);
-                *ids++ = _entities[entity];
-
-                foreach (Entity child in entity.GetChildren())
+                foreach (KeyValuePair<Entity, int> pair in _entities)
                 {
-                    *ids = _entities[child];
+                    *_bufferP = _parentChild;
+                    int* ids = (int*)(_bufferP + 1);
+                    *ids++ = pair.Value;
 
-                    _stream.Write(_buffer, 0, sizeof(byte) + sizeof(int) * 2);
+                    foreach (Entity child in pair.Key.GetChildren())
+                    {
+                        *ids = _entities[child];
+
+                        _stream.Write(_buffer, 0, sizeof(byte) + sizeof(int) * 2);
+                    }
                 }
             }
 
@@ -135,7 +138,7 @@ namespace DefaultEcs.Serialization
 
             public void OnRead<T>(ref T component, in Entity componentOwner)
             {
-                var componentKey = Tuple.Create(componentOwner, typeof(T));
+                Tuple<Entity, Type> componentKey = Tuple.Create(componentOwner, typeof(T));
                 if (_components.TryGetValue(componentKey, out int key))
                 {
                     *_bufferP = _componentSameAs;
@@ -262,7 +265,7 @@ namespace DefaultEcs.Serialization
             }
         }
 
-        private static void SetSameAsComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP, Entity[] entities, Dictionary<ushort, IOperation> operations)
+        private static void SetSameAsComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP, IList<Entity> entities, Dictionary<ushort, IOperation> operations)
         {
             if (entity.Equals(default))
             {
@@ -279,7 +282,7 @@ namespace DefaultEcs.Serialization
             }
         }
 
-        private static void SetAsParentOf(Stream stream, byte[] buffer, int* bufferP, Entity[] entities)
+        private static void SetAsParentOf(Stream stream, byte[] buffer, int* bufferP, IList<Entity> entities)
         {
             if (stream.Read(buffer, 0, sizeof(int) * 2) == sizeof(int) * 2)
             {
@@ -356,15 +359,13 @@ namespace DefaultEcs.Serialization
 
                     world.ReadAllComponentTypes(new ComponentTypeWriter(stream, buffer, bufferP, types, world.MaxEntityCount));
 
-                    ComponentWriter componentReader = new ComponentWriter(stream, buffer, bufferP, types);
+                    ComponentWriter componentWriter = new ComponentWriter(stream, buffer, bufferP, types);
                     for (int i = 0; i < entities.Length; i++)
                     {
-                        componentReader.WriteEntity(entities[i]);
+                        componentWriter.WriteEntity(entities[i]);
                     }
-                    for (int i = 0; i < entities.Length; i++)
-                    {
-                        componentReader.WriteChildren(entities[i]);
-                    }
+
+                    componentWriter.WriteChildren();
                 }
             }
         }
@@ -427,6 +428,86 @@ namespace DefaultEcs.Serialization
                     }
 
                     return world;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Serializes the given <see cref="Entity"/> instances with their components into the provided <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="stream">The <see cref="Stream"/> in which the data will be saved.</param>
+        /// <param name="entities">The <see cref="Entity"/> instances to save.</param>
+        public void Serialize(Stream stream, IEnumerable<Entity> entities)
+        {
+            stream = stream ?? throw new ArgumentNullException(nameof(stream));
+            entities = entities ?? throw new ArgumentNullException(nameof(entities));
+
+            using (stream)
+            {
+                byte[] buffer = new byte[1024];
+                fixed (byte* bufferP = buffer)
+                {
+                    ComponentWriter componentWriter = new ComponentWriter(stream, buffer, bufferP, new Dictionary<Type, ushort>());
+                    foreach (Entity entity in entities)
+                    {
+                        componentWriter.WriteEntity(entity);
+                    }
+
+                    componentWriter.WriteChildren();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deserializes <see cref="Entity"/> instances with their components from the given <see cref="Stream"/> into the given <see cref="World"/>.
+        /// </summary>
+        /// <param name="stream">The <see cref="Stream"/> from which the data will be loaded.</param>
+        /// <param name="world">The <see cref="World"/> instance on which the <see cref="Entity"/> will be created.</param>
+        /// <returns>The <see cref="Entity"/> instances loaded.</returns>
+        public ICollection<Entity> Deserialize(Stream stream, World world)
+        {
+            stream = stream ?? throw new ArgumentNullException(nameof(stream));
+            world = world ?? throw new ArgumentNullException(nameof(world));
+
+            using (stream)
+            {
+                byte[] buffer = new byte[1024];
+                fixed (byte* bufferP = buffer)
+                {
+                    List<Entity> entities = new List<Entity>();
+                    Entity currentEntity = default;
+
+                    Dictionary<ushort, IOperation> operations = new Dictionary<ushort, IOperation>();
+
+                    int entryType;
+                    while ((entryType = stream.ReadByte()) >= 0)
+                    {
+                        switch (entryType)
+                        {
+                            case _componentType:
+                                CreateOperation(stream, buffer, bufferP, operations);
+                                break;
+
+                            case _entity:
+                                currentEntity = world.CreateEntity();
+                                entities.Add(currentEntity);
+                                break;
+
+                            case _component:
+                                SetComponent(currentEntity, stream, buffer, bufferP, operations);
+                                break;
+
+                            case _componentSameAs:
+                                SetSameAsComponent(currentEntity, stream, buffer, bufferP, entities, operations);
+                                break;
+
+                            case _parentChild:
+                                SetAsParentOf(stream, buffer, (int*)bufferP, entities);
+                                break;
+                        }
+                    }
+
+                    return entities;
                 }
             }
         }
