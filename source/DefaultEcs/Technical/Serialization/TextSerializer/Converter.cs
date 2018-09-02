@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,12 +10,80 @@ using System.Text.RegularExpressions;
 
 namespace DefaultEcs.Technical.Serialization.TextSerializer
 {
+    internal static unsafe class Converter
+    {
+        #region Types
+
+        public delegate void WriteAction<T>(in T value, StreamWriter writer, int indentation);
+        public delegate T ReadAction<out T>(string line, StreamReader reader);
+
+        #endregion
+
+        #region Fields
+
+        private static readonly ConcurrentDictionary<Type, WriteAction<object>> _writeActions = new ConcurrentDictionary<Type, WriteAction<object>>();
+        private static readonly ConcurrentDictionary<Type, Delegate> _readActions = new ConcurrentDictionary<Type, Delegate>();
+
+        #endregion
+
+        #region Methods
+
+        public static ReadAction<T> ConvertRead<T>(Delegate readAction) => (ReadAction<T>)readAction;
+
+        public static WriteAction<object> GetWriteAction(Type type)
+        {
+            if (!_writeActions.TryGetValue(type, out WriteAction<object> writeAction))
+            {
+                lock (_writeActions)
+                {
+                    if (!_writeActions.ContainsKey(type))
+                    {
+                        DynamicMethod writeMethod = new DynamicMethod($"Write_{type}", typeof(void), new[] { typeof(object).MakeByRefType(), typeof(StreamWriter), typeof(int) }, typeof(Converter), true);
+                        ILGenerator writeGenerator = writeMethod.GetILGenerator();
+
+                        writeGenerator.Emit(OpCodes.Ldarg_0);
+                        writeGenerator.Emit(OpCodes.Ldarg_1);
+                        writeGenerator.Emit(OpCodes.Ldarg_2);
+                        writeGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(type).GetTypeInfo().GetDeclaredMethod(nameof(Converter<string>.Write)));
+                        writeGenerator.Emit(OpCodes.Ret);
+
+                        writeAction = (WriteAction<object>)writeMethod.CreateDelegate(typeof(WriteAction<object>));
+
+                        _writeActions.AddOrUpdate(type, writeAction, (t, d) => d);
+                    }
+                }
+            }
+
+            return writeAction;
+        }
+
+        public static ReadAction<T> GetReadAction<T>(Type type)
+        {
+            if (!_readActions.TryGetValue(type, out Delegate readAction))
+            {
+                lock (_readActions)
+                {
+                    if (!_readActions.ContainsKey(type))
+                    {
+                        readAction = typeof(Converter<>).MakeGenericType(type).GetTypeInfo()
+                            .GetDeclaredMethod(nameof(Converter<string>.Read))
+                            .CreateDelegate(typeof(ReadAction<>).MakeGenericType(type));
+
+                        _readActions.AddOrUpdate(type, readAction, (t, d) => d);
+                    }
+                }
+            }
+
+            return (ReadAction<T>)readAction;
+        }
+
+        #endregion
+    }
+
     internal static class Converter<T>
     {
         #region Types
 
-        private delegate void WriteAction(in T value, StreamWriter writer, int indentation);
-        private delegate T ReadAction(string line, StreamReader reader);
         private delegate void ReadFieldAction(string line, StreamReader reader, ref T value);
 
         #endregion
@@ -28,8 +97,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         private static readonly char[] _split = new[] { ' ', '\t' };
         private static readonly Dictionary<string, ReadFieldAction> _readFieldActions;
-        private static readonly WriteAction _writeAction;
-        private static readonly ReadAction _readAction;
+        private static readonly Converter.WriteAction<T> _writeAction;
+        private static readonly Converter.ReadAction<T> _readAction;
 
         #endregion
 
@@ -37,6 +106,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         static Converter()
         {
+            TypeInfo typeInfo = typeof(T).GetTypeInfo();
             _readFieldActions = new Dictionary<string, ReadFieldAction>();
 
             _writeAction = (in T v, StreamWriter w, int i) => w.WriteLine(v.ToString());
@@ -44,61 +114,61 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             #region clr types
             if (typeof(T) == typeof(bool))
             {
-                _readAction = (ReadAction)Converter<bool>.GetReadAction(bool.Parse);
+                _readAction = Converter.ConvertRead<T>(Converter<bool>.GetReadAction(bool.Parse));
             }
             else if (typeof(T) == typeof(sbyte))
             {
-                _readAction = (ReadAction)Converter<sbyte>.GetReadAction(sbyte.Parse);
+                _readAction = Converter.ConvertRead<T>(Converter<sbyte>.GetReadAction(sbyte.Parse));
             }
             else if (typeof(T) == typeof(byte))
             {
-                _readAction = (ReadAction)Converter<byte>.GetReadAction(byte.Parse);
+                _readAction = Converter.ConvertRead<T>(Converter<byte>.GetReadAction(byte.Parse));
             }
             else if (typeof(T) == typeof(short))
             {
-                _readAction = (ReadAction)Converter<short>.GetReadAction(short.Parse);
+                _readAction = Converter.ConvertRead<T>(Converter<short>.GetReadAction(short.Parse));
             }
             else if (typeof(T) == typeof(ushort))
             {
-                _readAction = (ReadAction)Converter<ushort>.GetReadAction(ushort.Parse);
+                _readAction = Converter.ConvertRead<T>(Converter<ushort>.GetReadAction(ushort.Parse));
             }
             else if (typeof(T) == typeof(int))
             {
-                _readAction = (ReadAction)Converter<int>.GetReadAction(int.Parse);
+                _readAction = Converter.ConvertRead<T>(Converter<int>.GetReadAction(int.Parse));
             }
             else if (typeof(T) == typeof(uint))
             {
-                _readAction = (ReadAction)Converter<uint>.GetReadAction(uint.Parse);
+                _readAction = Converter.ConvertRead<T>(Converter<uint>.GetReadAction(uint.Parse));
             }
             else if (typeof(T) == typeof(long))
             {
-                _readAction = (ReadAction)Converter<long>.GetReadAction(long.Parse);
+                _readAction = Converter.ConvertRead<T>(Converter<long>.GetReadAction(long.Parse));
             }
             else if (typeof(T) == typeof(ulong))
             {
-                _readAction = (ReadAction)Converter<ulong>.GetReadAction(ulong.Parse);
+                _readAction = Converter.ConvertRead<T>(Converter<ulong>.GetReadAction(ulong.Parse));
             }
             else if (typeof(T) == typeof(char))
             {
-                _readAction = (ReadAction)Converter<char>.GetReadAction(CharParse);
+                _readAction = Converter.ConvertRead<T>(Converter<char>.GetReadAction(CharParse));
             }
             else if (typeof(T) == typeof(decimal))
             {
-                _readAction = (ReadAction)Converter<decimal>.GetReadAction(decimal.Parse);
+                _readAction = Converter.ConvertRead<T>(Converter<decimal>.GetReadAction(decimal.Parse));
             }
             else if (typeof(T) == typeof(double))
             {
-                _readAction = (ReadAction)Converter<double>.GetReadAction(double.Parse);
+                _readAction = Converter.ConvertRead<T>(Converter<double>.GetReadAction(double.Parse));
             }
             else if (typeof(T) == typeof(float))
             {
-                _readAction = (ReadAction)Converter<float>.GetReadAction(float.Parse);
+                _readAction = Converter.ConvertRead<T>(Converter<float>.GetReadAction(float.Parse));
             }
             else if (typeof(T) == typeof(string))
             {
-                _readAction = (ReadAction)Converter<string>.GetReadAction(s => s);
+                _readAction = Converter.ConvertRead<T>(Converter<string>.GetReadAction(s => s));
             }
-            else if (typeof(T).GetTypeInfo().IsEnum)
+            else if (typeInfo.IsEnum)
             {
                 ParameterExpression line = Expression.Parameter(typeof(string));
                 ParameterExpression reader = Expression.Parameter(typeof(StreamReader));
@@ -108,14 +178,14 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                     Expression.Call(reader, typeof(StreamReader).GetTypeInfo().GetDeclaredMethod(nameof(StreamReader.ReadLine))),
                     line);
 
-                _readAction = Expression.Lambda<ReadAction>(Expression.Call(typeof(Converter<T>).GetTypeInfo().GetDeclaredMethod(nameof(ReadEnum)).MakeGenericMethod(typeof(T)), readIfNull), line, reader).Compile();
+                _readAction = Expression.Lambda<Converter.ReadAction<T>>(Expression.Call(typeof(Converter<T>).GetTypeInfo().GetDeclaredMethod(nameof(ReadEnum)).MakeGenericMethod(typeof(T)), readIfNull), line, reader).Compile();
             }
-            else if (typeof(T).GetTypeInfo().IsArray)
+            else if (typeInfo.IsArray)
             {
-                Type elementType = typeof(T).GetTypeInfo().GetElementType();
+                Type elementType = typeInfo.GetElementType();
 
-                _writeAction = (WriteAction)typeof(Converter<>).MakeGenericType(elementType).GetTypeInfo().GetDeclaredMethod(nameof(WriteArray)).CreateDelegate(typeof(WriteAction));
-                _readAction = (ReadAction)typeof(Converter<>).MakeGenericType(elementType).GetTypeInfo().GetDeclaredMethod(nameof(ReadArray)).CreateDelegate(typeof(ReadAction));
+                _writeAction = (Converter.WriteAction<T>)typeof(Converter<>).MakeGenericType(elementType).GetTypeInfo().GetDeclaredMethod(nameof(WriteArray)).CreateDelegate(typeof(Converter.WriteAction<T>));
+                _readAction = (Converter.ReadAction<T>)typeof(Converter<>).MakeGenericType(elementType).GetTypeInfo().GetDeclaredMethod(nameof(ReadArray)).CreateDelegate(typeof(Converter.ReadAction<T>));
             }
             else
             #endregion
@@ -159,7 +229,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                     assignSpace
                 };
 
-                foreach (FieldInfo fieldInfo in typeof(T).GetTypeInfo().DeclaredFields.Where(f => !f.IsStatic))
+                foreach (FieldInfo fieldInfo in typeInfo.DeclaredFields.Where(f => !f.IsStatic))
                 {
                     string name = GetFriendlyName(fieldInfo.Name);
                     Expression writeField = Expression.Block(
@@ -176,7 +246,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                     DynamicMethod readMethod = new DynamicMethod($"Set_{nameof(T)}_{fieldInfo.Name}", typeof(void), new[] { typeof(string), typeof(StreamReader), typeof(T).MakeByRefType() }, typeof(Converter<T>), true);
                     ILGenerator readGenerator = readMethod.GetILGenerator();
                     readGenerator.Emit(OpCodes.Ldarg_2);
-                    if (!typeof(T).GetTypeInfo().IsValueType)
+                    if (!typeInfo.IsValueType)
                     {
                         readGenerator.Emit(OpCodes.Ldind_Ref);
                     }
@@ -193,12 +263,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 writeExpressions.Add(assignSpace);
                 writeExpressions.Add(Expression.Call(writeLineString, writer, Expression.Call(stringConcat, space, Expression.Constant(_objectEnd))));
 
-                _writeAction = Expression.Lambda<WriteAction>(
-                    Expression.IfThenElse(
-                        Expression.Call(typeof(Converter<T>).GetTypeInfo().GetDeclaredMethod(nameof(IsNull)), value),
-                        Expression.Call(writeLineString, writer, Expression.Constant("null")),
-                        Expression.Block(new[] { space }, writeExpressions)),
-                    value, writer, indentation).Compile();
+                _writeAction = Expression.Lambda<Converter.WriteAction<T>>(Expression.Block(new[] { space }, writeExpressions), value, writer, indentation).Compile();
+
                 _readAction = ReadAnyType;
             }
         }
@@ -217,7 +283,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             return name.Trim('_');
         }
 
-        private static ReadAction GetReadAction(Func<string, T> parser) => new ReadAction((l, r) => parser(l ?? r.ReadLine()));
+        private static Converter.ReadAction<T> GetReadAction(Func<string, T> parser) => new Converter.ReadAction<T>((l, r) => parser(l ?? r.ReadLine()));
 
         private static char CharParse(string entry)
         {
@@ -231,17 +297,12 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         private static T ReadAnyType(string line, StreamReader reader)
         {
-            if (line.StartsWith("null"))
-            {
-                return default;
-            }
-
-            T value = Activator.CreateInstance<T>();
-
             while ((string.IsNullOrWhiteSpace(line) || line.Split(_split, StringSplitOptions.RemoveEmptyEntries)[0] != _objectBegin) && !reader.EndOfStream)
             {
                 line = reader.ReadLine();
             }
+
+            T value = Activator.CreateInstance<T>();
 
             while (!reader.EndOfStream)
             {
@@ -263,7 +324,30 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             return value;
         }
 
-        public static bool IsNull(in T value) => value == null;
+        private static T[] ReadArray(string line, StreamReader reader)
+        {
+            while ((string.IsNullOrWhiteSpace(line) || !line.StartsWith(_arrayBegin)) && !reader.EndOfStream)
+            {
+                line = reader.ReadLine().TrimStart(_split);
+            }
+
+            List<T> values = new List<T>();
+
+            while (!reader.EndOfStream)
+            {
+                line = reader.ReadLine().TrimStart(_split);
+                if (line.StartsWith(_arrayEnd))
+                {
+                    break;
+                }
+                else
+                {
+                    values.Add(Read(line, reader));
+                }
+            }
+
+            return values.ToArray();
+        }
 
         public static TEnum ReadEnum<TEnum>(string entry)
             where TEnum : struct
@@ -290,39 +374,39 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             writer.WriteLine(_arrayEnd);
         }
 
-        private static T[] ReadArray(string line, StreamReader reader)
+        public static void Write(in T value, StreamWriter writer, int indentation)
+        {
+            if (value == default)
+            {
+                writer.WriteLine("null");
+            }
+            else if (typeof(T) == value.GetType())
+            {
+                _writeAction(value, writer, indentation);
+            }
+            else
+            {
+                Type type = value.GetType();
+                writer.WriteLine($"$type {type.FullName}, {type.GetTypeInfo().Assembly.GetName().Name}");
+                Converter.GetWriteAction(type)(value, writer, indentation);
+            }
+        }
+
+        public static T Read(string line, StreamReader reader)
         {
             if (line.StartsWith("null"))
             {
                 return default;
             }
-
-            List<T> values = new List<T>();
-
-            while ((string.IsNullOrWhiteSpace(line) || !line.StartsWith(_arrayBegin)) && !reader.EndOfStream)
+            else if (line.StartsWith("$type"))
             {
-                line = reader.ReadLine().TrimStart(_split);
+                return Converter.GetReadAction<T>(Type.GetType(line.Split(_split, 2)[1], true))(string.Empty, reader);
             }
-
-            while (!reader.EndOfStream)
+            else
             {
-                line = reader.ReadLine().TrimStart(_split);
-                if (line.StartsWith(_arrayEnd))
-                {
-                    break;
-                }
-                else
-                {
-                    values.Add(Read(line, reader));
-                }
+                return _readAction(line, reader);
             }
-
-            return values.ToArray();
         }
-
-        public static void Write(in T value, StreamWriter writer, int indentation) => _writeAction(value, writer, indentation);
-
-        public static T Read(string line, StreamReader reader) => _readAction(line, reader);
 
         #endregion
     }

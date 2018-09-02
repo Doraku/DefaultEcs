@@ -85,7 +85,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [Benchmark]
-        public void StructDeserialize()
+        public void Struct_Deserialize()
         {
             using (Stream stream = File.OpenRead(_filePathS))
             {
@@ -103,7 +103,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [Benchmark]
-        public void ClassDeserialize()
+        public void Class_Deserialize()
         {
             using (Stream stream = File.OpenRead(_filePathC))
             {

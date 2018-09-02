@@ -131,7 +131,7 @@ namespace DefaultEcs.Test.Serialization
                 entities[2].SetSameAs<Test>(entities[1]);
 
                 entities[0].Set<InnerClass>();
-                entities[0].Set(new List<int> { 1, 2, 3 });
+                entities[0].Set<IEnumerable<int>>(new int[] { 1, 2, 3 });
 
                 entities[0].SetAsParentOf(entities[1]);
 
@@ -182,7 +182,7 @@ namespace DefaultEcs.Test.Serialization
                         Check.That(entitiesCopy[1].Get<InnerTest>()).IsEqualTo(entitiesCopy[2].Get<InnerTest>());
 
                         Check.That(entitiesCopy[0].Get<InnerClass>()).IsEqualTo(entities[0].Get<InnerClass>());
-                        Check.That(entitiesCopy[0].Get<List<int>>()).ContainsExactly(entities[0].Get<List<int>>());
+                        Check.That(entitiesCopy[0].Get<IEnumerable<int>>()).ContainsExactly(entities[0].Get<IEnumerable<int>>());
 
                         entitiesCopy[0].Dispose();
 

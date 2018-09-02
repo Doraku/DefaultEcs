@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using DefaultEcs.Technical.Serialization.TextSerializer;
 
 namespace DefaultEcs.Serialization
@@ -48,7 +49,7 @@ namespace DefaultEcs.Serialization
 
                 _types.Add(typeof(T), shortName);
 
-                _writer.WriteLine($"{_componentType} {shortName} {typeof(T).AssemblyQualifiedName}");
+                _writer.WriteLine($"{_componentType} {shortName} {typeof(T).FullName}, {typeof(T).GetTypeInfo().Assembly.GetName().Name}");
                 if (maxComponentCount != _maxEntityCount)
                 {
                     _writer.WriteLine($"{_maxComponentCount} {shortName} {maxComponentCount}");
