@@ -95,6 +95,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         private const string _arrayBegin = "[";
         private const string _arrayEnd = "]";
 
+        private static readonly bool _isValueType;
         private static readonly char[] _split = new[] { ' ', '\t' };
         private static readonly Dictionary<string, ReadFieldAction> _readFieldActions;
         private static readonly Converter.WriteAction<T> _writeAction;
@@ -107,6 +108,9 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         static Converter()
         {
             TypeInfo typeInfo = typeof(T).GetTypeInfo();
+
+            _isValueType = typeInfo.IsValueType;
+
             _readFieldActions = new Dictionary<string, ReadFieldAction>();
 
             _writeAction = (in T v, StreamWriter w, int i) => w.WriteLine(v.ToString());
@@ -302,7 +306,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 line = reader.ReadLine();
             }
 
-            T value = Activator.CreateInstance<T>();
+            T value = _isValueType ? default : Activator.CreateInstance<T>();
 
             while (!reader.EndOfStream)
             {

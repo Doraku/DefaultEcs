@@ -20,7 +20,7 @@
     <PackageReference Include="System.Memory" Version="4.5.1" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
     
-    <PackageReference Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'" Include="Vsxmd" Version="1.3.3" PrivateAssets="All" />
+    <PackageReference Label="Documentation" Include="Vsxmd" Version="1.3.3" PrivateAssets="All" />
   </ItemGroup>
   
   <PropertyGroup Label="Package">
@@ -35,6 +35,7 @@
     <Version>0.6.0</Version>
     <PackageReleaseNotes>
 added RemoveFromChildrenOf and RemoveFromParentsOf methods on Entity to remove hierarchy of dispose chain
+BinarySerializer and StringSerializer now handle abstract types
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

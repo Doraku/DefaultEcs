@@ -322,7 +322,7 @@ namespace DefaultEcs.Serialization
         {
             using (StreamReader reader = new StreamReader(stream ?? throw new ArgumentNullException(nameof(stream))))
             {
-                return Converter<T>.Read(string.Empty, reader);
+                return Converter<T>.Read(null, reader);
             }
         }
 

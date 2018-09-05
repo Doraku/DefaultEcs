@@ -88,6 +88,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
     {
         #region Fields
 
+        private static readonly bool _isValueType;
         private static readonly Converter.WriteAction<T> _writeAction;
         private static readonly Converter.ReadAction<T> _readAction;
 
@@ -98,6 +99,8 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         static Converter()
         {
             TypeInfo typeInfo = typeof(T).GetTypeInfo();
+
+            _isValueType = typeInfo.IsValueType;
 
             if (typeof(T) == typeof(string))
             {
@@ -133,8 +136,11 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                     DynamicMethod readMethod = new DynamicMethod($"Read_{nameof(T)}", typeof(T), new[] { typeof(Stream), typeof(byte[]), typeof(byte*) }, typeof(Converter<T>), true);
                     ILGenerator readGenerator = readMethod.GetILGenerator();
                     LocalBuilder readValue = readGenerator.DeclareLocal(typeof(T));
-                    readGenerator.Emit(OpCodes.Call, typeof(Activator).GetTypeInfo().GetDeclaredMethods(nameof(Activator.CreateInstance)).First(m => m.GetParameters().Length == 0).MakeGenericMethod(typeof(T)));
-                    readGenerator.Emit(OpCodes.Stloc, readValue);
+                    if (!_isValueType)
+                    {
+                        readGenerator.Emit(OpCodes.Call, typeof(Activator).GetTypeInfo().GetDeclaredMethods(nameof(Activator.CreateInstance)).First(m => m.GetParameters().Length == 0).MakeGenericMethod(typeof(T)));
+                        readGenerator.Emit(OpCodes.Stloc, readValue);
+                    }
 
                     foreach (FieldInfo fieldInfo in typeInfo.DeclaredFields.Where(f => !f.IsStatic))
                     {
