@@ -250,7 +250,7 @@ world.Subscribe<bool>(On);
 
 world.Publish(true);
 ```
-Note that the Subscribe method return an IDisposable object acting as a subscription. To unsubscripe, simple dispose this object.
+Note that the Subscribe method return an IDisposable object acting as a subscription. To unsubscribe, simply dispose this object.
 
 <a name='Overview_Serialization'></a>
 ## Serialization
@@ -260,7 +260,7 @@ DefaultEcs support serialization to save and load a World state. Two implementat
 - IComponentTypeReader is used to get the settings of the serialized World in case a maxComponentCount has been set for a specific type different from the maxEntityCount
 - IComponentReader is used to get all the components of an Entity
 
-The provided implementation TextSerializer and BinarySerializer are still in development and do not support serialization of interface nor abstract types and member. Types without a default constructor are not supported either.
+The provided implementation TextSerializer and BinarySerializer are still in development and do not support serialization of types without a default constructor.
 Nonetheless both are highly permissive and will serialize every fields and properties even if the are private or readonly and do not require any attribute decoration to work.
 This was a target from the get go as graphic and framework libraries do not always have well decorated type which would be used as component.
 
@@ -282,7 +282,7 @@ using (Stream stream = File.OpenRead(filePath))
 
 <a name='Overview_Serialization_TextSerializer'></a>
 ### TextSerializer
-The prupose of this serializer is to provide a readable save format which can be edited by hand.
+The purpose of this serializer is to provide a readable save format which can be edited by hand.
 ```
 // this must be the first line of the file and will be used to create the World
 MaxEntityCount 42

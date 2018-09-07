@@ -233,34 +233,39 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                     assignSpace
                 };
 
-                foreach (FieldInfo fieldInfo in typeInfo.DeclaredFields.Where(f => !f.IsStatic))
+                while (typeInfo != null)
                 {
-                    string name = GetFriendlyName(fieldInfo.Name);
-                    Expression writeField = Expression.Block(
-                        Expression.Call(writer, write, Expression.Call(stringConcat, space, Expression.Constant(name))),
-                        Expression.Call(writer, write, Expression.Constant(" ")),
-                        Expression.Call(
-                            typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Write)),
-                            Expression.Field(value, fieldInfo),
-                            writer,
-                            indentation));
-
-                    writeExpressions.Add(writeField);
-
-                    DynamicMethod readMethod = new DynamicMethod($"Set_{nameof(T)}_{fieldInfo.Name}", typeof(void), new[] { typeof(string), typeof(StreamReader), typeof(T).MakeByRefType() }, typeof(Converter<T>), true);
-                    ILGenerator readGenerator = readMethod.GetILGenerator();
-                    readGenerator.Emit(OpCodes.Ldarg_2);
-                    if (!typeInfo.IsValueType)
+                    foreach (FieldInfo fieldInfo in typeInfo.DeclaredFields.Where(f => !f.IsStatic))
                     {
-                        readGenerator.Emit(OpCodes.Ldind_Ref);
-                    }
-                    readGenerator.Emit(OpCodes.Ldarg_0);
-                    readGenerator.Emit(OpCodes.Ldarg_1);
-                    readGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Converter<T>.Read)));
-                    readGenerator.Emit(OpCodes.Stfld, fieldInfo);
-                    readGenerator.Emit(OpCodes.Ret);
+                        string name = GetFriendlyName(fieldInfo.Name);
+                        Expression writeField = Expression.Block(
+                            Expression.Call(writer, write, Expression.Call(stringConcat, space, Expression.Constant(name))),
+                            Expression.Call(writer, write, Expression.Constant(" ")),
+                            Expression.Call(
+                                typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Write)),
+                                Expression.Field(value, fieldInfo),
+                                writer,
+                                indentation));
 
-                    _readFieldActions.Add(name.ToUpperInvariant(), (ReadFieldAction)readMethod.CreateDelegate(typeof(ReadFieldAction)));
+                        writeExpressions.Add(writeField);
+
+                        DynamicMethod readMethod = new DynamicMethod($"Set_{nameof(T)}_{fieldInfo.Name}", typeof(void), new[] { typeof(string), typeof(StreamReader), typeof(T).MakeByRefType() }, typeof(Converter<T>), true);
+                        ILGenerator readGenerator = readMethod.GetILGenerator();
+                        readGenerator.Emit(OpCodes.Ldarg_2);
+                        if (!typeInfo.IsValueType)
+                        {
+                            readGenerator.Emit(OpCodes.Ldind_Ref);
+                        }
+                        readGenerator.Emit(OpCodes.Ldarg_0);
+                        readGenerator.Emit(OpCodes.Ldarg_1);
+                        readGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Converter<T>.Read)));
+                        readGenerator.Emit(OpCodes.Stfld, fieldInfo);
+                        readGenerator.Emit(OpCodes.Ret);
+
+                        _readFieldActions.Add(name.ToUpperInvariant(), (ReadFieldAction)readMethod.CreateDelegate(typeof(ReadFieldAction)));
+                    }
+
+                    typeInfo = typeInfo.BaseType?.GetTypeInfo();
                 }
 
                 writeExpressions.Add(Expression.PreDecrementAssign(indentation));
@@ -398,7 +403,12 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         public static T Read(string line, StreamReader reader)
         {
-            if (line.StartsWith("null"))
+            while (string.IsNullOrWhiteSpace(line) && !reader.EndOfStream)
+            {
+                line = reader.ReadLine();
+            }
+
+            if (line?.StartsWith("null") ?? true)
             {
                 return default;
             }

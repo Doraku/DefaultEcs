@@ -8,7 +8,7 @@ using Xunit;
 
 namespace DefaultEcs.Test.Serialization
 {
-    public class SerializerTest
+    public class ISerializerTest
     {
         #region Types
 

@@ -299,13 +299,11 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         public static void Write<T>(Stream stream, in T obj)
         {
-            using (stream ?? throw new ArgumentNullException(nameof(stream)))
+            stream = stream ?? throw new ArgumentNullException(nameof(stream));
+            byte[] buffer = new byte[1024];
+            fixed (byte* bufferP = buffer)
             {
-                byte[] buffer = new byte[1024];
-                fixed (byte* bufferP = buffer)
-                {
-                    Converter<T>.Write(obj, stream, buffer, bufferP);
-                }
+                Converter<T>.Write(obj, stream, buffer, bufferP);
             }
         }
 
@@ -318,13 +316,11 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         public static T Read<T>(Stream stream)
         {
-            using (stream ?? throw new ArgumentNullException(nameof(stream)))
+            stream = stream ?? throw new ArgumentNullException(nameof(stream));
+            byte[] buffer = new byte[1024];
+            fixed (byte* bufferP = buffer)
             {
-                byte[] buffer = new byte[1024];
-                fixed (byte* bufferP = buffer)
-                {
-                    return Converter<T>.Read(stream, buffer, bufferP);
-                }
+                return Converter<T>.Read(stream, buffer, bufferP);
             }
         }
 

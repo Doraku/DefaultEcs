@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using DefaultEcs.Technical.Serialization.TextSerializer;
 
 namespace DefaultEcs.Serialization
@@ -305,7 +306,7 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         public static void Write<T>(Stream stream, in T obj)
         {
-            using (StreamWriter writer = new StreamWriter(stream ?? throw new ArgumentNullException(nameof(stream))))
+            using (StreamWriter writer = new StreamWriter(stream ?? throw new ArgumentNullException(nameof(stream)), new UTF8Encoding(false, true), 1024, true))
             {
                 Converter<T>.Write(obj, writer, 0);
             }
@@ -320,7 +321,7 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         public static T Read<T>(Stream stream)
         {
-            using (StreamReader reader = new StreamReader(stream ?? throw new ArgumentNullException(nameof(stream))))
+            using (StreamReader reader = new StreamReader(stream ?? throw new ArgumentNullException(nameof(stream)), Encoding.UTF8, true, 1024, true))
             {
                 return Converter<T>.Read(null, reader);
             }

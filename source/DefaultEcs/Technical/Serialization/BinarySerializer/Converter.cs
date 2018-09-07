@@ -88,7 +88,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
     {
         #region Fields
 
-        private static readonly bool _isValueType;
         private static readonly Converter.WriteAction<T> _writeAction;
         private static readonly Converter.ReadAction<T> _readAction;
 
@@ -99,8 +98,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         static Converter()
         {
             TypeInfo typeInfo = typeof(T).GetTypeInfo();
-
-            _isValueType = typeInfo.IsValueType;
 
             if (typeof(T) == typeof(string))
             {
@@ -136,28 +133,30 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                     DynamicMethod readMethod = new DynamicMethod($"Read_{nameof(T)}", typeof(T), new[] { typeof(Stream), typeof(byte[]), typeof(byte*) }, typeof(Converter<T>), true);
                     ILGenerator readGenerator = readMethod.GetILGenerator();
                     LocalBuilder readValue = readGenerator.DeclareLocal(typeof(T));
-                    if (!_isValueType)
-                    {
-                        readGenerator.Emit(OpCodes.Call, typeof(Activator).GetTypeInfo().GetDeclaredMethods(nameof(Activator.CreateInstance)).First(m => m.GetParameters().Length == 0).MakeGenericMethod(typeof(T)));
-                        readGenerator.Emit(OpCodes.Stloc, readValue);
-                    }
+                    readGenerator.Emit(OpCodes.Call, typeof(Activator).GetTypeInfo().GetDeclaredMethods(nameof(Activator.CreateInstance)).First(m => m.GetParameters().Length == 0).MakeGenericMethod(typeof(T)));
+                    readGenerator.Emit(OpCodes.Stloc, readValue);
 
-                    foreach (FieldInfo fieldInfo in typeInfo.DeclaredFields.Where(f => !f.IsStatic))
+                    while (typeInfo != null)
                     {
-                        writeGenerator.Emit(OpCodes.Ldarg_0);
-                        writeGenerator.Emit(OpCodes.Ldind_Ref);
-                        writeGenerator.Emit(OpCodes.Ldflda, fieldInfo);
-                        writeGenerator.Emit(OpCodes.Ldarg_1);
-                        writeGenerator.Emit(OpCodes.Ldarg_2);
-                        writeGenerator.Emit(OpCodes.Ldarg_3);
-                        writeGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Converter<T>.Write)));
+                        foreach (FieldInfo fieldInfo in typeInfo.DeclaredFields.Where(f => !f.IsStatic))
+                        {
+                            writeGenerator.Emit(OpCodes.Ldarg_0);
+                            writeGenerator.Emit(OpCodes.Ldind_Ref);
+                            writeGenerator.Emit(OpCodes.Ldflda, fieldInfo);
+                            writeGenerator.Emit(OpCodes.Ldarg_1);
+                            writeGenerator.Emit(OpCodes.Ldarg_2);
+                            writeGenerator.Emit(OpCodes.Ldarg_3);
+                            writeGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Converter<T>.Write)));
 
-                        readGenerator.Emit(OpCodes.Ldloc, readValue);
-                        readGenerator.Emit(OpCodes.Ldarg_0);
-                        readGenerator.Emit(OpCodes.Ldarg_1);
-                        readGenerator.Emit(OpCodes.Ldarg_2);
-                        readGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Converter<T>.Read)));
-                        readGenerator.Emit(OpCodes.Stfld, fieldInfo);
+                            readGenerator.Emit(OpCodes.Ldloc, readValue);
+                            readGenerator.Emit(OpCodes.Ldarg_0);
+                            readGenerator.Emit(OpCodes.Ldarg_1);
+                            readGenerator.Emit(OpCodes.Ldarg_2);
+                            readGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Converter<T>.Read)));
+                            readGenerator.Emit(OpCodes.Stfld, fieldInfo);
+                        }
+
+                        typeInfo = typeInfo.BaseType?.GetTypeInfo();
                     }
 
                     writeGenerator.Emit(OpCodes.Ret);
