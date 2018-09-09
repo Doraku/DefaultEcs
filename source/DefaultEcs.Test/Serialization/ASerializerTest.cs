@@ -76,6 +76,22 @@ namespace DefaultEcs.Test.Serialization
             }
         }
 
+        private unsafe struct BigStruct
+        {
+            public fixed int _1[1000];
+
+            public BigStruct(int value)
+            {
+                fixed (int* iP = _1)
+                {
+                    for (int i = 0; i < 1000; ++i)
+                    {
+                        *(iP + i) = ++value;
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -151,6 +167,12 @@ namespace DefaultEcs.Test.Serialization
 
         [Fact]
         public void Should_handle_derived_class() => Test<SimpleClass>(new DerivedClass(0));
+
+        [Fact]
+        public void Should_handle_bigger_than_buffer_string() => Test(new string(Enumerable.Repeat(' ', 2000).ToArray()));
+
+        [Fact]
+        public void Should_handle_bigger_than_buffer_struct() => Test(new BigStruct(0));
 
         #endregion
     }

@@ -30,12 +30,15 @@
     <PackageIconUrl>https://github.com/Doraku/DefaultEcs/raw/master/logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Doraku/DefaultEcs/blob/master/LICENSE.md</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/Doraku/DefaultEcs.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.6.0</Version>
+    <Version>0.6.1</Version>
     <PackageReleaseNotes>
 added RemoveFromChildrenOf and RemoveFromParentsOf methods on Entity to remove hierarchy of dispose chain
-BinarySerializer and StringSerializer now handle abstract types
+BinarySerializer and TextSerializer now handle abstract types
+some fixes on BinarySerializer and TextSerializer
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
