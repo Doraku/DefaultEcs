@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup Label="Compilation">
     <LangVersion>latest</LangVersion>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFrameworks>
+      netstandard1.1;
+      netstandard2.0;
+    </TargetFrameworks>
     <Optimize>true</Optimize>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release</Configurations>
@@ -15,13 +18,15 @@
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
-  
+
+  <ItemGroup Label="netstandard1.1 Reference" Condition="'$(TargetFramework)'=='netstandard1.1'">
+    <PackageReference Include="System.Runtime" Version="4.3.0" />
+
+    <PackageReference Label="Documentation" Include="Vsxmd" Version="1.3.3" PrivateAssets="All" />
+  </ItemGroup>
   <ItemGroup Label="Reference">
     <PackageReference Include="System.Memory" Version="4.5.1" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
-    <PackageReference Include="System.Runtime" Version="4.3.0" />
-    
-    <PackageReference Label="Documentation" Include="Vsxmd" Version="1.3.3" PrivateAssets="All" />
   </ItemGroup>
   
   <PropertyGroup Label="Package">
@@ -38,7 +43,7 @@
     <Version>0.6.1</Version>
     <PackageReleaseNotes>
 added RemoveFromChildrenOf and RemoveFromParentsOf methods on Entity to remove hierarchy of dispose chain
-BinarySerializer and TextSerializer now handle abstract types
+BinarySerializer and TextSerializer now handle abstract types and types with no default constructor
 some fixes on BinarySerializer and TextSerializer
     </PackageReleaseNotes>
   </PropertyGroup>

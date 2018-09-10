@@ -260,11 +260,10 @@ DefaultEcs support serialization to save and load a World state. Two implementat
 - IComponentTypeReader is used to get the settings of the serialized World in case a maxComponentCount has been set for a specific type different from the maxEntityCount
 - IComponentReader is used to get all the components of an Entity
 
-The provided implementation TextSerializer and BinarySerializer are still in development and do not support serialization of types without a default constructor.
-Nonetheless both are highly permissive and will serialize every fields and properties even if the are private or readonly and do not require any attribute decoration to work.
+The provided implementation TextSerializer and BinarySerializer are highly permissive and will serialize every fields and properties even if the are private or readonly and do not require any attribute decoration to work.
 This was a target from the get go as graphic and framework libraries do not always have well decorated type which would be used as component.
+Although the lowest target is netstandard1.1, please be aware that the capability of both implementation to handle type with no default constructor maybe not work if the version of your .NET plateform is too low.
 
-If you have knownledge of a serialization framework which works with everything without decoration or external schema file, please tell me because serialization is pain and I should not have started this thing.
 
 ```C#
 ISerializer serializer = new TextSerializer();

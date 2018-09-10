@@ -6,8 +6,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+#if NETSTANDARD1_1
+using System.Runtime.CompilerServices;
+#else
+using System.Runtime.Serialization;
+#endif
 
 namespace DefaultEcs.Technical.Serialization.TextSerializer
 {
@@ -116,10 +120,14 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             }
             else
             {
+#if NETSTANDARD1_1
                 MethodInfo method =
                     typeof(RuntimeHelpers).GetRuntimeMethod("GetUninitializedObject", new[] { typeof(Type) })
                     ?? typeof(Activator).GetRuntimeMethod(nameof(Activator.CreateInstance), new[] { typeof(Type) });
                 _constructor = (Func<Type, object>)method.CreateDelegate(typeof(Func<Type, object>));
+#else
+                _constructor = FormatterServices.GetUninitializedObject;
+#endif
             }
 
             _readFieldActions = new Dictionary<string, ReadFieldAction>();
