@@ -92,6 +92,22 @@ namespace DefaultEcs.Test.Serialization
             }
         }
 
+        private class NoConstructorClass
+        {
+            public int _1;
+
+            public NoConstructorClass(int value)
+            {
+                _1 = value;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is NoConstructorClass other
+                    && _1 == other._1;
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -173,6 +189,9 @@ namespace DefaultEcs.Test.Serialization
 
         [Fact]
         public void Should_handle_bigger_than_buffer_struct() => Test(new BigStruct(0));
+
+        [Fact]
+        public void Should_handle_class_with_no_default_constructor() => Test(new NoConstructorClass(42));
 
         #endregion
     }

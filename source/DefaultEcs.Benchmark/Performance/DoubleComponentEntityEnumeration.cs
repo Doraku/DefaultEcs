@@ -47,18 +47,18 @@ namespace DefaultEcs.Benchmark.Performance
                 position.Y += speed.Y * state;
             }
 
-            //protected override void Update(float state, ReadOnlySpan<DefaultEntity> entities)
-            //{
-            //    for (int i = 0; i < entities.Length; i++)
-            //    {
-            //        DefaultEntity entity = entities[i];
-            //        DefaultSpeed speed = entity.Get<DefaultSpeed>();
-            //        ref DefaultPosition position = ref entity.Get<DefaultPosition>();
+            protected override void Update(float state, ReadOnlySpan<DefaultEntity> entities)
+            {
+                for (int i = 0; i < entities.Length; i++)
+                {
+                    DefaultEntity entity = entities[i];
+                    DefaultSpeed speed = entity.Get<DefaultSpeed>();
+                    ref DefaultPosition position = ref entity.Get<DefaultPosition>();
 
-            //        position.X += speed.X * state;
-            //        position.Y += speed.Y * state;
-            //    }
-            //}
+                    position.X += speed.X * state;
+                    position.Y += speed.Y * state;
+                }
+            }
         }
 
         private class EntitasSpeed : IComponent

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace DefaultEcs.Technical.Serialization.BinarySerializer
 {
@@ -88,6 +89,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
     {
         #region Fields
 
+        private static readonly Type _type;
         private static readonly Converter.WriteAction<T> _writeAction;
         private static readonly Converter.ReadAction<T> _readAction;
 
@@ -97,9 +99,10 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         static Converter()
         {
-            TypeInfo typeInfo = typeof(T).GetTypeInfo();
+            _type = typeof(T);
+            TypeInfo typeInfo = _type.GetTypeInfo();
 
-            if (typeof(T) == typeof(string))
+            if (_type == typeof(string))
             {
 
                 _writeAction = Converter.ConvertWrite<T>(new Converter.WriteAction<string>(StringConverter.Write));
@@ -116,7 +119,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             {
                 try
                 {
-                    TypeInfo unmanagedType = typeof(UnmanagedConverter<>).MakeGenericType(typeof(T)).GetTypeInfo();
+                    TypeInfo unmanagedType = typeof(UnmanagedConverter<>).MakeGenericType(_type).GetTypeInfo();
 
                     _writeAction = (Converter.WriteAction<T>)unmanagedType.GetDeclaredMethod(nameof(UnmanagedConverter<bool>.Write)).CreateDelegate(typeof(Converter.WriteAction<T>));
                     _readAction = (Converter.ReadAction<T>)unmanagedType.GetDeclaredMethod(nameof(UnmanagedConverter<bool>.Read)).CreateDelegate(typeof(Converter.ReadAction<T>));
@@ -127,14 +130,22 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
                 try
                 {
-                    DynamicMethod writeMethod = new DynamicMethod($"Write_{nameof(T)}", typeof(void), new[] { typeof(T).MakeByRefType(), typeof(Stream), typeof(byte[]), typeof(byte*) }, typeof(Converter<T>), true);
+                    DynamicMethod writeMethod = new DynamicMethod($"Write_{nameof(T)}", typeof(void), new[] { _type.MakeByRefType(), typeof(Stream), typeof(byte[]), typeof(byte*) }, typeof(Converter<T>), true);
                     ILGenerator writeGenerator = writeMethod.GetILGenerator();
 
-                    DynamicMethod readMethod = new DynamicMethod($"Read_{nameof(T)}", typeof(T), new[] { typeof(Stream), typeof(byte[]), typeof(byte*) }, typeof(Converter<T>), true);
+                    DynamicMethod readMethod = new DynamicMethod($"Read_{nameof(T)}", _type, new[] { typeof(Stream), typeof(byte[]), typeof(byte*) }, typeof(Converter<T>), true);
                     ILGenerator readGenerator = readMethod.GetILGenerator();
-                    LocalBuilder readValue = readGenerator.DeclareLocal(typeof(T));
-                    readGenerator.Emit(OpCodes.Call, typeof(Activator).GetTypeInfo().GetDeclaredMethods(nameof(Activator.CreateInstance)).First(m => m.GetParameters().Length == 0).MakeGenericMethod(typeof(T)));
-                    readGenerator.Emit(OpCodes.Stloc, readValue);
+                    LocalBuilder readValue = readGenerator.DeclareLocal(_type);
+
+                    readGenerator.Emit(OpCodes.Ldsfld, typeof(Converter<T>).GetTypeInfo().GetDeclaredField(nameof(_type)));
+                    if (!typeInfo.IsValueType)
+                    {
+                        readGenerator.Emit(
+                            OpCodes.Call,
+                            typeof(RuntimeHelpers).GetRuntimeMethod("GetUninitializedObject", new[] { typeof(Type) }) ?? typeof(Activator).GetRuntimeMethod(nameof(Activator.CreateInstance), new[] { typeof(Type) }));
+                        readGenerator.Emit(OpCodes.Castclass, _type);
+                        readGenerator.Emit(OpCodes.Stloc, readValue);
+                    }
 
                     while (typeInfo != null)
                     {
@@ -168,8 +179,8 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 }
                 catch
                 {
-                    _writeAction = (in T _, Stream __, byte[] ___, byte* ____) => throw new InvalidOperationException($"Unable to handle type {typeof(T).FullName}");
-                    _readAction = (_, __, ___) => throw new InvalidOperationException($"Unable to handle type {typeof(T).FullName}");
+                    _writeAction = (in T _, Stream __, byte[] ___, byte* ____) => throw new InvalidOperationException($"Unable to handle type {_type.FullName}");
+                    _readAction = (_, __, ___) => throw new InvalidOperationException($"Unable to handle type {_type.FullName}");
                 }
             }
         }
@@ -178,7 +189,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region Methods
 
-        public static void WriteArray(in T[] values, Stream stream, byte[] buffer, byte* bufferP)
+        private static void WriteArray(in T[] values, Stream stream, byte[] buffer, byte* bufferP)
         {
             *(int*)bufferP = values?.Length ?? -1;
             stream.Write(buffer, 0, sizeof(int));
@@ -192,27 +203,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             }
         }
 
-        public static void Write(in T value, Stream stream, byte[] buffer, byte* bufferP)
-        {
-            if (value == default)
-            {
-                stream.WriteByte(0);
-            }
-            else if (typeof(T) == value.GetType())
-            {
-                stream.WriteByte(1);
-                _writeAction(value, stream, buffer, bufferP);
-            }
-            else
-            {
-                stream.WriteByte(2);
-                string typeName = value.GetType().AssemblyQualifiedName;
-                Converter<string>.Write(typeName, stream, buffer, bufferP);
-                Converter.GetWriteAction(typeName)(value, stream, buffer, bufferP);
-            }
-        }
-
-        public static T[] ReadArray(Stream stream, byte[] buffer, byte* bufferP)
+        private static T[] ReadArray(Stream stream, byte[] buffer, byte* bufferP)
         {
             T[] values = default;
 
@@ -231,6 +222,26 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             }
 
             return values;
+        }
+
+        public static void Write(in T value, Stream stream, byte[] buffer, byte* bufferP)
+        {
+            if (value == default)
+            {
+                stream.WriteByte(0);
+            }
+            else if (_type == value.GetType())
+            {
+                stream.WriteByte(1);
+                _writeAction(value, stream, buffer, bufferP);
+            }
+            else
+            {
+                stream.WriteByte(2);
+                string typeName = value.GetType().AssemblyQualifiedName;
+                Converter<string>.Write(typeName, stream, buffer, bufferP);
+                Converter.GetWriteAction(typeName)(value, stream, buffer, bufferP);
+            }
         }
 
         public static T Read(Stream stream, byte[] buffer, byte* bufferP)

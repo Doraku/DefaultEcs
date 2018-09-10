@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace DefaultEcs.Technical.Serialization.TextSerializer
@@ -95,7 +96,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         private const string _arrayBegin = "[";
         private const string _arrayEnd = "]";
 
-        private static readonly bool _isValueType;
+        private static readonly Func<Type, object> _constructor;
         private static readonly char[] _split = new[] { ' ', '\t' };
         private static readonly Dictionary<string, ReadFieldAction> _readFieldActions;
         private static readonly Converter.WriteAction<T> _writeAction;
@@ -109,7 +110,17 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         {
             TypeInfo typeInfo = typeof(T).GetTypeInfo();
 
-            _isValueType = typeInfo.IsValueType;
+            if (typeInfo.IsValueType)
+            {
+                _constructor = null;
+            }
+            else
+            {
+                MethodInfo method =
+                    typeof(RuntimeHelpers).GetRuntimeMethod("GetUninitializedObject", new[] { typeof(Type) })
+                    ?? typeof(Activator).GetRuntimeMethod(nameof(Activator.CreateInstance), new[] { typeof(Type) });
+                _constructor = (Func<Type, object>)method.CreateDelegate(typeof(Func<Type, object>));
+            }
 
             _readFieldActions = new Dictionary<string, ReadFieldAction>();
 
@@ -311,7 +322,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 line = reader.ReadLine();
             }
 
-            T value = _isValueType ? default : Activator.CreateInstance<T>();
+            T value = _constructor == null ? default : (T)_constructor(typeof(T));
 
             while (!reader.EndOfStream)
             {
@@ -358,17 +369,17 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             return values.ToArray();
         }
 
-        public static TEnum ReadEnum<TEnum>(string entry)
+        private static TEnum ReadEnum<TEnum>(string entry)
             where TEnum : struct
         {
             return Enum.TryParse(entry, out TEnum value) ? value : throw new ArgumentException($"Unable to convert '{entry}' to enum type {typeof(TEnum).AssemblyQualifiedName}");
         }
 
-        public static string CreateIndentation(int indentation) => string.Join(string.Empty, Enumerable.Repeat('\t', indentation));
+        private static string CreateIndentation(int indentation) => string.Join(string.Empty, Enumerable.Repeat('\t', indentation));
 
-        public static void StreamWriterWriteLine(StreamWriter writer, string line) => writer.WriteLine(line);
+        private static void StreamWriterWriteLine(StreamWriter writer, string line) => writer.WriteLine(line);
 
-        public static void WriteArray(in T[] values, StreamWriter writer, int indentation)
+        private static void WriteArray(in T[] values, StreamWriter writer, int indentation)
         {
             writer.WriteLine(_arrayBegin);
             string indentationString = CreateIndentation(indentation + 1);
