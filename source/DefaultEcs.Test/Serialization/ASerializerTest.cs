@@ -46,6 +46,11 @@ namespace DefaultEcs.Test.Serialization
                     && _2 == other._2
                     && _3 == other._3;
             }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
         }
 
         private struct StructWithClass
@@ -73,6 +78,11 @@ namespace DefaultEcs.Test.Serialization
                 return base.Equals(obj)
                     && obj is DerivedClass other
                     && _4 == other._4;
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
             }
         }
 
@@ -105,6 +115,11 @@ namespace DefaultEcs.Test.Serialization
             {
                 return obj is NoConstructorClass other
                     && _1 == other._1;
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
             }
         }
 

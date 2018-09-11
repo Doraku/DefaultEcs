@@ -14,7 +14,9 @@ namespace DefaultEcs.Test.Serialization
 
         private struct Test
         {
+#pragma warning disable IDE0044 // Add readonly modifier
             private int _privateField;
+#pragma warning restore IDE0044 // Add readonly modifier
             private readonly int _privateReadOnlyField;
 
             private int PrivateProperty { get; set; }
@@ -75,6 +77,11 @@ namespace DefaultEcs.Test.Serialization
         {
             public InnerClass C;
 
+            public InnerTest2(InnerClass c)
+            {
+                C = c;
+            }
+
             public override bool Equals(object obj)
             {
                 return obj is InnerTest2 t
@@ -86,7 +93,7 @@ namespace DefaultEcs.Test.Serialization
 
         private class InnerClass
         {
-            public int I;
+            public int I = 42;
         }
 
         #endregion

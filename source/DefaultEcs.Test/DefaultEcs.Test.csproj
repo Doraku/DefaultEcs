@@ -3,6 +3,7 @@
     <LangVersion>latest</LangVersion>
     <TargetFrameworks>
       netcoreapp2.1;
+      net461;
       net471;
     </TargetFrameworks>
     <DefineConstants></DefineConstants>

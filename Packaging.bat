@@ -7,9 +7,10 @@ dotnet clean source\DefaultEcs.sln -c Release
 cd source\DefaultEcs.Test
 
 dotnet xunit -configuration Release -xml ..\..\test.xml -fxversion 2.1.0
-IF %ERRORLEVEL% GTR 0 GOTO :end
 
 cd ..\..
+
+IF %ERRORLEVEL% GTR 0 GOTO :end
 
 DEL test-*.xml
 
