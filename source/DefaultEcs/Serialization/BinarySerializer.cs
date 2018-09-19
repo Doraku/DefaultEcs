@@ -143,7 +143,7 @@ namespace DefaultEcs.Serialization
                 {
                     *_bufferP = _componentSameAs;
                     ushort* typeId = (ushort*)(_bufferP + 1);
-                    *(typeId++) = _types[typeof(T)];
+                    *typeId++ = _types[typeof(T)];
                     *(int*)typeId = key;
 
                     _stream.Write(_buffer, 0, sizeof(byte) + sizeof(ushort) + sizeof(int));

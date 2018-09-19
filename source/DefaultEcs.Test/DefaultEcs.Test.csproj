@@ -4,7 +4,7 @@
     <TargetFrameworks>
       netcoreapp2.1;
       net461;
-      net471;
+      net472;
     </TargetFrameworks>
     <DefineConstants></DefineConstants>
     <Optimize>true</Optimize>

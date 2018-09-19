@@ -4,11 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-#if NETSTANDARD1_1
-using System.Runtime.CompilerServices;
-#else
-using System.Runtime.Serialization;
-#endif
 
 namespace DefaultEcs.Technical.Serialization.BinarySerializer
 {
@@ -144,14 +139,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                     readGenerator.Emit(OpCodes.Ldsfld, typeof(Converter<T>).GetTypeInfo().GetDeclaredField(nameof(_type)));
                     if (!typeInfo.IsValueType)
                     {
-                        readGenerator.Emit(
-                            OpCodes.Call,
-#if NETSTANDARD1_1
-                            typeof(RuntimeHelpers).GetRuntimeMethod("GetUninitializedObject", new[] { typeof(Type) }) ?? typeof(Activator).GetRuntimeMethod(nameof(Activator.CreateInstance), new[] { typeof(Type) })
-#else
-                            typeof(FormatterServices).GetMethod(nameof(FormatterServices.GetUninitializedObject))
-#endif
-                            );
+                        readGenerator.Emit(OpCodes.Call, typeof(ObjectInitializer).GetTypeInfo().GetDeclaredMethod(nameof(ObjectInitializer.Create)));
                         readGenerator.Emit(OpCodes.Castclass, _type);
                         readGenerator.Emit(OpCodes.Stloc, readValue);
                     }

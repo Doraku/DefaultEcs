@@ -7,11 +7,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
-#if NETSTANDARD1_1
-using System.Runtime.CompilerServices;
-#else
-using System.Runtime.Serialization;
-#endif
 
 namespace DefaultEcs.Technical.Serialization.TextSerializer
 {
@@ -100,7 +95,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         private const string _arrayBegin = "[";
         private const string _arrayEnd = "]";
 
-        private static readonly Func<Type, object> _constructor;
+        private static readonly bool _isValueType;
         private static readonly char[] _split = new[] { ' ', '\t' };
         private static readonly Dictionary<string, ReadFieldAction> _readFieldActions;
         private static readonly Converter.WriteAction<T> _writeAction;
@@ -114,21 +109,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         {
             TypeInfo typeInfo = typeof(T).GetTypeInfo();
 
-            if (typeInfo.IsValueType)
-            {
-                _constructor = null;
-            }
-            else
-            {
-#if NETSTANDARD1_1
-                MethodInfo method =
-                    typeof(RuntimeHelpers).GetRuntimeMethod("GetUninitializedObject", new[] { typeof(Type) })
-                    ?? typeof(Activator).GetRuntimeMethod(nameof(Activator.CreateInstance), new[] { typeof(Type) });
-                _constructor = (Func<Type, object>)method.CreateDelegate(typeof(Func<Type, object>));
-#else
-                _constructor = FormatterServices.GetUninitializedObject;
-#endif
-            }
+            _isValueType = typeInfo.IsValueType;
 
             _readFieldActions = new Dictionary<string, ReadFieldAction>();
 
@@ -330,7 +311,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 line = reader.ReadLine();
             }
 
-            T value = _constructor == null ? default : (T)_constructor(typeof(T));
+            T value = _isValueType ? default : (T)ObjectInitializer.Create(typeof(T));
 
             while (!reader.EndOfStream)
             {
