@@ -138,7 +138,7 @@ namespace DefaultEcs.Serialization
         private interface IOperation
         {
             void SetMaximumComponentCount(World world, int maxComponentCount);
-            void SetComponent(string line, StreamReader reader, in Entity entity);
+            void SetComponent(in Entity entity, string line, StreamReader reader);
             void SetSameAsComponent(in Entity entity, in Entity reference);
         }
 
@@ -148,7 +148,7 @@ namespace DefaultEcs.Serialization
 
             public void SetMaximumComponentCount(World world, int maxComponentCount) => world.SetMaximumComponentCount<T>(maxComponentCount);
 
-            public void SetComponent(string line, StreamReader reader, in Entity entity)
+            public void SetComponent(in Entity entity, string line, StreamReader reader)
             {
                 try
                 {
@@ -252,7 +252,7 @@ namespace DefaultEcs.Serialization
                 throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
             }
 
-            operation.SetComponent(componentEntry.Length > 1 ? componentEntry[1] : null, reader, entity);
+            operation.SetComponent(entity, componentEntry.Length > 1 ? componentEntry[1] : null, reader);
         }
 
         private static void SetSameAsComponent(in Entity entity, string entry, Dictionary<string, Entity> entities, Dictionary<string, IOperation> operations)
