@@ -25,10 +25,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region Methods
 
-        public static WriteAction<T> ConvertWrite<T>(Delegate writeAction) => (WriteAction<T>)writeAction;
-
-        public static ReadAction<T> ConvertRead<T>(Delegate readAction) => (ReadAction<T>)readAction;
-
         public static WriteAction<object> GetWriteAction(string typeName)
         {
             if (!_writeActions.TryGetValue(typeName, out WriteAction<object> writeAction))
@@ -104,8 +100,8 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             if (_type == typeof(string))
             {
 
-                _writeAction = Converter.ConvertWrite<T>(new Converter.WriteAction<string>(StringConverter.Write));
-                _readAction = Converter.ConvertRead<T>(new Converter.ReadAction<string>(StringConverter.Read));
+                _writeAction = (Converter.WriteAction<T>)(Delegate)new Converter.WriteAction<string>(StringConverter.Write);
+                _readAction = (Converter.ReadAction<T>)(Delegate)new Converter.ReadAction<string>(StringConverter.Read);
             }
             else if (typeInfo.IsArray)
             {
