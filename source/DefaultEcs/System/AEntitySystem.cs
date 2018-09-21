@@ -2,6 +2,26 @@
 
 namespace DefaultEcs.System
 {
+    //public sealed class WithAttribute : Attribute
+    //{
+    //    public readonly Type ComponentType;
+
+    //    public WithAttribute(Type componentType)
+    //    {
+    //        ComponentType = componentType;
+    //    }
+    //}
+
+    //public sealed class WithoutAttribute : Attribute
+    //{
+    //    public readonly Type ComponentType;
+
+    //    public WithoutAttribute(Type componentType)
+    //    {
+    //        ComponentType = componentType;
+    //    }
+    //}
+
     /// <summary>
     /// Represents a base class to process updates on a given <see cref="EntitySet"/> instance.
     /// </summary>
@@ -37,9 +57,22 @@ namespace DefaultEcs.System
             : this(set, null)
         { }
 
+        //protected AEntitySystem(World world, SystemRunner<T> runner)
+        //    : this(GetEntitySet(world), runner)
+        //{ }
+
+        //protected AEntitySystem(World world)
+        //    : this(GetEntitySet(world), null)
+        //{ }
+
         #endregion
 
         #region Methods
+
+        //private static EntitySet GetEntitySet(World world)
+        //{
+
+        //}
 
         /// <summary>
         /// Update the given <see cref="Entity"/> instance once.
@@ -78,6 +111,14 @@ namespace DefaultEcs.System
             {
                 Update(CurrentState, entities.Slice(index * entitiesToUpdate, entitiesToUpdate));
             }
+        }
+
+        /// <summary>
+        /// Disposes of the inner <see cref="EntitySet"/> instance.
+        /// </summary>
+        public override void Dispose()
+        {
+            _set.Dispose();
         }
 
         #endregion

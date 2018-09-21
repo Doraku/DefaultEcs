@@ -70,5 +70,14 @@
         }
 
         #endregion
+
+        #region IDisposable
+
+        /// <summary>
+        /// Does nothing.
+        /// </summary>
+        public abstract void Dispose();
+
+        #endregion
     }
 }

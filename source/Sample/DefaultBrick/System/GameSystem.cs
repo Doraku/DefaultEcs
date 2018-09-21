@@ -66,7 +66,8 @@ namespace DefaultBrick.System
 
                 ++_ballCount;
             }
-
         }
+
+        public void Dispose() { }
     }
 }

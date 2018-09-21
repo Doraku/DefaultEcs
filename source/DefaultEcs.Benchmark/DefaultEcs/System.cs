@@ -97,6 +97,8 @@ namespace DefaultEcs.Benchmark.DefaultEcs
                     }
                 });
             }
+
+            public void Dispose() { }
         }
 
         private World _world;

@@ -40,5 +40,20 @@
         }
 
         #endregion
+
+        #region IDisposable
+
+        /// <summary>
+        /// Disposes all the inner <see cref="ISystem{T}"/> instances.
+        /// </summary>
+        public void Dispose()
+        {
+            for (int i = _systems.Length - 1; i >= 0; --i)
+            {
+                _systems[i].Dispose();
+            }
+        }
+
+        #endregion
     }
 }

@@ -28,5 +28,7 @@ namespace DefaultSlap.System
                 }
             }
         }
+
+        public void Dispose() { }
     }
 }

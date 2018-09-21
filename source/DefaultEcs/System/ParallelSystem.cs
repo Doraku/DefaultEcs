@@ -65,5 +65,20 @@ namespace DefaultEcs.System
         protected override void PreUpdate(T state) => Interlocked.Exchange(ref _lastIndex, -1);
 
         #endregion
+
+        #region IDisposable
+
+        /// <summary>
+        /// Disposes all the inner <see cref="ISystem{T}"/> instances.
+        /// </summary>
+        public override void Dispose()
+        {
+            for (int i = _systems.Length - 1; i >= 0; --i)
+            {
+                _systems[i].Dispose();
+            }
+        }
+
+        #endregion
     }
 }

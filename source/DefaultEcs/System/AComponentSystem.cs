@@ -74,6 +74,12 @@ namespace DefaultEcs.System
             Update(CurrentState, index == maxIndex ? components.Slice(index * componentsToUpdate) : components.Slice(index * componentsToUpdate, componentsToUpdate));
         }
 
+        /// <summary>
+        /// Does nothing.
+        /// </summary>
+        public override void Dispose()
+        { }
+
         #endregion
     }
 }

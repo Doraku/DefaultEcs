@@ -17,7 +17,7 @@ namespace DefaultEcs.System
         #region Initialisation
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="ActionSystem{T}"/> class with the given <see cref="Action{T}"/>.
+        /// Initialises a new instance of the <see cref="ActionSystem{T}"/> class with the given <see cref="Action{T}"/>.
         /// </summary>
         /// <param name="action">The <see cref="Action{T}"/> to call as update.</param>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
@@ -35,6 +35,16 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="state">The state to use.</param>
         public void Update(T state) => _action(state);
+
+        #endregion
+
+        #region IDisposable
+
+        /// <summary>
+        /// Does nothing.
+        /// </summary>
+        public void Dispose()
+        { }
 
         #endregion
     }

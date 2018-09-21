@@ -42,9 +42,7 @@
 
     <Version>0.6.1</Version>
     <PackageReleaseNotes>
-added RemoveFromChildrenOf and RemoveFromParentsOf methods on Entity to remove hierarchy of dispose chain
-BinarySerializer and TextSerializer now handle abstract types and types with no default constructor
-some fixes on BinarySerializer and TextSerializer
+made ISystem implements IDisposable
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
