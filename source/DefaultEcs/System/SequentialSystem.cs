@@ -50,7 +50,7 @@
         {
             for (int i = _systems.Length - 1; i >= 0; --i)
             {
-                _systems[i].Dispose();
+                _systems[i]?.Dispose();
             }
         }
 

@@ -73,9 +73,11 @@ namespace DefaultEcs.System
         /// </summary>
         public override void Dispose()
         {
-            for (int i = _systems.Length - 1; i >= 0; --i)
+            _mainSystem?.Dispose();
+
+            foreach (ISystem<T> system in _systems)
             {
-                _systems[i].Dispose();
+                system?.Dispose();
             }
         }
 
