@@ -7,6 +7,8 @@ namespace DefaultEcs.Test.System
 {
     public class AEntitySystemTest
     {
+        [With(typeof(bool))]
+        [Without(typeof(int))]
         private sealed class System : AEntitySystem<int>
         {
             public System(EntitySet set)
@@ -14,11 +16,15 @@ namespace DefaultEcs.Test.System
             { }
 
             public System(World world)
-                : base(world.GetEntities().With<bool>().Build())
+                : base(world)
+            { }
+
+            public System(EntitySet set, SystemRunner<int> runner)
+                : base(set, runner)
             { }
 
             public System(World world, SystemRunner<int> runner)
-                : base(world.GetEntities().With<bool>().Build(), runner)
+                : base(world, runner)
             { }
 
             protected override void Update(int state, in Entity entity)
@@ -33,6 +39,8 @@ namespace DefaultEcs.Test.System
         public void New_Should_throw_ArgumentNullException_When_EntitySet_is_null()
         {
             Check.ThatCode(() => new System(default(EntitySet))).Throws<ArgumentNullException>();
+
+            Check.ThatCode(() => new System(default(World))).Throws<ArgumentNullException>();
         }
 
         [Fact]
@@ -49,12 +57,29 @@ namespace DefaultEcs.Test.System
                 Entity entity3 = world.CreateEntity();
                 entity3.Set<bool>();
 
-                ISystem<int> system = new System(world);
-                system.Update(0);
+                using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build()))
+                {
+                    system.Update(0);
+                }
 
                 Check.That(entity1.Get<bool>()).IsTrue();
                 Check.That(entity2.Get<bool>()).IsTrue();
                 Check.That(entity3.Get<bool>()).IsTrue();
+
+                entity1.Set<bool>();
+                entity2.Set<bool>();
+                entity3.Set<bool>();
+                entity3.Set<int>();
+
+                using (ISystem<int> system = new System(world))
+                {
+                    system.Update(0);
+                }
+
+                Check.That(entity1.Get<bool>()).IsTrue();
+                Check.That(entity2.Get<bool>()).IsTrue();
+                Check.That(entity3.Get<bool>()).IsFalse();
+
             }
         }
 
@@ -73,12 +98,28 @@ namespace DefaultEcs.Test.System
                 Entity entity3 = world.CreateEntity();
                 entity3.Set<bool>();
 
-                ISystem<int> system = new System(world, runner);
-                system.Update(0);
+                using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build(), runner))
+                {
+                    system.Update(0);
+                }
 
                 Check.That(entity1.Get<bool>()).IsTrue();
                 Check.That(entity2.Get<bool>()).IsTrue();
                 Check.That(entity3.Get<bool>()).IsTrue();
+
+                entity1.Set<bool>();
+                entity2.Set<bool>();
+                entity3.Set<bool>();
+                entity3.Set<int>();
+
+                using (ISystem<int> system = new System(world))
+                {
+                    system.Update(0);
+                }
+
+                Check.That(entity1.Get<bool>()).IsTrue();
+                Check.That(entity2.Get<bool>()).IsTrue();
+                Check.That(entity3.Get<bool>()).IsFalse();
             }
         }
 
