@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using DefaultEcs.Technical.System;
 
 namespace DefaultEcs.System
 {
@@ -18,7 +19,7 @@ namespace DefaultEcs.System
         internal static readonly SystemRunner<T> Default = new SystemRunner<T>(1);
 
         private readonly CancellationTokenSource _disposeHandle;
-        private readonly Barrier _barrier;
+        private readonly WorkerBarrier _barrier;
         private readonly Task[] _tasks;
 
         private volatile ASystem<T> _currentSystem;
@@ -37,8 +38,8 @@ namespace DefaultEcs.System
             IEnumerable<int> indices = degreeOfParallelism >= 1 ? Enumerable.Range(0, degreeOfParallelism - 1) : throw new ArgumentException("Argument cannot be inferior to one", nameof(degreeOfParallelism));
 
             _disposeHandle = new CancellationTokenSource();
-            _barrier = degreeOfParallelism > 1 ? new Barrier(degreeOfParallelism) : null;
             _tasks = indices.Select(index => new Task(Update, index, TaskCreationOptions.LongRunning)).ToArray();
+            _barrier = degreeOfParallelism > 1 ? new WorkerBarrier(degreeOfParallelism) : null;
 
             foreach (Task task in _tasks)
             {
@@ -54,14 +55,24 @@ namespace DefaultEcs.System
         {
             int index = (int)state;
 
-            _barrier.SignalAndWait();
+            while (!_barrier.StartWorker())
+            {
+                _barrier.Wait();
+            }
 
             while (!_disposeHandle.IsCancellationRequested)
             {
                 _currentSystem.Update(index, _tasks.Length);
 
-                _barrier.SignalAndWait();
-                _barrier.SignalAndWait();
+                while (!_barrier.AllStarted())
+                {
+                    _barrier.Wait();
+                }
+                _barrier.Signal();
+                while (!_barrier.StartWorker())
+                {
+                    _barrier.Wait();
+                }
             }
         }
 
@@ -70,11 +81,20 @@ namespace DefaultEcs.System
         {
             _currentSystem = system;
 
-            _barrier?.SignalAndWait();
+            _barrier?.Start();
 
             system.Update(_tasks.Length, _tasks.Length);
 
-            _barrier?.SignalAndWait();
+            while (!(_barrier?.AllStarted() ?? true))
+            {
+                _barrier.Wait();
+            }
+            _barrier?.Signal();
+            while (!(_barrier?.IsDone() ?? true))
+            {
+                _barrier.Wait();
+            }
+            _barrier?.End();
         }
 
         #endregion
@@ -88,7 +108,7 @@ namespace DefaultEcs.System
         {
             _disposeHandle.Cancel();
 
-            _barrier?.SignalAndWait();
+            _barrier.Start();
 
             Task.WaitAll(_tasks);
 
