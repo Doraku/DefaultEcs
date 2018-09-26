@@ -16,6 +16,24 @@ namespace DefaultEcs.Technical.System
 
         #endregion
 
+        #region Properties
+
+        public bool AreAllStarted
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Volatile.Read(ref _startingCount) == 0;
+        }
+
+        public bool IsDone
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Volatile.Read(ref _runningCount) == 0;
+        }
+
+        #endregion
+
+        #region Initialisation
+
         public WorkerBarrier(int workerCount)
         {
             _count = workerCount;
@@ -25,18 +43,20 @@ namespace DefaultEcs.Technical.System
             _startingCount = 0;
         }
 
+        #endregion
+
         #region Methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Start()
+        public void StartWorkers()
         {
             Interlocked.Exchange(ref _runningCount, _count);
-            Interlocked.Exchange(ref _startingCount, _count - 1);
+            Interlocked.Exchange(ref _startingCount, _count);
             _handle.Set();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool StartWorker()
+        public bool Start()
         {
             if (Volatile.Read(ref _startingCount) > 0)
             {
@@ -49,9 +69,6 @@ namespace DefaultEcs.Technical.System
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool AllStarted() => Volatile.Read(ref _startingCount) == 0;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Signal()
         {
             if (Interlocked.Decrement(ref _runningCount) == 0)
@@ -59,9 +76,6 @@ namespace DefaultEcs.Technical.System
                 _handle.Set();
             }
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsDone() => Volatile.Read(ref _runningCount) == 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Wait() => _handle.Wait();

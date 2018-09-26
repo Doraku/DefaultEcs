@@ -39,7 +39,7 @@ namespace DefaultEcs.System
 
             _disposeHandle = new CancellationTokenSource();
             _tasks = indices.Select(index => new Task(Update, index, TaskCreationOptions.LongRunning)).ToArray();
-            _barrier = degreeOfParallelism > 1 ? new WorkerBarrier(degreeOfParallelism) : null;
+            _barrier = degreeOfParallelism > 1 ? new WorkerBarrier(_tasks.Length) : null;
 
             foreach (Task task in _tasks)
             {
@@ -51,28 +51,33 @@ namespace DefaultEcs.System
 
         #region Methods
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Idle()
+        {
+            _barrier.Wait();
+        }
+
         private void Update(object state)
         {
             int index = (int)state;
 
-            while (!_barrier.StartWorker())
+            goto Start;
+
+            Work: _currentSystem.Update(index, _tasks.Length);
+
+            while (!_barrier.AreAllStarted)
             {
-                _barrier.Wait();
+                Idle();
             }
+            _barrier.Signal();
 
-            while (!_disposeHandle.IsCancellationRequested)
+            Start: while (!_barrier.Start())
             {
-                _currentSystem.Update(index, _tasks.Length);
-
-                while (!_barrier.AllStarted())
-                {
-                    _barrier.Wait();
-                }
-                _barrier.Signal();
-                while (!_barrier.StartWorker())
-                {
-                    _barrier.Wait();
-                }
+                Idle();
+            }
+            if (!_disposeHandle.IsCancellationRequested)
+            {
+                goto Work;
             }
         }
 
@@ -81,18 +86,13 @@ namespace DefaultEcs.System
         {
             _currentSystem = system;
 
-            _barrier?.Start();
+            _barrier?.StartWorkers();
 
             system.Update(_tasks.Length, _tasks.Length);
-
-            while (!(_barrier?.AllStarted() ?? true))
+            
+            while (!(_barrier?.IsDone ?? true))
             {
-                _barrier.Wait();
-            }
-            _barrier?.Signal();
-            while (!(_barrier?.IsDone() ?? true))
-            {
-                _barrier.Wait();
+                Idle();
             }
             _barrier?.End();
         }
@@ -108,7 +108,7 @@ namespace DefaultEcs.System
         {
             _disposeHandle.Cancel();
 
-            _barrier.Start();
+            _barrier.StartWorkers();
 
             Task.WaitAll(_tasks);
 
