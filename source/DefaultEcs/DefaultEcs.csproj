@@ -20,8 +20,6 @@
   </PropertyGroup>
 
   <ItemGroup Label="netstandard1.1 Reference" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="System.Runtime" Version="4.3.0" />
-
     <PackageReference Label="Documentation" Include="Vsxmd" Version="1.3.3" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup Label="Reference">
@@ -42,8 +40,6 @@
 
     <Version>0.6.2</Version>
     <PackageReleaseNotes>
-made ISystem implements IDisposable
-added WithAttribute and WithoutAttribute attributes to define EntitySet from World in AEntitySystem
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
