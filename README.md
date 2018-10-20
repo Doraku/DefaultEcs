@@ -186,6 +186,30 @@ public sealed class VelocitySystem : AEntitySystem<float>
 }
 ```
 
+It is also possible to declare the needed component by using the WithAttribute and WithoutAttribute on the system type.
+```C#
+[With(typeof(Velocity)]
+[With(typeof(Position)]
+public sealed class VelocitySystem : AEntitySystem<float>
+{
+    public VelocitySystem(World world, SystemRunner<float> runner)
+        : base(world, runner)
+    {
+    }
+
+    protected override void Update(float elaspedTime, in Entity entity)
+    {
+        ref Velocity velocity = ref entity.Get<Velocity>();
+        ref Position position = ref entity.Get<Position>();
+
+        Vector2 offset = velocity.Value * elaspedTime;
+
+        position.Value.X += offset.X;
+        position.Value.Y += offset.Y;
+    }
+}
+```
+
 <a name='Overview_System_AComponentSystem'></a>
 ### AComponentSystem<TState, TComponent>
 This is a base class to create system to update a specific component type from a given World.

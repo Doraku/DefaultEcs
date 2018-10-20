@@ -40,7 +40,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.6.1</Version>
+    <Version>0.6.2</Version>
     <PackageReleaseNotes>
 made ISystem implements IDisposable
 added WithAttribute and WithoutAttribute attributes to define EntitySet from World in AEntitySystem

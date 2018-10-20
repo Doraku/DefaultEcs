@@ -65,7 +65,7 @@ namespace DefaultEcs.System
 
             Work: _currentSystem.Update(index, _tasks.Length);
 
-            while (!_barrier.AreAllStarted)
+            while (!_barrier.AreWorkersStarted)
             {
                 Idle();
             }
@@ -90,7 +90,7 @@ namespace DefaultEcs.System
 
             system.Update(_tasks.Length, _tasks.Length);
             
-            while (!(_barrier?.IsDone ?? true))
+            while (!(_barrier?.AreWorkersDone ?? true))
             {
                 Idle();
             }

@@ -18,13 +18,13 @@ namespace DefaultEcs.Technical.System
 
         #region Properties
 
-        public bool AreAllStarted
+        public bool AreWorkersStarted
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Volatile.Read(ref _startingCount) == 0;
         }
 
-        public bool IsDone
+        public bool AreWorkersDone
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Volatile.Read(ref _runningCount) == 0;
