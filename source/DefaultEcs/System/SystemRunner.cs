@@ -51,12 +51,6 @@ namespace DefaultEcs.System
 
         #region Methods
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Idle()
-        {
-            _barrier.Wait();
-        }
-
         private void Update(object state)
         {
             int index = (int)state;
@@ -65,15 +59,15 @@ namespace DefaultEcs.System
 
             Work: _currentSystem.Update(index, _tasks.Length);
 
-            while (!_barrier.AreWorkersStarted)
+            while (!_barrier.AllStarted)
             {
-                Idle();
+                _barrier.WaitForAllStarted();
             }
             _barrier.Signal();
 
             Start: while (!_barrier.Start())
             {
-                Idle();
+                _barrier.WaitToStart();
             }
             if (!_disposeHandle.IsCancellationRequested)
             {
@@ -90,11 +84,10 @@ namespace DefaultEcs.System
 
             system.Update(_tasks.Length, _tasks.Length);
             
-            while (!(_barrier?.AreWorkersDone ?? true))
+            while (!(_barrier?.AllDone ?? true))
             {
-                Idle();
+                _barrier.WaitForAllDone();
             }
-            _barrier?.End();
         }
 
         #endregion

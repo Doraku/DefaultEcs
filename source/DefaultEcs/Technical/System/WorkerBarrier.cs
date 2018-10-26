@@ -9,7 +9,9 @@ namespace DefaultEcs.Technical.System
         #region Fields
 
         private readonly int _count;
-        private readonly ManualResetEventSlim _handle;
+        private readonly ManualResetEventSlim _endHandle;
+        private readonly ManualResetEventSlim _startHandle;
+        private readonly ManualResetEventSlim _startedHandle;
 
         private int _runningCount;
         private int _startingCount;
@@ -18,13 +20,13 @@ namespace DefaultEcs.Technical.System
 
         #region Properties
 
-        public bool AreWorkersStarted
+        public bool AllStarted
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Volatile.Read(ref _startingCount) == 0;
         }
 
-        public bool AreWorkersDone
+        public bool AllDone
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Volatile.Read(ref _runningCount) == 0;
@@ -37,7 +39,9 @@ namespace DefaultEcs.Technical.System
         public WorkerBarrier(int workerCount)
         {
             _count = workerCount;
-            _handle = new ManualResetEventSlim();
+            _endHandle = new ManualResetEventSlim();
+            _startHandle = new ManualResetEventSlim();
+            _startedHandle = new ManualResetEventSlim();
 
             _runningCount = 0;
             _startingCount = 0;
@@ -52,7 +56,9 @@ namespace DefaultEcs.Technical.System
         {
             Interlocked.Exchange(ref _runningCount, _count);
             Interlocked.Exchange(ref _startingCount, _count);
-            _handle.Set();
+
+            _startedHandle.Reset();
+            _startHandle.Set();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -60,8 +66,12 @@ namespace DefaultEcs.Technical.System
         {
             if (Volatile.Read(ref _startingCount) > 0)
             {
-                Interlocked.Decrement(ref _startingCount);
-
+                if (Interlocked.Decrement(ref _startingCount) == 0)
+                {
+                    _startHandle.Reset();
+                    _startedHandle.Set();
+                }
+                
                 return true;
             }
 
@@ -73,21 +83,33 @@ namespace DefaultEcs.Technical.System
         {
             if (Interlocked.Decrement(ref _runningCount) == 0)
             {
-                _handle.Set();
+                _endHandle.Set();
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Wait() => _handle.Wait();
+        public void WaitForAllDone()
+        {
+            _endHandle.Wait();
+            _endHandle.Reset();
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void End() => _handle.Reset();
+        public void WaitToStart() => _startHandle.Wait();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WaitForAllStarted() => _startedHandle.Wait();
 
         #endregion
 
         #region IDisposable
 
-        public void Dispose() => _handle.Dispose();
+        public void Dispose()
+        {
+            _endHandle.Dispose();
+            _startHandle.Dispose();
+            _startedHandle.Dispose();
+        }
 
         #endregion
     }
