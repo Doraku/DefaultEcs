@@ -9,12 +9,11 @@ namespace DefaultEcs.Technical.System
         #region Fields
 
         private readonly int _count;
-        private readonly ManualResetEventSlim _endHandle;
-        private readonly ManualResetEventSlim _startHandle;
-        private readonly ManualResetEventSlim _startedHandle;
+        private readonly AutoResetEvent _endHandle;
+        private readonly ManualResetEvent _startHandle;
+        private readonly ManualResetEvent _startedHandle;
 
         private int _runningCount;
-        private int _startingCount;
 
         #endregion
 
@@ -23,7 +22,7 @@ namespace DefaultEcs.Technical.System
         public bool AllStarted
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => Volatile.Read(ref _startingCount) == 0;
+            get => Volatile.Read(ref _runningCount) <= _count;
         }
 
         public bool AllDone
@@ -39,12 +38,11 @@ namespace DefaultEcs.Technical.System
         public WorkerBarrier(int workerCount)
         {
             _count = workerCount;
-            _endHandle = new ManualResetEventSlim();
-            _startHandle = new ManualResetEventSlim();
-            _startedHandle = new ManualResetEventSlim();
+            _endHandle = new AutoResetEvent(false);
+            _startHandle = new ManualResetEvent(false);
+            _startedHandle = new ManualResetEvent(false);
 
             _runningCount = 0;
-            _startingCount = 0;
         }
 
         #endregion
@@ -54,8 +52,9 @@ namespace DefaultEcs.Technical.System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void StartWorkers()
         {
-            Interlocked.Exchange(ref _runningCount, _count);
-            Interlocked.Exchange(ref _startingCount, _count);
+            _endHandle.Reset();
+
+            Interlocked.Exchange(ref _runningCount, _count * 2);
 
             _startedHandle.Reset();
             _startHandle.Set();
@@ -64,9 +63,9 @@ namespace DefaultEcs.Technical.System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Start()
         {
-            if (Volatile.Read(ref _startingCount) > 0)
+            if (Volatile.Read(ref _runningCount) > _count)
             {
-                if (Interlocked.Decrement(ref _startingCount) == 0)
+                if (Interlocked.Decrement(ref _runningCount) == _count)
                 {
                     _startHandle.Reset();
                     _startedHandle.Set();
@@ -88,17 +87,13 @@ namespace DefaultEcs.Technical.System
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WaitForAllDone()
-        {
-            _endHandle.Wait();
-            _endHandle.Reset();
-        }
+        public void WaitForAllDone() => _endHandle.WaitOne();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WaitToStart() => _startHandle.Wait();
+        public void WaitToStart() => _startHandle.WaitOne();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WaitForAllStarted() => _startedHandle.Wait();
+        public void WaitForAllStarted() => _startedHandle.WaitOne();
 
         #endregion
 
