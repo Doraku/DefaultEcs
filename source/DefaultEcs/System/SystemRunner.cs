@@ -22,7 +22,7 @@ namespace DefaultEcs.System
         private readonly WorkerBarrier _barrier;
         private readonly Task[] _tasks;
 
-        private volatile ASystem<T> _currentSystem;
+        private ASystem<T> _currentSystem;
 
         #endregion
 
@@ -57,7 +57,7 @@ namespace DefaultEcs.System
 
             goto Start;
 
-            Work: _currentSystem.Update(index, _tasks.Length);
+            Work: Volatile.Read(ref _currentSystem).Update(index, _tasks.Length);
 
             while (!_barrier.AllStarted)
             {
@@ -78,7 +78,7 @@ namespace DefaultEcs.System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Update(ASystem<T> system)
         {
-            _currentSystem = system;
+            Volatile.Write(ref _currentSystem, system);
 
             _barrier?.StartWorkers();
 
