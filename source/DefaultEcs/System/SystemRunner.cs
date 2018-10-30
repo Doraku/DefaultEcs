@@ -57,18 +57,14 @@ namespace DefaultEcs.System
 
             goto Start;
 
-            Work: Volatile.Read(ref _currentSystem).Update(index, _tasks.Length);
+        Work:
+            Volatile.Read(ref _currentSystem).Update(index, _tasks.Length);
 
-            while (!_barrier.AllStarted)
-            {
-                _barrier.WaitForAllStarted();
-            }
             _barrier.Signal();
 
-            Start: while (!_barrier.Start())
-            {
-                _barrier.WaitToStart();
-            }
+        Start:
+            _barrier.Start();
+
             if (!_disposeHandle.IsCancellationRequested)
             {
                 goto Work;
@@ -83,11 +79,8 @@ namespace DefaultEcs.System
             _barrier?.StartWorkers();
 
             system.Update(_tasks.Length, _tasks.Length);
-            
-            while (!(_barrier?.AllDone ?? true))
-            {
-                _barrier.WaitForAllDone();
-            }
+
+            _barrier?.WaitForWorkers();
         }
 
         #endregion
@@ -101,7 +94,7 @@ namespace DefaultEcs.System
         {
             _disposeHandle.Cancel();
 
-            _barrier.StartWorkers();
+            _barrier?.StartWorkers();
 
             Task.WaitAll(_tasks);
 

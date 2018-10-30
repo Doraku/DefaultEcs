@@ -9,27 +9,11 @@ namespace DefaultEcs.Technical.System
         #region Fields
 
         private readonly int _count;
-        private readonly AutoResetEvent _endHandle;
+        private readonly ManualResetEvent _endHandle;
         private readonly ManualResetEvent _startHandle;
-        private readonly ManualResetEvent _startedHandle;
 
+        private bool _allStarted;
         private int _runningCount;
-
-        #endregion
-
-        #region Properties
-
-        public bool AllStarted
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => Volatile.Read(ref _runningCount) <= _count;
-        }
-
-        public bool AllDone
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => Volatile.Read(ref _runningCount) == 0;
-        }
 
         #endregion
 
@@ -38,11 +22,8 @@ namespace DefaultEcs.Technical.System
         public WorkerBarrier(int workerCount)
         {
             _count = workerCount;
-            _endHandle = new AutoResetEvent(false);
+            _endHandle = new ManualResetEvent(false);
             _startHandle = new ManualResetEvent(false);
-            _startedHandle = new ManualResetEvent(false);
-
-            _runningCount = 0;
         }
 
         #endregion
@@ -52,34 +33,29 @@ namespace DefaultEcs.Technical.System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void StartWorkers()
         {
-            _endHandle.Reset();
-
             Interlocked.Exchange(ref _runningCount, _count * 2);
-
-            _startedHandle.Reset();
+            Volatile.Write(ref _allStarted, false);
             _startHandle.Set();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Start()
+        public void Start()
         {
-            if (Volatile.Read(ref _runningCount) > _count)
-            {
-                if (Interlocked.Decrement(ref _runningCount) == _count)
-                {
-                    _startHandle.Reset();
-                    _startedHandle.Set();
-                }
-                
-                return true;
-            }
+            _startHandle.WaitOne();
 
-            return false;
+            if (Interlocked.Decrement(ref _runningCount) == _count)
+            {
+                _startHandle.Reset();
+                Volatile.Write(ref _allStarted, true);
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Signal()
         {
+            while (!Volatile.Read(ref _allStarted))
+            { }
+
             if (Interlocked.Decrement(ref _runningCount) == 0)
             {
                 _endHandle.Set();
@@ -87,13 +63,11 @@ namespace DefaultEcs.Technical.System
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WaitForAllDone() => _endHandle.WaitOne();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WaitToStart() => _startHandle.WaitOne();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WaitForAllStarted() => _startedHandle.WaitOne();
+        public void WaitForWorkers()
+        {
+            _endHandle.WaitOne();
+            _endHandle.Reset();
+        }
 
         #endregion
 
@@ -103,7 +77,6 @@ namespace DefaultEcs.Technical.System
         {
             _endHandle.Dispose();
             _startHandle.Dispose();
-            _startedHandle.Dispose();
         }
 
         #endregion
