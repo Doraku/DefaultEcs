@@ -24,6 +24,9 @@ namespace DefaultEcs.Technical.System
             _count = workerCount;
             _endHandle = new ManualResetEvent(false);
             _startHandle = new ManualResetEvent(false);
+
+            _allStarted = false;
+            _runningCount = 0;
         }
 
         #endregion
@@ -33,7 +36,6 @@ namespace DefaultEcs.Technical.System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void StartWorkers()
         {
-            Interlocked.Exchange(ref _runningCount, _count * 2);
             Volatile.Write(ref _allStarted, false);
             _startHandle.Set();
         }
@@ -43,7 +45,7 @@ namespace DefaultEcs.Technical.System
         {
             _startHandle.WaitOne();
 
-            if (Interlocked.Decrement(ref _runningCount) == _count)
+            if (Interlocked.Increment(ref _runningCount) == _count)
             {
                 _startHandle.Reset();
                 Volatile.Write(ref _allStarted, true);

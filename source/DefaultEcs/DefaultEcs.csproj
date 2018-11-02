@@ -38,8 +38,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.6.2</Version>
+    <Version>0.6.3</Version>
     <PackageReleaseNotes>
+reduced cpu usage of multithreading SystemRunner when idling
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

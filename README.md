@@ -1,7 +1,7 @@
 ![DefaultEcs](https://github.com/Doraku/DefaultEcs/blob/master/DefaultEcsLogo.png)
 DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
-[![NuGet](https://img.shields.io/badge/nuget-v0.6.2-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
+[![NuGet](https://img.shields.io/badge/nuget-v0.6.3-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
 
 - [Requirement](#Requirement)
 - [Overview](#Overview)
