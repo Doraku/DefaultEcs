@@ -44,8 +44,7 @@ namespace DefaultEcs
         {
             List<Func<EntitySet, World, IDisposable>> subscriptions = _subscriptions.ToList();
 
-            if (subscriptions.Count == 1
-                || (_withFilter.IsNull && !_withoutFilter.IsNull))
+            if (subscriptions.Count == 1 || _withFilter.IsNull)
             {
                 subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Created));
             }

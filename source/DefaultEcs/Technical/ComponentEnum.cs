@@ -93,13 +93,7 @@ namespace DefaultEcs.Technical
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear()
-        {
-            if (!IsNull)
-            {
-                _bitArray.Fill(0u);
-            }
-        }
+        public void Clear() => _bitArray?.Fill(0u);
 
         #endregion
     }

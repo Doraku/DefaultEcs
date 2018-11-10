@@ -283,7 +283,7 @@ namespace DefaultEcs
         #region IDisposable
 
         /// <summary>
-        /// Clean the current <see cref="Entity"/> of all its components and a <see cref="EntityDisposedMessage"/> message is published.
+        /// Clean the current <see cref="Entity"/> of all its components.
         /// The current <see cref="Entity"/> should not be used again after calling this method.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
