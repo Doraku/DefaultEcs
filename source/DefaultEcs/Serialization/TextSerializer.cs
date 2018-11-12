@@ -119,6 +119,21 @@ namespace DefaultEcs.Serialization
 
             public void OnRead<T>(ref T component, in Entity componentOwner)
             {
+                if (!_types.TryGetValue(typeof(T), out string typeName))
+                {
+                    typeName = typeof(T).Name;
+
+                    int repeatCount = 1;
+                    while (_types.ContainsValue(typeName))
+                    {
+                        typeName = $"{typeof(T).Name}_{repeatCount}";
+                    }
+
+                    _types.Add(typeof(T), typeName);
+
+                    _writer.WriteLine($"{_componentType} {typeName} {typeof(T).FullName}, {typeof(T).GetTypeInfo().Assembly.GetName().Name}");
+                }
+
                 Tuple<Entity, Type> componentKey = Tuple.Create(componentOwner, typeof(T));
                 if (_components.TryGetValue(componentKey, out int key))
                 {

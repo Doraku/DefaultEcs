@@ -79,6 +79,7 @@ namespace DefaultEcs.Serialization
             private readonly Dictionary<Entity, int> _entities;
             private readonly Dictionary<Tuple<Entity, Type>, int> _components;
 
+            private ushort _currentType;
             private int _entityCount;
             private Entity _currentEntity;
 
@@ -95,6 +96,7 @@ namespace DefaultEcs.Serialization
                 _entities = new Dictionary<Entity, int>();
                 _components = new Dictionary<Tuple<Entity, Type>, int>();
 
+                _currentType = (ushort)types.Count;
                 _entityCount = -1;
             }
 
@@ -138,6 +140,19 @@ namespace DefaultEcs.Serialization
 
             public void OnRead<T>(ref T component, in Entity componentOwner)
             {
+                if (!_types.TryGetValue(typeof(T), out ushort currentType))
+                {
+                    _types.Add(typeof(T), _currentType);
+
+                    *_bufferP = _componentType;
+                    ushort* entryType = (ushort*)(_bufferP + 1);
+                    *(entryType++) = _currentType;
+                    _stream.Write(_buffer, 0, sizeof(byte) + sizeof(ushort));
+                    Converter<string>.Write(typeof(T).AssemblyQualifiedName, _stream, _buffer, _bufferP);
+
+                    ++_currentType;
+                }
+
                 Tuple<Entity, Type> componentKey = Tuple.Create(componentOwner, typeof(T));
                 if (_components.TryGetValue(componentKey, out int key))
                 {

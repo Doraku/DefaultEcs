@@ -203,6 +203,106 @@ namespace DefaultEcs.Test.Serialization
             }
         }
 
+        [Theory]
+        [InlineData(typeof(BinarySerializer))]
+        [InlineData(typeof(TextSerializer))]
+        public void Serialize_Should_serialize_Entities(Type serializerType)
+        {
+            using (World world = new World(42))
+            {
+                world.SetMaximumComponentCount<int>(13);
+                world.SetMaximumComponentCount<float>(60);
+
+                Entity[] entities = new[]
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+                entities[0].Set<bool>(true);
+                entities[0].Set<sbyte>(13);
+                entities[0].Set<byte>(7);
+                entities[0].Set<short>(13);
+                entities[0].Set<ushort>(7);
+                entities[0].Set<int>(13);
+                entities[0].Set<uint>(7);
+                entities[0].Set<long>(13);
+                entities[0].Set<ulong>(7);
+                entities[0].Set<char>('c');
+                entities[0].Set<decimal>(3.14m);
+                entities[0].Set<double>(1337);
+                entities[0].Set<float>(-1);
+                entities[0].Set<string>("kikoo");
+                entities[0].Set(new Test(666));
+                entities[0].Set(new ClassTest { Id = 12345, Inner = new Test(66), Test = new InnerTest2() });
+                entities[2].Set(new InnerTest { Lol = 313 });
+                entities[1].SetSameAs<InnerTest>(entities[2]);
+                entities[1].Set(new Test(42));
+                entities[2].SetSameAs<Test>(entities[1]);
+
+                entities[0].Set<InnerClass>();
+                entities[0].Set<IEnumerable<int>>(new int[] { 1, 2, 3 });
+
+                entities[0].SetAsParentOf(entities[1]);
+
+                ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
+
+                string filePath = Path.GetRandomFileName();
+                try
+                {
+                    using (Stream stream = File.Create(filePath))
+                    {
+                        serializer.Serialize(stream, entities);
+                    }
+                    
+                    using (World copyWorld = new World(42))
+                    {
+                        Entity[] entitiesCopy;
+
+                        using (Stream stream = File.OpenRead(filePath))
+                        {
+                            entitiesCopy = serializer.Deserialize(stream, copyWorld).ToArray();
+                        }
+                        
+                        Check.That(entitiesCopy[0].Get<bool>()).IsEqualTo(entities[0].Get<bool>());
+                        Check.That(entitiesCopy[0].Get<sbyte>()).IsEqualTo(entities[0].Get<sbyte>());
+                        Check.That(entitiesCopy[0].Get<byte>()).IsEqualTo(entities[0].Get<byte>());
+                        Check.That(entitiesCopy[0].Get<short>()).IsEqualTo(entities[0].Get<short>());
+                        Check.That(entitiesCopy[0].Get<ushort>()).IsEqualTo(entities[0].Get<ushort>());
+                        Check.That(entitiesCopy[0].Get<int>()).IsEqualTo(entities[0].Get<int>());
+                        Check.That(entitiesCopy[0].Get<uint>()).IsEqualTo(entities[0].Get<uint>());
+                        Check.That(entitiesCopy[0].Get<long>()).IsEqualTo(entities[0].Get<long>());
+                        Check.That(entitiesCopy[0].Get<ulong>()).IsEqualTo(entities[0].Get<ulong>());
+                        Check.That(entitiesCopy[0].Get<char>()).IsEqualTo(entities[0].Get<char>());
+                        Check.That(entitiesCopy[0].Get<decimal>()).IsEqualTo(entities[0].Get<decimal>());
+                        Check.That(entitiesCopy[0].Get<double>()).IsEqualTo(entities[0].Get<double>());
+                        Check.That(entitiesCopy[0].Get<float>()).IsEqualTo(entities[0].Get<float>());
+                        Check.That(entitiesCopy[0].Get<string>()).IsEqualTo(entities[0].Get<string>());
+                        Check.That(entitiesCopy[0].Get<ClassTest>()).IsEqualTo(entities[0].Get<ClassTest>());
+
+                        Check.That(entities[0].Get<Test>()).IsEqualTo(entitiesCopy[0].Get<Test>());
+
+                        Check.That(entitiesCopy[1].Get<Test>()).IsEqualTo(entities[1].Get<Test>());
+                        Check.That(entitiesCopy[1].Get<InnerTest>()).IsEqualTo(entities[1].Get<InnerTest>());
+
+                        Check.That(entitiesCopy[1].Get<Test>()).IsEqualTo(entitiesCopy[2].Get<Test>());
+                        Check.That(entitiesCopy[1].Get<InnerTest>()).IsEqualTo(entitiesCopy[2].Get<InnerTest>());
+
+                        Check.That(entitiesCopy[0].Get<InnerClass>()).IsEqualTo(entities[0].Get<InnerClass>());
+                        Check.That(entitiesCopy[0].Get<IEnumerable<int>>()).ContainsExactly(entities[0].Get<IEnumerable<int>>());
+
+                        entitiesCopy[0].Dispose();
+
+                        Check.That(copyWorld.GetAllEntities().Count()).IsEqualTo(1);
+                    }
+                }
+                finally
+                {
+                    File.Delete(filePath);
+                }
+            }
+        }
+
         #endregion
     }
 }
