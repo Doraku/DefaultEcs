@@ -110,16 +110,7 @@ namespace DefaultEcs
         #endregion
 
         #region Methods
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Publish<T>(int worldId, in T arg)
-        {
-            if (worldId < Publisher<T>.Actions.Length)
-            {
-                Publisher<T>.Actions[worldId]?.Invoke(arg);
-            }
-        }
-
+        
         /// <summary>
         /// Subscribes an <see cref="SubscribeAction{T}"/> to be called back when a <typeparamref name="T"/> object is published.
         /// </summary>
@@ -134,7 +125,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the object to publish.</typeparam>
         /// <param name="arg">The object to publish.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Publish<T>(in T arg) => Publish(WorldId, arg);
+        public void Publish<T>(in T arg) => Publisher<T>.Publish(WorldId, arg);
 
         /// <summary>
         /// Creates a new instance of the <see cref="Entity"/> struct.
@@ -228,7 +219,7 @@ namespace DefaultEcs
                 EntityInfos[WorldId] = null;
             }
 
-            Publish(0, new WorldDisposedMessage(WorldId));
+            Publisher.Publish(0, new WorldDisposedMessage(WorldId));
             _worldIdDispenser.ReleaseInt(WorldId);
 
             GC.SuppressFinalize(this);

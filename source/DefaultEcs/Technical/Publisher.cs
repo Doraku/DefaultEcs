@@ -4,6 +4,12 @@ using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs.Technical
 {
+    internal static class Publisher
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Publish<T>(int worldId, in T arg) => Publisher<T>.Publish(worldId, arg);
+    }
+
     internal static class Publisher<T>
     {
         #region Types
@@ -93,6 +99,15 @@ namespace DefaultEcs.Technical
             }
 
             return new Subscription(worldId, action);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Publish(int worldId, in T arg)
+        {
+            if (worldId < Actions.Length)
+            {
+                Actions[worldId]?.Invoke(arg);
+            }
         }
 
         #endregion

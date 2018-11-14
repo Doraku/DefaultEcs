@@ -50,7 +50,7 @@ namespace DefaultEcs
                 ref ComponentEnum components = ref World.EntityInfos[WorldId][EntityId].Components;
                 components[ComponentManager<T>.Flag] = true;
 
-                World.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
+                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
             }
         }
 
@@ -83,7 +83,7 @@ namespace DefaultEcs
                 ref ComponentEnum components = ref World.EntityInfos[WorldId][EntityId].Components;
                 components[ComponentManager<T>.Flag] = true;
 
-                World.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
+                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
             }
         }
 
@@ -97,7 +97,7 @@ namespace DefaultEcs
             {
                 ref ComponentEnum components = ref World.EntityInfos[WorldId][EntityId].Components;
                 components[ComponentManager<T>.Flag] = false;
-                World.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
+                Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
             }
         }
 
@@ -222,7 +222,7 @@ namespace DefaultEcs
             Entity copy = world.CreateEntity();
             try
             {
-                World.Publish(WorldId, new EntityCopyMessage(EntityId, copy));
+                Publisher.Publish(WorldId, new EntityCopyMessage(EntityId, copy));
             }
             catch
             {
@@ -239,7 +239,7 @@ namespace DefaultEcs
         /// This method is primiraly used for serialization purpose and should not be called in game logic.
         /// </summary>
         /// <param name="reader">The <see cref="IComponentReader"/> instance to be used as callback with the current <see cref="Entity"/> components.</param>
-        public void ReadAllComponents(IComponentReader reader) => World.Publish(WorldId, new ComponentReadMessage(EntityId, reader ?? throw new ArgumentNullException(nameof(reader))));
+        public void ReadAllComponents(IComponentReader reader) => Publisher.Publish(WorldId, new ComponentReadMessage(EntityId, reader ?? throw new ArgumentNullException(nameof(reader))));
 
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         //public bool IsEnable<T>()
@@ -287,10 +287,7 @@ namespace DefaultEcs
         /// The current <see cref="Entity"/> should not be used again after calling this method.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Dispose()
-        {
-            World.Publish(WorldId, new EntityDisposedMessage(EntityId));
-        }
+        public void Dispose() => Publisher.Publish(WorldId, new EntityDisposedMessage(EntityId));
 
         #endregion
 
