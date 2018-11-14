@@ -40,6 +40,7 @@
 
     <Version>0.6.3</Version>
     <PackageReleaseNotes>
+added IPublisher abstraction on World
 fixed IEnumerable&lt;Entity&gt; serialization/deserialization
     </PackageReleaseNotes>
   </PropertyGroup>

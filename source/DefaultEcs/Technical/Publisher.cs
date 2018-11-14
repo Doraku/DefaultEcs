@@ -7,7 +7,7 @@ namespace DefaultEcs.Technical
     internal static class Publisher
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Publish<T>(int worldId, in T arg) => Publisher<T>.Publish(worldId, arg);
+        public static void Publish<T>(int worldId, in T message) => Publisher<T>.Publish(worldId, message);
     }
 
     internal static class Publisher<T>
@@ -102,11 +102,11 @@ namespace DefaultEcs.Technical
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Publish(int worldId, in T arg)
+        public static void Publish(int worldId, in T message)
         {
             if (worldId < Actions.Length)
             {
-                Actions[worldId]?.Invoke(arg);
+                Actions[worldId]?.Invoke(message);
             }
         }
 

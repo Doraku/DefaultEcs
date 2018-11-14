@@ -7,20 +7,10 @@ using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs
 {
-    #region Types
-
-    /// <summary>
-    /// Encapsulates a method that has a single in parameter and does not return a value used for <see cref="World.Subscribe{T}(SubscribeAction{T})"/> method.
-    /// </summary>
-    /// <typeparam name="T">The type of message to subscribe to.</typeparam>
-    public delegate void SubscribeAction<T>(in T message);
-
-    #endregion
-
     /// <summary>
     /// Represents a item use to create and manage <see cref="Entity"/> objects.
     /// </summary>
-    public sealed class World : IDisposable
+    public sealed class World : IPublisher, IDisposable
     {
         #region Fields
 
@@ -110,22 +100,6 @@ namespace DefaultEcs
         #endregion
 
         #region Methods
-        
-        /// <summary>
-        /// Subscribes an <see cref="SubscribeAction{T}"/> to be called back when a <typeparamref name="T"/> object is published.
-        /// </summary>
-        /// <typeparam name="T">The type of the object to be called back with.</typeparam>
-        /// <param name="action">The delegate to be called back.</param>
-        /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
-        public IDisposable Subscribe<T>(SubscribeAction<T> action) => Publisher<T>.Subscribe(WorldId, action);
-
-        /// <summary>
-        /// Publishes a <typeparamref name="T"/> object.
-        /// </summary>
-        /// <typeparam name="T">The type of the object to publish.</typeparam>
-        /// <param name="arg">The object to publish.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Publish<T>(in T arg) => Publisher<T>.Publish(WorldId, arg);
 
         /// <summary>
         /// Creates a new instance of the <see cref="Entity"/> struct.
@@ -203,6 +177,27 @@ namespace DefaultEcs
         /// </summary>
         /// <param name="reader">The <see cref="IComponentTypeReader"/> instance to be used as callback with the current <see cref="World"/> maximum number of component.</param>
         public void ReadAllComponentTypes(IComponentTypeReader reader) => Publish(new ComponentTypeReadMessage(reader ?? throw new ArgumentNullException(nameof(reader))));
+
+        #endregion
+
+        #region IPublisher
+
+        /// <summary>
+        /// Subscribes an <see cref="SubscribeAction{T}"/> to be called back when a <typeparamref name="T"/> object is published.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to be called back with.</typeparam>
+        /// <param name="action">The delegate to be called back.</param>
+        /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IDisposable Subscribe<T>(SubscribeAction<T> action) => Publisher<T>.Subscribe(WorldId, action);
+
+        /// <summary>
+        /// Publishes a <typeparamref name="T"/> object.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to publish.</typeparam>
+        /// <param name="message">The object to publish.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Publish<T>(in T message) => Publisher<T>.Publish(WorldId, message);
 
         #endregion
 
