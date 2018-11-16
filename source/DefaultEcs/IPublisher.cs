@@ -9,7 +9,7 @@ namespace DefaultEcs
     public delegate void SubscribeAction<T>(in T message);
 
     /// <summary>
-    /// 
+    /// Exposes methods to subscribe to <see cref="SubscribeAction{T}"/> and publish message to callback those subscriptions.
     /// </summary>
     public interface IPublisher : IDisposable
     {
