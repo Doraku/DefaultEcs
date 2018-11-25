@@ -38,7 +38,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.6.3</Version>
+    <Version>0.7.0</Version>
     <PackageReleaseNotes>
 added IPublisher abstraction on World
 fixed IEnumerable&lt;Entity&gt; serialization/deserialization
