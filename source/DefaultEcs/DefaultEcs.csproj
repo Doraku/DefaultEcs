@@ -40,9 +40,7 @@
 
     <Version>0.7.0</Version>
     <PackageReleaseNotes>
-added IPublisher abstraction on World
-fixed IEnumerable&lt;Entity&gt; serialization/deserialization
-relaxed World size at creation to allow growth when needed
+added SubscribeAttribute to automatically subscribe to decorated methods
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

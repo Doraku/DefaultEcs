@@ -31,8 +31,7 @@ namespace DefaultSlap.System
                 () => new Vector2(_random.Next(0, 800), 610)
             };
 
-            _world.Subscribe<PlayerHitMessage>(On);
-            _world.Subscribe<SlapMessage>(On);
+            _world.Subscribe(this);
         }
 
         private void Init()
@@ -49,8 +48,10 @@ namespace DefaultSlap.System
             _score = 0;
         }
 
+        [Subscribe]
         private void On(in PlayerHitMessage message) => --_life;
 
+        [Subscribe]
         private void On(in SlapMessage message)
         {
             Span<Entity> bugs = stackalloc Entity[_bugsSet.Count];

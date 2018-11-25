@@ -68,19 +68,20 @@ namespace DefaultSlap
             player.Set<Position>(default);
             player.Set(new DrawInfo(new Point(100, 100), Color.Yellow, 1));
 
-            _world.Subscribe<SlapMessage>(On);
-            _world.Subscribe<PlayerHitMessage>(On);
+            _world.Subscribe(this);
         }
 
         #endregion
 
         #region Callbacks
 
+        [Subscribe]
         private void On(in SlapMessage message)
         {
             _slapSound.Play();
         }
 
+        [Subscribe]
         private void On(in PlayerHitMessage message)
         {
             _bounceSound.Play();

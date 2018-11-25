@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Runtime.CompilerServices;
+using DefaultEcs.Technical.Helper;
 
 namespace DefaultEcs.Technical
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs.Technical
@@ -58,7 +59,7 @@ namespace DefaultEcs.Technical
 
         static Publisher()
         {
-            Actions = new SubscribeAction<T>[0];
+            Actions = new SubscribeAction<T>[2];
 
             if (typeof(T) != typeof(WorldDisposedMessage))
             {

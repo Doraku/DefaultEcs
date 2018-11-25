@@ -5,7 +5,7 @@ using Xunit;
 
 namespace DefaultEcs.Test.System
 {
-    public class SequentialSystemTest
+    public sealed class SequentialSystemTest
     {
         #region Tests
 

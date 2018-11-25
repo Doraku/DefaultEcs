@@ -5,7 +5,7 @@ using Xunit;
 
 namespace DefaultEcs.Test.System
 {
-    public class AEntitySystemTest
+    public sealed class AEntitySystemTest
     {
         [With(typeof(bool))]
         [Without(typeof(int))]

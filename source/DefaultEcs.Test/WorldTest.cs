@@ -7,7 +7,7 @@ using Xunit;
 
 namespace DefaultEcs.Test
 {
-    public class WorldTest
+    public sealed class WorldTest
     {
         #region Tests
 

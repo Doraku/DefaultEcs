@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Serialization;
 using DefaultEcs.Technical;
+using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs
@@ -17,6 +18,7 @@ namespace DefaultEcs
         private static readonly IntDispenser _worldIdDispenser;
 
         internal static readonly ComponentFlag AliveFlag;
+
         internal static WorldInfo[] Infos;
 
         private readonly IntDispenser _entityIdDispenser;
@@ -43,7 +45,9 @@ namespace DefaultEcs
         static World()
         {
             _worldIdDispenser = new IntDispenser(0);
-            Infos = new WorldInfo[1];
+
+            Infos = new WorldInfo[2];
+
             AliveFlag = ComponentFlag.GetNextFlag();
         }
 
@@ -71,7 +75,7 @@ namespace DefaultEcs
                 Infos[WorldId] = Info;
             }
 
-            Subscribe<EntityDisposedMessage>(On);
+            this.Subscribe(this);
         }
 
         /// <summary>
@@ -85,6 +89,7 @@ namespace DefaultEcs
 
         #region Callbacks
 
+        [Subscribe]
         private void On(in EntityDisposedMessage message)
         {
             ref EntityInfo entityInfo = ref Info.EntityInfos[message.EntityId];

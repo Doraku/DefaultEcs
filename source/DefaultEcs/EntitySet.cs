@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Technical;
+using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs
@@ -18,7 +19,7 @@ namespace DefaultEcs
         private readonly int _maxEntityCount;
         private readonly ComponentEnum _withFilter;
         private readonly ComponentEnum _withoutFilter;
-        private readonly IDisposable[] _subscriptions;
+        private readonly IDisposable _subscriptions;
 
         private int[] _mapping;
         private Entity[] _entities;
@@ -43,7 +44,7 @@ namespace DefaultEcs
             _maxEntityCount = world.MaxEntityCount;
             _withFilter = withFilter;
             _withoutFilter = withoutFilter;
-            _subscriptions = subscriptions.Select(s => s(this, world)).ToArray();
+            _subscriptions = subscriptions.Select(s => s(this, world)).Merge();
 
             _mapping = new int[0];
             _entities = new Entity[0];
@@ -143,13 +144,7 @@ namespace DefaultEcs
         /// <summary>
         /// Releases current <see cref="EntitySet"/> of its subscriptions, stopping it to get modifications on the <see cref="World"/>'s <see cref="Entity"/>.
         /// </summary>
-        public void Dispose()
-        {
-            foreach (IDisposable subscription in _subscriptions)
-            {
-                subscription.Dispose();
-            }
-        }
+        public void Dispose() => _subscriptions.Dispose();
 
         #endregion
     }

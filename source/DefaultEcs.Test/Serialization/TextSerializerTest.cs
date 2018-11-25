@@ -3,7 +3,7 @@ using DefaultEcs.Serialization;
 
 namespace DefaultEcs.Test.Serialization
 {
-    public class TextSerializerTest : ASerializerTest
+    public sealed class TextSerializerTest : ASerializerTest
     {
         protected override void Write<T>(Stream stream, T obj) => TextSerializer.Write(stream, obj);
 

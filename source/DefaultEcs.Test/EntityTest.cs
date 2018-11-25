@@ -5,7 +5,7 @@ using Xunit;
 
 namespace DefaultEcs.Test
 {
-    public class EntityTest
+    public sealed class EntityTest
     {
         #region Types
 

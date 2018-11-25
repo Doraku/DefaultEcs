@@ -5,7 +5,7 @@ using Xunit;
 
 namespace DefaultEcs.Test.System
 {
-    public class AComponentSystemTest
+    public sealed class AComponentSystemTest
     {
         private sealed class System : AComponentSystem<int, bool>
         {

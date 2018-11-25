@@ -13,8 +13,6 @@ namespace DefaultBrick.System
         private readonly Random _random;
         private readonly World _world;
 
-
-
         private int _ballCount;
         private int _brickCount;
 
@@ -23,21 +21,22 @@ namespace DefaultBrick.System
             _random = new Random();
             _world = world;
 
-            _world.Subscribe<BallDroppedMessage>(On);
-            _world.Subscribe<BrickBrokenMessage>(On);
-            _world.Subscribe<NewBrickMessage>(On);
+            _world.Subscribe(this);
         }
 
+        [Subscribe]
         private void On(in BallDroppedMessage message)
         {
             --_ballCount;
         }
 
+        [Subscribe]
         private void On(in BrickBrokenMessage message)
         {
             --_brickCount;
         }
 
+        [Subscribe]
         private void On(in NewBrickMessage message)
         {
             ++_brickCount;

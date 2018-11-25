@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace DefaultEcs.Technical
+namespace DefaultEcs.Technical.Helper
 {
     internal static class ArrayExtension
     {

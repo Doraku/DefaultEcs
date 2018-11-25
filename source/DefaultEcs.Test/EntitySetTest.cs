@@ -4,7 +4,7 @@ using Xunit;
 
 namespace DefaultEcs.Test
 {
-    public class EntitySetTest
+    public sealed class EntitySetTest
     {
         #region Tests
 
