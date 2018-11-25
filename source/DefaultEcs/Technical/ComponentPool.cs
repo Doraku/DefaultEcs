@@ -12,10 +12,13 @@ namespace DefaultEcs.Technical
         private readonly static bool _isReferenceType;
 
         private readonly int _worldId;
-        private readonly int[] _mapping;
-        private readonly ComponentLink[] _links;
-        private readonly T[] _components;
+        private readonly int _maxEntityCount;
+        private readonly int _maxComponentCount;
 
+
+        private int[] _mapping;
+        private ComponentLink[] _links;
+        private T[] _components;
         private int _lastComponentIndex;
 
         #endregion
@@ -29,14 +32,13 @@ namespace DefaultEcs.Technical
 
         public ComponentPool(int worldId, int maxEntityCount, int maxComponentCount)
         {
-            maxComponentCount = Math.Min(maxEntityCount, maxComponentCount);
-
             _worldId = worldId;
-            _mapping = new int[maxEntityCount];
-            _mapping.Fill(-1);
-            _links = new ComponentLink[maxComponentCount];
-            _components = new T[maxComponentCount];
+            _maxEntityCount = maxEntityCount;
+            _maxComponentCount = Math.Min(maxEntityCount, maxComponentCount);
 
+            _mapping = new int[0];
+            _links = new ComponentLink[0];
+            _components = new T[0];
             _lastComponentIndex = -1;
 
             Publisher<ComponentTypeReadMessage>.Subscribe(_worldId, On);
@@ -51,7 +53,7 @@ namespace DefaultEcs.Technical
 
         private void On(in ComponentTypeReadMessage message)
         {
-            message.Reader.OnRead<T>(_components.Length);
+            message.Reader.OnRead<T>(_maxComponentCount);
         }
 
         private void On(in EntityDisposedMessage message) => Remove(message.EntityId);
@@ -66,7 +68,7 @@ namespace DefaultEcs.Technical
 
         private void On(in ComponentReadMessage message)
         {
-            int componentIndex = _mapping[message.EntityId];
+            int componentIndex = message.EntityId < _mapping.Length ? _mapping[message.EntityId] : -1;
             if (componentIndex != -1)
             {
                 message.Reader.OnRead(ref _components[componentIndex], new Entity(_worldId, _links[componentIndex].EntityId));
@@ -81,11 +83,13 @@ namespace DefaultEcs.Technical
         private void ThrowMaxNumberOfComponentReached() => throw new InvalidOperationException($"Max number of component of type {nameof(T)} reached");
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has(int entityId) => _mapping[entityId] != -1;
+        public bool Has(int entityId) => entityId < _mapping.Length && _mapping[entityId] != -1;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Set(int entityId, in T component)
         {
+            ArrayExtension.EnsureLength(ref _mapping, entityId, _maxEntityCount, -1);
+
             ref int componentIndex = ref _mapping[entityId];
             if (componentIndex != -1)
             {
@@ -94,13 +98,17 @@ namespace DefaultEcs.Technical
                 return false;
             }
 
-            if (_lastComponentIndex == _components.Length - 1)
+            if (_lastComponentIndex == _maxComponentCount - 1)
             {
                 ThrowMaxNumberOfComponentReached();
             }
 
-            _components[++_lastComponentIndex] = component;
-            componentIndex = _lastComponentIndex;
+            componentIndex = ++_lastComponentIndex;
+
+            ArrayExtension.EnsureLength(ref _components, _lastComponentIndex, _maxComponentCount);
+            ArrayExtension.EnsureLength(ref _links, _lastComponentIndex, _maxComponentCount);
+
+            _components[_lastComponentIndex] = component;
             _links[_lastComponentIndex] = new ComponentLink(entityId);
 
             return true;
@@ -109,6 +117,8 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool SetSameAs(int entityId, int referenceEntityId)
         {
+            ArrayExtension.EnsureLength(ref _mapping, entityId, _maxEntityCount, -1);
+
             int referenceComponentIndex = _mapping[referenceEntityId];
 
             bool isNew = true;
@@ -133,6 +143,11 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Remove(int entityId)
         {
+            if (entityId >= _mapping.Length)
+            {
+                return false;
+            }
+
             ref int componentIndex = ref _mapping[entityId];
             if (componentIndex == -1)
             {

@@ -47,7 +47,7 @@ namespace DefaultEcs
 
             if (ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component))
             {
-                ref ComponentEnum components = ref World.EntityInfos[WorldId][EntityId].Components;
+                ref ComponentEnum components = ref World.Infos[WorldId].EntityInfos[EntityId].Components;
                 components[ComponentManager<T>.Flag] = true;
 
                 Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
@@ -80,7 +80,7 @@ namespace DefaultEcs
 
             if (pool.SetSameAs(EntityId, reference.EntityId))
             {
-                ref ComponentEnum components = ref World.EntityInfos[WorldId][EntityId].Components;
+                ref ComponentEnum components = ref World.Infos[WorldId].EntityInfos[EntityId].Components;
                 components[ComponentManager<T>.Flag] = true;
 
                 Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
@@ -95,7 +95,7 @@ namespace DefaultEcs
         {
             if (ComponentManager<T>.Get(WorldId)?.Remove(EntityId) ?? false)
             {
-                ref ComponentEnum components = ref World.EntityInfos[WorldId][EntityId].Components;
+                ref ComponentEnum components = ref World.Infos[WorldId].EntityInfos[EntityId].Components;
                 components[ComponentManager<T>.Flag] = false;
                 Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
             }
@@ -135,7 +135,7 @@ namespace DefaultEcs
                 throw new InvalidOperationException("Entity was not created from a World");
             }
 
-            ref HashSet<int> children = ref World.EntityInfos[WorldId][parent.EntityId].Children;
+            ref HashSet<int> children = ref World.Infos[WorldId].EntityInfos[parent.EntityId].Children;
             if (children == null)
             {
                 children = new HashSet<int>();
@@ -143,7 +143,7 @@ namespace DefaultEcs
 
             if (children.Add(EntityId))
             {
-                World.EntityInfos[WorldId][EntityId].Parents += children.Remove;
+                World.Infos[WorldId].EntityInfos[EntityId].Parents += children.Remove;
             }
         }
 
@@ -173,10 +173,10 @@ namespace DefaultEcs
                 throw new InvalidOperationException("Entity was not created from a World");
             }
 
-            HashSet<int> children = World.EntityInfos[WorldId][parent.EntityId].Children;
+            HashSet<int> children = World.Infos[WorldId].EntityInfos[parent.EntityId].Children;
             if (children?.Remove(EntityId) ?? false)
             {
-                World.EntityInfos[WorldId][EntityId].Parents -= children.Remove;
+                World.Infos[WorldId].EntityInfos[EntityId].Parents -= children.Remove;
             }
         }
 
@@ -195,7 +195,7 @@ namespace DefaultEcs
         /// <returns></returns>
         public IEnumerable<Entity> GetChildren()
         {
-            HashSet<int> children = World.EntityInfos[WorldId][EntityId].Children;
+            HashSet<int> children = World.Infos[WorldId].EntityInfos[EntityId].Children;
 
             if (children != null)
             {

@@ -15,12 +15,13 @@ namespace DefaultEcs
         #region Fields
 
         private readonly int _worldId;
+        private readonly int _maxEntityCount;
         private readonly ComponentEnum _withFilter;
         private readonly ComponentEnum _withoutFilter;
-        private readonly int[] _mapping;
-        private readonly Entity[] _entities;
         private readonly IDisposable[] _subscriptions;
 
+        private int[] _mapping;
+        private Entity[] _entities;
         private int _lastIndex;
 
         #endregion
@@ -39,20 +40,20 @@ namespace DefaultEcs
         internal EntitySet(World world, ComponentEnum withFilter, ComponentEnum withoutFilter, List<Func<EntitySet, World, IDisposable>> subscriptions)
         {
             _worldId = world.WorldId;
+            _maxEntityCount = world.MaxEntityCount;
             _withFilter = withFilter;
             _withoutFilter = withoutFilter;
-            _mapping = new int[world.MaxEntityCount];
-            _mapping.Fill(-1);
-            _entities = new Entity[world.MaxEntityCount];
             _subscriptions = subscriptions.Select(s => s(this, world)).ToArray();
 
+            _mapping = new int[0];
+            _entities = new Entity[0];
             _lastIndex = -1;
 
             _withFilter[World.AliveFlag] = true;
 
-            for (int i = 0; i <= world.LastEntityId; ++i)
+            for (int i = 0; i <= Math.Min(world.Info.EntityInfos.Length, world.LastEntityId); ++i)
             {
-                ref ComponentEnum components = ref World.EntityInfos[world.WorldId][i].Components;
+                ref ComponentEnum components = ref world.Info.EntityInfos[i].Components;
                 if (components.Contains(_withFilter)
                     && components.DoNotContains(_withoutFilter))
                 {
@@ -68,29 +69,37 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Add(int entityId)
         {
+            ArrayExtension.EnsureLength(ref _mapping, entityId, _maxEntityCount, -1);
+
             ref int index = ref _mapping[entityId];
             if (index == -1)
             {
                 index = ++_lastIndex;
-                _entities[index] = new Entity(_worldId, entityId);
+
+                ArrayExtension.EnsureLength(ref _entities, _lastIndex, _maxEntityCount);
+
+                _entities[_lastIndex] = new Entity(_worldId, entityId);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Remove(int entityId)
         {
-            ref int index = ref _mapping[entityId];
-            if (index != -1)
+            if (entityId < _mapping.Length)
             {
-                if (index != _lastIndex)
+                ref int index = ref _mapping[entityId];
+                if (index != -1)
                 {
-                    ref Entity entity = ref _entities[index];
-                    entity = _entities[_lastIndex];
-                    _mapping[entity.EntityId] = index;
-                }
+                    if (index != _lastIndex)
+                    {
+                        ref Entity entity = ref _entities[index];
+                        entity = _entities[_lastIndex];
+                        _mapping[entity.EntityId] = index;
+                    }
 
-                --_lastIndex;
-                index = -1;
+                    --_lastIndex;
+                    index = -1;
+                }
             }
         }
 

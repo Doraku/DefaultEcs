@@ -58,7 +58,7 @@ namespace DefaultEcs.Technical
 
         static Publisher()
         {
-            Actions = new SubscribeAction<T>[1];
+            Actions = new SubscribeAction<T>[0];
 
             if (typeof(T) != typeof(WorldDisposedMessage))
             {
@@ -90,10 +90,7 @@ namespace DefaultEcs.Technical
         {
             lock (typeof(Publisher<T>))
             {
-                if (worldId >= Actions.Length)
-                {
-                    Array.Resize(ref Actions, worldId * 2);
-                }
+                ArrayExtension.EnsureLength(ref Actions, worldId);
 
                 Actions[worldId] += action;
             }

@@ -42,6 +42,7 @@
     <PackageReleaseNotes>
 added IPublisher abstraction on World
 fixed IEnumerable&lt;Entity&gt; serialization/deserialization
+relaxed World size at creation to allow growth when needed
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

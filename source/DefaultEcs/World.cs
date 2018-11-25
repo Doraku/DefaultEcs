@@ -17,11 +17,12 @@ namespace DefaultEcs
         private static readonly IntDispenser _worldIdDispenser;
 
         internal static readonly ComponentFlag AliveFlag;
-        internal static EntityInfo[][] EntityInfos;
+        internal static WorldInfo[] Infos;
 
         private readonly IntDispenser _entityIdDispenser;
 
         internal readonly int WorldId;
+        internal readonly WorldInfo Info;
 
         #endregion
 
@@ -31,8 +32,9 @@ namespace DefaultEcs
 
         /// <summary>
         /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can create.
+        /// Returns a negative value if there is no limit.
         /// </summary>
-        public int MaxEntityCount => EntityInfos[WorldId].Length;
+        public int MaxEntityCount => Info.MaxEntityCount;
 
         #endregion
 
@@ -41,7 +43,7 @@ namespace DefaultEcs
         static World()
         {
             _worldIdDispenser = new IntDispenser(0);
-            EntityInfos = new EntityInfo[1][];
+            Infos = new WorldInfo[1];
             AliveFlag = ComponentFlag.GetNextFlag();
         }
 
@@ -60,17 +62,24 @@ namespace DefaultEcs
             _entityIdDispenser = new IntDispenser(-1);
             WorldId = _worldIdDispenser.GetFreeInt();
 
-            lock (typeof(ComponentEnum))
+            Info = new WorldInfo(maxEntityCount);
+
+            lock (typeof(WorldInfo))
             {
-                if (WorldId >= EntityInfos.Length)
-                {
-                    Array.Resize(ref EntityInfos, WorldId * 2);
-                }
-                EntityInfos[WorldId] = new EntityInfo[maxEntityCount];
+                ArrayExtension.EnsureLength(ref Infos, WorldId);
+
+                Infos[WorldId] = Info;
             }
 
             Subscribe<EntityDisposedMessage>(On);
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="World"/> class.
+        /// </summary>
+        public World()
+            : this(int.MaxValue)
+        { }
 
         #endregion
 
@@ -78,20 +87,22 @@ namespace DefaultEcs
 
         private void On(in EntityDisposedMessage message)
         {
-            EntityInfos[WorldId][message.EntityId].Components.Clear();
+            ref EntityInfo entityInfo = ref Info.EntityInfos[message.EntityId];
+
+            entityInfo.Components.Clear();
             _entityIdDispenser.ReleaseInt(message.EntityId);
 
-            Func<int, bool> cleanParent = EntityInfos[WorldId][message.EntityId].Parents;
-            EntityInfos[WorldId][message.EntityId].Parents = null;
+            Func<int, bool> cleanParent = entityInfo.Parents;
+            entityInfo.Parents = null;
             cleanParent?.Invoke(message.EntityId);
 
-            HashSet<int> children = EntityInfos[WorldId][message.EntityId].Children;
+            HashSet<int> children = entityInfo.Children;
             if (children != null)
             {
-                EntityInfos[WorldId][message.EntityId].Children = null;
+                entityInfo.Children = null;
                 foreach (int childId in children)
                 {
-                    EntityInfos[WorldId][childId].Parents -= children.Remove;
+                    Info.EntityInfos[childId].Parents -= children.Remove;
                     Publish(new EntityDisposedMessage(childId));
                 }
             }
@@ -115,7 +126,9 @@ namespace DefaultEcs
                 throw new InvalidOperationException("Max number of Entity reached");
             }
 
-            EntityInfos[WorldId][entityId].Components[AliveFlag] = true;
+            ArrayExtension.EnsureLength(ref Info.EntityInfos, entityId, MaxEntityCount);
+
+            Info.EntityInfos[entityId].Components[AliveFlag] = true;
             Publish(new EntityCreatedMessage(entityId));
 
             return new Entity(WorldId, entityId);
@@ -162,9 +175,9 @@ namespace DefaultEcs
         /// <returns>All the <see cref="Entity"/> of the current <see cref="World"/>.</returns>
         public IEnumerable<Entity> GetAllEntities()
         {
-            for (int i = 0; i <= LastEntityId; ++i)
+            for (int i = 0; i <= Math.Min(Info.EntityInfos.Length, LastEntityId); ++i)
             {
-                if (EntityInfos[WorldId][i].Components[AliveFlag])
+                if (Info.EntityInfos[i].Components[AliveFlag])
                 {
                     yield return new Entity(WorldId, i);
                 }
@@ -209,9 +222,9 @@ namespace DefaultEcs
         /// </summary>
         public void Dispose()
         {
-            lock (typeof(ComponentEnum))
+            lock (typeof(WorldInfo))
             {
-                EntityInfos[WorldId] = null;
+                Infos[WorldId] = null;
             }
 
             Publisher.Publish(0, new WorldDisposedMessage(WorldId));

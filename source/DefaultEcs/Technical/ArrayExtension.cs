@@ -1,13 +1,51 @@
-﻿namespace DefaultEcs.Technical
+﻿using System;
+using System.Runtime.CompilerServices;
+
+namespace DefaultEcs.Technical
 {
     internal static class ArrayExtension
     {
-        public static void Fill<T>(this T[] array, in T value)
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void InnerEnsureLength<T>(ref T[] array, int index, int maxLength)
+        {
+            int newLength = Math.Max(1, array.Length);
+            do
+            {
+                newLength *= 2;
+            }
+            while (index >= newLength);
+            Array.Resize(ref array, Math.Min(maxLength, newLength));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void EnsureLength<T>(ref T[] array, int index, int maxLength = int.MaxValue)
+        {
+            if (index >= array.Length)
+            {
+                InnerEnsureLength(ref array, index, maxLength);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Fill<T>(this T[] array, in T value, int start = 0)
             where T : unmanaged
         {
-            for (int i = 0; i < array.Length; ++i)
+            for (int i = start; i < array.Length; ++i)
             {
                 array[i] = value;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void EnsureLength<T>(ref T[] array, int index, int maxLength, in T defaultValue)
+            where T : unmanaged
+        {
+            if (index >= array.Length)
+            {
+                int oldLength = array.Length;
+
+                InnerEnsureLength(ref array, index, maxLength);
+                array.Fill(defaultValue, oldLength);
             }
         }
     }

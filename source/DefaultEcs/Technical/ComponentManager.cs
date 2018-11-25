@@ -20,7 +20,7 @@ namespace DefaultEcs.Technical
         {
             Flag = ComponentFlag.GetNextFlag();
 
-            Pools = new ComponentPool<T>[1];
+            Pools = new ComponentPool<T>[0];
 
             Publisher<WorldDisposedMessage>.Subscribe(0, On);
         }
@@ -49,10 +49,7 @@ namespace DefaultEcs.Technical
         {
             lock (typeof(ComponentManager<T>))
             {
-                if (worldId >= Pools.Length)
-                {
-                    Array.Resize(ref Pools, worldId * 2);
-                }
+                ArrayExtension.EnsureLength(ref Pools, worldId);
 
                 ref ComponentPool<T> pool = ref Pools[worldId];
                 if (pool == null)
@@ -65,10 +62,10 @@ namespace DefaultEcs.Technical
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComponentPool<T> GetOrCreate(int worldId, int maxComponentCount) => Get(worldId) ?? Add(worldId, World.EntityInfos[worldId].Length, maxComponentCount);
+        public static ComponentPool<T> GetOrCreate(int worldId, int maxComponentCount) => Get(worldId) ?? Add(worldId, World.Infos[worldId].MaxEntityCount, maxComponentCount);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComponentPool<T> GetOrCreate(int worldId) => Get(worldId) ?? Add(worldId, World.EntityInfos[worldId].Length, World.EntityInfos[worldId].Length);
+        public static ComponentPool<T> GetOrCreate(int worldId) => Get(worldId) ?? Add(worldId, World.Infos[worldId].MaxEntityCount, World.Infos[worldId].MaxEntityCount);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComponentPool<T> Get(int worldId) => worldId < Pools.Length ? Pools[worldId] : null;
