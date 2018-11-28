@@ -199,29 +199,6 @@ namespace DefaultEcs.Serialization
 
         #region Methods
 
-        private static World CreateWorld(StreamReader reader)
-        {
-            World world = null;
-            do
-            {
-                string[] lineParts = reader.ReadLine()?.Split(_split, StringSplitOptions.RemoveEmptyEntries);
-                if (lineParts?.Length > 1
-                    && _maxEntityCount.Equals(lineParts[0]))
-                {
-                    if (!int.TryParse(lineParts[1], out int maxEntityCount))
-                    {
-                        throw new ArgumentException($"Unable to convert '{lineParts[1]}' to a number");
-                    }
-
-                    world = new World(maxEntityCount);
-                    break;
-                }
-            }
-            while (!reader.EndOfStream);
-
-            return world;
-        }
-
         private static IOperation CreateOperation(Type type) => (IOperation)Activator.CreateInstance(typeof(Operation<>).MakeGenericType(type));
 
         private static void CreateOperation(string entry, Dictionary<string, IOperation> operations)
@@ -397,7 +374,7 @@ namespace DefaultEcs.Serialization
 
             using (StreamReader reader = new StreamReader(stream))
             {
-                World world = CreateWorld(reader) ?? throw new ArgumentException("Could not create a World instance from the provided Stream");
+                World world = null;
                 Entity currentEntity = default;
                 Dictionary<string, Entity> entities = new Dictionary<string, Entity>();
                 Dictionary<string, IOperation> operations = new Dictionary<string, IOperation>();
@@ -405,11 +382,17 @@ namespace DefaultEcs.Serialization
                 do
                 {
                     string[] lineParts = reader.ReadLine()?.Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
+
                     if (lineParts?.Length > 0)
                     {
                         string entry = lineParts[0];
                         if (_entity.Equals(entry))
                         {
+                            if (world == null)
+                            {
+                                world = new World();
+                            }
+
                             currentEntity = world.CreateEntity();
                             if (lineParts.Length > 1)
                             {
@@ -418,12 +401,31 @@ namespace DefaultEcs.Serialization
                         }
                         else if (lineParts.Length > 1)
                         {
-                            if (_componentType.Equals(entry))
+                            if (_maxEntityCount.Equals(entry))
+                            {
+                                if (world != null)
+                                {
+                                    throw new ArgumentException("Encoutered Entity or MaxComponentCount line before MaxEntityCount");
+                                }
+
+                                if (!int.TryParse(lineParts[1], out int maxEntityCount))
+                                {
+                                    throw new ArgumentException($"Unable to convert '{lineParts[1]}' to a number");
+                                }
+
+                                world = new World(maxEntityCount);
+                            }
+                            else if (_componentType.Equals(entry))
                             {
                                 CreateOperation(lineParts[1], operations);
                             }
                             else if (_maxComponentCount.Equals(entry))
                             {
+                                if (world == null)
+                                {
+                                    world = new World();
+                                }
+
                                 SetMaxComponentCount(world, lineParts[1], operations);
                             }
                             else if (_component.Equals(entry))

@@ -34,7 +34,6 @@ namespace DefaultEcs
             {
                 while (type != null)
                 {
-
                     foreach (MethodInfo method in type.GetTypeInfo().DeclaredMethods
                         .Where(m => m.GetCustomAttribute<SubscribeAttribute>(true) != null)
                         .Where(m => m.IsStatic || target != null))
