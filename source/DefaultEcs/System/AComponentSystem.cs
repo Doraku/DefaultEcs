@@ -1,4 +1,5 @@
 ﻿using System;
+using DefaultEcs.Technical;
 
 namespace DefaultEcs.System
 {
@@ -11,7 +12,7 @@ namespace DefaultEcs.System
     {
         #region Fields
 
-        private readonly World _world;
+        private readonly ComponentPool<TComponent> _component;
 
         #endregion
 
@@ -26,7 +27,7 @@ namespace DefaultEcs.System
         protected AComponentSystem(World world, SystemRunner<TState> runner)
             : base(runner)
         {
-            _world = world ?? throw new ArgumentNullException(nameof(world));
+            _component = ComponentManager<TComponent>.GetOrCreate(world?.WorldId ?? throw new ArgumentNullException(nameof(world)));
         }
 
         /// <summary>
@@ -66,9 +67,11 @@ namespace DefaultEcs.System
 
         #region ASystem
 
+        internal sealed override bool HasItems => _component.Count > 0;
+
         internal sealed override void Update(int index, int maxIndex)
         {
-            Span<TComponent> components = _world.GetAllComponents<TComponent>();
+            Span<TComponent> components = _component.GetAll();
             int componentsToUpdate = components.Length / (maxIndex + 1);
 
             Update(CurrentState, index == maxIndex ? components.Slice(index * componentsToUpdate) : components.Slice(index * componentsToUpdate, componentsToUpdate));

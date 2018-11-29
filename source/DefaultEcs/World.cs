@@ -34,7 +34,6 @@ namespace DefaultEcs
 
         /// <summary>
         /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can create.
-        /// Returns a negative value if there is no limit.
         /// </summary>
         public int MaxEntityCount => Info.MaxEntityCount;
 
@@ -145,19 +144,25 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
         /// <param name="maxComponentCount">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
-        /// <returns>The current <see cref="World"/>.</returns>
+        /// <returns>Whether the maximum count has been setted or not.</returns>
         /// <exception cref="ArgumentException"><paramref name="maxComponentCount"/> cannot be negative.</exception>
-        public World SetMaximumComponentCount<T>(int maxComponentCount)
+        public bool SetMaximumComponentCount<T>(int maxComponentCount)
         {
             if (maxComponentCount < 0)
             {
                 throw new ArgumentException("Argument cannot be negative", nameof(maxComponentCount));
             }
 
-            ComponentManager<T>.GetOrCreate(WorldId, maxComponentCount);
-
-            return this;
+            return ComponentManager<T>.GetOrCreate(WorldId, maxComponentCount).MaxComponentCount == maxComponentCount;
         }
+
+        /// <summary>
+        /// Gets the maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create.
+        /// Returns a negative value if there is no limit.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public int GetMaximumComponentCount<T>() => ComponentManager<T>.Get(WorldId)?.MaxComponentCount ?? MaxEntityCount;
 
         /// <summary>
         /// Gets all the component of a given type <typeparamref name="T"/>.

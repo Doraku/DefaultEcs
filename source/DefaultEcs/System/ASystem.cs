@@ -14,6 +14,12 @@
 
         #endregion
 
+        #region Properties
+
+        internal abstract bool HasItems { get; }
+
+        #endregion
+
         #region Initialisation
 
         /// <summary>
@@ -60,13 +66,16 @@
         /// <param name="state">The state to use.</param>
         public void Update(T state)
         {
-            CurrentState = state;
+            if (HasItems)
+            {
+                CurrentState = state;
 
-            PreUpdate(CurrentState);
+                PreUpdate(CurrentState);
 
-            _runner.Update(this);
+                _runner.Update(this);
 
-            PostUpdate(CurrentState);
+                PostUpdate(CurrentState);
+            }
         }
 
         #endregion

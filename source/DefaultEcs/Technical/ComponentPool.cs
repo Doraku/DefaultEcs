@@ -14,13 +14,19 @@ namespace DefaultEcs.Technical
 
         private readonly int _worldId;
         private readonly int _maxEntityCount;
-        private readonly int _maxComponentCount;
-
 
         private int[] _mapping;
         private ComponentLink[] _links;
         private T[] _components;
         private int _lastComponentIndex;
+
+        #endregion
+
+        #region Properties
+
+        public int MaxComponentCount { get; }
+
+        public int Count => _lastComponentIndex + 1;
 
         #endregion
 
@@ -35,7 +41,7 @@ namespace DefaultEcs.Technical
         {
             _worldId = worldId;
             _maxEntityCount = maxEntityCount;
-            _maxComponentCount = Math.Min(maxEntityCount, maxComponentCount);
+            MaxComponentCount = Math.Min(maxEntityCount, maxComponentCount);
 
             _mapping = new int[0];
             _links = new ComponentLink[0];
@@ -54,7 +60,7 @@ namespace DefaultEcs.Technical
 
         private void On(in ComponentTypeReadMessage message)
         {
-            message.Reader.OnRead<T>(_maxComponentCount);
+            message.Reader.OnRead<T>(MaxComponentCount);
         }
 
         private void On(in EntityDisposedMessage message) => Remove(message.EntityId);
@@ -99,15 +105,15 @@ namespace DefaultEcs.Technical
                 return false;
             }
 
-            if (_lastComponentIndex == _maxComponentCount - 1)
+            if (_lastComponentIndex == MaxComponentCount - 1)
             {
                 ThrowMaxNumberOfComponentReached();
             }
 
             componentIndex = ++_lastComponentIndex;
 
-            ArrayExtension.EnsureLength(ref _components, _lastComponentIndex, _maxComponentCount);
-            ArrayExtension.EnsureLength(ref _links, _lastComponentIndex, _maxComponentCount);
+            ArrayExtension.EnsureLength(ref _components, _lastComponentIndex, MaxComponentCount);
+            ArrayExtension.EnsureLength(ref _links, _lastComponentIndex, MaxComponentCount);
 
             _components[_lastComponentIndex] = component;
             _links[_lastComponentIndex] = new ComponentLink(entityId);
@@ -207,7 +213,7 @@ namespace DefaultEcs.Technical
         public ref T Get(int entityId) => ref _components[_mapping[entityId]];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> GetAll() => new Span<T>(_components, 0, _lastComponentIndex + 1);
+        public Span<T> GetAll() => new Span<T>(_components, 0, Count);
 
         #endregion
     }

@@ -41,6 +41,7 @@
     <Version>0.7.0</Version>
     <PackageReleaseNotes>
 added SubscribeAttribute to automatically subscribe to decorated methods
+changed World.SetMaximumComponentCount return type and added World.GetMaximumComponentCount
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

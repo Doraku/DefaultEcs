@@ -84,11 +84,21 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SetMaximumComponentCount_Should_return_same_World()
+        public void SetMaximumComponentCount_Should_return_true_When_maxComponentCount_is_setted()
         {
             using (World world = new World(0))
             {
-                Check.That(world.SetMaximumComponentCount<bool>(0)).IsEqualTo(world);
+                Check.That(world.SetMaximumComponentCount<bool>(0)).IsTrue();
+            }
+        }
+
+        [Fact]
+        public void SetMaximumComponentCount_Should_return_false_When_maxComponentCount_is_already_setted()
+        {
+            using (World world = new World(0))
+            {
+                Check.That(world.SetMaximumComponentCount<bool>(0)).IsTrue();
+                Check.That(world.SetMaximumComponentCount<bool>(42)).IsFalse();
             }
         }
 

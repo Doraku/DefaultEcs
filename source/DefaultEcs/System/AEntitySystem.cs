@@ -166,6 +166,8 @@ namespace DefaultEcs.System
         #endregion
 
         #region ASystem
+        
+        internal sealed override bool HasItems => _set.Count > 0;
 
         internal sealed override void Update(int index, int maxIndex)
         {
