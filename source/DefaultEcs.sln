@@ -10,9 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EEC6BAC3-A699-42F0-BED3-43985B10DE44}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
-		..\DefaultEcsLogo.png = ..\DefaultEcsLogo.png
 		..\LICENSE.md = ..\LICENSE.md
-		..\logo.png = ..\logo.png
 		..\Packaging.bat = ..\Packaging.bat
 		..\README.md = ..\README.md
 	EndProjectSection

@@ -1,12 +1,10 @@
 ﻿/source/*/obj
+/source/*/bin
 /source/Sample/*/bin
 /source/Sample/*/obj
-/source/*/bin
 /source/.vs
 /source/*/*.vspscc
 /source/*/*.vssscc
 /source/*/*.user
-*.nupkg
-*.xml
-/source/DefaultEcs.Benchmark/BenchmarkDotNet.Artifacts
+/package
 /source/Sample/resource

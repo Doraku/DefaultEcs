@@ -1,4 +1,4 @@
-![DefaultEcs](https://github.com/Doraku/DefaultEcs/blob/master/DefaultEcsLogo.png)
+![DefaultEcs](https://github.com/Doraku/DefaultEcs/raw/master/image/DefaultEcsLogo.png)
 DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
 [![NuGet](https://img.shields.io/badge/nuget-v0.7.0-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
@@ -273,6 +273,32 @@ world.Subscribe<bool>(On);
 
 world.Publish(true);
 ```
+
+It is also possible to subscribe to multiple method of an instance by using the SubscribeAttribute:
+```C#
+public class Dummy
+{
+    [Subscribe]
+    void On(in bool message) { }
+	
+    [Subscribe]
+    void On(in int message) { }
+	
+    void On(in string message) { }
+}
+
+Dummy dummy = new Dummy();
+
+// this will subscribe the decorated methods only
+world.Subscribe(dummy);
+
+// the dummy bool method will be called
+world.Publish(true);
+
+// but not the string one as it dit not have the SubscribeAttribute
+world.Publish(string.Empty);
+```
+
 Note that the Subscribe method return an IDisposable object acting as a subscription. To unsubscribe, simply dispose this object.
 
 <a name='Overview_Serialization'></a>
@@ -306,7 +332,7 @@ using (Stream stream = File.OpenRead(filePath))
 ### TextSerializer
 The purpose of this serializer is to provide a readable save format which can be edited by hand.
 ```
-// this must be the first line of the file and will be used to create the World
+// declare the maximum number of entity in the World, this must be before any Entity or MaxComponentCount line
 MaxEntityCount 42
 
 // this line is used to define an alias for a type used as component inside the world and must be declared before being used
@@ -315,7 +341,7 @@ ComponentType Int32 System.Int32, System.Private.CoreLib
 // this line is used to set the maxComponentCount for the given type, in case it is different from the maxEntityCount
 MaxComponentCount Int32 13
 
-// this line create an entity with the id "MyEntity"
+// this line create an entity with the id "MyEntity", this must be before any Component, ComponentSameAs or ParentChild line
 Entity MyEntity
 
 // this line set the component of the type with the alias Int32 on the previously created Entity to the value 13

@@ -10,8 +10,10 @@
     <Configurations>Debug;Release</Configurations>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
 
-    <DocumentationFile Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">bin\DefaultEcs.xml</DocumentationFile>
+  <PropertyGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
+    <DocumentationFile>..\..\documentation\DefaultEcs.xml</DocumentationFile>
   </PropertyGroup>
  
   <PropertyGroup Label="Debug" Condition="'$(Configuration)'=='Debug'">
@@ -19,9 +21,6 @@
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Label="netstandard1.1 Reference" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Label="Documentation" Include="Vsxmd" Version="1.3.3" PrivateAssets="All" />
-  </ItemGroup>
   <ItemGroup Label="Reference">
     <PackageReference Include="System.Memory" Version="4.5.1" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
@@ -31,7 +30,7 @@
     <Authors>Paillat Laszlo</Authors>
     <PackageId>DefaultEcs</PackageId>
     <Description>DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.</Description>
-    <PackageIconUrl>https://github.com/Doraku/DefaultEcs/raw/master/logo.png</PackageIconUrl>
+    <PackageIconUrl>https://github.com/Doraku/DefaultEcs/raw/master/image/logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Doraku/DefaultEcs/blob/master/LICENSE.md</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/Doraku/DefaultEcs.git</RepositoryUrl>
