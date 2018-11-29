@@ -9,8 +9,8 @@ namespace DefaultEcs.Technical.System
         #region Fields
 
         private readonly int _count;
-        private readonly ManualResetEvent _endHandle;
-        private readonly ManualResetEvent _startHandle;
+        private readonly ManualResetEventSlim _endHandle;
+        private readonly ManualResetEventSlim _startHandle;
 
         private bool _allStarted;
         private int _runningCount;
@@ -22,8 +22,8 @@ namespace DefaultEcs.Technical.System
         public WorkerBarrier(int workerCount)
         {
             _count = workerCount;
-            _endHandle = new ManualResetEvent(false);
-            _startHandle = new ManualResetEvent(false);
+            _endHandle = new ManualResetEventSlim(false);
+            _startHandle = new ManualResetEventSlim(false);
 
             _allStarted = false;
             _runningCount = 0;
@@ -43,7 +43,7 @@ namespace DefaultEcs.Technical.System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Start()
         {
-            _startHandle.WaitOne();
+            _startHandle.Wait();
 
             if (Interlocked.Increment(ref _runningCount) == _count)
             {
@@ -67,7 +67,7 @@ namespace DefaultEcs.Technical.System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WaitForWorkers()
         {
-            _endHandle.WaitOne();
+            _endHandle.Wait();
             _endHandle.Reset();
         }
 
