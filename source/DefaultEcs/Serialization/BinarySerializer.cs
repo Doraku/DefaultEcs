@@ -2,6 +2,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using DefaultEcs.Technical.Helper;
+using DefaultEcs.Technical.Serialization;
 using DefaultEcs.Technical.Serialization.BinarySerializer;
 
 namespace DefaultEcs.Serialization
@@ -12,171 +14,6 @@ namespace DefaultEcs.Serialization
     public sealed unsafe class BinarySerializer : ISerializer
     {
         #region Types
-
-        private sealed class ComponentTypeWriter : IComponentTypeReader
-        {
-            #region Fields
-
-            private readonly Stream _stream;
-            private readonly byte[] _buffer;
-            private readonly byte* _bufferP;
-            private readonly Dictionary<Type, ushort> _types;
-            private readonly int _maxEntityCount;
-
-            private ushort _currentType;
-
-            #endregion
-
-            #region Initialisation
-
-            public ComponentTypeWriter(Stream stream, byte[] buffer, byte* bufferP, Dictionary<Type, ushort> types, int maxEntityCount)
-            {
-                _stream = stream;
-                _buffer = buffer;
-                _bufferP = bufferP;
-                _types = types;
-                _maxEntityCount = maxEntityCount;
-            }
-
-            #endregion
-
-            #region IComponentTypeReader
-
-            public void OnRead<T>(int maxComponentCount)
-            {
-                _types.Add(typeof(T), _currentType);
-
-                *_bufferP = _componentType;
-                ushort* entryType = (ushort*)(_bufferP + 1);
-                *(entryType++) = _currentType;
-                _stream.Write(_buffer, 0, sizeof(byte) + sizeof(ushort));
-                Converter<string>.Write(typeof(T).AssemblyQualifiedName, _stream, _buffer, _bufferP);
-
-                if (maxComponentCount != _maxEntityCount)
-                {
-                    *_bufferP = _maxComponentCount;
-                    entryType = (ushort*)(_bufferP + 1);
-                    *(entryType++) = _currentType;
-                    *(int*)entryType = maxComponentCount;
-
-                    _stream.Write(_buffer, 0, sizeof(byte) + sizeof(ushort) + sizeof(int));
-                }
-
-                ++_currentType;
-            }
-
-            #endregion
-        }
-
-        private sealed class ComponentWriter : IComponentReader
-        {
-            #region Fields
-
-            private readonly Stream _stream;
-            private readonly byte[] _buffer;
-            private readonly byte* _bufferP;
-            private readonly Dictionary<Type, ushort> _types;
-            private readonly Dictionary<Entity, int> _entities;
-            private readonly Dictionary<Tuple<Entity, Type>, int> _components;
-
-            private ushort _currentType;
-            private int _entityCount;
-            private Entity _currentEntity;
-
-            #endregion
-
-            #region Initialisation
-
-            public ComponentWriter(Stream stream, byte[] buffer, byte* bufferP, Dictionary<Type, ushort> types)
-            {
-                _stream = stream;
-                _buffer = buffer;
-                _bufferP = bufferP;
-                _types = types;
-                _entities = new Dictionary<Entity, int>();
-                _components = new Dictionary<Tuple<Entity, Type>, int>();
-
-                _currentType = (ushort)types.Count;
-                _entityCount = -1;
-            }
-
-            #endregion
-
-            #region Methods
-
-            public void WriteEntity(in Entity entity)
-            {
-                *_bufferP = _entity;
-                ++_entityCount;
-
-                _stream.Write(_buffer, 0, sizeof(byte));
-
-                _entities.Add(entity, _entityCount);
-                _currentEntity = entity;
-
-                entity.ReadAllComponents(this);
-            }
-
-            public void WriteChildren()
-            {
-                foreach (KeyValuePair<Entity, int> pair in _entities)
-                {
-                    *_bufferP = _parentChild;
-                    int* ids = (int*)(_bufferP + 1);
-                    *ids++ = pair.Value;
-
-                    foreach (Entity child in pair.Key.GetChildren())
-                    {
-                        *ids = _entities[child];
-
-                        _stream.Write(_buffer, 0, sizeof(byte) + sizeof(int) * 2);
-                    }
-                }
-            }
-
-            #endregion
-
-            #region IComponentReader
-
-            public void OnRead<T>(ref T component, in Entity componentOwner)
-            {
-                if (!_types.TryGetValue(typeof(T), out ushort currentType))
-                {
-                    _types.Add(typeof(T), _currentType);
-
-                    *_bufferP = _componentType;
-                    ushort* entryType = (ushort*)(_bufferP + 1);
-                    *(entryType++) = _currentType;
-                    _stream.Write(_buffer, 0, sizeof(byte) + sizeof(ushort));
-                    Converter<string>.Write(typeof(T).AssemblyQualifiedName, _stream, _buffer, _bufferP);
-
-                    ++_currentType;
-                }
-
-                Tuple<Entity, Type> componentKey = Tuple.Create(componentOwner, typeof(T));
-                if (_components.TryGetValue(componentKey, out int key))
-                {
-                    *_bufferP = _componentSameAs;
-                    ushort* typeId = (ushort*)(_bufferP + 1);
-                    *typeId++ = _types[typeof(T)];
-                    *(int*)typeId = key;
-
-                    _stream.Write(_buffer, 0, sizeof(byte) + sizeof(ushort) + sizeof(int));
-                }
-                else
-                {
-                    _components.Add(componentKey, _entityCount);
-                    *_bufferP = _component;
-                    *(ushort*)(_bufferP + 1) = _types[typeof(T)];
-
-                    _stream.Write(_buffer, 0, sizeof(byte) + sizeof(ushort));
-
-                    Converter<T>.Write(component, _stream, _buffer, _bufferP);
-                }
-            }
-
-            #endregion
-        }
 
         private interface IOperation
         {
@@ -212,30 +49,11 @@ namespace DefaultEcs.Serialization
 
         #region Fields
 
-        private const byte _componentType = 1;
-        private const byte _maxComponentCount = 2;
-        private const byte _entity = 3;
-        private const byte _component = 4;
-        private const byte _componentSameAs = 5;
-        private const byte _parentChild = 6;
-
         private static readonly ConcurrentDictionary<Type, IOperation> _operations = new ConcurrentDictionary<Type, IOperation>();
 
         #endregion
 
         #region Methods
-
-        private static World CreateWorld(Stream stream, byte[] buffer, byte* bufferP)
-        {
-            World world = null;
-
-            if (stream.Read(buffer, 0, sizeof(int)) == sizeof(int))
-            {
-                world = new World(*(int*)bufferP);
-            }
-
-            return world;
-        }
 
         private static void CreateOperation(Stream stream, byte[] buffer, byte* bufferP, Dictionary<ushort, IOperation> operations)
         {
@@ -356,27 +174,18 @@ namespace DefaultEcs.Serialization
             world = world ?? throw new ArgumentNullException(nameof(world));
 
             using (stream)
-            using (EntitySet set = world.GetEntities().Build())
             {
-                ReadOnlySpan<Entity> entities = set.GetEntities();
                 byte[] buffer = new byte[1024];
                 fixed (byte* bufferP = buffer)
                 {
                     *(int*)bufferP = world.MaxEntityCount;
-                    *(((int*)bufferP) + 1) = entities.Length;
-                    stream.Write(buffer, 0, sizeof(int) * 2);
+                    stream.Write(buffer, 0, sizeof(int));
 
                     Dictionary<Type, ushort> types = new Dictionary<Type, ushort>();
 
                     world.ReadAllComponentTypes(new ComponentTypeWriter(stream, buffer, bufferP, types, world.MaxEntityCount));
 
-                    ComponentWriter componentWriter = new ComponentWriter(stream, buffer, bufferP, types);
-                    for (int i = 0; i < entities.Length; i++)
-                    {
-                        componentWriter.WriteEntity(entities[i]);
-                    }
-
-                    componentWriter.WriteChildren();
+                    new EntityWriter(stream, buffer, bufferP, types).Write(world.GetAllEntities());
                 }
             }
         }
@@ -396,45 +205,46 @@ namespace DefaultEcs.Serialization
                 byte[] buffer = new byte[1024];
                 fixed (byte* bufferP = buffer)
                 {
-                    World world = CreateWorld(stream, buffer, bufferP) ?? throw new ArgumentException("Could not create a World instance from the provided Stream");
-                    if (stream.Read(buffer, 0, sizeof(int)) == sizeof(int))
+                    World world = stream.Read(buffer, 0, sizeof(int)) == sizeof(int)
+                        ? new World(*(int*)bufferP)
+                        : throw new ArgumentException("Could not create a World instance from the provided Stream");
+
+                    Entity[] entities = new Entity[128];
+                    Entity currentEntity = default;
+                    int currentId = 0;
+
+                    Dictionary<ushort, IOperation> operations = new Dictionary<ushort, IOperation>();
+
+                    int entryType;
+                    while ((entryType = stream.ReadByte()) >= 0)
                     {
-                        Entity[] entities = new Entity[*(int*)bufferP];
-                        Entity currentEntity = default;
-                        int currentId = 0;
-
-                        Dictionary<ushort, IOperation> operations = new Dictionary<ushort, IOperation>();
-
-                        int entryType;
-                        while ((entryType = stream.ReadByte()) >= 0)
+                        switch ((EntryType)entryType)
                         {
-                            switch (entryType)
-                            {
-                                case _componentType:
-                                    CreateOperation(stream, buffer, bufferP, operations);
-                                    break;
+                            case EntryType.ComponentType:
+                                CreateOperation(stream, buffer, bufferP, operations);
+                                break;
 
-                                case _maxComponentCount:
-                                    SetMaxComponentCount(world, stream, buffer, bufferP, operations);
-                                    break;
+                            case EntryType.MaxComponentCount:
+                                SetMaxComponentCount(world, stream, buffer, bufferP, operations);
+                                break;
 
-                                case _entity:
-                                    currentEntity = world.CreateEntity();
-                                    entities[currentId++] = currentEntity;
-                                    break;
+                            case EntryType.Entity:
+                                currentEntity = world.CreateEntity();
+                                ArrayExtension.EnsureLength(ref entities, currentId, world.MaxEntityCount);
+                                entities[currentId++] = currentEntity;
+                                break;
 
-                                case _component:
-                                    SetComponent(currentEntity, stream, buffer, bufferP, operations);
-                                    break;
+                            case EntryType.Component:
+                                SetComponent(currentEntity, stream, buffer, bufferP, operations);
+                                break;
 
-                                case _componentSameAs:
-                                    SetSameAsComponent(currentEntity, stream, buffer, bufferP, entities, operations);
-                                    break;
+                            case EntryType.ComponentSameAs:
+                                SetSameAsComponent(currentEntity, stream, buffer, bufferP, entities, operations);
+                                break;
 
-                                case _parentChild:
-                                    SetAsParentOf(stream, buffer, (int*)bufferP, entities);
-                                    break;
-                            }
+                            case EntryType.ParentChild:
+                                SetAsParentOf(stream, buffer, (int*)bufferP, entities);
+                                break;
                         }
                     }
 
@@ -458,13 +268,7 @@ namespace DefaultEcs.Serialization
                 byte[] buffer = new byte[1024];
                 fixed (byte* bufferP = buffer)
                 {
-                    ComponentWriter componentWriter = new ComponentWriter(stream, buffer, bufferP, new Dictionary<Type, ushort>());
-                    foreach (Entity entity in entities)
-                    {
-                        componentWriter.WriteEntity(entity);
-                    }
-
-                    componentWriter.WriteChildren();
+                    new EntityWriter(stream, buffer, bufferP, new Dictionary<Type, ushort>()).Write(entities);
                 }
             }
         }
@@ -493,26 +297,26 @@ namespace DefaultEcs.Serialization
                     int entryType;
                     while ((entryType = stream.ReadByte()) >= 0)
                     {
-                        switch (entryType)
+                        switch ((EntryType)entryType)
                         {
-                            case _componentType:
+                            case EntryType.ComponentType:
                                 CreateOperation(stream, buffer, bufferP, operations);
                                 break;
 
-                            case _entity:
+                            case EntryType.Entity:
                                 currentEntity = world.CreateEntity();
                                 entities.Add(currentEntity);
                                 break;
 
-                            case _component:
+                            case EntryType.Component:
                                 SetComponent(currentEntity, stream, buffer, bufferP, operations);
                                 break;
 
-                            case _componentSameAs:
+                            case EntryType.ComponentSameAs:
                                 SetSameAsComponent(currentEntity, stream, buffer, bufferP, entities, operations);
                                 break;
 
-                            case _parentChild:
+                            case EntryType.ParentChild:
                                 SetAsParentOf(stream, buffer, (int*)bufferP, entities);
                                 break;
                         }

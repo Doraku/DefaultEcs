@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Text;
+using DefaultEcs.Technical.Serialization;
 using DefaultEcs.Technical.Serialization.TextSerializer;
 
 namespace DefaultEcs.Serialization
@@ -14,141 +15,6 @@ namespace DefaultEcs.Serialization
     public sealed class TextSerializer : ISerializer
     {
         #region Types
-
-        private sealed class ComponentTypeWriter : IComponentTypeReader
-        {
-            #region Fields
-
-            private readonly StreamWriter _writer;
-            private readonly Dictionary<Type, string> _types;
-            private readonly int _maxEntityCount;
-
-            #endregion
-
-            #region Initialisation
-
-            public ComponentTypeWriter(StreamWriter writer, Dictionary<Type, string> types, int maxEntityCount)
-            {
-                _writer = writer;
-                _types = types;
-                _maxEntityCount = maxEntityCount;
-            }
-
-            #endregion
-
-            #region IComponentTypeReader
-
-            public void OnRead<T>(int maxComponentCount)
-            {
-                string shortName = typeof(T).Name;
-
-                int repeatCount = 1;
-                while (_types.ContainsValue(shortName))
-                {
-                    shortName = $"{typeof(T).Name}_{repeatCount}";
-                }
-
-                _types.Add(typeof(T), shortName);
-
-                _writer.WriteLine($"{_componentType} {shortName} {typeof(T).FullName}, {typeof(T).GetTypeInfo().Assembly.GetName().Name}");
-                if (maxComponentCount != _maxEntityCount)
-                {
-                    _writer.WriteLine($"{_maxComponentCount} {shortName} {maxComponentCount}");
-                }
-            }
-
-            #endregion
-        }
-
-        private sealed class ComponentWriter : IComponentReader
-        {
-            #region Fields
-
-            private readonly StreamWriter _writer;
-            private readonly Dictionary<Type, string> _types;
-            private readonly Dictionary<Entity, int> _entities;
-            private readonly Dictionary<Tuple<Entity, Type>, int> _components;
-
-            private int _entityCount;
-            private Entity _currentEntity;
-
-            #endregion
-
-            #region Initialisation
-
-            public ComponentWriter(StreamWriter writer, Dictionary<Type, string> types)
-            {
-                _writer = writer;
-                _types = types;
-                _entities = new Dictionary<Entity, int>();
-                _components = new Dictionary<Tuple<Entity, Type>, int>();
-            }
-
-            #endregion
-
-            #region Methods
-
-            public void WriteEntity(in Entity entity)
-            {
-                _entities.Add(entity, ++_entityCount);
-                _currentEntity = entity;
-
-                _writer.WriteLine();
-                _writer.WriteLine($"{_entity} {_entityCount}");
-
-                entity.ReadAllComponents(this);
-            }
-
-            public void WriteChildren()
-            {
-                foreach (KeyValuePair<Entity, int> pair in _entities)
-                {
-                    foreach (Entity child in pair.Key.GetChildren())
-                    {
-                        if (_entities.TryGetValue(child, out int childId))
-                        {
-                            _writer.WriteLine($"{_parentChild} {pair.Value} {childId}");
-                        }
-                    }
-                }
-            }
-
-            #endregion
-
-            #region IComponentReader
-
-            public void OnRead<T>(ref T component, in Entity componentOwner)
-            {
-                if (!_types.TryGetValue(typeof(T), out string typeName))
-                {
-                    typeName = typeof(T).Name;
-
-                    int repeatCount = 1;
-                    while (_types.ContainsValue(typeName))
-                    {
-                        typeName = $"{typeof(T).Name}_{repeatCount}";
-                    }
-
-                    _types.Add(typeof(T), typeName);
-
-                    _writer.WriteLine($"{_componentType} {typeName} {typeof(T).FullName}, {typeof(T).GetTypeInfo().Assembly.GetName().Name}");
-                }
-
-                Tuple<Entity, Type> componentKey = Tuple.Create(componentOwner, typeof(T));
-                if (_components.TryGetValue(componentKey, out int key))
-                {
-                    _writer.WriteLine($"{_componentSameAs} {_types[typeof(T)]} {key}");
-                }
-                else
-                {
-                    _components.Add(componentKey, _entityCount);
-                    _writer.Write($"{_component} {_types[typeof(T)]} ");
-                    Converter<T>.Write(component, _writer, 0);
-                }
-            }
-
-            #endregion
-        }
 
         private interface IOperation
         {
@@ -184,14 +50,6 @@ namespace DefaultEcs.Serialization
 
         #region Fields
 
-        private const string _maxEntityCount = "MaxEntityCount";
-        private const string _componentType = "ComponentType";
-        private const string _maxComponentCount = "MaxComponentCount";
-        private const string _entity = "Entity";
-        private const string _component = "Component";
-        private const string _componentSameAs = "ComponentSameAs";
-        private const string _parentChild = "ParentChild";
-
         private static readonly char[] _split = new[] { ' ', '\t' };
         private static readonly ConcurrentDictionary<Type, IOperation> _operations = new ConcurrentDictionary<Type, IOperation>();
 
@@ -207,25 +65,6 @@ namespace DefaultEcs.Serialization
             Type type = Type.GetType(componentTypeEntry[1], false) ?? throw new ArgumentException($"Unable to get type from '{componentTypeEntry[1]}'");
 
             operations.Add(componentTypeEntry[0], _operations.GetOrAdd(type, CreateOperation));
-        }
-
-        private static void SetMaxComponentCount(World world, string entry, Dictionary<string, IOperation> operations)
-        {
-            string[] maxComponentCountEntry = entry.Split(_split, StringSplitOptions.RemoveEmptyEntries);
-            if (maxComponentCountEntry.Length < 2)
-            {
-                throw new ArgumentException($"Unable to get {_maxComponentCount} information from '{entry}'");
-            }
-            if (!operations.TryGetValue(maxComponentCountEntry[0], out IOperation operation))
-            {
-                throw new ArgumentException($"Unknown component type used '{maxComponentCountEntry[0]}'");
-            }
-            if (!int.TryParse(maxComponentCountEntry[1], out int maxComponentCount))
-            {
-                throw new ArgumentException($"Unable to convert '{maxComponentCountEntry[1]}' to a number");
-            }
-
-            operation.SetMaximumComponentCount(world, maxComponentCount);
         }
 
         private static void SetComponent(StreamReader reader, in Entity entity, string entry, Dictionary<string, IOperation> operations)
@@ -344,21 +183,14 @@ namespace DefaultEcs.Serialization
             {
                 Dictionary<Type, string> types = new Dictionary<Type, string>();
 
-                writer.WriteLine($"{_maxEntityCount} {world.MaxEntityCount}");
+                if (world.MaxEntityCount != int.MaxValue)
+                {
+                    writer.WriteLine($"{nameof(EntryType.MaxEntityCount)} {world.MaxEntityCount}");
+                }
+
                 world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxEntityCount));
 
-                ComponentWriter componentWriter = new ComponentWriter(writer, types);
-
-                using (EntitySet set = world.GetEntities().Build())
-                {
-                    ReadOnlySpan<Entity> entities = set.GetEntities();
-                    for (int i = 0; i < entities.Length; i++)
-                    {
-                        componentWriter.WriteEntity(entities[i]);
-                    }
-
-                    componentWriter.WriteChildren();
-                }
+                new EntityWriter(writer, types).Write(world.GetAllEntities());
             }
         }
 
@@ -372,21 +204,21 @@ namespace DefaultEcs.Serialization
         {
             stream = stream ?? throw new ArgumentNullException(nameof(stream));
 
+            World world = null;
+            Entity currentEntity = default;
+            Dictionary<string, Entity> entities = new Dictionary<string, Entity>();
+            Dictionary<string, IOperation> operations = new Dictionary<string, IOperation>();
+
             using (StreamReader reader = new StreamReader(stream))
             {
-                World world = null;
-                Entity currentEntity = default;
-                Dictionary<string, Entity> entities = new Dictionary<string, Entity>();
-                Dictionary<string, IOperation> operations = new Dictionary<string, IOperation>();
-
-                do
+                while (!reader.EndOfStream)
                 {
                     string[] lineParts = reader.ReadLine()?.Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
 
                     if (lineParts?.Length > 0)
                     {
                         string entry = lineParts[0];
-                        if (_entity.Equals(entry))
+                        if (nameof(EntryType.Entity).Equals(entry))
                         {
                             if (world == null)
                             {
@@ -401,51 +233,73 @@ namespace DefaultEcs.Serialization
                         }
                         else if (lineParts.Length > 1)
                         {
-                            if (_maxEntityCount.Equals(entry))
+                            if (nameof(EntryType.MaxEntityCount).Equals(entry))
                             {
-                                if (world != null)
-                                {
-                                    throw new ArgumentException("Encoutered Entity or MaxComponentCount line before MaxEntityCount");
-                                }
-
-                                if (!int.TryParse(lineParts[1], out int maxEntityCount))
-                                {
-                                    throw new ArgumentException($"Unable to convert '{lineParts[1]}' to a number");
-                                }
-
-                                world = new World(maxEntityCount);
+                                CreateWorld(lineParts[1]);
                             }
-                            else if (_componentType.Equals(entry))
+                            else if (nameof(EntryType.ComponentType).Equals(entry))
                             {
                                 CreateOperation(lineParts[1], operations);
                             }
-                            else if (_maxComponentCount.Equals(entry))
+                            else if (nameof(EntryType.MaxComponentCount).Equals(entry))
                             {
-                                if (world == null)
-                                {
-                                    world = new World();
-                                }
-
-                                SetMaxComponentCount(world, lineParts[1], operations);
+                                SetMaxComponentCount(lineParts[1]);
                             }
-                            else if (_component.Equals(entry))
+                            else if (nameof(EntryType.Component).Equals(entry))
                             {
                                 SetComponent(reader, currentEntity, lineParts[1], operations);
                             }
-                            else if (_componentSameAs.Equals(entry))
+                            else if (nameof(EntryType.ComponentSameAs).Equals(entry))
                             {
                                 SetSameAsComponent(currentEntity, lineParts[1], entities, operations);
                             }
-                            else if (_parentChild.Equals(entry))
+                            else if (nameof(EntryType.ParentChild).Equals(entry))
                             {
                                 SetAsParentOf(lineParts[1], entities);
                             }
                         }
                     }
                 }
-                while (!reader.EndOfStream);
 
                 return world;
+            }
+
+            void CreateWorld(string entry)
+            {
+                if (world != null)
+                {
+                    throw new ArgumentException("Encoutered MaxEntityCount, MaxComponentCount or Entity line before current MaxEntityCount");
+                }
+                if (!int.TryParse(entry, NumberStyles.Any, CultureInfo.InvariantCulture, out int maxEntityCount))
+                {
+                    throw new ArgumentException($"Unable to convert '{entry}' to a number");
+                }
+
+                world = new World(maxEntityCount);
+            }
+
+            void SetMaxComponentCount(string entry)
+            {
+                string[] maxComponentCountEntry = entry.Split(_split, StringSplitOptions.RemoveEmptyEntries);
+                if (maxComponentCountEntry.Length < 2)
+                {
+                    throw new ArgumentException($"Unable to get {nameof(EntryType.MaxComponentCount)} informations from '{entry}'");
+                }
+                if (!operations.TryGetValue(maxComponentCountEntry[0], out IOperation operation))
+                {
+                    throw new ArgumentException($"Unknown component type used '{maxComponentCountEntry[0]}'");
+                }
+                if (!int.TryParse(maxComponentCountEntry[1], NumberStyles.Any, CultureInfo.InvariantCulture, out int maxComponentCount))
+                {
+                    throw new ArgumentException($"Unable to convert '{maxComponentCountEntry[1]}' to a number");
+                }
+
+                if (world == null)
+                {
+                    world = new World();
+                }
+
+                operation.SetMaximumComponentCount(world, maxComponentCount);
             }
         }
 
@@ -461,14 +315,7 @@ namespace DefaultEcs.Serialization
 
             using (StreamWriter writer = new StreamWriter(stream))
             {
-                ComponentWriter entityWriter = new ComponentWriter(writer, new Dictionary<Type, string>());
-
-                foreach (Entity entity in entities)
-                {
-                    entityWriter.WriteEntity(entity);
-                }
-
-                entityWriter.WriteChildren();
+                new EntityWriter(writer, new Dictionary<Type, string>()).Write(entities);
             }
         }
 
@@ -486,46 +333,48 @@ namespace DefaultEcs.Serialization
             using (StreamReader reader = new StreamReader(stream))
             {
                 Entity currentEntity = default;
+                List<Entity> allEntities = new List<Entity>();
                 Dictionary<string, Entity> entities = new Dictionary<string, Entity>();
                 Dictionary<string, IOperation> operations = new Dictionary<string, IOperation>();
 
-                int unnamedCount = 0;
-
-                do
+                while (!reader.EndOfStream)
                 {
                     string[] lineParts = reader.ReadLine()?.Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
                     if (lineParts?.Length > 0)
                     {
                         string entry = lineParts[0];
-                        if (_entity.Equals(entry))
+                        if (nameof(EntryType.Entity).Equals(entry))
                         {
                             currentEntity = world.CreateEntity();
-                            entities.Add(lineParts.Length > 1 ? lineParts[1] : $" {++unnamedCount}", currentEntity);
+                            allEntities.Add(currentEntity);
+                            if (lineParts.Length > 1)
+                            {
+                                entities.Add(lineParts[1], currentEntity);
+                            }
                         }
                         else if (lineParts.Length > 1)
                         {
-                            if (_componentType.Equals(entry))
+                            if (nameof(EntryType.ComponentType).Equals(entry))
                             {
                                 CreateOperation(lineParts[1], operations);
                             }
-                            else if (_component.Equals(entry))
+                            else if (nameof(EntryType.Component).Equals(entry))
                             {
                                 SetComponent(reader, currentEntity, lineParts[1], operations);
                             }
-                            else if (_componentSameAs.Equals(entry))
+                            else if (nameof(EntryType.ComponentSameAs).Equals(entry))
                             {
                                 SetSameAsComponent(currentEntity, lineParts[1], entities, operations);
                             }
-                            else if (_parentChild.Equals(entry))
+                            else if (nameof(EntryType.ParentChild).Equals(entry))
                             {
                                 SetAsParentOf(lineParts[1], entities);
                             }
                         }
                     }
                 }
-                while (!reader.EndOfStream);
 
-                return entities.Values;
+                return allEntities;
             }
         }
 
