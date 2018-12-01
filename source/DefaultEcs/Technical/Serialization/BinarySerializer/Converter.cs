@@ -213,6 +213,10 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                     }
                 }
             }
+            else
+            {
+                throw new Exception($"Could not deserialize type {typeof(T[]).FullName}");
+            }
 
             return values;
         }
@@ -232,7 +236,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             {
                 stream.WriteByte(2);
                 string typeName = value.GetType().AssemblyQualifiedName;
-                Converter<string>.Write(typeName, stream, buffer, bufferP);
+                StringConverter.Write(typeName, stream, buffer, bufferP);
                 Converter.GetWriteAction(typeName)(value, stream, buffer, bufferP);
             }
         }
@@ -248,7 +252,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                     return _readAction(stream, buffer, bufferP);
 
                 default:
-                    return Converter.GetReadAction<T>(Converter<string>.Read(stream, buffer, bufferP))(stream, buffer, bufferP);
+                    return Converter.GetReadAction<T>(StringConverter.Read(stream, buffer, bufferP))(stream, buffer, bufferP);
             }
         }
 

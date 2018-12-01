@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Serialization;
 using DefaultEcs.Technical.Serialization.BinarySerializer;
 
@@ -28,17 +27,7 @@ namespace DefaultEcs.Serialization
 
             public void SetMaximumComponentCount(World world, int maxComponentCount) => world.SetMaximumComponentCount<T>(maxComponentCount);
 
-            public void SetComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP)
-            {
-                try
-                {
-                    entity.Set(Converter<T>.Read(stream, buffer, bufferP));
-                }
-                catch (Exception exception)
-                {
-                    throw new ArgumentException("Error while parsing", exception);
-                }
-            }
+            public void SetComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP) => entity.Set(Converter<T>.Read(stream, buffer, bufferP));
 
             public void SetSameAsComponent(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
 
@@ -55,71 +44,80 @@ namespace DefaultEcs.Serialization
 
         #region Methods
 
-        private static void CreateOperation(Stream stream, byte[] buffer, byte* bufferP, Dictionary<ushort, IOperation> operations)
+        private static ICollection<Entity> Deserialize(Stream stream, ref World world)
         {
-            if (stream.Read(buffer, 0, sizeof(ushort)) == sizeof(ushort))
+            List<Entity> entities = new List<Entity>(128);
+
+            try
             {
-                ushort typeId = *(ushort*)bufferP;
-
-                operations.Add(typeId, _operations.GetOrAdd(Type.GetType(Converter<string>.Read(stream, buffer, bufferP), true), t => (IOperation)Activator.CreateInstance(typeof(Operation<>).MakeGenericType(t))));
-            }
-        }
-
-        private static void SetMaxComponentCount(World world, Stream stream, byte[] buffer, byte* bufferP, Dictionary<ushort, IOperation> operations)
-        {
-            if (stream.Read(buffer, 0, sizeof(ushort) + sizeof(int)) == sizeof(ushort) + sizeof(int))
-            {
-                ushort typeId = *(ushort*)bufferP;
-                int maxComponentCount = *(int*)((ushort*)bufferP + 1);
-
-                if (!operations.TryGetValue(typeId, out IOperation operation))
+                using (stream)
                 {
-                    throw new ArgumentException($"Unknown component type used");
+                    byte[] buffer = new byte[1024];
+                    fixed (byte* bufferP = buffer)
+                    {
+                        if (world == null)
+                        {
+                            world = stream.Read(buffer, 0, sizeof(int)) == sizeof(int)
+                                ? new World(*(int*)bufferP)
+                                : throw new ArgumentException("Could not create a World instance from the provided Stream");
+                        }
+
+                        Entity currentEntity = default;
+                        Dictionary<ushort, IOperation> operations = new Dictionary<ushort, IOperation>();
+
+                        int entryType;
+                        while ((entryType = stream.ReadByte()) >= 0)
+                        {
+                            switch ((EntryType)entryType)
+                            {
+                                case EntryType.ComponentType:
+                                    stream.Read(buffer, 0, sizeof(ushort));
+                                    operations.Add(
+                                        *(ushort*)bufferP,
+                                        _operations.GetOrAdd(
+                                            Type.GetType(Converter<string>.Read(stream, buffer, bufferP), true),
+                                            t => (IOperation)Activator.CreateInstance(typeof(Operation<>).MakeGenericType(t))));
+                                    break;
+
+                                case EntryType.MaxComponentCount:
+                                    stream.Read(buffer, 0, sizeof(ushort) + sizeof(int));
+                                    operations[*(ushort*)bufferP].SetMaximumComponentCount(world, *(int*)((ushort*)bufferP + 1));
+                                    break;
+
+                                case EntryType.Entity:
+                                    currentEntity = world.CreateEntity();
+                                    entities.Add(currentEntity);
+                                    break;
+
+                                case EntryType.Component:
+                                    stream.Read(buffer, 0, sizeof(ushort));
+                                    operations[*(ushort*)bufferP].SetComponent(currentEntity, stream, buffer, bufferP);
+                                    break;
+
+                                case EntryType.ComponentSameAs:
+                                    stream.Read(buffer, 0, sizeof(ushort) + sizeof(int));
+                                    operations[*(ushort*)bufferP].SetSameAsComponent(currentEntity, entities[*(int*)((ushort*)bufferP + 1)]);
+                                    break;
+
+                                case EntryType.ParentChild:
+                                    stream.Read(buffer, 0, sizeof(int) * 2);
+                                    entities[*(int*)bufferP].SetAsParentOf(entities[*((int*)bufferP + 1)]);
+                                    break;
+                            }
+                        }
+
+                        return entities;
+                    }
+                }
+            }
+            catch
+            {
+                foreach(Entity entity in entities)
+                {
+                    entity.Dispose();
                 }
 
-                operation.SetMaximumComponentCount(world, maxComponentCount);
-            }
-        }
-
-        private static void SetComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP, Dictionary<ushort, IOperation> operations)
-        {
-            if (entity.Equals(default))
-            {
-                throw new ArgumentException($"Encountered a component before creation of an Entity");
-            }
-            if (stream.Read(buffer, 0, sizeof(ushort)) == sizeof(ushort))
-            {
-                if (!operations.TryGetValue(*(ushort*)bufferP, out IOperation operation))
-                {
-                    throw new ArgumentException($"Unknown component type used");
-                }
-
-                operation.SetComponent(entity, stream, buffer, bufferP);
-            }
-        }
-
-        private static void SetSameAsComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP, IList<Entity> entities, Dictionary<ushort, IOperation> operations)
-        {
-            if (entity.Equals(default))
-            {
-                throw new ArgumentException($"Encountered a component before creation of an Entity");
-            }
-            if (stream.Read(buffer, 0, sizeof(ushort) + sizeof(int)) == sizeof(ushort) + sizeof(int))
-            {
-                if (!operations.TryGetValue(*(ushort*)bufferP, out IOperation operation))
-                {
-                    throw new ArgumentException($"Unknown component type used");
-                }
-
-                operation.SetSameAsComponent(entity, entities[*(int*)((ushort*)bufferP + 1)]);
-            }
-        }
-
-        private static void SetAsParentOf(Stream stream, byte[] buffer, int* bufferP, IList<Entity> entities)
-        {
-            if (stream.Read(buffer, 0, sizeof(int) * 2) == sizeof(int) * 2)
-            {
-                entities[*bufferP++].SetAsParentOf(entities[*bufferP]);
+                throw;
             }
         }
 
@@ -200,57 +198,10 @@ namespace DefaultEcs.Serialization
         {
             stream = stream ?? throw new ArgumentNullException(nameof(stream));
 
-            using (stream)
-            {
-                byte[] buffer = new byte[1024];
-                fixed (byte* bufferP = buffer)
-                {
-                    World world = stream.Read(buffer, 0, sizeof(int)) == sizeof(int)
-                        ? new World(*(int*)bufferP)
-                        : throw new ArgumentException("Could not create a World instance from the provided Stream");
+            World world = null;
+            Deserialize(stream, ref world);
 
-                    Entity[] entities = new Entity[128];
-                    Entity currentEntity = default;
-                    int currentId = 0;
-
-                    Dictionary<ushort, IOperation> operations = new Dictionary<ushort, IOperation>();
-
-                    int entryType;
-                    while ((entryType = stream.ReadByte()) >= 0)
-                    {
-                        switch ((EntryType)entryType)
-                        {
-                            case EntryType.ComponentType:
-                                CreateOperation(stream, buffer, bufferP, operations);
-                                break;
-
-                            case EntryType.MaxComponentCount:
-                                SetMaxComponentCount(world, stream, buffer, bufferP, operations);
-                                break;
-
-                            case EntryType.Entity:
-                                currentEntity = world.CreateEntity();
-                                ArrayExtension.EnsureLength(ref entities, currentId, world.MaxEntityCount);
-                                entities[currentId++] = currentEntity;
-                                break;
-
-                            case EntryType.Component:
-                                SetComponent(currentEntity, stream, buffer, bufferP, operations);
-                                break;
-
-                            case EntryType.ComponentSameAs:
-                                SetSameAsComponent(currentEntity, stream, buffer, bufferP, entities, operations);
-                                break;
-
-                            case EntryType.ParentChild:
-                                SetAsParentOf(stream, buffer, (int*)bufferP, entities);
-                                break;
-                        }
-                    }
-
-                    return world;
-                }
-            }
+            return world;
         }
 
         /// <summary>
@@ -284,47 +235,7 @@ namespace DefaultEcs.Serialization
             stream = stream ?? throw new ArgumentNullException(nameof(stream));
             world = world ?? throw new ArgumentNullException(nameof(world));
 
-            using (stream)
-            {
-                byte[] buffer = new byte[1024];
-                fixed (byte* bufferP = buffer)
-                {
-                    List<Entity> entities = new List<Entity>();
-                    Entity currentEntity = default;
-
-                    Dictionary<ushort, IOperation> operations = new Dictionary<ushort, IOperation>();
-
-                    int entryType;
-                    while ((entryType = stream.ReadByte()) >= 0)
-                    {
-                        switch ((EntryType)entryType)
-                        {
-                            case EntryType.ComponentType:
-                                CreateOperation(stream, buffer, bufferP, operations);
-                                break;
-
-                            case EntryType.Entity:
-                                currentEntity = world.CreateEntity();
-                                entities.Add(currentEntity);
-                                break;
-
-                            case EntryType.Component:
-                                SetComponent(currentEntity, stream, buffer, bufferP, operations);
-                                break;
-
-                            case EntryType.ComponentSameAs:
-                                SetSameAsComponent(currentEntity, stream, buffer, bufferP, entities, operations);
-                                break;
-
-                            case EntryType.ParentChild:
-                                SetAsParentOf(stream, buffer, (int*)bufferP, entities);
-                                break;
-                        }
-                    }
-
-                    return entities;
-                }
-            }
+            return Deserialize(stream, ref world);
         }
 
         #endregion
