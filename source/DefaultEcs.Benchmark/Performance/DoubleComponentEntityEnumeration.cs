@@ -38,15 +38,6 @@ namespace DefaultEcs.Benchmark.Performance
                 : this(world, null)
             { }
 
-            protected override void Update(float state, in DefaultEntity entity)
-            {
-                DefaultSpeed speed = entity.Get<DefaultSpeed>();
-                ref DefaultPosition position = ref entity.Get<DefaultPosition>();
-
-                position.X += speed.X * state;
-                position.Y += speed.Y * state;
-            }
-
             protected override void Update(float state, ReadOnlySpan<DefaultEntity> entities)
             {
                 for (int i = 0; i < entities.Length; i++)

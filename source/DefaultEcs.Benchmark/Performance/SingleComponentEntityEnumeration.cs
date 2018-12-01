@@ -29,18 +29,13 @@ namespace DefaultEcs.Benchmark.Performance
                 : this(world, null)
             { }
 
-            protected override void Update(int state, in DefaultEntity entity)
+            protected override void Update(int state, ReadOnlySpan<DefaultEntity> entities)
             {
-                ++entity.Get<DefaultComponent>().Value;
+                for (int i = 0; i < entities.Length; i++)
+                {
+                    ++entities[i].Get<DefaultComponent>().Value;
+                }
             }
-
-            //protected override void Update(int state, ReadOnlySpan<DefaultEntity> entities)
-            //{
-            //    for (int i = 0; i < entities.Length; i++)
-            //    {
-            //        ++entities[i].Get<DefaultComponent>().Value;
-            //    }
-            //}
         }
 
         private sealed class DefaultEcsComponentSystem : AComponentSystem<int, DefaultComponent>
@@ -53,18 +48,13 @@ namespace DefaultEcs.Benchmark.Performance
                 : this(world, null)
             { }
 
-            protected override void Update(int state, ref DefaultComponent component)
+            protected override void Update(int state, Span<DefaultComponent> components)
             {
-                ++component.Value;
+                for (int i = 0; i < components.Length; i++)
+                {
+                    ++components[i].Value;
+                }
             }
-            
-            //protected override void Update(int state, Span<DefaultComponent> components)
-            //{
-            //    for (int i = 0; i < components.Length; i++)
-            //    {
-            //        ++components[i].Value;
-            //    }
-            //}
         }
 
         private class EntitasComponent : IComponent

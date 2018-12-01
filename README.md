@@ -24,7 +24,7 @@ DefaultEcs is an Entity Component System framework which aims to be accessible w
 
 <a name='Requirement'></a>
 # Requirement
-DefaultEcs use heavily features from C#7.0 and Span from the System.Memory package, compatible from .NETStandard 1.1.
+DefaultEcs uses heavily features from C#7.0 and Span from the System.Memory package, compatible from .NETStandard 1.1.
 
 <a name='Overview'></a>
 # Overview

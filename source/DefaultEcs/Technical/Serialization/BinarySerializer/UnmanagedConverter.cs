@@ -78,8 +78,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
                 return value;
             }
-
-            return default;
         }
 
         #endregion
