@@ -21,6 +21,7 @@ DefaultEcs is an Entity Component System framework which aims to be accessible w
     - [BinarySerializer](#Overview_Serialization_BinarySerializer)
 - [Sample](#Sample)
 - [Performance](#Performance)
+- [Api documentation](./documentation/api/DefaultEcs.md 'Api documentation')
 
 <a name='Requirement'></a>
 # Requirement
