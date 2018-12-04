@@ -1,6 +1,6 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## DefaultEcs.System.ISystem&lt;T&gt; `type`
->Exposes a method to update a system.
+Exposes a method to update a system.
 ### Type parameters
 
 <a name='DefaultEcs-System-ISystem-T--T'></a>

@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.Serialization.IComponentReader](./DefaultEcs-Serialization-IComponentReader.md 'DefaultEcs.Serialization.IComponentReader')
 ## OnRead&lt;T&gt;(T, DefaultEcs.Entity) `method`
->Processes the component of type [T](#DefaultEcs-Serialization-IComponentReader-OnRead-T-(T-_DefaultEcs-Entity)-T 'DefaultEcs.Serialization.IComponentReader.OnRead&lt;T&gt;(T, DefaultEcs.Entity).T').
+Processes the component of type [T](#DefaultEcs-Serialization-IComponentReader-OnRead-T-(T-_DefaultEcs-Entity)-T 'DefaultEcs.Serialization.IComponentReader.OnRead&lt;T&gt;(T, DefaultEcs.Entity).T').
 ### Type parameters
 
 <a name='DefaultEcs-Serialization-IComponentReader-OnRead-T-(T-_DefaultEcs-Entity)-T'></a>

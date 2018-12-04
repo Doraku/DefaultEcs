@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## #ctor(System.Int32) `constructor`
->Initializes a new instance of the [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World') class.
+Initializes a new instance of the [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World') class.
 ### Parameters
 
 <a name='DefaultEcs-World--ctor(System-Int32)-maxEntityCount'></a>

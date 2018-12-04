@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## RemoveFromChildrenOf(DefaultEcs.Entity) `method`
->Remove the given [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') from current [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') parents.
+Remove the given [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') from current [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') parents.
 ### Parameters
 
 <a name='DefaultEcs-Entity-RemoveFromChildrenOf(DefaultEcs-Entity)-parent'></a>

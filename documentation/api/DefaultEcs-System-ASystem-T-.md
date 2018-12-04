@@ -1,6 +1,6 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## DefaultEcs.System.ASystem&lt;T&gt; `type`
->Represents a base class to process updates, supporting a [DefaultEcs.System.SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;'). Do not inherit from this class directly.
+Represents a base class to process updates, supporting a [DefaultEcs.System.SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;'). Do not inherit from this class directly.
 ### Type parameters
 
 <a name='DefaultEcs-System-ASystem-T--T'></a>

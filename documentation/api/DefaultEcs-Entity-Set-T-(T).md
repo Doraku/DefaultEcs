@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Set&lt;T&gt;(T) `method`
->Sets the value of the component of type [T](#DefaultEcs-Entity-Set-T-(T)-T 'DefaultEcs.Entity.Set&lt;T&gt;(T).T') on the current [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').
+Sets the value of the component of type [T](#DefaultEcs-Entity-Set-T-(T)-T 'DefaultEcs.Entity.Set&lt;T&gt;(T).T') on the current [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').
 ### Type parameters
 
 <a name='DefaultEcs-Entity-Set-T-(T)-T'></a>

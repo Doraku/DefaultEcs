@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.Serialization.ISerializer](./DefaultEcs-Serialization-ISerializer.md 'DefaultEcs.Serialization.ISerializer')
 ## Serialize(System.IO.Stream, DefaultEcs.World) `method`
->Serializes the given [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World') into the provided [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream').
+Serializes the given [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World') into the provided [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream').
 ### Parameters
 
 <a name='DefaultEcs-Serialization-ISerializer-Serialize(System-IO-Stream-_DefaultEcs-World)-stream'></a>

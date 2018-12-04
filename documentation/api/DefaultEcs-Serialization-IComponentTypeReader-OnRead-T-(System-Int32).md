@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.Serialization.IComponentTypeReader](./DefaultEcs-Serialization-IComponentTypeReader.md 'DefaultEcs.Serialization.IComponentTypeReader')
 ## OnRead&lt;T&gt;(System.Int32) `method`
->Processes the maximum number of component of type [T](#DefaultEcs-Serialization-IComponentTypeReader-OnRead-T-(System-Int32)-T 'DefaultEcs.Serialization.IComponentTypeReader.OnRead&lt;T&gt;(System.Int32).T').
+Processes the maximum number of component of type [T](#DefaultEcs-Serialization-IComponentTypeReader-OnRead-T-(System-Int32)-T 'DefaultEcs.Serialization.IComponentTypeReader.OnRead&lt;T&gt;(System.Int32).T').
 ### Type parameters
 
 <a name='DefaultEcs-Serialization-IComponentTypeReader-OnRead-T-(System-Int32)-T'></a>

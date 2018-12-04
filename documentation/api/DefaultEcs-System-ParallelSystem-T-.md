@@ -1,6 +1,6 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## DefaultEcs.System.ParallelSystem&lt;T&gt; `type`
->Represents a collection of [DefaultEcs.System.ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;') to update in parallel.
+Represents a collection of [DefaultEcs.System.ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;') to update in parallel.
 ### Type parameters
 
 <a name='DefaultEcs-System-ParallelSystem-T--T'></a>

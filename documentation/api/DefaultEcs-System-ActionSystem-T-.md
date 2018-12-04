@@ -1,6 +1,6 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## DefaultEcs.System.ActionSystem&lt;T&gt; `type`
->Represents a class to set up easily a custom action as a system update.
+Represents a class to set up easily a custom action as a system update.
 ### Type parameters
 
 <a name='DefaultEcs-System-ActionSystem-T--T'></a>

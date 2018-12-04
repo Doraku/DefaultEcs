@@ -1,6 +1,6 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## DefaultEcs.System.AEntitySystem&lt;T&gt; `type`
->Represents a base class to process updates on a given [DefaultEcs.EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') instance.
+Represents a base class to process updates on a given [DefaultEcs.EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') instance.
 ### Type parameters
 
 <a name='DefaultEcs-System-AEntitySystem-T--T'></a>

@@ -1,6 +1,6 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## DefaultEcs.System.SequentialSystem&lt;T&gt; `type`
->Represents a collection of [DefaultEcs.System.ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;') to update sequentially.
+Represents a collection of [DefaultEcs.System.ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;') to update sequentially.
 ### Type parameters
 
 <a name='DefaultEcs-System-SequentialSystem-T--T'></a>

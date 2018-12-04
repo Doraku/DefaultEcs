@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Get&lt;T&gt;() `method`
->Gets the component of type [T](#DefaultEcs-Entity-Get-T-()-T 'DefaultEcs.Entity.Get&lt;T&gt;().T') on the current [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').
+Gets the component of type [T](#DefaultEcs-Entity-Get-T-()-T 'DefaultEcs.Entity.Get&lt;T&gt;().T') on the current [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').
 ### Type parameters
 
 <a name='DefaultEcs-Entity-Get-T-()-T'></a>

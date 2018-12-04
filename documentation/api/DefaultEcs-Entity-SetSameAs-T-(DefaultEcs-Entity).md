@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## SetSameAs&lt;T&gt;(DefaultEcs.Entity) `method`
->Sets the value of the component of type [T](#DefaultEcs-Entity-SetSameAs-T-(DefaultEcs-Entity)-T 'DefaultEcs.Entity.SetSameAs&lt;T&gt;(DefaultEcs.Entity).T') on the current Entity to the same instance of an other [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').
+Sets the value of the component of type [T](#DefaultEcs-Entity-SetSameAs-T-(DefaultEcs-Entity)-T 'DefaultEcs.Entity.SetSameAs&lt;T&gt;(DefaultEcs.Entity).T') on the current Entity to the same instance of an other [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').
 ### Type parameters
 
 <a name='DefaultEcs-Entity-SetSameAs-T-(DefaultEcs-Entity)-T'></a>

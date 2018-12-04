@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## SetAsParentOf(DefaultEcs.Entity) `method`
->Makes it so when current [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') is disposed, given [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') will also be disposed.
+Makes it so when current [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') is disposed, given [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') will also be disposed.
 ### Parameters
 
 <a name='DefaultEcs-Entity-SetAsParentOf(DefaultEcs-Entity)-child'></a>

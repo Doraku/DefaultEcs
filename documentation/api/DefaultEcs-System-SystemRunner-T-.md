@@ -1,6 +1,6 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## DefaultEcs.System.SystemRunner&lt;T&gt; `type`
->Represents an helper object used to update a system in parallel.
+Represents an helper object used to update a system in parallel.
 ### Type parameters
 
 <a name='DefaultEcs-System-SystemRunner-T--T'></a>

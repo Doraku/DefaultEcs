@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## CopyTo(DefaultEcs.World) `method`
->Creates a copy of current [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') with all of its components in the given [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World').
+Creates a copy of current [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') with all of its components in the given [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World').
 ### Parameters
 
 <a name='DefaultEcs-Entity-CopyTo(DefaultEcs-World)-world'></a>

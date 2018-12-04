@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.Serialization.TextSerializer](./DefaultEcs-Serialization-TextSerializer.md 'DefaultEcs.Serialization.TextSerializer')
 ## Write&lt;T&gt;(System.IO.Stream, T) `method`
->Writes an object of type [T](#DefaultEcs-Serialization-TextSerializer-Write-T-(System-IO-Stream-_T)-T 'DefaultEcs.Serialization.TextSerializer.Write&lt;T&gt;(System.IO.Stream, T).T') on the given stream.
+Writes an object of type [T](#DefaultEcs-Serialization-TextSerializer-Write-T-(System-IO-Stream-_T)-T 'DefaultEcs.Serialization.TextSerializer.Write&lt;T&gt;(System.IO.Stream, T).T') on the given stream.
 ### Type parameters
 
 <a name='DefaultEcs-Serialization-TextSerializer-Write-T-(System-IO-Stream-_T)-T'></a>

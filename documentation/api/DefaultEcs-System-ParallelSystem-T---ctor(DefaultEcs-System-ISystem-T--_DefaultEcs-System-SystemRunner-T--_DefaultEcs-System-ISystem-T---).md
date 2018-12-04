@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.System.ParallelSystem&lt;T&gt;](./DefaultEcs-System-ParallelSystem-T-.md 'DefaultEcs.System.ParallelSystem&lt;T&gt;')
 ## #ctor(DefaultEcs.System.ISystem&lt;T&gt;, DefaultEcs.System.SystemRunner&lt;T&gt;, DefaultEcs.System.ISystem&lt;T&gt;[]) `constructor`
->Initialises a new instance of the [DefaultEcs.System.ParallelSystem&lt;T&gt;](./DefaultEcs-System-ParallelSystem-T-.md 'DefaultEcs.System.ParallelSystem&lt;T&gt;') class.
+Initialises a new instance of the [DefaultEcs.System.ParallelSystem&lt;T&gt;](./DefaultEcs-System-ParallelSystem-T-.md 'DefaultEcs.System.ParallelSystem&lt;T&gt;') class.
 ### Parameters
 
 <a name='DefaultEcs-System-ParallelSystem-T---ctor(DefaultEcs-System-ISystem-T--_DefaultEcs-System-SystemRunner-T--_DefaultEcs-System-ISystem-T---)-mainSystem'></a>
