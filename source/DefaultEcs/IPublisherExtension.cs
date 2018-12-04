@@ -80,7 +80,7 @@ namespace DefaultEcs
         /// <param name="publisher">The <see cref="IPublisher"/> instance.</param>
         /// <param name="type">The type.</param>
         /// <returns>A <see cref="IDisposable"/> to unregister.</returns>
-        /// <exception cref="ArgumentNullException">publisher or type is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="publisher"/> or <paramref name="type"/> is null.</exception>
         /// <exception cref="NotSupportedException"><see cref="SubscribeAttribute"/> is used on an uncompatible method of the instance.</exception>
         public static IDisposable Subscribe(this IPublisher publisher, Type type)
         {
@@ -96,7 +96,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The Type.</typeparam>
         /// <param name="publisher">The <see cref="IPublisher"/> instance.</param>
         /// <returns>A <see cref="IDisposable"/> to unregister.</returns>
-        /// <exception cref="ArgumentNullException">publisher is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="publisher"/> is null.</exception>
         /// <exception cref="NotSupportedException"><see cref="SubscribeAttribute"/> is used on an uncompatible method of the instance.</exception>
         public static IDisposable Subscribe<T>(this IPublisher publisher) => Subscribe(publisher, typeof(T));
 
@@ -107,7 +107,7 @@ namespace DefaultEcs
         /// <param name="publisher">The <see cref="IPublisher"/> instance.</param>
         /// <param name="target">The instance.</param>
         /// <returns>A <see cref="IDisposable"/> to unregister.</returns>
-        /// <exception cref="ArgumentNullException">publisher or target is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="publisher"/> or <paramref name="target"/> is null.</exception>
         /// <exception cref="NotSupportedException"><see cref="SubscribeAttribute"/> is used on an uncompatible method of the instance.</exception>
         public static IDisposable Subscribe<T>(this IPublisher publisher, T target)
             where T : class

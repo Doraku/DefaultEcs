@@ -221,7 +221,7 @@
             <param name="publisher">The <see cref="T:DefaultEcs.IPublisher"/> instance.</param>
             <param name="type">The type.</param>
             <returns>A <see cref="T:System.IDisposable"/> to unregister.</returns>
-            <exception cref="T:System.ArgumentNullException">publisher or type is null.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="publisher"/> or <paramref name="type"/> is null.</exception>
             <exception cref="T:System.NotSupportedException"><see cref="T:DefaultEcs.SubscribeAttribute"/> is used on an uncompatible method of the instance.</exception>
         </member>
         <member name="M:DefaultEcs.IPublisherExtension.Subscribe``1(DefaultEcs.IPublisher)">
@@ -231,7 +231,7 @@
             <typeparam name="T">The Type.</typeparam>
             <param name="publisher">The <see cref="T:DefaultEcs.IPublisher"/> instance.</param>
             <returns>A <see cref="T:System.IDisposable"/> to unregister.</returns>
-            <exception cref="T:System.ArgumentNullException">publisher is null.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="publisher"/> is null.</exception>
             <exception cref="T:System.NotSupportedException"><see cref="T:DefaultEcs.SubscribeAttribute"/> is used on an uncompatible method of the instance.</exception>
         </member>
         <member name="M:DefaultEcs.IPublisherExtension.Subscribe``1(DefaultEcs.IPublisher,``0)">
@@ -242,7 +242,7 @@
             <param name="publisher">The <see cref="T:DefaultEcs.IPublisher"/> instance.</param>
             <param name="target">The instance.</param>
             <returns>A <see cref="T:System.IDisposable"/> to unregister.</returns>
-            <exception cref="T:System.ArgumentNullException">publisher or target is null.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="publisher"/> or <paramref name="target"/> is null.</exception>
             <exception cref="T:System.NotSupportedException"><see cref="T:DefaultEcs.SubscribeAttribute"/> is used on an uncompatible method of the instance.</exception>
         </member>
         <member name="T:DefaultEcs.Serialization.BinarySerializer">
