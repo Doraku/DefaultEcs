@@ -1,12 +1,11 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## DefaultEcs.System.AEntitySystem&lt;T&gt; `type`
-Represents a base class to process updates on a given [DefaultEcs.EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') instance.
+>Represents a base class to process updates on a given [DefaultEcs.EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') instance.
 ### Type parameters
 
 <a name='DefaultEcs-System-AEntitySystem-T--T'></a>
 `T`
-
-The type of the object used as state to update the system.
+>The type of the object used as state to update the system.
 ### constructor
 - [#ctor(DefaultEcs.EntitySet)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-EntitySet).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.EntitySet)')
 - [#ctor(DefaultEcs.EntitySet, DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-EntitySet-_DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.EntitySet, DefaultEcs.System.SystemRunner&lt;T&gt;)')
