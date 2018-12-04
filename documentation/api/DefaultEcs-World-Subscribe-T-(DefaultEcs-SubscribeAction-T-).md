@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## Subscribe&lt;T&gt;(DefaultEcs.SubscribeAction&lt;T&gt;) `method`
-Subscribes an [DefaultEcs.SubscribeAction&lt;T&gt;](./DefaultEcs-SubscribeAction-T-.md 'DefaultEcs.SubscribeAction&lt;T&gt;') to be called back when a [T](./DefaultEcs-World-Subscribe-T-(DefaultEcs-SubscribeAction-T-).md#T 'T') object is published.
+Subscribes an [DefaultEcs.SubscribeAction&lt;T&gt;](./DefaultEcs-SubscribeAction-T-.md 'DefaultEcs.SubscribeAction&lt;T&gt;') to be called back when a [T](#DefaultEcs-World-Subscribe-T-(DefaultEcs-SubscribeAction-T-)-T 'DefaultEcs.World.Subscribe&lt;T&gt;(DefaultEcs.SubscribeAction&lt;T&gt;).T') object is published.
 ### Type parameters
 
 <a name='DefaultEcs-World-Subscribe-T-(DefaultEcs-SubscribeAction-T-)-T'></a>

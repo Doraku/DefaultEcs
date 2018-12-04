@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher')
 ## Subscribe&lt;T&gt;(DefaultEcs.SubscribeAction&lt;T&gt;) `method`
-Subscribes an [DefaultEcs.SubscribeAction&lt;T&gt;](./DefaultEcs-SubscribeAction-T-.md 'DefaultEcs.SubscribeAction&lt;T&gt;') to be called back when a [T](./DefaultEcs-IPublisher-Subscribe-T-(DefaultEcs-SubscribeAction-T-).md#T 'T') object is published.
+Subscribes an [DefaultEcs.SubscribeAction&lt;T&gt;](./DefaultEcs-SubscribeAction-T-.md 'DefaultEcs.SubscribeAction&lt;T&gt;') to be called back when a [T](#DefaultEcs-IPublisher-Subscribe-T-(DefaultEcs-SubscribeAction-T-)-T 'DefaultEcs.IPublisher.Subscribe&lt;T&gt;(DefaultEcs.SubscribeAction&lt;T&gt;).T') object is published.
 ### Type parameters
 
 <a name='DefaultEcs-IPublisher-Subscribe-T-(DefaultEcs-SubscribeAction-T-)-T'></a>

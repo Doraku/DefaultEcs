@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.Serialization.BinarySerializer](./DefaultEcs-Serialization-BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer')
 ## Read&lt;T&gt;(System.IO.Stream) `method`
-Read an object of type [T](./DefaultEcs-Serialization-BinarySerializer-Read-T-(System-IO-Stream).md#T 'T') from the given stream.
+Read an object of type [T](#DefaultEcs-Serialization-BinarySerializer-Read-T-(System-IO-Stream)-T 'DefaultEcs.Serialization.BinarySerializer.Read&lt;T&gt;(System.IO.Stream).T') from the given stream.
 ### Type parameters
 
 <a name='DefaultEcs-Serialization-BinarySerializer-Read-T-(System-IO-Stream)-T'></a>

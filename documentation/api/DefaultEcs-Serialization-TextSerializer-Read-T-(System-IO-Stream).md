@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.Serialization.TextSerializer](./DefaultEcs-Serialization-TextSerializer.md 'DefaultEcs.Serialization.TextSerializer')
 ## Read&lt;T&gt;(System.IO.Stream) `method`
-Read an object of type [T](./DefaultEcs-Serialization-TextSerializer-Read-T-(System-IO-Stream).md#T 'T') from the given stream.
+Read an object of type [T](#DefaultEcs-Serialization-TextSerializer-Read-T-(System-IO-Stream)-T 'DefaultEcs.Serialization.TextSerializer.Read&lt;T&gt;(System.IO.Stream).T') from the given stream.
 ### Type parameters
 
 <a name='DefaultEcs-Serialization-TextSerializer-Read-T-(System-IO-Stream)-T'></a>

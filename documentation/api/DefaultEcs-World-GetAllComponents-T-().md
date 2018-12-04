@@ -1,7 +1,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## GetAllComponents&lt;T&gt;() `method`
-Gets all the component of a given type [T](./DefaultEcs-World-GetAllComponents-T-().md#T 'T').
+Gets all the component of a given type [T](#DefaultEcs-World-GetAllComponents-T-()-T 'DefaultEcs.World.GetAllComponents&lt;T&gt;().T').
 ### Type parameters
 
 <a name='DefaultEcs-World-GetAllComponents-T-()-T'></a>

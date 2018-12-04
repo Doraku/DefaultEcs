@@ -1,6 +1,6 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## DefaultEcs.System.AComponentSystem&lt;TState, TComponent&gt; `type`
-Represents a base class to process updates on a given [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World') instance to all its components of type [TComponent](./DefaultEcs-System-AComponentSystem-TState-_TComponent-.md#TComponent 'TComponent').
+Represents a base class to process updates on a given [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World') instance to all its components of type [TComponent](#DefaultEcs-System-AComponentSystem-TState-_TComponent--TComponent 'DefaultEcs.System.AComponentSystem&lt;TState, TComponent&gt;.TComponent').
 ### Type parameters
 
 <a name='DefaultEcs-System-AComponentSystem-TState-_TComponent--TState'></a>
