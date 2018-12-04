@@ -1,5 +1,5 @@
-### [DefaultEcs](./DefaultEcs 'DefaultEcs')
-### [DefaultEcs.System.ActionSystem&lt;T&gt;](./DefaultEcs-System-ActionSystem-T- 'DefaultEcs.System.ActionSystem&lt;T&gt;')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.System.ActionSystem&lt;T&gt;](./DefaultEcs-System-ActionSystem-T-.md 'DefaultEcs.System.ActionSystem&lt;T&gt;')
 ## Update(T) `method`
 Updates the system once.
 ### Parameters

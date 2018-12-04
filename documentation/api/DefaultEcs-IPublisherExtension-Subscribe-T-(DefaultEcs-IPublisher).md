@@ -1,7 +1,7 @@
-### [DefaultEcs](./DefaultEcs 'DefaultEcs')
-### [DefaultEcs.IPublisherExtension](./DefaultEcs-IPublisherExtension 'DefaultEcs.IPublisherExtension')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.IPublisherExtension](./DefaultEcs-IPublisherExtension.md 'DefaultEcs.IPublisherExtension')
 ## Subscribe&lt;T&gt;(DefaultEcs.IPublisher) `method`
-Subscribes automatically methods of a Type marked with the [DefaultEcs.SubscribeAttribute](./DefaultEcs-SubscribeAttribute 'DefaultEcs.SubscribeAttribute') on an [DefaultEcs.IPublisher](./DefaultEcs-IPublisher 'DefaultEcs.IPublisher') instance.
+Subscribes automatically methods of a Type marked with the [DefaultEcs.SubscribeAttribute](./DefaultEcs-SubscribeAttribute.md 'DefaultEcs.SubscribeAttribute') on an [DefaultEcs.IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher') instance.
 ### Type parameters
 
 <a name='DefaultEcs-IPublisherExtension-Subscribe-T-(DefaultEcs-IPublisher)-T'></a>
@@ -13,7 +13,7 @@ The Type.
 <a name='DefaultEcs-IPublisherExtension-Subscribe-T-(DefaultEcs-IPublisher)-publisher'></a>
 `publisher`
 
-The [DefaultEcs.IPublisher](./DefaultEcs-IPublisher 'DefaultEcs.IPublisher') instance.
+The [DefaultEcs.IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher') instance.
 ### Returns
 A [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable') to unregister.
 ### Exceptions
@@ -24,4 +24,4 @@ A [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDispo
 
 [System.NotSupportedException](https://docs.microsoft.com/en-us/dotnet/api/System.NotSupportedException 'System.NotSupportedException')
 
-[DefaultEcs.SubscribeAttribute](./DefaultEcs-SubscribeAttribute 'DefaultEcs.SubscribeAttribute') is used on an uncompatible method of the instance.
+[DefaultEcs.SubscribeAttribute](./DefaultEcs-SubscribeAttribute.md 'DefaultEcs.SubscribeAttribute') is used on an uncompatible method of the instance.

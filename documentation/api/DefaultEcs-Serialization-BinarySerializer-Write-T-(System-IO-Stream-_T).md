@@ -1,7 +1,7 @@
-### [DefaultEcs](./DefaultEcs 'DefaultEcs')
-### [DefaultEcs.Serialization.BinarySerializer](./DefaultEcs-Serialization-BinarySerializer 'DefaultEcs.Serialization.BinarySerializer')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Serialization.BinarySerializer](./DefaultEcs-Serialization-BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer')
 ## Write&lt;T&gt;(System.IO.Stream, T) `method`
-Writes an object of type [T](./DefaultEcs-Serialization-BinarySerializer-Write-T-(System-IO-Stream-_T)#T 'T') on the given stream.
+Writes an object of type [T](./DefaultEcs-Serialization-BinarySerializer-Write-T-(System-IO-Stream-_T).md#T 'T') on the given stream.
 ### Type parameters
 
 <a name='DefaultEcs-Serialization-BinarySerializer-Write-T-(System-IO-Stream-_T)-T'></a>

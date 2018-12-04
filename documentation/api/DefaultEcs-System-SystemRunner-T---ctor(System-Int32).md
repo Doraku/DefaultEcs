@@ -1,7 +1,7 @@
-### [DefaultEcs](./DefaultEcs 'DefaultEcs')
-### [DefaultEcs.System.SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T- 'DefaultEcs.System.SystemRunner&lt;T&gt;')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.System.SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;')
 ## #ctor(System.Int32) `constructor`
-Initialises a new instance of the [DefaultEcs.System.SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T- 'DefaultEcs.System.SystemRunner&lt;T&gt;') class.
+Initialises a new instance of the [DefaultEcs.System.SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;') class.
 ### Parameters
 
 <a name='DefaultEcs-System-SystemRunner-T---ctor(System-Int32)-degreeOfParallelism'></a>

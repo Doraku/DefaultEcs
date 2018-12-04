@@ -1,4 +1,4 @@
-### [DefaultEcs](./DefaultEcs 'DefaultEcs')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## DefaultEcs.System.SystemRunner&lt;T&gt; `type`
 Represents an helper object used to update a system in parallel.
 ### Type parameters
@@ -8,6 +8,6 @@ Represents an helper object used to update a system in parallel.
 
 The type of the object used as state to update the system.
 ### constructor
-- [#ctor(System.Int32)](./DefaultEcs-System-SystemRunner-T---ctor(System-Int32) 'DefaultEcs.System.SystemRunner&lt;T&gt;.#ctor(System.Int32)')
+- [#ctor(System.Int32)](./DefaultEcs-System-SystemRunner-T---ctor(System-Int32).md 'DefaultEcs.System.SystemRunner&lt;T&gt;.#ctor(System.Int32)')
 ### method
-- [Dispose()](./DefaultEcs-System-SystemRunner-T--Dispose() 'DefaultEcs.System.SystemRunner&lt;T&gt;.Dispose()')
+- [Dispose()](./DefaultEcs-System-SystemRunner-T--Dispose().md 'DefaultEcs.System.SystemRunner&lt;T&gt;.Dispose()')

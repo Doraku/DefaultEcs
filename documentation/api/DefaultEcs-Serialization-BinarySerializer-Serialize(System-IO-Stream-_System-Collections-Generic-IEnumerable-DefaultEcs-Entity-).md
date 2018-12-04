@@ -1,7 +1,7 @@
-### [DefaultEcs](./DefaultEcs 'DefaultEcs')
-### [DefaultEcs.Serialization.BinarySerializer](./DefaultEcs-Serialization-BinarySerializer 'DefaultEcs.Serialization.BinarySerializer')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Serialization.BinarySerializer](./DefaultEcs-Serialization-BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer')
 ## Serialize(System.IO.Stream, System.Collections.Generic.IEnumerable&lt;DefaultEcs.Entity&gt;) `method`
-Serializes the given [DefaultEcs.Entity](./DefaultEcs-Entity 'DefaultEcs.Entity') instances with their components into the provided [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream').
+Serializes the given [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances with their components into the provided [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream').
 ### Parameters
 
 <a name='DefaultEcs-Serialization-BinarySerializer-Serialize(System-IO-Stream-_System-Collections-Generic-IEnumerable-DefaultEcs-Entity-)-stream'></a>
@@ -12,4 +12,4 @@ The [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Str
 <a name='DefaultEcs-Serialization-BinarySerializer-Serialize(System-IO-Stream-_System-Collections-Generic-IEnumerable-DefaultEcs-Entity-)-entities'></a>
 `entities`
 
-The [DefaultEcs.Entity](./DefaultEcs-Entity 'DefaultEcs.Entity') instances to save.
+The [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances to save.

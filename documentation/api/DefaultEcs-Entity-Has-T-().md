@@ -1,7 +1,7 @@
-### [DefaultEcs](./DefaultEcs 'DefaultEcs')
-### [DefaultEcs.Entity](./DefaultEcs-Entity 'DefaultEcs.Entity')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Has&lt;T&gt;() `method`
-Returns whether the current [DefaultEcs.Entity](./DefaultEcs-Entity 'DefaultEcs.Entity') has a component of type [T](./DefaultEcs-Entity-Has-T-()#T 'T').
+Returns whether the current [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') has a component of type [T](./DefaultEcs-Entity-Has-T-().md#T 'T').
 ### Type parameters
 
 <a name='DefaultEcs-Entity-Has-T-()-T'></a>
@@ -9,4 +9,4 @@ Returns whether the current [DefaultEcs.Entity](./DefaultEcs-Entity 'DefaultEcs.
 
 The type of the component.
 ### Returns
-true if the [DefaultEcs.Entity](./DefaultEcs-Entity 'DefaultEcs.Entity') has a component of type [T](./DefaultEcs-Entity-Has-T-()#T 'T'); otherwise, false.
+true if the [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') has a component of type [T](./DefaultEcs-Entity-Has-T-().md#T 'T'); otherwise, false.

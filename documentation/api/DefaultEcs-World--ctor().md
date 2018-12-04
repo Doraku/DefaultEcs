@@ -1,4 +1,4 @@
-### [DefaultEcs](./DefaultEcs 'DefaultEcs')
-### [DefaultEcs.World](./DefaultEcs-World 'DefaultEcs.World')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## #ctor() `constructor`
-Initializes a new instance of the [DefaultEcs.World](./DefaultEcs-World 'DefaultEcs.World') class.
+Initializes a new instance of the [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World') class.

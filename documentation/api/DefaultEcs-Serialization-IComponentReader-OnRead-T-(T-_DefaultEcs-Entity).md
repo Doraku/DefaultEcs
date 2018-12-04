@@ -1,7 +1,7 @@
-### [DefaultEcs](./DefaultEcs 'DefaultEcs')
-### [DefaultEcs.Serialization.IComponentReader](./DefaultEcs-Serialization-IComponentReader 'DefaultEcs.Serialization.IComponentReader')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Serialization.IComponentReader](./DefaultEcs-Serialization-IComponentReader.md 'DefaultEcs.Serialization.IComponentReader')
 ## OnRead&lt;T&gt;(T, DefaultEcs.Entity) `method`
-Processes the component of type [T](./DefaultEcs-Serialization-IComponentReader-OnRead-T-(T-_DefaultEcs-Entity)#T 'T').
+Processes the component of type [T](./DefaultEcs-Serialization-IComponentReader-OnRead-T-(T-_DefaultEcs-Entity).md#T 'T').
 ### Type parameters
 
 <a name='DefaultEcs-Serialization-IComponentReader-OnRead-T-(T-_DefaultEcs-Entity)-T'></a>
@@ -18,4 +18,4 @@ The component.
 <a name='DefaultEcs-Serialization-IComponentReader-OnRead-T-(T-_DefaultEcs-Entity)-componentOwner'></a>
 `componentOwner`
 
-The owner of the component instance, in case it is used by multiple [DefaultEcs.Entity](./DefaultEcs-Entity 'DefaultEcs.Entity').
+The owner of the component instance, in case it is used by multiple [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').

@@ -1,5 +1,5 @@
-### [DefaultEcs](./DefaultEcs 'DefaultEcs')
-### [DefaultEcs.System.ASystem&lt;T&gt;](./DefaultEcs-System-ASystem-T- 'DefaultEcs.System.ASystem&lt;T&gt;')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.System.ASystem&lt;T&gt;](./DefaultEcs-System-ASystem-T-.md 'DefaultEcs.System.ASystem&lt;T&gt;')
 ## PostUpdate(T) `method`
 Performs a post-update treatment.
 ### Parameters

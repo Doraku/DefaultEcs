@@ -1,7 +1,7 @@
-### [DefaultEcs](./DefaultEcs 'DefaultEcs')
-### [DefaultEcs.EntitySetBuilder](./DefaultEcs-EntitySetBuilder 'DefaultEcs.EntitySetBuilder')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder')
 ## With&lt;T&gt;() `method`
-Makes a rule to observe [DefaultEcs.Entity](./DefaultEcs-Entity 'DefaultEcs.Entity') with a component of type [T](./DefaultEcs-EntitySetBuilder-With-T-()#T 'T').
+Makes a rule to observe [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') with a component of type [T](./DefaultEcs-EntitySetBuilder-With-T-().md#T 'T').
 ### Type parameters
 
 <a name='DefaultEcs-EntitySetBuilder-With-T-()-T'></a>
@@ -9,4 +9,4 @@ Makes a rule to observe [DefaultEcs.Entity](./DefaultEcs-Entity 'DefaultEcs.Enti
 
 The type of component.
 ### Returns
-The current [DefaultEcs.EntitySetBuilder](./DefaultEcs-EntitySetBuilder 'DefaultEcs.EntitySetBuilder').
+The current [DefaultEcs.EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder').

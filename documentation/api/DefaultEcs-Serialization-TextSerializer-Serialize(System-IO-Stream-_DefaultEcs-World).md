@@ -1,7 +1,7 @@
-### [DefaultEcs](./DefaultEcs 'DefaultEcs')
-### [DefaultEcs.Serialization.TextSerializer](./DefaultEcs-Serialization-TextSerializer 'DefaultEcs.Serialization.TextSerializer')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Serialization.TextSerializer](./DefaultEcs-Serialization-TextSerializer.md 'DefaultEcs.Serialization.TextSerializer')
 ## Serialize(System.IO.Stream, DefaultEcs.World) `method`
-Serializes the given [DefaultEcs.World](./DefaultEcs-World 'DefaultEcs.World') into the provided [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream').
+Serializes the given [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World') into the provided [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream').
 ### Parameters
 
 <a name='DefaultEcs-Serialization-TextSerializer-Serialize(System-IO-Stream-_DefaultEcs-World)-stream'></a>
@@ -12,7 +12,7 @@ The [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Str
 <a name='DefaultEcs-Serialization-TextSerializer-Serialize(System-IO-Stream-_DefaultEcs-World)-world'></a>
 `world`
 
-The [DefaultEcs.World](./DefaultEcs-World 'DefaultEcs.World') instance to save.
+The [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World') instance to save.
 ### Exceptions
 
 [System.ArgumentNullException](https://docs.microsoft.com/en-us/dotnet/api/System.ArgumentNullException 'System.ArgumentNullException')

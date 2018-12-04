@@ -1,5 +1,5 @@
-### [DefaultEcs](./DefaultEcs 'DefaultEcs')
-### [DefaultEcs.Entity](./DefaultEcs-Entity 'DefaultEcs.Entity')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Equals(System.Object) `method`
 Indicates whether this instance and a specified object are equal.
 ### Parameters
