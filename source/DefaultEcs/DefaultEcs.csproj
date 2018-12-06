@@ -14,8 +14,15 @@
 
   <PropertyGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
     <DocumentationFile>..\..\documentation\DefaultEcs.xml</DocumentationFile>
+    <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
   </PropertyGroup>
- 
+  <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
+    <PackageReference Include="DefaultDocumentation" Version="0.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
   <PropertyGroup Label="Debug" Condition="'$(Configuration)'=='Debug'">
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG</DefineConstants>
@@ -25,23 +32,23 @@
     <PackageReference Include="System.Memory" Version="4.5.1" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
-  
+
   <PropertyGroup Label="Package">
     <Authors>Paillat Laszlo</Authors>
     <PackageId>DefaultEcs</PackageId>
-    <Description>DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.</Description>
+    <Description>Entity Component System framework aiming for syntax and usage simplicity with maximum performance for game development.</Description>
     <PackageIconUrl>https://github.com/Doraku/DefaultEcs/raw/master/image/logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/Doraku/DefaultEcs/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageLicense>https://github.com/Doraku/DefaultEcs/blob/master/LICENSE.md</PackageLicense>
     <RepositoryUrl>https://github.com/Doraku/DefaultEcs.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
     <Version>0.7.0</Version>
     <PackageReleaseNotes>
-added SubscribeAttribute to automatically subscribe to decorated methods
-changed World.SetMaximumComponentCount return type and added World.GetMaximumComponentCount
-broke compatibility with BinarySerializer v0.7.0 produced data
+      added SubscribeAttribute to automatically subscribe to decorated methods
+      changed World.SetMaximumComponentCount return type and added World.GetMaximumComponentCount
+      broke compatibility with BinarySerializer v0.7.0 produced data
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
