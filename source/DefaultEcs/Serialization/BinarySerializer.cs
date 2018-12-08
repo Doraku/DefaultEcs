@@ -46,6 +46,7 @@ namespace DefaultEcs.Serialization
 
         private static ICollection<Entity> Deserialize(Stream stream, ref World world)
         {
+            bool isNewWorld = world == null; 
             List<Entity> entities = new List<Entity>(128);
 
             try
@@ -112,9 +113,16 @@ namespace DefaultEcs.Serialization
             }
             catch
             {
-                foreach(Entity entity in entities)
+                if (isNewWorld)
                 {
-                    entity.Dispose();
+                    world?.Dispose();
+                }
+                else
+                {
+                    foreach (Entity entity in entities)
+                    {
+                        entity.Dispose();
+                    }
                 }
 
                 throw;
