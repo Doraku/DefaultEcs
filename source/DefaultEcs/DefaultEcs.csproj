@@ -17,7 +17,7 @@
     <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
   </PropertyGroup>
   <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="DefaultDocumentation" Version="0.1.0">
+    <PackageReference Include="DefaultDocumentation" Version="0.2.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
@@ -44,11 +44,11 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.7.0</Version>
+    <Version>0.8.0</Version>
     <PackageReleaseNotes>
-      added SubscribeAttribute to automatically subscribe to decorated methods
-      changed World.SetMaximumComponentCount return type and added World.GetMaximumComponentCount
-      broke compatibility with BinarySerializer v0.7.0 produced data
+added SubscribeAttribute to automatically subscribe to decorated methods
+changed World.SetMaximumComponentCount return type and added World.GetMaximumComponentCount
+broke compatibility with BinarySerializer v0.7.0 produced data
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
