@@ -1,10 +1,7 @@
-﻿/source/*/obj
-/source/*/bin
-/source/Sample/*/bin
-/source/Sample/*/obj
-/source/.vs
-/source/*/*.vspscc
-/source/*/*.vssscc
-/source/*/*.user
+﻿/**/obj
+/**/bin
+/**/.vs
+/**/*.vspscc
+/**/*.user
 /package
 /source/Sample/resource

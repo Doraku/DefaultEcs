@@ -4,6 +4,7 @@ DefaultEcs is an Entity Component System framework which aims to be accessible w
 [![NuGet](https://img.shields.io/badge/nuget-v0.7.0-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
 
 - [Requirement](#Requirement)
+- [Api documentation](./documentation/api/DefaultEcs.md 'Api documentation')
 - [Overview](#Overview)
   - [World](#Overview_World)
   - [Entity](#Overview_Entity)
@@ -21,7 +22,6 @@ DefaultEcs is an Entity Component System framework which aims to be accessible w
     - [BinarySerializer](#Overview_Serialization_BinarySerializer)
 - [Sample](#Sample)
 - [Performance](#Performance)
-- [Api documentation](./documentation/api/DefaultEcs.md 'Api documentation')
 
 <a name='Requirement'></a>
 # Requirement
