@@ -1,6 +1,7 @@
-### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
-## DefaultEcs.Serialization.TextSerializer `type`
-Provides a basic implementation of the [DefaultEcs.Serialization.ISerializer](./DefaultEcs-Serialization-ISerializer.md 'DefaultEcs.Serialization.ISerializer') interface using a text readable format.
+#### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Serialization](./DefaultEcs.md#DefaultEcs-Serialization 'DefaultEcs.Serialization')
+## TextSerializer `type`
+Provides a basic implementation of the [ISerializer](./DefaultEcs-Serialization-ISerializer.md 'DefaultEcs.Serialization.ISerializer') interface using a text readable format.
 ### method
 - [Deserialize(System.IO.Stream)](./DefaultEcs-Serialization-TextSerializer-Deserialize(System-IO-Stream).md 'DefaultEcs.Serialization.TextSerializer.Deserialize(System.IO.Stream)')
 - [Deserialize(System.IO.Stream, DefaultEcs.World)](./DefaultEcs-Serialization-TextSerializer-Deserialize(System-IO-Stream-_DefaultEcs-World).md 'DefaultEcs.Serialization.TextSerializer.Deserialize(System.IO.Stream, DefaultEcs.World)')

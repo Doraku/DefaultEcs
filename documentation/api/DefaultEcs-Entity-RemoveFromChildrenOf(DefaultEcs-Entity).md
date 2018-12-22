@@ -1,16 +1,16 @@
-### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
-### [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
+#### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](./DefaultEcs.md#DefaultEcs 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## RemoveFromChildrenOf(DefaultEcs.Entity) `method`
-Remove the given [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') from current [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') parents.
+Remove the given [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') from current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') parents.
 ### Parameters
 
 <a name='DefaultEcs-Entity-RemoveFromChildrenOf(DefaultEcs-Entity)-parent'></a>
 `parent`
->The [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') which acts as parent.
+The [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') which acts as parent.
 ### Exceptions
 
 [System.InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/System.InvalidOperationException 'System.InvalidOperationException')
->[DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') was not created from a [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World').
+[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') was not created from a [World](./DefaultEcs-World.md 'DefaultEcs.World').
 
 [System.InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/System.InvalidOperationException 'System.InvalidOperationException')
->Child and parent [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') come from a different [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World').
+Child and parent [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') come from a different [World](./DefaultEcs-World.md 'DefaultEcs.World').

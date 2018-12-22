@@ -1,5 +1,6 @@
-### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
-## DefaultEcs.Serialization.ISerializer `type`
+#### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Serialization](./DefaultEcs.md#DefaultEcs-Serialization 'DefaultEcs.Serialization')
+## ISerializer `type`
 Provides a set of methods to save and load DefaultEcs objects.
 ### method
 - [Deserialize(System.IO.Stream)](./DefaultEcs-Serialization-ISerializer-Deserialize(System-IO-Stream).md 'DefaultEcs.Serialization.ISerializer.Deserialize(System.IO.Stream)')

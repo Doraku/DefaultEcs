@@ -1,6 +1,7 @@
-### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
-## DefaultEcs.EntitySetBuilder `type`
-Represent an helper object to create an [DefaultEcs.EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') to retrieve specific subset of [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').
+#### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](./DefaultEcs.md#DefaultEcs 'DefaultEcs')
+## EntitySetBuilder `type`
+Represent an helper object to create an [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') to retrieve specific subset of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').
 ### method
 - [Build()](./DefaultEcs-EntitySetBuilder-Build().md 'DefaultEcs.EntitySetBuilder.Build()')
 - [With&lt;T&gt;()](./DefaultEcs-EntitySetBuilder-With-T-().md 'DefaultEcs.EntitySetBuilder.With&lt;T&gt;()')

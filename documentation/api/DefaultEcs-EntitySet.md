@@ -1,6 +1,7 @@
-### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
-## DefaultEcs.EntitySet `type`
-Represents a sub-selection of [DefaultEcs.Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances from a [DefaultEcs.World](./DefaultEcs-World.md 'DefaultEcs.World').
+#### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](./DefaultEcs.md#DefaultEcs 'DefaultEcs')
+## EntitySet `type`
+Represents a sub-selection of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances from a [World](./DefaultEcs-World.md 'DefaultEcs.World').
 ### property
 - [Count](./DefaultEcs-EntitySet-Count.md 'DefaultEcs.EntitySet.Count')
 ### method
