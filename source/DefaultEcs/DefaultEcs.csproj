@@ -9,6 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release</Configurations>
     <SignAssembly>True</SignAssembly>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
