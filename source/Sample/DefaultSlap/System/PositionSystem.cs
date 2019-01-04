@@ -5,10 +5,11 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultSlap.System
 {
+    [With(typeof(Position), typeof(PositionFloat))]
     public sealed class PositionSystem : AEntitySystem<float>
     {
         public PositionSystem(World world, SystemRunner<float> runner)
-            : base(world.GetEntities().With<Position>().With<PositionFloat>().Build(), runner)
+            : base(world, runner)
         { }
 
         protected override void Update(float elaspedTime, in Entity entity)

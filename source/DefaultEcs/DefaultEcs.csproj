@@ -47,6 +47,8 @@
 
     <Version>0.8.0</Version>
     <PackageReleaseNotes>
+fixed to have metadata documentation for all target frameworks
+changed With and Without attribute to accept multiple types
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

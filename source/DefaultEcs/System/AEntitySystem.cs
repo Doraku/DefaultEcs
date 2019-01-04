@@ -12,9 +12,9 @@ namespace DefaultEcs.System
     public class ComponentAttribute : Attribute
     {
         /// <summary>
-        /// The type of the component.
+        /// The types of the component.
         /// </summary>
-        public readonly Type ComponentType;
+        public readonly Type[] ComponentTypes;
         /// <summary>
         /// Whether the component type should be included or excluded.
         /// </summary>
@@ -23,11 +23,11 @@ namespace DefaultEcs.System
         /// <summary>
         /// Initialize a new instance of the <see cref="ComponentAttribute"/> type.
         /// </summary>
-        /// <param name="componentType">The type of the component.</param>
         /// <param name="include">Whether the component type should be included or excluded.</param>
-        public ComponentAttribute(Type componentType, bool include)
+        /// <param name="componentTypes">The types of the component.</param>
+        public ComponentAttribute(bool include, params Type[] componentTypes)
         {
-            ComponentType = componentType ?? throw new ArgumentNullException(nameof(componentType));
+            ComponentTypes = componentTypes ?? throw new ArgumentNullException(nameof(componentTypes));
             Include = include;
         }
     }
@@ -40,9 +40,9 @@ namespace DefaultEcs.System
         /// <summary>
         /// Initialize a new instance of the <see cref="WithAttribute"/> type.
         /// </summary>
-        /// <param name="componentType">The type of the component to include.</param>
-        public WithAttribute(Type componentType)
-            : base(componentType, true)
+        /// <param name="componentTypes">The types of the component to include.</param>
+        public WithAttribute(params Type[] componentTypes)
+            : base(true, componentTypes)
         { }
     }
 
@@ -54,9 +54,9 @@ namespace DefaultEcs.System
         /// <summary>
         /// Initialize a new instance of the <see cref="WithoutAttribute"/> type.
         /// </summary>
-        /// <param name="componentType">The type of the component to exclude.</param>
-        public WithoutAttribute(Type componentType)
-            : base(componentType, false)
+        /// <param name="componentTypes">The types of the component to exclude.</param>
+        public WithoutAttribute(params Type[] componentTypes)
+            : base(false, componentTypes)
         { }
     }
 
@@ -135,7 +135,10 @@ namespace DefaultEcs.System
 
             foreach (ComponentAttribute attribute in type.GetTypeInfo().GetCustomAttributes<ComponentAttribute>(true))
             {
-                expression = Expression.Call(expression, (attribute.Include ? with : without).MakeGenericMethod(attribute.ComponentType));
+                foreach (Type componentType in attribute.ComponentTypes)
+                {
+                    expression = Expression.Call(expression, (attribute.Include ? with : without).MakeGenericMethod(componentType));
+                }
             }
 
             expression = Expression.Call(expression, entitySetBuilder.GetDeclaredMethod(nameof(EntitySetBuilder.Build)));
@@ -166,7 +169,7 @@ namespace DefaultEcs.System
         #endregion
 
         #region ASystem
-        
+
         internal sealed override bool HasItems => _set.Count > 0;
 
         internal sealed override void Update(int index, int maxIndex)
