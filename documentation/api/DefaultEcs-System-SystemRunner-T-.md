@@ -6,8 +6,9 @@ Represents an helper object used to update a system in parallel.
 
 <a name='DefaultEcs-System-SystemRunner-T--T'></a>
 `T`
+
 The type of the object used as state to update the system.
-### constructor
+### Constructors
 - [#ctor(System.Int32)](./DefaultEcs-System-SystemRunner-T---ctor(System-Int32).md 'DefaultEcs.System.SystemRunner&lt;T&gt;.#ctor(System.Int32)')
-### method
+### Methods
 - [Dispose()](./DefaultEcs-System-SystemRunner-T--Dispose().md 'DefaultEcs.System.SystemRunner&lt;T&gt;.Dispose()')

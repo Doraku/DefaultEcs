@@ -6,4 +6,5 @@ Encapsulates a method that has a single in parameter and does not return a value
 
 <a name='DefaultEcs-SubscribeAction-T--T'></a>
 `T`
+
 The type of message to subscribe to.

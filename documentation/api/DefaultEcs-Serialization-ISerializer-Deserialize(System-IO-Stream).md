@@ -6,6 +6,7 @@ Deserializes a [World](./DefaultEcs-World.md 'DefaultEcs.World') instance from t
 
 <a name='DefaultEcs-Serialization-ISerializer-Deserialize(System-IO-Stream)-stream'></a>
 `stream`
+
 The [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream') from which the data will be loaded.
 ### Returns
 The [World](./DefaultEcs-World.md 'DefaultEcs.World') instance loaded.

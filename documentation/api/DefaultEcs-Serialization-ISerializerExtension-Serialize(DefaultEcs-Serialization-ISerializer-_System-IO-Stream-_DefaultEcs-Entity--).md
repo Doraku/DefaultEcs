@@ -6,12 +6,15 @@ Serializes the given [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instan
 
 <a name='DefaultEcs-Serialization-ISerializerExtension-Serialize(DefaultEcs-Serialization-ISerializer-_System-IO-Stream-_DefaultEcs-Entity--)-serializer'></a>
 `serializer`
+
 The [ISerializer](./DefaultEcs-Serialization-ISerializer.md 'DefaultEcs.Serialization.ISerializer') instance to use.
 
 <a name='DefaultEcs-Serialization-ISerializerExtension-Serialize(DefaultEcs-Serialization-ISerializer-_System-IO-Stream-_DefaultEcs-Entity--)-stream'></a>
 `stream`
+
 The [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream') in which the data will be saved.
 
 <a name='DefaultEcs-Serialization-ISerializerExtension-Serialize(DefaultEcs-Serialization-ISerializer-_System-IO-Stream-_DefaultEcs-Entity--)-entities'></a>
 `entities`
+
 The [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances to save.

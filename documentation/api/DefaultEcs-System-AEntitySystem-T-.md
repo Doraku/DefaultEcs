@@ -6,13 +6,14 @@ Represents a base class to process updates on a given [EntitySet](./DefaultEcs-E
 
 <a name='DefaultEcs-System-AEntitySystem-T--T'></a>
 `T`
+
 The type of the object used as state to update the system.
-### constructor
+### Constructors
 - [#ctor(DefaultEcs.EntitySet)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-EntitySet).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.EntitySet)')
 - [#ctor(DefaultEcs.EntitySet, DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-EntitySet-_DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.EntitySet, DefaultEcs.System.SystemRunner&lt;T&gt;)')
 - [#ctor(DefaultEcs.World)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.World)')
 - [#ctor(DefaultEcs.World, DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World-_DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.World, DefaultEcs.System.SystemRunner&lt;T&gt;)')
-### method
+### Methods
 - [Dispose()](./DefaultEcs-System-AEntitySystem-T--Dispose().md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.Dispose()')
 - [Update(T, DefaultEcs.Entity)](./DefaultEcs-System-AEntitySystem-T--Update(T-_DefaultEcs-Entity).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.Update(T, DefaultEcs.Entity)')
 - [Update(T, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;)](./DefaultEcs-System-AEntitySystem-T--Update(T-_System-ReadOnlySpan-DefaultEcs-Entity-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.Update(T, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;)')

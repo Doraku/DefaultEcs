@@ -6,4 +6,5 @@ Initialises a new instance of the [SequentialSystem&lt;T&gt;](./DefaultEcs-Syste
 
 <a name='DefaultEcs-System-SequentialSystem-T---ctor(DefaultEcs-System-ISystem-T---)-systems'></a>
 `systems`
+
 The [ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;') instances.

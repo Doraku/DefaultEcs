@@ -8,5 +8,6 @@ Returns a negative value if there is no limit.
 <a name='DefaultEcs-World-GetMaximumComponentCount-T-()-T'></a>
 `T`
 
+
 ### Returns
 

@@ -2,12 +2,12 @@
 ### [DefaultEcs](./DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## World `type`
 Represents a item use to create and manage [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') objects.
-### constructor
+### Constructors
 - [#ctor()](./DefaultEcs-World--ctor().md 'DefaultEcs.World.#ctor()')
 - [#ctor(System.Int32)](./DefaultEcs-World--ctor(System-Int32).md 'DefaultEcs.World.#ctor(System.Int32)')
-### property
+### Properties
 - [MaxEntityCount](./DefaultEcs-World-MaxEntityCount.md 'DefaultEcs.World.MaxEntityCount')
-### method
+### Methods
 - [CreateEntity()](./DefaultEcs-World-CreateEntity().md 'DefaultEcs.World.CreateEntity()')
 - [Dispose()](./DefaultEcs-World-Dispose().md 'DefaultEcs.World.Dispose()')
 - [GetAllComponents&lt;T&gt;()](./DefaultEcs-World-GetAllComponents-T-().md 'DefaultEcs.World.GetAllComponents&lt;T&gt;()')

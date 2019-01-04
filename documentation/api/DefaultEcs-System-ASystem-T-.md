@@ -6,11 +6,12 @@ Represents a base class to process updates, supporting a [SystemRunner&lt;T&gt;]
 
 <a name='DefaultEcs-System-ASystem-T--T'></a>
 `T`
+
 The type of the object used as state to update the system.
-### constructor
+### Constructors
 - [#ctor()](./DefaultEcs-System-ASystem-T---ctor().md 'DefaultEcs.System.ASystem&lt;T&gt;.#ctor()')
 - [#ctor(DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-ASystem-T---ctor(DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.ASystem&lt;T&gt;.#ctor(DefaultEcs.System.SystemRunner&lt;T&gt;)')
-### method
+### Methods
 - [Dispose()](./DefaultEcs-System-ASystem-T--Dispose().md 'DefaultEcs.System.ASystem&lt;T&gt;.Dispose()')
 - [PostUpdate(T)](./DefaultEcs-System-ASystem-T--PostUpdate(T).md 'DefaultEcs.System.ASystem&lt;T&gt;.PostUpdate(T)')
 - [PreUpdate(T)](./DefaultEcs-System-ASystem-T--PreUpdate(T).md 'DefaultEcs.System.ASystem&lt;T&gt;.PreUpdate(T)')

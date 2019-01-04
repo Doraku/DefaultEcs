@@ -6,6 +6,7 @@ Makes a rule to observe [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') wit
 
 <a name='DefaultEcs-EntitySetBuilder-With-T-()-T'></a>
 `T`
+
 The type of component.
 ### Returns
 The current [EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder').

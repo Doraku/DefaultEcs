@@ -7,4 +7,5 @@ The created [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').
 ### Exceptions
 
 [System.InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/System.InvalidOperationException 'System.InvalidOperationException')
+
 Max number of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') reached.

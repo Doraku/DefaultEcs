@@ -18,7 +18,7 @@
     <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
   </PropertyGroup>
   <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="DefaultDocumentation" Version="0.3.0">
+    <PackageReference Include="DefaultDocumentation" Version="0.4.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
@@ -45,7 +45,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.8.0</Version>
+    <Version>0.8.1</Version>
     <PackageReleaseNotes>
 fixed to have metadata documentation for all target frameworks
 changed With and Without attribute to accept multiple types

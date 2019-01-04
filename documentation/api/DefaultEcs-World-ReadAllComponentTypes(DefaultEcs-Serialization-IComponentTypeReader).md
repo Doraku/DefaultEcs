@@ -7,4 +7,5 @@ This method is primiraly used for serialization purpose and should not be called
 
 <a name='DefaultEcs-World-ReadAllComponentTypes(DefaultEcs-Serialization-IComponentTypeReader)-reader'></a>
 `reader`
+
 The [IComponentTypeReader](./DefaultEcs-Serialization-IComponentTypeReader.md 'DefaultEcs.Serialization.IComponentTypeReader') instance to be used as callback with the current [World](./DefaultEcs-World.md 'DefaultEcs.World') maximum number of component.

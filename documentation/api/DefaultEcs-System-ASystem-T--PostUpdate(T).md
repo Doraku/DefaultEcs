@@ -6,4 +6,5 @@ Performs a post-update treatment.
 
 <a name='DefaultEcs-System-ASystem-T--PostUpdate(T)-state'></a>
 `state`
+
 The state to use.

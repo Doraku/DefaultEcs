@@ -6,9 +6,10 @@ Represents a class to set up easily a custom action as a system update.
 
 <a name='DefaultEcs-System-ActionSystem-T--T'></a>
 `T`
+
 The type of the object used as state to update the system.
-### constructor
+### Constructors
 - [#ctor(System.Action&lt;T&gt;)](./DefaultEcs-System-ActionSystem-T---ctor(System-Action-T-).md 'DefaultEcs.System.ActionSystem&lt;T&gt;.#ctor(System.Action&lt;T&gt;)')
-### method
+### Methods
 - [Dispose()](./DefaultEcs-System-ActionSystem-T--Dispose().md 'DefaultEcs.System.ActionSystem&lt;T&gt;.Dispose()')
 - [Update(T)](./DefaultEcs-System-ActionSystem-T--Update(T).md 'DefaultEcs.System.ActionSystem&lt;T&gt;.Update(T)')

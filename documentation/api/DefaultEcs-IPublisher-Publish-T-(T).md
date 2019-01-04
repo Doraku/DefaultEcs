@@ -6,9 +6,11 @@ Publishes a [T](#DefaultEcs-IPublisher-Publish-T-(T)-T 'DefaultEcs.IPublisher.Pu
 
 <a name='DefaultEcs-IPublisher-Publish-T-(T)-T'></a>
 `T`
+
 The type of the object to publish.
 ### Parameters
 
 <a name='DefaultEcs-IPublisher-Publish-T-(T)-message'></a>
 `message`
+
 The object to publish.

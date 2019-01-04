@@ -6,6 +6,7 @@ Makes a rule to ignore [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') with
 
 <a name='DefaultEcs-EntitySetBuilder-Without-T-()-T'></a>
 `T`
+
 The type of component.
 ### Returns
 The current [EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder').

@@ -6,10 +6,12 @@ Creates a copy of current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') w
 
 <a name='DefaultEcs-Entity-CopyTo(DefaultEcs-World)-world'></a>
 `world`
+
 The [World](./DefaultEcs-World.md 'DefaultEcs.World') instance to which copy current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') and its components.
 ### Returns
 The created [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') in the given [World](./DefaultEcs-World.md 'DefaultEcs.World').
 ### Exceptions
 
 [System.InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/System.InvalidOperationException 'System.InvalidOperationException')
+
 [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') was not created from a [World](./DefaultEcs-World.md 'DefaultEcs.World').

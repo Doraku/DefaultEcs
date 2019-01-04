@@ -6,8 +6,10 @@ Initialise a new instance of the [AEntitySystem&lt;T&gt;](./DefaultEcs-System-AE
 
 <a name='DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-EntitySet)-set'></a>
 `set`
+
 The [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') on which to process the update.
 ### Exceptions
 
 [System.ArgumentNullException](https://docs.microsoft.com/en-us/dotnet/api/System.ArgumentNullException 'System.ArgumentNullException')
+
 [set](#DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-EntitySet)-set 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.EntitySet).set') is null.

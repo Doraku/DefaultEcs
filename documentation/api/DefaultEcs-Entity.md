@@ -3,7 +3,7 @@
 ## Entity `type`
 Represents an item in the [World](./DefaultEcs-World.md 'DefaultEcs.World').
 Only use [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') generated from the [CreateEntity()](./DefaultEcs-World-CreateEntity().md 'DefaultEcs.World.CreateEntity()') method.
-### method
+### Methods
 - [CopyTo(DefaultEcs.World)](./DefaultEcs-Entity-CopyTo(DefaultEcs-World).md 'DefaultEcs.Entity.CopyTo(DefaultEcs.World)')
 - [Dispose()](./DefaultEcs-Entity-Dispose().md 'DefaultEcs.Entity.Dispose()')
 - [Equals(DefaultEcs.Entity)](./DefaultEcs-Entity-Equals(DefaultEcs-Entity).md 'DefaultEcs.Entity.Equals(DefaultEcs.Entity)')

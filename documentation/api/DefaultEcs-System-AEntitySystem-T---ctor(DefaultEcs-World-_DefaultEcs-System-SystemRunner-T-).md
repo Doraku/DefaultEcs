@@ -7,12 +7,15 @@ To create the inner [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet'
 
 <a name='DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World-_DefaultEcs-System-SystemRunner-T-)-world'></a>
 `world`
+
 The [World](./DefaultEcs-World.md 'DefaultEcs.World') from which to get the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances to process the update.
 
 <a name='DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World-_DefaultEcs-System-SystemRunner-T-)-runner'></a>
 `runner`
+
 The [SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;') used to process the update in parallel if not null.
 ### Exceptions
 
 [System.ArgumentNullException](https://docs.microsoft.com/en-us/dotnet/api/System.ArgumentNullException 'System.ArgumentNullException')
+
 [world](#DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World-_DefaultEcs-System-SystemRunner-T-)-world 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.World, DefaultEcs.System.SystemRunner&lt;T&gt;).world') is null.

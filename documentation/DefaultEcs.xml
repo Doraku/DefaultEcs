@@ -497,9 +497,9 @@
             Represents the base attribute to declare how to build the inner <see cref="T:DefaultEcs.EntitySet"/> of <see cref="T:DefaultEcs.System.AEntitySystem`1"/> when giving a <see cref="T:DefaultEcs.World"/> instance.
             </summary>
         </member>
-        <member name="F:DefaultEcs.System.ComponentAttribute.ComponentType">
+        <member name="F:DefaultEcs.System.ComponentAttribute.ComponentTypes">
             <summary>
-            The type of the component.
+            The types of the component.
             </summary>
         </member>
         <member name="F:DefaultEcs.System.ComponentAttribute.Include">
@@ -507,34 +507,34 @@
             Whether the component type should be included or excluded.
             </summary>
         </member>
-        <member name="M:DefaultEcs.System.ComponentAttribute.#ctor(System.Type,System.Boolean)">
+        <member name="M:DefaultEcs.System.ComponentAttribute.#ctor(System.Boolean,System.Type[])">
             <summary>
             Initialize a new instance of the <see cref="T:DefaultEcs.System.ComponentAttribute"/> type.
             </summary>
-            <param name="componentType">The type of the component.</param>
             <param name="include">Whether the component type should be included or excluded.</param>
+            <param name="componentTypes">The types of the component.</param>
         </member>
         <member name="T:DefaultEcs.System.WithAttribute">
             <summary>
             Represents a component type to include when building the inner <see cref="T:DefaultEcs.EntitySet"/> of <see cref="T:DefaultEcs.System.AEntitySystem`1"/> when giving a <see cref="T:DefaultEcs.World"/> instance.
             </summary>
         </member>
-        <member name="M:DefaultEcs.System.WithAttribute.#ctor(System.Type)">
+        <member name="M:DefaultEcs.System.WithAttribute.#ctor(System.Type[])">
             <summary>
             Initialize a new instance of the <see cref="T:DefaultEcs.System.WithAttribute"/> type.
             </summary>
-            <param name="componentType">The type of the component to include.</param>
+            <param name="componentTypes">The types of the component to include.</param>
         </member>
         <member name="T:DefaultEcs.System.WithoutAttribute">
             <summary>
             Represents a component type to exclude when building the inner <see cref="T:DefaultEcs.EntitySet"/> of <see cref="T:DefaultEcs.System.AEntitySystem`1"/> when giving a <see cref="T:DefaultEcs.World"/> instance.
             </summary>
         </member>
-        <member name="M:DefaultEcs.System.WithoutAttribute.#ctor(System.Type)">
+        <member name="M:DefaultEcs.System.WithoutAttribute.#ctor(System.Type[])">
             <summary>
             Initialize a new instance of the <see cref="T:DefaultEcs.System.WithoutAttribute"/> type.
             </summary>
-            <param name="componentType">The type of the component to exclude.</param>
+            <param name="componentTypes">The types of the component to exclude.</param>
         </member>
         <member name="T:DefaultEcs.System.AEntitySystem`1">
             <summary>

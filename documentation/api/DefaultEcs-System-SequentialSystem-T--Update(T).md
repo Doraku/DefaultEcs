@@ -6,4 +6,5 @@ Updates all the systems once sequentially.
 
 <a name='DefaultEcs-System-SequentialSystem-T--Update(T)-state'></a>
 `state`
+
 The state to use.

@@ -6,8 +6,10 @@ Update the given [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instance o
 
 <a name='DefaultEcs-System-AEntitySystem-T--Update(T-_DefaultEcs-Entity)-state'></a>
 `state`
+
 The state to use.
 
 <a name='DefaultEcs-System-AEntitySystem-T--Update(T-_DefaultEcs-Entity)-entity'></a>
 `entity`
+
 The [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instance to update.

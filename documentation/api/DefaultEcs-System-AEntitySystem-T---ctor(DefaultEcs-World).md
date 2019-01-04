@@ -7,8 +7,10 @@ To create the inner [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet'
 
 <a name='DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World)-world'></a>
 `world`
+
 The [World](./DefaultEcs-World.md 'DefaultEcs.World') from which to get the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances to process the update.
 ### Exceptions
 
 [System.ArgumentNullException](https://docs.microsoft.com/en-us/dotnet/api/System.ArgumentNullException 'System.ArgumentNullException')
+
 [world](#DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World)-world 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.World).world') is null.

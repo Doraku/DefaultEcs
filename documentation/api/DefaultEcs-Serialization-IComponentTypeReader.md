@@ -2,5 +2,5 @@
 ### [DefaultEcs.Serialization](./DefaultEcs.md#DefaultEcs-Serialization 'DefaultEcs.Serialization')
 ## IComponentTypeReader `type`
 Exposes a method to be called back when getting the maximum number of component of a [World](./DefaultEcs-World.md 'DefaultEcs.World'), primarly used for serialization purpose.
-### method
+### Methods
 - [OnRead&lt;T&gt;(System.Int32)](./DefaultEcs-Serialization-IComponentTypeReader-OnRead-T-(System-Int32).md 'DefaultEcs.Serialization.IComponentTypeReader.OnRead&lt;T&gt;(System.Int32)')

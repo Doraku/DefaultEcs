@@ -6,11 +6,13 @@ Subscribes an [SubscribeAction&lt;T&gt;](./DefaultEcs-SubscribeAction-T-.md 'Def
 
 <a name='DefaultEcs-World-Subscribe-T-(DefaultEcs-SubscribeAction-T-)-T'></a>
 `T`
+
 The type of the object to be called back with.
 ### Parameters
 
 <a name='DefaultEcs-World-Subscribe-T-(DefaultEcs-SubscribeAction-T-)-action'></a>
 `action`
+
 The delegate to be called back.
 ### Returns
 An [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable') object used to unsubscribe.

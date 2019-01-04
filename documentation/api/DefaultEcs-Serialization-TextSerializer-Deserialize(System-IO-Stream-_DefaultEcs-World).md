@@ -6,10 +6,12 @@ Deserializes [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances with
 
 <a name='DefaultEcs-Serialization-TextSerializer-Deserialize(System-IO-Stream-_DefaultEcs-World)-stream'></a>
 `stream`
+
 The [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream') from which the data will be loaded.
 
 <a name='DefaultEcs-Serialization-TextSerializer-Deserialize(System-IO-Stream-_DefaultEcs-World)-world'></a>
 `world`
+
 The [World](./DefaultEcs-World.md 'DefaultEcs.World') instance on which the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') will be created.
 ### Returns
 The [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances loaded.

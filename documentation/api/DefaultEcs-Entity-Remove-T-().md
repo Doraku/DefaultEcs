@@ -6,4 +6,5 @@ Removes the component of type [T](#DefaultEcs-Entity-Remove-T-()-T 'DefaultEcs.E
 
 <a name='DefaultEcs-Entity-Remove-T-()-T'></a>
 `T`
+
 The type of the component.

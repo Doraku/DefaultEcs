@@ -2,7 +2,7 @@
 ### [DefaultEcs.Serialization](./DefaultEcs.md#DefaultEcs-Serialization 'DefaultEcs.Serialization')
 ## BinarySerializer `type`
 Provides a basic implementation of the [ISerializer](./DefaultEcs-Serialization-ISerializer.md 'DefaultEcs.Serialization.ISerializer') interface using a binary format.
-### method
+### Methods
 - [Deserialize(System.IO.Stream)](./DefaultEcs-Serialization-BinarySerializer-Deserialize(System-IO-Stream).md 'DefaultEcs.Serialization.BinarySerializer.Deserialize(System.IO.Stream)')
 - [Deserialize(System.IO.Stream, DefaultEcs.World)](./DefaultEcs-Serialization-BinarySerializer-Deserialize(System-IO-Stream-_DefaultEcs-World).md 'DefaultEcs.Serialization.BinarySerializer.Deserialize(System.IO.Stream, DefaultEcs.World)')
 - [Read&lt;T&gt;(System.IO.Stream)](./DefaultEcs-Serialization-BinarySerializer-Read-T-(System-IO-Stream).md 'DefaultEcs.Serialization.BinarySerializer.Read&lt;T&gt;(System.IO.Stream)')

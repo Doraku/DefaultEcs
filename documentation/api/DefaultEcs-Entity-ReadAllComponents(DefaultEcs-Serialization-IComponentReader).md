@@ -7,4 +7,5 @@ This method is primiraly used for serialization purpose and should not be called
 
 <a name='DefaultEcs-Entity-ReadAllComponents(DefaultEcs-Serialization-IComponentReader)-reader'></a>
 `reader`
+
 The [IComponentReader](./DefaultEcs-Serialization-IComponentReader.md 'DefaultEcs.Serialization.IComponentReader') instance to be used as callback with the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') components.
