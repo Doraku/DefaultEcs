@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultEcs.Analyzer.Test", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultEcs.Analyzer.Vsix", "DefaultEcs.Analyzer.Vsix\DefaultEcs.Analyzer.Vsix.csproj", "{39887C79-69C9-4347-92E2-5A800959F7D9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{43B74E8B-28B8-4049-A1BA-57BCB274AE08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,8 +74,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{42066393-9C6B-4617-8439-B9C3E6B881C3} = {43B74E8B-28B8-4049-A1BA-57BCB274AE08}
 		{6D2BA0F6-177E-454B-8AD7-42AF0AD539B7} = {DC400F20-A383-4C0F-83D4-F19B4F45191A}
 		{95F4D6A0-FD01-4AA8-B603-5811C9FFAEEA} = {DC400F20-A383-4C0F-83D4-F19B4F45191A}
+		{3B7E7A97-51E3-4B94-A50F-11808FA87621} = {43B74E8B-28B8-4049-A1BA-57BCB274AE08}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D44A5DBD-5CAD-4E51-BCC2-9AFAD5486CAD}

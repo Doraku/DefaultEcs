@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <DefineConstants></DefineConstants>
     <Optimize>true</Optimize>
     <Configurations>Debug;Release</Configurations>
@@ -24,7 +24,7 @@
     <ProjectReference Include="..\DefaultEcs\DefaultEcs.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="DesperateDevs.Utils">
+    <!--<Reference Include="DesperateDevs.Utils">
       <HintPath>..\..\dependency\DesperateDevs.Utils.dll</HintPath>
     </Reference>
     <Reference Include="Entitas">
@@ -32,6 +32,6 @@
     </Reference>
     <Reference Include="Svelto.ECS">
       <HintPath>..\..\dependency\Svelto.ECS.dll</HintPath>
-    </Reference>
+    </Reference>-->
   </ItemGroup>
 </Project>

@@ -2,12 +2,12 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using DefaultEcs.System;
-using Entitas;
+//using Entitas;
 using DefaultEntity = DefaultEcs.Entity;
 using DefaultEntitySet = DefaultEcs.EntitySet;
 using DefaultWorld = DefaultEcs.World;
-using EntitasEntity = Entitas.Entity;
-using EntitiasWorld = Entitas.IContext<Entitas.Entity>;
+//using EntitasEntity = Entitas.Entity;
+//using EntitiasWorld = Entitas.IContext<Entitas.Entity>;
 
 namespace DefaultEcs.Benchmark.Performance
 {
@@ -57,25 +57,25 @@ namespace DefaultEcs.Benchmark.Performance
             }
         }
 
-        private class EntitasComponent : IComponent
-        {
-            public int Value;
-        }
+        //private class EntitasComponent : IComponent
+        //{
+        //    public int Value;
+        //}
 
-        public class EntitasSystem : JobSystem<EntitasEntity>
-        {
-            public EntitasSystem(EntitiasWorld world, int threadCount) : base(world.GetGroup(Matcher<EntitasEntity>.AllOf(0)), threadCount)
-            { }
+        //public class EntitasSystem : JobSystem<EntitasEntity>
+        //{
+        //    public EntitasSystem(EntitiasWorld world, int threadCount) : base(world.GetGroup(Matcher<EntitasEntity>.AllOf(0)), threadCount)
+        //    { }
 
-            public EntitasSystem(EntitiasWorld world) : this(world, 1)
-            { }
+        //    public EntitasSystem(EntitiasWorld world) : this(world, 1)
+        //    { }
 
-            protected override void Execute(EntitasEntity entity)
-            {
-                EntitasComponent component = (EntitasComponent)entity.GetComponent(0);
-                ++component.Value;
-            }
-        }
+        //    protected override void Execute(EntitasEntity entity)
+        //    {
+        //        EntitasComponent component = (EntitasComponent)entity.GetComponent(0);
+        //        ++component.Value;
+        //    }
+        //}
 
         private DefaultWorld _defaultWorld;
         private DefaultEntitySet _defaultEntitySet;
@@ -85,9 +85,9 @@ namespace DefaultEcs.Benchmark.Performance
         private DefaultEcsComponentSystem _defaultComponentSystem;
         private DefaultEcsComponentSystem _defaultComponentMultiSystem;
 
-        private EntitiasWorld _entitasWorld;
-        private EntitasSystem _entitasSystem;
-        private EntitasSystem _entitasMultiSystem;
+        //private EntitiasWorld _entitasWorld;
+        //private EntitasSystem _entitasSystem;
+        //private EntitasSystem _entitasMultiSystem;
 
         [Params(100000)]
         public int EntityCount { get; set; }
@@ -103,17 +103,17 @@ namespace DefaultEcs.Benchmark.Performance
             _defaultComponentSystem = new DefaultEcsComponentSystem(_defaultWorld);
             _defaultComponentMultiSystem = new DefaultEcsComponentSystem(_defaultWorld, _defaultRunner);
 
-            _entitasWorld = new Context<EntitasEntity>(1);
-            _entitasSystem = new EntitasSystem(_entitasWorld);
-            _entitasMultiSystem = new EntitasSystem(_entitasWorld, Environment.ProcessorCount);
+            //_entitasWorld = new Context<EntitasEntity>(1);
+            //_entitasSystem = new EntitasSystem(_entitasWorld);
+            //_entitasMultiSystem = new EntitasSystem(_entitasWorld, Environment.ProcessorCount);
 
             for (int i = 0; i < EntityCount; ++i)
             {
                 DefaultEntity defaultEntity = _defaultWorld.CreateEntity();
                 defaultEntity.Set<DefaultComponent>();
 
-                EntitasEntity entitasEntity = _entitasWorld.CreateEntity();
-                entitasEntity.AddComponent(0, new EntitasComponent());
+                //EntitasEntity entitasEntity = _entitasWorld.CreateEntity();
+                //entitasEntity.AddComponent(0, new EntitasComponent());
             }
         }
 
@@ -168,16 +168,16 @@ namespace DefaultEcs.Benchmark.Performance
             _defaultComponentMultiSystem.Update(42);
         }
 
-        [Benchmark]
-        public void Entitas_System()
-        {
-            _entitasSystem.Execute();
-        }
+        //[Benchmark]
+        //public void Entitas_System()
+        //{
+        //    _entitasSystem.Execute();
+        //}
 
-        [Benchmark]
-        public void Entitas_MultiSystem()
-        {
-            _entitasMultiSystem.Execute();
-        }
+        //[Benchmark]
+        //public void Entitas_MultiSystem()
+        //{
+        //    _entitasMultiSystem.Execute();
+        //}
     }
 }
