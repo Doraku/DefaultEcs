@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Serialization;
 using DefaultEcs.Technical;
@@ -11,6 +12,7 @@ namespace DefaultEcs
     /// Represents an item in the <see cref="World"/>.
     /// Only use <see cref="Entity"/> generated from the <see cref="World.CreateEntity"/> method.
     /// </summary>
+    [DebuggerDisplay("Entity {WorldId}:{EntityId}")]
     public readonly struct Entity : IDisposable, IEquatable<Entity>
     {
         #region Fields

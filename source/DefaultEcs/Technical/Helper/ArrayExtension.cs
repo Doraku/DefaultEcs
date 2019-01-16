@@ -18,21 +18,21 @@ namespace DefaultEcs.Technical.Helper
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void EnsureLength<T>(ref T[] array, int index, int maxLength = int.MaxValue)
-        {
-            if (index >= array.Length)
-            {
-                InnerEnsureLength(ref array, index, maxLength);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Fill<T>(this T[] array, in T value, int start = 0)
             where T : unmanaged
         {
             for (int i = start; i < array.Length; ++i)
             {
                 array[i] = value;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void EnsureLength<T>(ref T[] array, int index, int maxLength = int.MaxValue)
+        {
+            if (index >= array.Length)
+            {
+                InnerEnsureLength(ref array, index, maxLength);
             }
         }
 

@@ -10,18 +10,12 @@
     <Configurations>Debug;Release</Configurations>
     <SignAssembly>True</SignAssembly>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
     <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
-  <PropertyGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <DocumentationFile>..\..\documentation\DefaultEcs.xml</DocumentationFile>
-    <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
-  </PropertyGroup>
   <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="DefaultDocumentation" Version="0.4.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="DefaultDocumentation" Version="0.4.0" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup Label="Debug" Condition="'$(Configuration)'=='Debug'">
@@ -30,7 +24,7 @@
   </PropertyGroup>
 
   <ItemGroup Label="Reference">
-    <PackageReference Include="System.Memory" Version="4.5.1" />
+    <PackageReference Include="System.Memory" Version="4.5.2" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
 
@@ -47,8 +41,7 @@
 
     <Version>0.8.1</Version>
     <PackageReleaseNotes>
-fixed to have metadata documentation for all target frameworks
-changed With and Without attribute to accept multiple types
+updated System.Memory reference
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
