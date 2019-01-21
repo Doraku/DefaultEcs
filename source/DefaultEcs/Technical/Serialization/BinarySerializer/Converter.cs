@@ -99,7 +99,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
             if (_type == typeof(string))
             {
-
                 _writeAction = (Converter.WriteAction<T>)(Delegate)new Converter.WriteAction<string>(StringConverter.Write);
                 _readAction = (Converter.ReadAction<T>)(Delegate)new Converter.ReadAction<string>(StringConverter.Read);
             }

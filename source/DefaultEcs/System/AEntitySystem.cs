@@ -68,7 +68,7 @@ namespace DefaultEcs.System
     {
         #region Fields
 
-        private static readonly ConcurrentDictionary<Type, Func<World, EntitySet>> _getEntitySet = new ConcurrentDictionary<Type, Func<World, EntitySet>>();
+        private static readonly ConcurrentDictionary<Type, Func<World, EntitySet>> _entitySetFactories = new ConcurrentDictionary<Type, Func<World, EntitySet>>();
 
         private readonly EntitySet _set;
 
@@ -107,7 +107,7 @@ namespace DefaultEcs.System
         protected AEntitySystem(World world, SystemRunner<T> runner)
             : base(runner)
         {
-            _set = _getEntitySet.GetOrAdd(GetType(), GetEntitySet)(world ?? throw new ArgumentNullException(nameof(world)));
+            _set = _entitySetFactories.GetOrAdd(GetType(), GetEntitySetFactory)(world ?? throw new ArgumentNullException(nameof(world)));
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace DefaultEcs.System
 
         #region Methods
 
-        private static Func<World, EntitySet> GetEntitySet(Type type)
+        private static Func<World, EntitySet> GetEntitySetFactory(Type type)
         {
             TypeInfo entitySetBuilder = typeof(EntitySetBuilder).GetTypeInfo();
             MethodInfo with = entitySetBuilder.GetDeclaredMethod(nameof(EntitySetBuilder.With));

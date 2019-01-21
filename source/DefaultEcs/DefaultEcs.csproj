@@ -8,9 +8,9 @@
     <Optimize>true</Optimize>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release</Configurations>
-    <SignAssembly>True</SignAssembly>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
+    <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
