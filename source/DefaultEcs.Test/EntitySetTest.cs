@@ -23,7 +23,6 @@ namespace DefaultEcs.Test
 
                 using (EntitySet set = world.GetEntities().Build())
                 {
-
                     Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
                 }
             }

@@ -28,6 +28,7 @@ namespace DefaultEcs.Serialization
         /// <param name="stream">The <see cref="Stream"/> in which the data will be saved.</param>
         /// <param name="world">The <see cref="World"/> instance to save.</param>
         void Serialize(Stream stream, World world);
+
         /// <summary>
         /// Deserializes a <see cref="World"/> instance from the given <see cref="Stream"/>.
         /// </summary>

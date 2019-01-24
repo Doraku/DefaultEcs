@@ -9,12 +9,11 @@ namespace DefaultEcs.Analyzer.Test
 {
     public class UnitTest : CodeFixVerifier
     {
-
         //No diagnostics expected to show up
         [Fact]
         public void TestMethod1()
         {
-            string test = @"";
+            const string test = "";
 
             VerifyCSharpDiagnostic(test);
         }
@@ -23,7 +22,7 @@ namespace DefaultEcs.Analyzer.Test
         [Fact]
         public void TestMethod2()
         {
-            string test = @"
+            const string test = @"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -50,7 +49,7 @@ namespace DefaultEcs.Analyzer.Test
 
             VerifyCSharpDiagnostic(test, expected);
 
-            string fixtest = @"
+            const string fixtest = @"
     using System;
     using System.Collections.Generic;
     using System.Linq;

@@ -38,19 +38,19 @@ namespace DefaultBrick.Level
         {
             for (int i = 0; i < 19; ++i)
             {
-                CreateBrick(world, 1 + i * 41, 1);
+                CreateBrick(world, 1 + (i * 41), 1);
             }
             for (int i = 0; i < 19; ++i)
             {
-                CreateBrick(world, 759 - i * 41, 22);
+                CreateBrick(world, 759 - (i * 41), 22);
             }
             for (int i = 0; i < 19; ++i)
             {
-                CreateBrick(world, 1 + i * 41, 43);
+                CreateBrick(world, 1 + (i * 41), 43);
             }
             for (int i = 0; i < 19; ++i)
             {
-                CreateBrick(world, 759 - i * 41, 64);
+                CreateBrick(world, 759 - (i * 41), 64);
             }
         }
     }

@@ -72,7 +72,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 int repeatCount = 1;
                 while (_types.ContainsValue(typeName))
                 {
-                    typeName = $"{typeof(T).Name}_{repeatCount}";
+                    typeName = $"{typeof(T).Name}_{repeatCount++}";
                 }
 
                 _types.Add(typeof(T), typeName);

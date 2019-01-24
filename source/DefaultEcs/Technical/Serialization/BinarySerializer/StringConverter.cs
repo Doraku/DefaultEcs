@@ -14,7 +14,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             char* valueP = (char*)lengthP;
 
             int count = sizeof(int);
-            
+
             foreach (char c in value)
             {
                 if (count + sizeof(char) > buffer.Length)

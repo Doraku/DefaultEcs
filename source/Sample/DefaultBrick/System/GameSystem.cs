@@ -25,24 +25,24 @@ namespace DefaultBrick.System
         }
 
         [Subscribe]
-        private void On(in BallDroppedMessage message)
+        private void On(in BallDroppedMessage _)
         {
             --_ballCount;
         }
 
         [Subscribe]
-        private void On(in BrickBrokenMessage message)
+        private void On(in BrickBrokenMessage _)
         {
             --_brickCount;
         }
 
         [Subscribe]
-        private void On(in NewBrickMessage message)
+        private void On(in NewBrickMessage _)
         {
             ++_brickCount;
         }
 
-        public void Update(float elaspedTime)
+        public void Update(float state)
         {
             if (_brickCount == 0)
             {

@@ -47,7 +47,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
                         writeAction = (WriteAction<object>)writeMethod.CreateDelegate(typeof(WriteAction<object>));
 
-                        _writeActions.AddOrUpdate(typeName, writeAction, (t, d) => d);
+                        _writeActions.AddOrUpdate(typeName, writeAction, (_, d) => d);
                     }
                 }
             }
@@ -69,7 +69,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                             .GetDeclaredMethod(nameof(Converter<string>.Read))
                             .CreateDelegate(typeof(ReadAction<>).MakeGenericType(type));
 
-                        _readActions.AddOrUpdate(typeName, readAction, (t, d) => d);
+                        _readActions.AddOrUpdate(typeName, readAction, (_, d) => d);
                     }
                 }
             }

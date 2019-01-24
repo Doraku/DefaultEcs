@@ -49,7 +49,7 @@ namespace DefaultSlap.System
         }
 
         [Subscribe]
-        private void On(in PlayerHitMessage message) => --_life;
+        private void On(in PlayerHitMessage _) => --_life;
 
         [Subscribe]
         private void On(in SlapMessage message)
@@ -60,7 +60,7 @@ namespace DefaultSlap.System
             {
                 Point position = bug.Get<Position>().Value;
                 Point size = bug.Get<DrawInfo>().Size;
-                if (message.DeathZone.Intersects(new Rectangle(position - size / new Point(2), size)))
+                if (message.DeathZone.Intersects(new Rectangle(position - (size / new Point(2)), size)))
                 {
                     ++_score;
                     bug.Dispose();
@@ -68,18 +68,18 @@ namespace DefaultSlap.System
             }
         }
 
-        public void Update(float elaspedTime)
+        public void Update(float state)
         {
             if (_life <= 0)
             {
                 Init();
             }
 
-            if ((_timeBeforeNextSpawn -= elaspedTime) < 0f)
+            if ((_timeBeforeNextSpawn -= state) < 0f)
             {
                 _timeBeforeNextSpawn = 5f;
 
-                int bugPerSpawn = 1 + _score / 3;
+                int bugPerSpawn = 1 + (_score / 3);
                 while (--bugPerSpawn >= 0)
                 {
                     Entity bug = _world.CreateEntity();

@@ -5,7 +5,7 @@
         public readonly int EntityId;
         public readonly Entity Copy;
 
-        public EntityCopyMessage(int entityId, Entity copy)
+        public EntityCopyMessage(int entityId, in Entity copy)
         {
             EntityId = entityId;
             Copy = copy;

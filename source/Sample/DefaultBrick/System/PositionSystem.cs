@@ -12,7 +12,7 @@ namespace DefaultBrick.System
         {
         }
 
-        protected override void Update(float elaspedTime, in Entity entity)
+        protected override void Update(float state, in Entity entity)
         {
             Vector2 position = entity.Get<Position>().Value;
             ref DrawInfo drawInfo = ref entity.Get<DrawInfo>();

@@ -25,7 +25,9 @@ namespace DefaultEcs.Test.Serialization
 
         private class SimpleClass
         {
+#pragma warning disable RCS1169 // Mark field as read-only.
             private int _1;
+#pragma warning restore RCS1169 // Mark field as read-only.
             private readonly int _2;
             private int _3 { get; }
 
@@ -47,10 +49,7 @@ namespace DefaultEcs.Test.Serialization
                     && _3 == other._3;
             }
 
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
-            }
+            public override int GetHashCode() => _1;
         }
 
         private struct StructWithClass
@@ -80,10 +79,7 @@ namespace DefaultEcs.Test.Serialization
                     && _4 == other._4;
             }
 
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
-            }
+            public override int GetHashCode() => _4;
         }
 
         private unsafe struct BigStruct
@@ -117,10 +113,7 @@ namespace DefaultEcs.Test.Serialization
                     && _1 == other._1;
             }
 
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
-            }
+            public override int GetHashCode() => _1;
         }
 
         #endregion

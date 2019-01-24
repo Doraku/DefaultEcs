@@ -15,13 +15,13 @@ namespace DefaultSlap.System
             _world = world;
         }
 
-        public void Update(float elaspedTime)
+        public void Update(float state)
         {
             Span<HitDelay> hits = _world.GetAllComponents<HitDelay>();
             for (int i = 0; i < hits.Length; ++i)
             {
                 ref HitDelay hit = ref hits[i];
-                if ((hit.Current -= elaspedTime) <= 0f)
+                if ((hit.Current -= state) <= 0f)
                 {
                     hit.Current = hit.Delay;
                     _world.Publish(new PlayerHitMessage());

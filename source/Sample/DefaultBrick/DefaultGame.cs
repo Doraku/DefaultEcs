@@ -20,10 +20,9 @@ namespace DefaultBrick
         private readonly Texture2D _square;
         private readonly SoundEffect _breakSound;
         private readonly SoundEffect _bounceSound;
+        private readonly World _world;
         private readonly SystemRunner<float> _runner;
         private readonly ISystem<float> _system;
-
-        private World _world;
 
         #endregion
 
@@ -73,13 +72,13 @@ namespace DefaultBrick
         #region Callbacks
 
         [Subscribe]
-        private void On(in BrickBrokenMessage message)
+        private void On(in BrickBrokenMessage _)
         {
             _breakSound.Play();
         }
 
         [Subscribe]
-        private void On(in BarBounceMessage message)
+        private void On(in BarBounceMessage _)
         {
             _bounceSound.Play();
         }

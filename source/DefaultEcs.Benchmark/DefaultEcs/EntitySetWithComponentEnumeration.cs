@@ -49,7 +49,6 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             }
         }
 
-
         //[Benchmark]
         //public void FuckItEnumeration()
         //{
@@ -221,7 +220,6 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         //        _lCount += ints[i].Item3;
         //    }
         //}
-
 
         //[Benchmark]
         //public void WithWtfComponentEnumeration()

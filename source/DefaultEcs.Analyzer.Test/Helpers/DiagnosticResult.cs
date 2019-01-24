@@ -41,16 +41,12 @@ namespace TestHelper
         {
             get
             {
-                if (this.locations == null)
-                {
-                    this.locations = new DiagnosticResultLocation[] { };
-                }
-                return this.locations;
+                return locations ?? (locations = new DiagnosticResultLocation[] { });
             }
 
             set
             {
-                this.locations = value;
+                locations = value;
             }
         }
 

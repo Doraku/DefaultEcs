@@ -1,6 +1,5 @@
 ﻿using System;
 using NFluent;
-using NSubstitute;
 using Xunit;
 
 namespace DefaultEcs.Test
@@ -30,31 +29,37 @@ namespace DefaultEcs.Test
         private sealed class InvalidNumberOfParameter
         {
             [Subscribe]
-            public static void Method(object arg1, object arg2) { }
+            public static void Method(object _, object __) { }
         }
 
         private sealed class InvalidReturnType
         {
             [Subscribe]
-            public static object Method(in object arg1) { return null; }
+            public static object Method(in object _) { return null; }
         }
 
         private sealed class InvalidByRefParameterType
         {
             [Subscribe]
-            public static void Method(object arg1) { }
+            public static void Method(object _) { }
         }
 
         private sealed class StaticMethod
         {
             [Subscribe]
-            public static void Method(in object arg) { }
+            public static void Method(in object arg)
+            {
+                if (arg == null)
+                {
+                    throw new ArgumentNullException(nameof(arg));
+                }
+            }
         }
 
         private class InstanceMethod
         {
             [Subscribe]
-            public void Method(in object arg) { }
+            public void Method(in object _) { }
         }
 
         private sealed class DerivedClass : InstanceMethod
@@ -90,7 +95,7 @@ namespace DefaultEcs.Test
         public void Subscribe_Should_thow_NotSupportedException_When_method_has_invalid_numbers_of_parameter()
         {
             IPublisher publisher = new Publisher();
-            
+
             Check
                 .ThatCode(() => publisher.Subscribe<InvalidNumberOfParameter>())
                 .Throws<NotSupportedException>();

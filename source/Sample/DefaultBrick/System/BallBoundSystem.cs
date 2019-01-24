@@ -11,7 +11,6 @@ namespace DefaultBrick.System
         private readonly World _world;
         private readonly List<Entity> _toRemove;
 
-
         public BallBoundSystem(World world)
             : base(world.GetEntities().With<Velocity>().With<Position>().With<Ball>().Build())
         {
@@ -19,7 +18,7 @@ namespace DefaultBrick.System
             _toRemove = new List<Entity>();
         }
 
-        protected override void Update(float elaspedTime, in Entity entity)
+        protected override void Update(float state, in Entity entity)
         {
             ref Position position = ref entity.Get<Position>();
             ref Velocity velocity = ref entity.Get<Velocity>();

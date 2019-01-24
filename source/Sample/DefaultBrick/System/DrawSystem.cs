@@ -22,7 +22,7 @@ namespace DefaultBrick.System
             _batch.Begin();
         }
 
-        protected override void Update(float elaspedTime, ref DrawInfo component)
+        protected override void Update(float state, ref DrawInfo component)
         {
             _batch.Draw(_square, component.Destination, component.Color);
         }

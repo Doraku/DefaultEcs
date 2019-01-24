@@ -23,7 +23,7 @@ namespace DefaultBrick.System
             _state = Mouse.GetState(_window);
         }
 
-        protected override void Update(float elaspedTime, in Entity entity)
+        protected override void Update(float state, in Entity entity)
         {
             int offset = entity.Get<BallStart>().OffSet;
             ref DrawInfo drawInfo = ref entity.Get<DrawInfo>();

@@ -20,10 +20,9 @@ namespace DefaultSlap
         private readonly Texture2D _square;
         private readonly SoundEffect _slapSound;
         private readonly SoundEffect _bounceSound;
+        private readonly World _world;
         private readonly ISystem<float> _system;
         private readonly SystemRunner<float> _runner;
-
-        private World _world;
 
         #endregion
 
@@ -76,13 +75,13 @@ namespace DefaultSlap
         #region Callbacks
 
         [Subscribe]
-        private void On(in SlapMessage message)
+        private void On(in SlapMessage _)
         {
             _slapSound.Play();
         }
 
         [Subscribe]
-        private void On(in PlayerHitMessage message)
+        private void On(in PlayerHitMessage _)
         {
             _bounceSound.Play();
         }

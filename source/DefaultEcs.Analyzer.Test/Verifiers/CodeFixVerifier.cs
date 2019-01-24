@@ -82,21 +82,21 @@ namespace TestHelper
             for (int i = 0; i < attempts; ++i)
             {
                 List<CodeAction> actions = new List<CodeAction>();
-                CodeFixContext context = new CodeFixContext(document, analyzerDiagnostics[0], (a, d) => actions.Add(a), CancellationToken.None);
+                CodeFixContext context = new CodeFixContext(document, analyzerDiagnostics[0], (a, _) => actions.Add(a), CancellationToken.None);
                 codeFixProvider.RegisterCodeFixesAsync(context).Wait();
 
-                if (!actions.Any())
+                if (actions.Count == 0)
                 {
                     break;
                 }
 
                 if (codeFixIndex != null)
                 {
-                    document = ApplyFix(document, actions.ElementAt((int)codeFixIndex));
+                    document = ApplyFix(document, actions[(int)codeFixIndex]);
                     break;
                 }
 
-                document = ApplyFix(document, actions.ElementAt(0));
+                document = ApplyFix(document, actions[0]);
                 analyzerDiagnostics = GetSortedDiagnosticsFromDocuments(analyzer, new[] { document });
 
                 IEnumerable<Diagnostic> newCompilerDiagnostics = GetNewDiagnostics(compilerDiagnostics, GetCompilerDiagnostics(document));
@@ -115,7 +115,7 @@ namespace TestHelper
                 }
 
                 //check if there are analyzer diagnostics left after the code fix
-                if (!analyzerDiagnostics.Any())
+                if (analyzerDiagnostics.Length == 0)
                 {
                     break;
                 }

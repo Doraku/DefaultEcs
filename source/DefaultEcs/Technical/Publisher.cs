@@ -38,7 +38,7 @@ namespace DefaultEcs.Technical
 
             public void Dispose()
             {
-                lock (typeof(Publisher<T>))
+                lock (_lockObject)
                 {
                     Actions[_worldId] -= _action;
                 }
@@ -51,6 +51,8 @@ namespace DefaultEcs.Technical
 
         #region Fields
 
+        private static readonly object _lockObject;
+
         public static SubscribeAction<T>[] Actions;
 
         #endregion
@@ -59,6 +61,8 @@ namespace DefaultEcs.Technical
 
         static Publisher()
         {
+            _lockObject = new object();
+
             Actions = new SubscribeAction<T>[2];
 
             if (typeof(T) != typeof(WorldDisposedMessage))
@@ -73,7 +77,7 @@ namespace DefaultEcs.Technical
 
         private static void On(in WorldDisposedMessage message)
         {
-            lock (typeof(Publisher<T>))
+            lock (_lockObject)
             {
                 if (message.WorldId < Actions.Length)
                 {
@@ -89,7 +93,7 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IDisposable Subscribe(int worldId, SubscribeAction<T> action)
         {
-            lock (typeof(Publisher<T>))
+            lock (_lockObject)
             {
                 ArrayExtension.EnsureLength(ref Actions, worldId);
 

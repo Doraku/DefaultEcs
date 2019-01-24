@@ -7,24 +7,25 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
+    [With(typeof(Ball), typeof(Position), typeof(Velocity))]
     public sealed class CollisionSystem : AEntitySystem<float>
     {
         private readonly World _world;
         private readonly EntitySet _solidSet;
 
         public CollisionSystem(World world)
-            : base(world.GetEntities().With<Ball>().With<Position>().With<Velocity>().Build())
+            : base(world)
         {
             _world = world;
             _solidSet = _world.GetEntities().With<Solid>().With<DrawInfo>().Build();
         }
 
-        protected override void Update(float elaspedTime, in Entity ball)
+        protected override void Update(float state, in Entity entity)
         {
-            ref Position position = ref ball.Get<Position>();
-            ref Velocity velocity = ref ball.Get<Velocity>();
-            Rectangle ballXBound = new Rectangle((int)position.Value.X, (int)(position.Value.Y - velocity.Value.Y * elaspedTime), 10, 10);
-            Rectangle ballYBound = new Rectangle((int)(position.Value.X - velocity.Value.X * elaspedTime), (int)position.Value.Y, 10, 10);
+            ref Position position = ref entity.Get<Position>();
+            ref Velocity velocity = ref entity.Get<Velocity>();
+            Rectangle ballXBound = new Rectangle((int)position.Value.X, (int)(position.Value.Y - (velocity.Value.Y * state)), 10, 10);
+            Rectangle ballYBound = new Rectangle((int)(position.Value.X - (velocity.Value.X * state)), (int)position.Value.Y, 10, 10);
 
             Span<Entity> solids = stackalloc Entity[_solidSet.Count];
             _solidSet.GetEntities().CopyTo(solids);
@@ -40,7 +41,7 @@ namespace DefaultBrick.System
                 {
                     hasCollision = true;
 
-                    if (ballYBound.X - velocity.Value.X * elaspedTime < bound.X + bound.Width)
+                    if (ballYBound.X - (velocity.Value.X * state) < bound.X + bound.Width)
                     {
                         position.Value.X -= (position.Value.X + 10 - bound.X) * 2;
                     }
@@ -68,7 +69,7 @@ namespace DefaultBrick.System
                     {
                         hasCollision = true;
 
-                        if (ballXBound.Y - velocity.Value.Y * elaspedTime < bound.Y + bound.Height)
+                        if (ballXBound.Y - (velocity.Value.Y * state) < bound.Y + bound.Height)
                         {
                             position.Value.Y -= (position.Value.Y + 10 - bound.Y) * 2;
                         }

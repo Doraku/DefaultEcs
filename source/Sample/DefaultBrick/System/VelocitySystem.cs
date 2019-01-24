@@ -12,12 +12,12 @@ namespace DefaultBrick.System
         {
         }
 
-        protected override void Update(float elaspedTime, in Entity entity)
+        protected override void Update(float state, in Entity entity)
         {
             ref Velocity velocity = ref entity.Get<Velocity>();
             ref Position position = ref entity.Get<Position>();
 
-            Vector2 offset = velocity.Value * elaspedTime;
+            Vector2 offset = velocity.Value * state;
 
             position.Value.X += offset.X;
             position.Value.Y += offset.Y;

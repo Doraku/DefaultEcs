@@ -79,7 +79,6 @@ namespace DefaultEcs.Test.System
                 Check.That(entity1.Get<bool>()).IsTrue();
                 Check.That(entity2.Get<bool>()).IsTrue();
                 Check.That(entity3.Get<bool>()).IsFalse();
-
             }
         }
 

@@ -36,7 +36,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             int repeatCount = 1;
             while (_types.ContainsValue(shortName))
             {
-                shortName = $"{typeof(T).Name}_{repeatCount}";
+                shortName = $"{typeof(T).Name}_{repeatCount++}";
             }
 
             _types.Add(typeof(T), shortName);

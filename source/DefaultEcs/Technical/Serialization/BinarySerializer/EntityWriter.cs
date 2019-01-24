@@ -66,7 +66,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 {
                     *ids = _entities[child];
 
-                    _stream.Write(_buffer, 0, sizeof(byte) + sizeof(int) * 2);
+                    _stream.Write(_buffer, 0, sizeof(byte) + (sizeof(int) * 2));
                 }
             }
         }

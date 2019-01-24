@@ -15,6 +15,7 @@ namespace DefaultEcs.System
         /// The types of the component.
         /// </summary>
         public readonly Type[] ComponentTypes;
+
         /// <summary>
         /// Whether the component type should be included or excluded.
         /// </summary>
@@ -158,7 +159,9 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="state">The state to use.</param>
         /// <param name="entities">The <see cref="Entity"/> instances to update.</param>
+#pragma warning disable RCS1231 // Make parameter ref read-only. For some reason, less performant with a "in"
         protected virtual void Update(T state, ReadOnlySpan<Entity> entities)
+#pragma warning restore RCS1231 // Make parameter ref read-only.
         {
             for (int i = 0; i < entities.Length; ++i)
             {

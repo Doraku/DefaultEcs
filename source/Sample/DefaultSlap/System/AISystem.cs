@@ -17,7 +17,7 @@ namespace DefaultSlap.System
             _random = new ThreadLocal<Random>(() => new Random());
         }
 
-        protected override void Update(float elaspedTime, in Entity entity)
+        protected override void Update(float state, in Entity entity)
         {
             Point target = entity.Get<TargetPosition>().Value;
             ref Vector2 position = ref entity.Get<PositionFloat>().Value;
@@ -32,7 +32,7 @@ namespace DefaultSlap.System
 
             offset.Normalize();
 
-            position += offset * elaspedTime * entity.Get<Speed>().Value;
+            position += offset * state * entity.Get<Speed>().Value;
         }
     }
 }

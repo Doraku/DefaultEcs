@@ -14,10 +14,8 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         {
             int entitiesPerCpu = set.Count / Environment.ProcessorCount;
 
-            Enumerable.Range(0, Environment.ProcessorCount).AsParallel().ForAll(i =>
-            {
-                action(i + 1 == Environment.ProcessorCount ? set.GetEntities().Slice(i * entitiesPerCpu) : set.GetEntities().Slice(i * entitiesPerCpu, entitiesPerCpu));
-            });
+            Enumerable.Range(0, Environment.ProcessorCount).AsParallel().ForAll(
+                i => action(i + 1 == Environment.ProcessorCount ? set.GetEntities().Slice(i * entitiesPerCpu) : set.GetEntities().Slice(i * entitiesPerCpu, entitiesPerCpu)));
         }
     }
 

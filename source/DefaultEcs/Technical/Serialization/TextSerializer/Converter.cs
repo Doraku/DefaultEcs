@@ -49,7 +49,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
                         writeAction = (WriteAction<object>)writeMethod.CreateDelegate(typeof(WriteAction<object>));
 
-                        _writeActions.AddOrUpdate(type, writeAction, (t, d) => d);
+                        _writeActions.AddOrUpdate(type, writeAction, (_, d) => d);
                     }
                 }
             }
@@ -69,7 +69,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                             .GetDeclaredMethod(nameof(Converter<string>.Read))
                             .CreateDelegate(typeof(ReadAction<>).MakeGenericType(type));
 
-                        _readActions.AddOrUpdate(type, readAction, (t, d) => d);
+                        _readActions.AddOrUpdate(type, readAction, (_, d) => d);
                     }
                 }
             }
@@ -113,7 +113,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
             _readFieldActions = new Dictionary<string, ReadFieldAction>();
 
-            _writeAction = (in T v, StreamWriter w, int i) => w.WriteLine(v.ToString());
+            _writeAction = (in T v, StreamWriter w, int _) => w.WriteLine(v.ToString());
 
             #region clr types
             if (typeof(T) == typeof(bool))

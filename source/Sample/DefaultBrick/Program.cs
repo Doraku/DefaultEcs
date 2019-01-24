@@ -1,8 +1,8 @@
 ﻿namespace DefaultBrick
 {
-    public static class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             using (DefaultGame game = new DefaultGame())
             {

@@ -178,9 +178,11 @@ namespace DefaultEcs.Test
         {
             using (World world = new World(4))
             {
-                List<Entity> entities = new List<Entity>();
-                entities.Add(world.CreateEntity());
-                entities.Add(world.CreateEntity());
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
                 Entity entity = world.CreateEntity();
                 entities.Add(world.CreateEntity());
                 entity.Dispose();

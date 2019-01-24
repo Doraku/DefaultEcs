@@ -15,6 +15,7 @@ namespace DefaultEcs
     {
         #region Fields
 
+        private static readonly object _lockObject;
         private static readonly IntDispenser _worldIdDispenser;
 
         internal static readonly ComponentFlag AliveFlag;
@@ -43,6 +44,7 @@ namespace DefaultEcs
 
         static World()
         {
+            _lockObject = new object();
             _worldIdDispenser = new IntDispenser(0);
 
             Infos = new WorldInfo[2];
@@ -67,7 +69,7 @@ namespace DefaultEcs
 
             Info = new WorldInfo(maxEntityCount);
 
-            lock (typeof(WorldInfo))
+            lock (_lockObject)
             {
                 ArrayExtension.EnsureLength(ref Infos, WorldId);
 
@@ -232,7 +234,7 @@ namespace DefaultEcs
         /// </summary>
         public void Dispose()
         {
-            lock (typeof(WorldInfo))
+            lock (_lockObject)
             {
                 Infos[WorldId] = null;
             }

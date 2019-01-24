@@ -15,11 +15,15 @@ namespace DefaultEcs.Test.Serialization
         private struct Test
         {
 #pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable RCS1169 // Mark field as read-only.
             private int _privateField;
+#pragma warning restore RCS1169 // Mark field as read-only.
 #pragma warning restore IDE0044 // Add readonly modifier
             private readonly int _privateReadOnlyField;
 
+#pragma warning disable RCS1170 // Use read-only auto-implemented property.
             private int PrivateProperty { get; set; }
+#pragma warning restore RCS1170 // Use read-only auto-implemented property.
             private int PrivateReadOnlyProperty { get; }
 
             public int PublicField;
@@ -254,7 +258,7 @@ namespace DefaultEcs.Test.Serialization
                     {
                         serializer.Serialize(stream, entities);
                     }
-                    
+
                     using (World copyWorld = new World(42))
                     {
                         Entity[] entitiesCopy;
@@ -263,7 +267,7 @@ namespace DefaultEcs.Test.Serialization
                         {
                             entitiesCopy = serializer.Deserialize(stream, copyWorld).ToArray();
                         }
-                        
+
                         Check.That(entitiesCopy[0].Get<bool>()).IsEqualTo(entities[0].Get<bool>());
                         Check.That(entitiesCopy[0].Get<sbyte>()).IsEqualTo(entities[0].Get<sbyte>());
                         Check.That(entitiesCopy[0].Get<byte>()).IsEqualTo(entities[0].Get<byte>());

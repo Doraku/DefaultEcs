@@ -8,6 +8,8 @@ namespace DefaultEcs.Technical
     {
         #region Fields
 
+        private static readonly object _lockObject;
+
         public static readonly ComponentFlag Flag;
 
         public static ComponentPool<T>[] Pools;
@@ -18,6 +20,8 @@ namespace DefaultEcs.Technical
 
         static ComponentManager()
         {
+            _lockObject = new object();
+
             Flag = ComponentFlag.GetNextFlag();
 
             Pools = new ComponentPool<T>[0];
@@ -31,7 +35,7 @@ namespace DefaultEcs.Technical
 
         private static void On(in WorldDisposedMessage message)
         {
-            lock (typeof(ComponentManager<T>))
+            lock (_lockObject)
             {
                 if (message.WorldId < Pools.Length)
                 {
@@ -47,7 +51,7 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ComponentPool<T> Add(int worldId, int maxEntityCount, int maxComponentCount)
         {
-            lock (typeof(ComponentManager<T>))
+            lock (_lockObject)
             {
                 ArrayExtension.EnsureLength(ref Pools, worldId);
 
