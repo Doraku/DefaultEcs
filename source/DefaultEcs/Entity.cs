@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Serialization;
 using DefaultEcs.Technical;
@@ -197,14 +198,9 @@ namespace DefaultEcs
         /// <returns></returns>
         public IEnumerable<Entity> GetChildren()
         {
-            HashSet<int> children = World.Infos[WorldId].EntityInfos[EntityId].Children;
-
-            if (children != null)
+            foreach (int childId in World.Infos[WorldId].EntityInfos[EntityId].Children ?? Enumerable.Empty<int>())
             {
-                foreach (int childId in children)
-                {
-                    yield return new Entity(WorldId, childId);
-                }
+                yield return new Entity(WorldId, childId);
             }
         }
 
