@@ -1,6 +1,6 @@
 ﻿namespace DefaultEcs.Technical
 {
-    internal class WorldInfo
+    internal sealed class WorldInfo
     {
         public readonly int MaxEntityCount;
 

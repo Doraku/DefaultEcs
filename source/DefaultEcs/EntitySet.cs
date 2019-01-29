@@ -29,6 +29,8 @@ namespace DefaultEcs
 
         #region Properties
 
+        internal bool IsNotEmpty => _lastIndex > -1;
+
         /// <summary>
         /// Gets the numbers of <see cref="Entity"/> in the current <see cref="EntitySet"/>.
         /// </summary>
@@ -135,7 +137,7 @@ namespace DefaultEcs
         /// </summary>
         /// <returns>A <see cref="ReadOnlySpan{T}"/> of the <see cref="Entity"/> contained in the current <see cref="EntitySet"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<Entity> GetEntities() => new ReadOnlySpan<Entity>(_entities, 0, Count);
+        public ReadOnlySpan<Entity> GetEntities() => new ReadOnlySpan<Entity>(_entities, 0, _lastIndex + 1);
 
         #endregion
 

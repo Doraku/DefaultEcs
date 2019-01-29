@@ -173,7 +173,7 @@ namespace DefaultEcs.System
 
         #region ASystem
 
-        internal sealed override bool HasItems => _set.Count > 0;
+        internal sealed override bool IsEnabled => _set.IsNotEmpty;
 
         internal sealed override void Update(int index, int maxIndex)
         {

@@ -16,7 +16,7 @@
 
         #region Properties
 
-        internal abstract bool HasItems { get; }
+        internal abstract bool IsEnabled { get; }
 
         #endregion
 
@@ -66,7 +66,7 @@
         /// <param name="state">The state to use.</param>
         public void Update(T state)
         {
-            if (HasItems)
+            if (IsEnabled)
             {
                 CurrentState = state;
 

@@ -67,7 +67,7 @@ namespace DefaultEcs.System
 
         #region ASystem
 
-        internal sealed override bool HasItems => _component.Count > 0;
+        internal sealed override bool IsEnabled => _component.IsNotEmpty;
 
         internal sealed override void Update(int index, int maxIndex)
         {
