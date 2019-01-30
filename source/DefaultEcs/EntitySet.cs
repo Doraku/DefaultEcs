@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Helper;
@@ -15,10 +17,12 @@ namespace DefaultEcs
     {
         #region Fields
 
+        private static readonly MethodInfo _componentsContains;
+        private static readonly MethodInfo _componentsDoNotContains;
+
         private readonly int _worldId;
         private readonly int _maxEntityCount;
-        private readonly ComponentEnum _withFilter;
-        private readonly ComponentEnum _withoutFilter;
+        private readonly Predicate<ComponentEnum> _filter;
         private readonly IDisposable _subscriptions;
 
         private int[] _mapping;
@@ -40,25 +44,37 @@ namespace DefaultEcs
 
         #region Initialisation
 
+        static EntitySet()
+        {
+            _componentsContains = typeof(ComponentEnum).GetTypeInfo().GetDeclaredMethod(nameof(ComponentEnum.Contains));
+            _componentsDoNotContains = typeof(ComponentEnum).GetTypeInfo().GetDeclaredMethod(nameof(ComponentEnum.DoNotContains));
+        }
+
         internal EntitySet(World world, ComponentEnum withFilter, ComponentEnum withoutFilter, List<Func<EntitySet, World, IDisposable>> subscriptions)
         {
             _worldId = world.WorldId;
             _maxEntityCount = world.MaxEntityCount;
-            _withFilter = withFilter;
-            _withoutFilter = withoutFilter;
+
+            withFilter[World.AliveFlag] = true;
+
+            ParameterExpression components = Expression.Parameter(typeof(ComponentEnum));
+            Expression filter = Expression.Call(components, _componentsContains, Expression.Constant(withFilter));
+            if (!withoutFilter.IsNull)
+            {
+                filter = Expression.And(filter, Expression.Call(components, _componentsDoNotContains, Expression.Constant(withoutFilter)));
+            }
+            _filter = Expression.Lambda<Predicate<ComponentEnum>>(filter, components).Compile();
+
             _subscriptions = subscriptions.Select(s => s(this, world)).Merge();
 
             _mapping = new int[0];
             _entities = new Entity[0];
             _lastIndex = -1;
 
-            _withFilter[World.AliveFlag] = true;
 
             for (int i = 0; i <= Math.Min(world.Info.EntityInfos.Length, world.LastEntityId); ++i)
             {
-                ref ComponentEnum components = ref world.Info.EntityInfos[i].Components;
-                if (components.Contains(_withFilter)
-                    && components.DoNotContains(_withoutFilter))
+                if (_filter(world.Info.EntityInfos[i].Components))
                 {
                     Add(i);
                 }
@@ -112,8 +128,7 @@ namespace DefaultEcs
 
         internal void WithAdded<T>(in ComponentAddedMessage<T> message)
         {
-            if (message.Components.Contains(_withFilter)
-                && message.Components.DoNotContains(_withoutFilter))
+            if (_filter(message.Components))
             {
                 Add(message.EntityId);
             }
@@ -125,8 +140,7 @@ namespace DefaultEcs
 
         internal void WithoutRemoved<T>(in ComponentRemovedMessage<T> message)
         {
-            if (message.Components.Contains(_withFilter)
-                && message.Components.DoNotContains(_withoutFilter))
+            if (_filter(message.Components))
             {
                 Add(message.EntityId);
             }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 
 namespace DefaultEcs.Benchmark.DefaultEcs
@@ -14,7 +9,6 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private World _world;
         private EntitySet _set;
         private EntitySet _filterSet;
-        private int _count;
 
         [Params(100000)]
         public int EntityCount { get; set; }
@@ -24,7 +18,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         {
             _world = new World();
             _set = _world.GetEntities().Build();
-            _filterSet = _world.GetEntities().With<int>().Build();
+            _filterSet = _world.GetEntities().With<int>().Without<double>().Build();
 
             for (int i = 0; i < EntityCount; ++i)
             {
