@@ -1,7 +1,7 @@
 @ECHO off
 
 DEL /q package
-dotnet clean source\DefaultEcs.sln -c Release
+dotnet clean source\DefaultEcs\DefaultEcs.csproj -c Release
 
 cd source\DefaultEcs.Test
 

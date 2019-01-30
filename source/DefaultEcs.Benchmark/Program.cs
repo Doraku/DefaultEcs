@@ -9,11 +9,12 @@ namespace DefaultEcs.Benchmark
             BenchmarkSwitcher.FromTypes(new[]
             {
                 //typeof(DefaultEcs.CreateEntity),
+                typeof(DefaultEcs.EntitySetFilter),
                 //typeof(DefaultEcs.EntitySetEnumeration),
                 //typeof(DefaultEcs.EntitySetWithComponentEnumeration),
                 //typeof(DefaultEcs.System),
                 //typeof(DefaultEcs.Serialization),
-                typeof(Performance.SingleComponentEntityEnumeration),
+                //typeof(Performance.SingleComponentEntityEnumeration),
                 //typeof(Performance.DoubleComponentEntityEnumeration),
                 //typeof(Message.Publish),
             }).RunAll();
