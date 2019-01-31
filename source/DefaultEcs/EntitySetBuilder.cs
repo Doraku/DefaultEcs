@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
 
@@ -13,22 +14,30 @@ namespace DefaultEcs
     {
         #region Fields
 
+        private static readonly MethodInfo _handleWithOneOf;
+
         private readonly World _world;
         private readonly List<Func<EntitySet, World, IDisposable>> _subscriptions;
 
         private ComponentEnum _withFilter;
         private ComponentEnum _withoutFilter;
+        private List<ComponentEnum> _withOneOfFilters;
 
         #endregion
 
         #region Initialisation
+
+        static EntitySetBuilder()
+        {
+            _handleWithOneOf = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(HandleWithOneOf));
+        }
 
         internal EntitySetBuilder(World world)
         {
             _world = world;
             _subscriptions = new List<Func<EntitySet, World, IDisposable>>
             {
-                (s, w) => w.Subscribe<EntityDisposedMessage>(s.Disposed)
+                (s, w) => w.Subscribe<EntityDisposedMessage>(s.Remove)
             };
         }
 
@@ -36,20 +45,12 @@ namespace DefaultEcs
 
         #region Methods
 
-        /// <summary>
-        /// Returns an <see cref="EntitySet"/> with the specified rules.
-        /// </summary>
-        /// <returns>The <see cref="EntitySet"/>.</returns>
-        public EntitySet Build()
+        private ComponentFlag HandleWithOneOf<T>()
         {
-            List<Func<EntitySet, World, IDisposable>> subscriptions = _subscriptions.ToList();
+            _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
+            _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedRemove));
 
-            if (subscriptions.Count == 1 || _withFilter.IsNull)
-            {
-                subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Created));
-            }
-
-            return new EntitySet(_world, _withFilter.Copy(), _withoutFilter.Copy(), subscriptions);
+            return ComponentManager<T>.Flag;
         }
 
         /// <summary>
@@ -60,8 +61,8 @@ namespace DefaultEcs
         public EntitySetBuilder With<T>()
         {
             _withFilter[ComponentManager<T>.Flag] = true;
-            _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.WithAdded));
-            _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.WithRemoved));
+            _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
+            _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.Remove));
 
             return this;
         }
@@ -74,10 +75,47 @@ namespace DefaultEcs
         public EntitySetBuilder Without<T>()
         {
             _withoutFilter[ComponentManager<T>.Flag] = true;
-            _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.WithoutAdded));
-            _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.WithoutRemoved));
+            _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.Remove));
+            _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
 
             return this;
+        }
+
+        public EntitySetBuilder WithOneOf(params Type[] componentTypes)
+        {
+            if (componentTypes?.Length > 0)
+            {
+                if (_withOneOfFilters == null)
+                {
+                    _withOneOfFilters = new List<ComponentEnum>();
+                }
+
+                ComponentEnum filter = new ComponentEnum();
+                foreach (Type componentType in componentTypes)
+                {
+                    filter[(ComponentFlag)_handleWithOneOf.MakeGenericMethod(componentType).Invoke(this, null)] = true;
+                }
+
+                _withOneOfFilters.Add(filter);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Returns an <see cref="EntitySet"/> with the specified rules.
+        /// </summary>
+        /// <returns>The <see cref="EntitySet"/>.</returns>
+        public EntitySet Build()
+        {
+            List<Func<EntitySet, World, IDisposable>> subscriptions = _subscriptions.ToList();
+
+            if (subscriptions.Count == 1 || (_withFilter.IsNull && _withOneOfFilters == null))
+            {
+                subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Add));
+            }
+
+            return new EntitySet(_world, _withFilter, _withoutFilter, _withOneOfFilters, subscriptions);
         }
 
         #endregion

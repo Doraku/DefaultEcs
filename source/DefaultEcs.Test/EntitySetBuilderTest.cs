@@ -134,6 +134,48 @@ namespace DefaultEcs.Test
             }
         }
 
+        [Fact]
+        public void Build_WithOneOf_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_or_T2()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().WithOneOf(typeof(bool), typeof(int)).Build())
+            {
+                List<Entity> entities = new List<Entity>
+                    {
+                        world.CreateEntity(),
+                        world.CreateEntity(),
+                        world.CreateEntity(),
+                        world.CreateEntity()
+                    };
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                Entity temp = entities[2];
+                temp.Remove<bool>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                temp.Remove<int>();
+                entities.Remove(temp);
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
         #endregion
     }
 }

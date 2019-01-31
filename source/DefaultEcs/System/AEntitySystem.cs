@@ -5,8 +5,16 @@ using System.Reflection;
 
 namespace DefaultEcs.System
 {
+    public enum ComponentFilterType
+    {
+        With,
+        Without,
+        WithOneOf
+    }
+
     /// <summary>
     /// Represents the base attribute to declare how to build the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// Do not use this attribute, prefer <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> instead.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class ComponentAttribute : Attribute
@@ -19,17 +27,17 @@ namespace DefaultEcs.System
         /// <summary>
         /// Whether the component type should be included or excluded.
         /// </summary>
-        public readonly bool Include;
+        public readonly ComponentFilterType FilterType;
 
         /// <summary>
         /// Initialize a new instance of the <see cref="ComponentAttribute"/> type.
         /// </summary>
-        /// <param name="include">Whether the component type should be included or excluded.</param>
+        /// <param name="filterType">The type of filter to apply with the given types.</param>
         /// <param name="componentTypes">The types of the component.</param>
-        public ComponentAttribute(bool include, params Type[] componentTypes)
+        public ComponentAttribute(ComponentFilterType filterType, params Type[] componentTypes)
         {
             ComponentTypes = componentTypes ?? throw new ArgumentNullException(nameof(componentTypes));
-            Include = include;
+            FilterType = filterType;
         }
     }
 
@@ -43,7 +51,7 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="componentTypes">The types of the component to include.</param>
         public WithAttribute(params Type[] componentTypes)
-            : base(true, componentTypes)
+            : base(ComponentFilterType.With, componentTypes)
         { }
     }
 
@@ -57,7 +65,14 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="componentTypes">The types of the component to exclude.</param>
         public WithoutAttribute(params Type[] componentTypes)
-            : base(false, componentTypes)
+            : base(ComponentFilterType.Without, componentTypes)
+        { }
+    }
+
+    public sealed class WithOneOfAttribute : ComponentAttribute
+    {
+        public WithOneOfAttribute(params Type[] componentTypes)
+            : base(ComponentFilterType.WithOneOf, componentTypes)
         { }
     }
 
@@ -130,15 +145,32 @@ namespace DefaultEcs.System
             TypeInfo entitySetBuilder = typeof(EntitySetBuilder).GetTypeInfo();
             MethodInfo with = entitySetBuilder.GetDeclaredMethod(nameof(EntitySetBuilder.With));
             MethodInfo without = entitySetBuilder.GetDeclaredMethod(nameof(EntitySetBuilder.Without));
+            MethodInfo withOneOf = entitySetBuilder.GetDeclaredMethod(nameof(EntitySetBuilder.WithOneOf));
 
             ParameterExpression world = Expression.Parameter(typeof(World));
             Expression expression = Expression.Call(world, typeof(World).GetTypeInfo().GetDeclaredMethod(nameof(World.GetEntities)));
 
             foreach (ComponentAttribute attribute in type.GetTypeInfo().GetCustomAttributes<ComponentAttribute>(true))
             {
-                foreach (Type componentType in attribute.ComponentTypes)
+                switch (attribute.FilterType)
                 {
-                    expression = Expression.Call(expression, (attribute.Include ? with : without).MakeGenericMethod(componentType));
+                    case ComponentFilterType.With:
+                        foreach (Type componentType in attribute.ComponentTypes)
+                        {
+                            expression = Expression.Call(expression, with.MakeGenericMethod(componentType));
+                        }
+                        break;
+
+                    case ComponentFilterType.Without:
+                        foreach (Type componentType in attribute.ComponentTypes)
+                        {
+                            expression = Expression.Call(expression, without.MakeGenericMethod(componentType));
+                        }
+                        break;
+
+                    case ComponentFilterType.WithOneOf:
+                        expression = Expression.Call(expression, withOneOf, Expression.Constant(attribute.ComponentTypes));
+                        break;
                 }
             }
 

@@ -50,18 +50,31 @@ namespace DefaultEcs
             _componentsDoNotContains = typeof(ComponentEnum).GetTypeInfo().GetDeclaredMethod(nameof(ComponentEnum.DoNotContains));
         }
 
-        internal EntitySet(World world, ComponentEnum withFilter, ComponentEnum withoutFilter, List<Func<EntitySet, World, IDisposable>> subscriptions)
+        internal EntitySet(
+            World world,
+            ComponentEnum withFilter,
+            ComponentEnum withoutFilter,
+            List<ComponentEnum> withOneOfFilters,
+            List<Func<EntitySet, World, IDisposable>> subscriptions)
         {
             _worldId = world.WorldId;
             _maxEntityCount = world.MaxEntityCount;
 
+            withFilter = withFilter.Copy();
             withFilter[World.AliveFlag] = true;
 
             ParameterExpression components = Expression.Parameter(typeof(ComponentEnum));
             Expression filter = Expression.Call(components, _componentsContains, Expression.Constant(withFilter));
             if (!withoutFilter.IsNull)
             {
-                filter = Expression.And(filter, Expression.Call(components, _componentsDoNotContains, Expression.Constant(withoutFilter)));
+                filter = Expression.And(filter, Expression.Call(components, _componentsDoNotContains, Expression.Constant(withoutFilter.Copy())));
+            }
+            if (withOneOfFilters != null)
+            {
+                foreach (ComponentEnum f in withOneOfFilters)
+                {
+                    filter = Expression.And(filter, Expression.Not(Expression.Call(components, _componentsDoNotContains, Expression.Constant(f.Copy()))));
+                }
             }
             _filter = Expression.Lambda<Predicate<ComponentEnum>>(filter, components).Compile();
 
@@ -70,7 +83,6 @@ namespace DefaultEcs
             _mapping = new int[0];
             _entities = new Entity[0];
             _lastIndex = -1;
-
 
             for (int i = 0; i <= Math.Min(world.Info.EntityInfos.Length, world.LastEntityId); ++i)
             {
@@ -122,11 +134,11 @@ namespace DefaultEcs
             }
         }
 
-        internal void Created(in EntityCreatedMessage message) => Add(message.EntityId);
+        internal void Add(in EntityCreatedMessage message) => Add(message.EntityId);
 
-        internal void Disposed(in EntityDisposedMessage message) => Remove(message.EntityId);
+        internal void Remove(in EntityDisposedMessage message) => Remove(message.EntityId);
 
-        internal void WithAdded<T>(in ComponentAddedMessage<T> message)
+        internal void CheckedAdd<T>(in ComponentAddedMessage<T> message)
         {
             if (_filter(message.Components))
             {
@@ -134,15 +146,23 @@ namespace DefaultEcs
             }
         }
 
-        internal void WithRemoved<T>(in ComponentRemovedMessage<T> message) => Remove(message.EntityId);
+        internal void Remove<T>(in ComponentRemovedMessage<T> message) => Remove(message.EntityId);
 
-        internal void WithoutAdded<T>(in ComponentAddedMessage<T> message) => Remove(message.EntityId);
+        internal void Remove<T>(in ComponentAddedMessage<T> message) => Remove(message.EntityId);
 
-        internal void WithoutRemoved<T>(in ComponentRemovedMessage<T> message)
+        internal void CheckedAdd<T>(in ComponentRemovedMessage<T> message)
         {
             if (_filter(message.Components))
             {
                 Add(message.EntityId);
+            }
+        }
+
+        internal void CheckedRemove<T>(in ComponentRemovedMessage<T> message)
+        {
+            if (!_filter(message.Components))
+            {
+                Remove(message.EntityId);
             }
         }
 

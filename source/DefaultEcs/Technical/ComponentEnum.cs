@@ -73,8 +73,8 @@ namespace DefaultEcs.Technical
                 {
                     uint part = filter._bitArray[i];
                     if (part != 0
-                        && i <= _bitArray?.Length
-                        && (_bitArray[i] & part) != 0)
+                        && i < _bitArray?.Length
+                        && (_bitArray[i] & part) != 0u)
                     {
                         return false;
                     }
