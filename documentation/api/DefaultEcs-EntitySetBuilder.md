@@ -5,4 +5,5 @@ Represent an helper object to create an [EntitySet](./DefaultEcs-EntitySet.md 'D
 ### Methods
 - [Build()](./DefaultEcs-EntitySetBuilder-Build().md 'DefaultEcs.EntitySetBuilder.Build()')
 - [With&lt;T&gt;()](./DefaultEcs-EntitySetBuilder-With-T-().md 'DefaultEcs.EntitySetBuilder.With&lt;T&gt;()')
+- [WithAny(System.Type[])](./DefaultEcs-EntitySetBuilder-WithAny(System-Type--).md 'DefaultEcs.EntitySetBuilder.WithAny(System.Type[])')
 - [Without&lt;T&gt;()](./DefaultEcs-EntitySetBuilder-Without-T-().md 'DefaultEcs.EntitySetBuilder.Without&lt;T&gt;()')

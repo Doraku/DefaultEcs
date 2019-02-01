@@ -14,7 +14,7 @@ namespace DefaultEcs
     { }
 
     /// <summary>
-    /// Provides set of static methods to automatically subscribe <see cref="SubscribeAction{T}"/> methods marked with the <see cref="SubscribeAttribute"/> on a <see cref="IPublisher"/>instance.
+    /// Provides set of static methods to automatically subscribe <see cref="SubscribeAction{T}"/> methods marked with the <see cref="SubscribeAttribute"/> on a <see cref="IPublisher"/> instance.
     /// </summary>
     public static class IPublisherExtension
     {

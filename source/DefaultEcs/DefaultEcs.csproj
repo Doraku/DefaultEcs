@@ -42,6 +42,7 @@
     <Version>0.8.1</Version>
     <PackageReleaseNotes>
 updated System.Memory reference
+added WithAny filter for EntitySetBuilder
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

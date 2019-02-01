@@ -14,14 +14,14 @@ namespace DefaultEcs
     {
         #region Fields
 
-        private static readonly MethodInfo _handleWithOneOf;
+        private static readonly MethodInfo _handleWithAny;
 
         private readonly World _world;
         private readonly List<Func<EntitySet, World, IDisposable>> _subscriptions;
 
         private ComponentEnum _withFilter;
         private ComponentEnum _withoutFilter;
-        private List<ComponentEnum> _withOneOfFilters;
+        private List<ComponentEnum> _withAnyFilters;
 
         #endregion
 
@@ -29,7 +29,7 @@ namespace DefaultEcs
 
         static EntitySetBuilder()
         {
-            _handleWithOneOf = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(HandleWithOneOf));
+            _handleWithAny = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(HandleWithAny));
         }
 
         internal EntitySetBuilder(World world)
@@ -45,7 +45,7 @@ namespace DefaultEcs
 
         #region Methods
 
-        private ComponentFlag HandleWithOneOf<T>()
+        private ComponentFlag HandleWithAny<T>()
         {
             _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
             _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedRemove));
@@ -81,22 +81,27 @@ namespace DefaultEcs
             return this;
         }
 
-        public EntitySetBuilder WithAnyOf(params Type[] componentTypes)
+        /// <summary>
+        /// Makes a rule to obsverve <see cref="Entity"/> with at least one component of the given types.
+        /// </summary>
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder WithAny(params Type[] componentTypes)
         {
             if (componentTypes?.Length > 0)
             {
-                if (_withOneOfFilters == null)
+                if (_withAnyFilters == null)
                 {
-                    _withOneOfFilters = new List<ComponentEnum>();
+                    _withAnyFilters = new List<ComponentEnum>();
                 }
 
                 ComponentEnum filter = new ComponentEnum();
                 foreach (Type componentType in componentTypes)
                 {
-                    filter[(ComponentFlag)_handleWithOneOf.MakeGenericMethod(componentType).Invoke(this, null)] = true;
+                    filter[(ComponentFlag)_handleWithAny.MakeGenericMethod(componentType).Invoke(this, null)] = true;
                 }
 
-                _withOneOfFilters.Add(filter);
+                _withAnyFilters.Add(filter);
             }
 
             return this;
@@ -110,12 +115,12 @@ namespace DefaultEcs
         {
             List<Func<EntitySet, World, IDisposable>> subscriptions = _subscriptions.ToList();
 
-            if (subscriptions.Count == 1 || (_withFilter.IsNull && _withOneOfFilters == null))
+            if (subscriptions.Count == 1 || (_withFilter.IsNull && _withAnyFilters == null))
             {
                 subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Add));
             }
 
-            return new EntitySet(_world, _withFilter, _withoutFilter, _withOneOfFilters, subscriptions);
+            return new EntitySet(_world, _withFilter, _withoutFilter, _withAnyFilters, subscriptions);
         }
 
         #endregion

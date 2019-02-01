@@ -9,7 +9,7 @@ namespace DefaultEcs.Test.System
     {
         [With(typeof(bool))]
         [Without(typeof(int))]
-        [WithAnyOf(typeof(double), typeof(uint))]
+        [WithAny(typeof(double), typeof(uint))]
         private sealed class System : AEntitySystem<int>
         {
             public System(EntitySet set)

@@ -54,7 +54,7 @@ namespace DefaultEcs
             World world,
             ComponentEnum withFilter,
             ComponentEnum withoutFilter,
-            List<ComponentEnum> withOneOfFilters,
+            List<ComponentEnum> withAnyFilters,
             List<Func<EntitySet, World, IDisposable>> subscriptions)
         {
             _worldId = world.WorldId;
@@ -69,9 +69,9 @@ namespace DefaultEcs
             {
                 filter = Expression.And(filter, Expression.Call(components, _componentsDoNotContains, Expression.Constant(withoutFilter.Copy())));
             }
-            if (withOneOfFilters != null)
+            if (withAnyFilters != null)
             {
-                foreach (ComponentEnum f in withOneOfFilters)
+                foreach (ComponentEnum f in withAnyFilters)
                 {
                     filter = Expression.And(filter, Expression.Not(Expression.Call(components, _componentsDoNotContains, Expression.Constant(f.Copy()))));
                 }
