@@ -21,6 +21,7 @@
         public SequentialSystem(params ISystem<T>[] systems)
         {
             _systems = systems ?? new ISystem<T>[0];
+            IsEnabled = true;
         }
 
         #endregion
@@ -28,14 +29,22 @@
         #region ISystem
 
         /// <summary>
+        /// Gets or sets whether the current <see cref="SequentialSystem{T}"/> instance should update or not.
+        /// </summary>
+        public bool IsEnabled { get; set; }
+
+        /// <summary>
         /// Updates all the systems once sequentially.
         /// </summary>
         /// <param name="state">The state to use.</param>
         public void Update(T state)
         {
-            foreach (ISystem<T> system in _systems)
+            if (IsEnabled)
             {
-                system?.Update(state);
+                foreach (ISystem<T> system in _systems)
+                {
+                    system?.Update(state);
+                }
             }
         }
 

@@ -134,7 +134,15 @@ namespace DefaultEcs.System
 
         #region ASystem
 
-        internal sealed override bool IsEnabled => _set.IsNotEmpty;
+        /// <summary>
+        /// Gets or sets whether the current <see cref="AEntitySystem{T}"/> instance should update or not.
+        /// Will return false is there is no <see cref="Entity"/> to update.
+        /// </summary>
+        public sealed override bool IsEnabled
+        {
+            get { return base.IsEnabled && _set.IsNotEmpty; }
+            set { base.IsEnabled = value; }
+        }
 
         internal sealed override void Update(int index, int maxIndex)
         {

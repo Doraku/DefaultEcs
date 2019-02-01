@@ -34,7 +34,22 @@ namespace DefaultEcs.Test.System
             }
         }
 
-        private void CheckUpdate(SystemRunner<int> runner)
+        #region Tests
+
+        [Fact]
+        public void New_Should_throw_ArgumentNullException_When_EntitySet_is_null()
+        {
+            Check.ThatCode(() => new System(default(EntitySet))).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void New_Should_throw_ArgumentNullException_When_World_is_null()
+        {
+            Check.ThatCode(() => new System(default(World))).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Update_Should_call_update()
         {
             using (World world = new World(4))
             {
@@ -50,7 +65,7 @@ namespace DefaultEcs.Test.System
                 Entity entity4 = world.CreateEntity();
                 entity4.Set<bool>();
 
-                using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build(), runner))
+                using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build()))
                 {
                     system.Update(0);
                 }
@@ -80,24 +95,36 @@ namespace DefaultEcs.Test.System
             }
         }
 
-        #region Tests
-
         [Fact]
-        public void New_Should_throw_ArgumentNullException_When_EntitySet_is_null()
+        public void Update_Should_not_call_update_When_disabled()
         {
-            Check.ThatCode(() => new System(default(EntitySet))).Throws<ArgumentNullException>();
-        }
+            using (World world = new World(4))
+            {
+                Entity entity1 = world.CreateEntity();
+                entity1.Set<bool>();
 
-        [Fact]
-        public void New_Should_throw_ArgumentNullException_When_World_is_null()
-        {
-            Check.ThatCode(() => new System(default(World))).Throws<ArgumentNullException>();
-        }
+                Entity entity2 = world.CreateEntity();
+                entity2.Set<bool>();
 
-        [Fact]
-        public void Update_Should_call_update()
-        {
-            CheckUpdate(null);
+                Entity entity3 = world.CreateEntity();
+                entity3.Set<bool>();
+
+                Entity entity4 = world.CreateEntity();
+                entity4.Set<bool>();
+
+                using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build())
+                {
+                    IsEnabled = false
+                })
+                {
+                    system.Update(0);
+                }
+
+                Check.That(entity1.Get<bool>()).IsFalse();
+                Check.That(entity2.Get<bool>()).IsFalse();
+                Check.That(entity3.Get<bool>()).IsFalse();
+                Check.That(entity4.Get<bool>()).IsFalse();
+            }
         }
 
         [Fact]
@@ -105,7 +132,48 @@ namespace DefaultEcs.Test.System
         {
             using (SystemRunner<int> runner = new SystemRunner<int>(2))
             {
-                CheckUpdate(runner);
+                using (World world = new World(4))
+                {
+                    Entity entity1 = world.CreateEntity();
+                    entity1.Set<bool>();
+
+                    Entity entity2 = world.CreateEntity();
+                    entity2.Set<bool>();
+
+                    Entity entity3 = world.CreateEntity();
+                    entity3.Set<bool>();
+
+                    Entity entity4 = world.CreateEntity();
+                    entity4.Set<bool>();
+
+                    using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build(), runner))
+                    {
+                        system.Update(0);
+                    }
+
+                    Check.That(entity1.Get<bool>()).IsTrue();
+                    Check.That(entity2.Get<bool>()).IsTrue();
+                    Check.That(entity3.Get<bool>()).IsTrue();
+                    Check.That(entity4.Get<bool>()).IsTrue();
+
+                    entity1.Set<bool>();
+                    entity1.Set<double>();
+                    entity2.Set<bool>();
+                    entity2.Set<uint>();
+                    entity3.Set<bool>();
+                    entity3.Set<int>();
+                    entity4.Set<bool>();
+
+                    using (ISystem<int> system = new System(world))
+                    {
+                        system.Update(0);
+                    }
+
+                    Check.That(entity1.Get<bool>()).IsTrue();
+                    Check.That(entity2.Get<bool>()).IsTrue();
+                    Check.That(entity3.Get<bool>()).IsFalse();
+                    Check.That(entity4.Get<bool>()).IsFalse();
+                }
             }
         }
 

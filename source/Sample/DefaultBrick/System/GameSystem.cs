@@ -42,6 +42,8 @@ namespace DefaultBrick.System
             ++_brickCount;
         }
 
+        public bool IsEnabled { get; set; } = true;
+
         public void Update(float state)
         {
             if (_brickCount == 0)

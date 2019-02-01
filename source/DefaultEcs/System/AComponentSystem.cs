@@ -67,7 +67,15 @@ namespace DefaultEcs.System
 
         #region ASystem
 
-        internal sealed override bool IsEnabled => _component.IsNotEmpty;
+        /// <summary>
+        /// Gets or sets whether the current <see cref="AComponentSystem{TState, TComponent}"/> instance should update or not.
+        /// Will return false if there is no component to update.
+        /// </summary>
+        public sealed override bool IsEnabled
+        {
+            get { return base.IsEnabled && _component.IsNotEmpty; }
+            set { base.IsEnabled = value; }
+        }
 
         internal sealed override void Update(int index, int maxIndex)
         {

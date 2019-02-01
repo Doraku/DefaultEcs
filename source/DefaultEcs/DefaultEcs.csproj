@@ -43,6 +43,7 @@
     <PackageReleaseNotes>
 updated System.Memory reference
 added WithAny filter for EntitySetBuilder
+added IsEnabled property on ISystem
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

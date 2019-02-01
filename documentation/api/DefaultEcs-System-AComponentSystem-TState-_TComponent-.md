@@ -16,6 +16,8 @@ The type of component to update.
 ### Constructors
 - [#ctor(DefaultEcs.World)](./DefaultEcs-System-AComponentSystem-TState-_TComponent---ctor(DefaultEcs-World).md 'DefaultEcs.System.AComponentSystem&lt;TState, TComponent&gt;.#ctor(DefaultEcs.World)')
 - [#ctor(DefaultEcs.World, DefaultEcs.System.SystemRunner&lt;TState&gt;)](./DefaultEcs-System-AComponentSystem-TState-_TComponent---ctor(DefaultEcs-World-_DefaultEcs-System-SystemRunner-TState-).md 'DefaultEcs.System.AComponentSystem&lt;TState, TComponent&gt;.#ctor(DefaultEcs.World, DefaultEcs.System.SystemRunner&lt;TState&gt;)')
+### Properties
+- [IsEnabled](./DefaultEcs-System-AComponentSystem-TState-_TComponent--IsEnabled.md 'DefaultEcs.System.AComponentSystem&lt;TState, TComponent&gt;.IsEnabled')
 ### Methods
 - [Dispose()](./DefaultEcs-System-AComponentSystem-TState-_TComponent--Dispose().md 'DefaultEcs.System.AComponentSystem&lt;TState, TComponent&gt;.Dispose()')
 - [Update(TState, System.Span&lt;TComponent&gt;)](./DefaultEcs-System-AComponentSystem-TState-_TComponent--Update(TState-_System-Span-TComponent-).md 'DefaultEcs.System.AComponentSystem&lt;TState, TComponent&gt;.Update(TState, System.Span&lt;TComponent&gt;)')

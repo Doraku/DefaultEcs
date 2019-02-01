@@ -27,6 +27,21 @@ namespace DefaultEcs.Test.System
             Check.That(done).IsTrue();
         }
 
+        [Fact]
+        public void Update_Should_not_call_the_action_When_disabled()
+        {
+            bool done = false;
+
+            ISystem<int> system = new ActionSystem<int>(_ => done = true)
+            {
+                IsEnabled = false
+            };
+
+            system.Update(0);
+
+            Check.That(done).IsFalse();
+        }
+
         #endregion
     }
 }

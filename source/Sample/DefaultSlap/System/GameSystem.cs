@@ -68,6 +68,8 @@ namespace DefaultSlap.System
             }
         }
 
+        public bool IsEnabled { get; set; } = true;
+
         public void Update(float state)
         {
             if (_life <= 0)

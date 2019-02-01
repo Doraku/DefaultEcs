@@ -81,6 +81,8 @@ namespace DefaultEcs.Benchmark.DefaultEcs
                 _set = world.GetEntities().With<Position>().With<Speed>().Build();
             }
 
+            public bool IsEnabled { get; set; } = true;
+
             public void Update(float state)
             {
                 _set.ProcessInParallel(entities =>

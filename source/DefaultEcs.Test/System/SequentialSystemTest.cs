@@ -26,6 +26,25 @@ namespace DefaultEcs.Test.System
         }
 
         [Fact]
+        public void Update_Should_not_call_update_on_any_systems_When_disabled()
+        {
+            bool done1 = false;
+            bool done2 = false;
+
+            ISystem<int> system = new SequentialSystem<int>(
+                new ActionSystem<int>(_ => done1 = true),
+                new ActionSystem<int>(_ => done2 = true))
+            {
+                IsEnabled = false
+            };
+
+            system.Update(0);
+
+            Check.That(done1).IsFalse();
+            Check.That(done2).IsFalse();
+        }
+
+        [Fact]
         public void Dispose_Should_call_Dispose_on_all_systems()
         {
             bool done1 = false;

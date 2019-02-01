@@ -15,6 +15,8 @@ namespace DefaultSlap.System
             _world = world;
         }
 
+        public bool IsEnabled { get; set; } = true;
+
         public void Update(float state)
         {
             Span<HitDelay> hits = _world.GetAllComponents<HitDelay>();

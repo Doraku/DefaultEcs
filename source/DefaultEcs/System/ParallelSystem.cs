@@ -45,8 +45,6 @@ namespace DefaultEcs.System
 
         #region ASystem
 
-        internal override bool IsEnabled => true;
-
         internal override void Update(int index, int maxIndex)
         {
             if (index == maxIndex)

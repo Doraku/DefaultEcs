@@ -14,12 +14,6 @@
 
         #endregion
 
-        #region Properties
-
-        internal abstract bool IsEnabled { get; }
-
-        #endregion
-
         #region Initialisation
 
         /// <summary>
@@ -29,6 +23,7 @@
         protected ASystem(SystemRunner<T> runner)
         {
             _runner = runner ?? SystemRunner<T>.Default;
+            IsEnabled = true;
         }
 
         /// <summary>
@@ -59,6 +54,11 @@
         #endregion
 
         #region ISystem
+
+        /// <summary>
+        /// Gets or sets whether the current <see cref="ASystem{T}"/> instance should update or not.
+        /// </summary>
+        public virtual bool IsEnabled { get; set; }
 
         /// <summary>
         /// Updates the system once.

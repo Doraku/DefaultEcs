@@ -24,6 +24,7 @@ namespace DefaultEcs.System
         public ActionSystem(Action<T> action)
         {
             _action = action ?? throw new ArgumentNullException(nameof(action));
+            IsEnabled = true;
         }
 
         #endregion
@@ -31,10 +32,21 @@ namespace DefaultEcs.System
         #region ISystem
 
         /// <summary>
+        /// Gets or sets whether the current <see cref="ActionSystem{T}"/> instance should update or not.
+        /// </summary>
+        public bool IsEnabled { get; set; }
+
+        /// <summary>
         /// Updates the system once.
         /// </summary>
         /// <param name="state">The state to use.</param>
-        public void Update(T state) => _action(state);
+        public void Update(T state)
+        {
+            if (IsEnabled)
+            {
+                _action(state);
+            }
+        }
 
         #endregion
 

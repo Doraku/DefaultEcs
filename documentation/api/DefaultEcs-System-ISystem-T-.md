@@ -8,5 +8,7 @@ Exposes a method to update a system.
 `T`
 
 The type of the object used as state to update the system.
+### Properties
+- [IsEnabled](./DefaultEcs-System-ISystem-T--IsEnabled.md 'DefaultEcs.System.ISystem&lt;T&gt;.IsEnabled')
 ### Methods
 - [Update(T)](./DefaultEcs-System-ISystem-T--Update(T).md 'DefaultEcs.System.ISystem&lt;T&gt;.Update(T)')
