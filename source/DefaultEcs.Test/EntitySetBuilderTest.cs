@@ -135,10 +135,10 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Build_WithOneOf_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_or_T2()
+        public void Build_WithAnyOf_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_or_T2()
         {
             using (World world = new World(4))
-            using (EntitySet set = world.GetEntities().WithOneOf(typeof(bool), typeof(int)).Build())
+            using (EntitySet set = world.GetEntities().WithAnyOf(typeof(bool), typeof(int)).Build())
             {
                 List<Entity> entities = new List<Entity>
                     {

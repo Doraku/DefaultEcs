@@ -81,7 +81,7 @@ namespace DefaultEcs
             return this;
         }
 
-        public EntitySetBuilder WithOneOf(params Type[] componentTypes)
+        public EntitySetBuilder WithAnyOf(params Type[] componentTypes)
         {
             if (componentTypes?.Length > 0)
             {

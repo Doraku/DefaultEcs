@@ -9,7 +9,7 @@ namespace DefaultEcs.System
     {
         With,
         Without,
-        WithOneOf
+        WithAnyOf
     }
 
     /// <summary>
@@ -69,10 +69,10 @@ namespace DefaultEcs.System
         { }
     }
 
-    public sealed class WithOneOfAttribute : ComponentAttribute
+    public sealed class WithAnyOfAttribute : ComponentAttribute
     {
-        public WithOneOfAttribute(params Type[] componentTypes)
-            : base(ComponentFilterType.WithOneOf, componentTypes)
+        public WithAnyOfAttribute(params Type[] componentTypes)
+            : base(ComponentFilterType.WithAnyOf, componentTypes)
         { }
     }
 
@@ -145,7 +145,7 @@ namespace DefaultEcs.System
             TypeInfo entitySetBuilder = typeof(EntitySetBuilder).GetTypeInfo();
             MethodInfo with = entitySetBuilder.GetDeclaredMethod(nameof(EntitySetBuilder.With));
             MethodInfo without = entitySetBuilder.GetDeclaredMethod(nameof(EntitySetBuilder.Without));
-            MethodInfo withOneOf = entitySetBuilder.GetDeclaredMethod(nameof(EntitySetBuilder.WithOneOf));
+            MethodInfo withAnyOf = entitySetBuilder.GetDeclaredMethod(nameof(EntitySetBuilder.WithAnyOf));
 
             ParameterExpression world = Expression.Parameter(typeof(World));
             Expression expression = Expression.Call(world, typeof(World).GetTypeInfo().GetDeclaredMethod(nameof(World.GetEntities)));
@@ -168,8 +168,8 @@ namespace DefaultEcs.System
                         }
                         break;
 
-                    case ComponentFilterType.WithOneOf:
-                        expression = Expression.Call(expression, withOneOf, Expression.Constant(attribute.ComponentTypes));
+                    case ComponentFilterType.WithAnyOf:
+                        expression = Expression.Call(expression, withAnyOf, Expression.Constant(attribute.ComponentTypes));
                         break;
                 }
             }
