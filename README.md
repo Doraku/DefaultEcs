@@ -115,6 +115,9 @@ EntitySet set = world.GetEntities().Without<Example>().Build();
 // this set when enumerated will give all the entities with both an Example and an int component
 EntitySet set = world.GetEntities().With<Example>().With<int>().Build();
 
+// this set when enumerated will give all the entities with either an Example or an int component
+EntitySet set = world.GetEntities().WithAny<Example, int>().Build();
+
 // this gives all the component of type Example currently used in the world
 Span<Example> components = world.GetAllComponents<Example>();
 ```
