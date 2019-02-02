@@ -11,6 +11,9 @@ cd ..\..
 
 IF %ERRORLEVEL% GTR 0 GOTO :end
 
-dotnet pack source\DefaultEcs\DefaultEcs.csproj -c Release -o ..\..\package\
+dotnet clean source\DefaultEcs\DefaultEcs.csproj -c Release
+dotnet clean source\DefaultEcs\DefaultEcs.Package.csproj -c Release
+
+dotnet pack source\DefaultEcs\DefaultEcs.Package.csproj -c Release -o ..\..\package\
 
 :end

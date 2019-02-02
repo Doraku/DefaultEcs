@@ -1,49 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup Label="Compilation">
-    <LangVersion>latest</LangVersion>
-    <TargetFrameworks>
-      netstandard1.1;
-      netstandard2.0;
-    </TargetFrameworks>
-    <Optimize>true</Optimize>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Configurations>Debug;Release</Configurations>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
-    <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-
-  <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="DefaultDocumentation" Version="0.4.0" PrivateAssets="all" />
-  </ItemGroup>
+  <Import Project="DefaultEcs.targets"/>
 
   <PropertyGroup Label="Debug" Condition="'$(Configuration)'=='Debug'">
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG</DefineConstants>
-  </PropertyGroup>
-
-  <ItemGroup Label="Reference">
-    <PackageReference Include="System.Memory" Version="4.5.2" />
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
-  </ItemGroup>
-
-  <PropertyGroup Label="Package">
-    <Authors>Paillat Laszlo</Authors>
-    <PackageId>DefaultEcs</PackageId>
-    <Description>Entity Component System framework aiming for syntax and usage simplicity with maximum performance for game development.</Description>
-    <PackageIconUrl>https://github.com/Doraku/DefaultEcs/raw/master/image/logo.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
-    <PackageLicense>https://github.com/Doraku/DefaultEcs/blob/master/LICENSE.md</PackageLicense>
-    <RepositoryUrl>https://github.com/Doraku/DefaultEcs.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
-
-    <Version>0.8.1</Version>
-    <PackageReleaseNotes>
-updated System.Memory reference
-added WithAny filter for EntitySetBuilder
-added IsEnabled property on ISystem
-    </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
