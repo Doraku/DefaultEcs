@@ -122,7 +122,7 @@ Span<Example> components = world.GetAllComponents<Example>();
 Although there is no obligation, a set of base classes are provided to help the creation of systems:
 <a name='Overview_System_ISystem'></a>
 ### ISystem<T>
-This is a base interface for all the systems.
+This is a base interface for all the systems. it exposes an `Update` method and an `IsEnabled` property. In all derived types provided in DefaultEcs, the responsability to check this property is handled by the callee, not the caller. It is set to true by default.
 
 <a name='Overview_System_ActionSystem'></a>
 ### ActionSystem<T>
