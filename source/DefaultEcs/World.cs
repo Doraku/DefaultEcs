@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Serialization;
 using DefaultEcs.Technical;
@@ -11,6 +12,7 @@ namespace DefaultEcs
     /// <summary>
     /// Represents a item use to create and manage <see cref="Entity"/> objects.
     /// </summary>
+    [DebuggerDisplay("World {WorldId}")]
     public sealed class World : IPublisher, IDisposable
     {
         #region Fields
