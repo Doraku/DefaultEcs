@@ -3,12 +3,12 @@
 ## Entity `type`
 Represents an item in the [World](./DefaultEcs-World.md 'DefaultEcs.World').
 Only use [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') generated from the [CreateEntity()](./DefaultEcs-World-CreateEntity().md 'DefaultEcs.World.CreateEntity()') method.
-### Properties
-- [IsEnabled](./DefaultEcs-Entity-IsEnabled.md 'DefaultEcs.Entity.IsEnabled')
 ### Methods
 - [CopyTo(DefaultEcs.World)](./DefaultEcs-Entity-CopyTo(DefaultEcs-World).md 'DefaultEcs.Entity.CopyTo(DefaultEcs.World)')
+- [Disable&lt;T&gt;()](./DefaultEcs-Entity-Disable-T-().md 'DefaultEcs.Entity.Disable&lt;T&gt;()')
 - [Disable()](./DefaultEcs-Entity-Disable().md 'DefaultEcs.Entity.Disable()')
 - [Dispose()](./DefaultEcs-Entity-Dispose().md 'DefaultEcs.Entity.Dispose()')
+- [Enable&lt;T&gt;()](./DefaultEcs-Entity-Enable-T-().md 'DefaultEcs.Entity.Enable&lt;T&gt;()')
 - [Enable()](./DefaultEcs-Entity-Enable().md 'DefaultEcs.Entity.Enable()')
 - [Equals(DefaultEcs.Entity)](./DefaultEcs-Entity-Equals(DefaultEcs-Entity).md 'DefaultEcs.Entity.Equals(DefaultEcs.Entity)')
 - [Equals(System.Object)](./DefaultEcs-Entity-Equals(System-Object).md 'DefaultEcs.Entity.Equals(System.Object)')
@@ -16,6 +16,8 @@ Only use [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') generated from the
 - [GetChildren()](./DefaultEcs-Entity-GetChildren().md 'DefaultEcs.Entity.GetChildren()')
 - [GetHashCode()](./DefaultEcs-Entity-GetHashCode().md 'DefaultEcs.Entity.GetHashCode()')
 - [Has&lt;T&gt;()](./DefaultEcs-Entity-Has-T-().md 'DefaultEcs.Entity.Has&lt;T&gt;()')
+- [IsEnabled&lt;T&gt;()](./DefaultEcs-Entity-IsEnabled-T-().md 'DefaultEcs.Entity.IsEnabled&lt;T&gt;()')
+- [IsEnabled()](./DefaultEcs-Entity-IsEnabled().md 'DefaultEcs.Entity.IsEnabled()')
 - [ReadAllComponents(DefaultEcs.Serialization.IComponentReader)](./DefaultEcs-Entity-ReadAllComponents(DefaultEcs-Serialization-IComponentReader).md 'DefaultEcs.Entity.ReadAllComponents(DefaultEcs.Serialization.IComponentReader)')
 - [Remove&lt;T&gt;()](./DefaultEcs-Entity-Remove-T-().md 'DefaultEcs.Entity.Remove&lt;T&gt;()')
 - [RemoveFromChildrenOf(DefaultEcs.Entity)](./DefaultEcs-Entity-RemoveFromChildrenOf(DefaultEcs-Entity).md 'DefaultEcs.Entity.RemoveFromChildrenOf(DefaultEcs.Entity)')

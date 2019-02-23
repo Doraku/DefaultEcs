@@ -46,8 +46,7 @@ namespace DefaultEcs.Test
             using (World world = new World(1))
             {
                 Entity entity = world.CreateEntity();
-
-                Check.That(entity.IsEnabled).IsTrue();
+                Check.That(entity.IsEnabled()).IsTrue();
             }
         }
 
@@ -59,7 +58,7 @@ namespace DefaultEcs.Test
                 Entity entity = world.CreateEntity();
                 entity.Disable();
 
-                Check.That(entity.IsEnabled).IsFalse();
+                Check.That(entity.IsEnabled()).IsFalse();
             }
         }
 
@@ -72,7 +71,47 @@ namespace DefaultEcs.Test
                 entity.Disable();
                 entity.Enable();
 
-                Check.That(entity.IsEnabled).IsTrue();
+                Check.That(entity.IsEnabled()).IsTrue();
+            }
+        }
+
+        [Fact]
+        public void IsEnabled_T_Should_return_true_by_default()
+        {
+            using (World world = new World(1))
+            {
+                Entity entity = world.CreateEntity();
+
+                entity.Set<bool>();
+
+                Check.That(entity.IsEnabled<bool>()).IsTrue();
+            }
+        }
+
+        [Fact]
+        public void Disable_T_Should_disable_component()
+        {
+            using (World world = new World(1))
+            {
+                Entity entity = world.CreateEntity();
+                entity.Set<bool>();
+                entity.Disable<bool>();
+
+                Check.That(entity.IsEnabled<bool>()).IsFalse();
+            }
+        }
+
+        [Fact]
+        public void Enable_T_Should_enable_component()
+        {
+            using (World world = new World(1))
+            {
+                Entity entity = world.CreateEntity();
+                entity.Set<bool>();
+                entity.Disable<bool>();
+                entity.Enable<bool>();
+
+                Check.That(entity.IsEnabled<bool>()).IsTrue();
             }
         }
 

@@ -37,18 +37,18 @@ namespace DefaultEcs
 
         private ref ComponentEnum Components => ref World.Infos[WorldId].EntityInfos[EntityId].Components;
 
-        /// <summary>
-        /// Gets whether the current <see cref="Entity"/> is enabled or not.
-        /// </summary>
-        /// <returns>true if the <see cref="Entity"/> has is enabled; otherwise, false.</returns>
-        public bool IsEnabled => WorldId == 0 ? false : Components[World.AliveFlag];
-
         #endregion
 
         #region Methods
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void Throw(string message) => throw new InvalidOperationException(message);
+
+        /// <summary>
+        /// Gets whether the current <see cref="Entity"/> is enabled or not.
+        /// </summary>
+        /// <returns>true if the <see cref="Entity"/> is enabled; otherwise, false.</returns>
+        public bool IsEnabled() => WorldId == 0 ? false : Components[World.AliveFlag];
 
         /// <summary>
         /// Enables the current <see cref="Entity"/> so it can appear in <see cref="EntitySet"/>.
@@ -73,6 +73,51 @@ namespace DefaultEcs
 
             Components[World.AliveFlag] = false;
             Publisher.Publish(WorldId, new EntityDisabledMessage(EntityId));
+        }
+
+        /// <summary>
+        /// Gets whether the current <see cref="Entity"/> component of type <typeparamref name="T"/> is enabled or not.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/> enabled; otherwise, false.</returns>
+        public bool IsEnabled<T>() => WorldId == 0 ? false : Components[ComponentManager<T>.Flag];
+
+        /// <summary>
+        /// Enables the current <see cref="Entity"/> component of type <typeparamref name="T"/> so it can appear in <see cref="EntitySet"/>.
+        /// Does nothing if current <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        public void Enable<T>()
+        {
+            if (WorldId == 0) Throw("Entity was not created from a World");
+
+            if (Has<T>())
+            {
+                ref ComponentEnum components = ref Components;
+                if (!components[ComponentManager<T>.Flag])
+                {
+                    components[ComponentManager<T>.Flag] = true;
+                    Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Disables the current <see cref="Entity"/> component of type <typeparamref name="T"/> so it does not appear in <see cref="EntitySet"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        public void Disable<T>()
+        {
+            if (WorldId == 0) Throw("Entity was not created from a World");
+
+            ref ComponentEnum components = ref Components;
+            if (components[ComponentManager<T>.Flag])
+            {
+                components[ComponentManager<T>.Flag] = false;
+                Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
+            }
         }
 
         /// <summary>
