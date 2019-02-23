@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="DefaultEcs.targets"/>
+  <Import Project="DefaultEcs.targets" />
   
   <PropertyGroup Label="Sign">
     <SignAssembly>True</SignAssembly>
@@ -19,8 +19,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.9.0</Version>
+    <Version>0.9.1-alpha4</Version>
     <PackageReleaseNotes>
+added debug info for World
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
