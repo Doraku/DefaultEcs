@@ -22,6 +22,8 @@
     <Version>0.9.1-alpha4</Version>
     <PackageReleaseNotes>
 added debug info for World
+added a way to enable/disable an entity without removing it
+handled empty struct as special flag case to not waste memory
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

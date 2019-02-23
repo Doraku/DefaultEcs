@@ -9,6 +9,8 @@ namespace DefaultEcs.Test
 {
     public sealed class WorldTest
     {
+        private struct FlagType { }
+
         #region Tests
 
         [Fact]
@@ -95,7 +97,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SetMaximumComponentCount_Should_return_false_When_maxComponentCount_is_already_setted()
         {
-            using (World world = new World(0))
+            using (World world = new World(42))
             {
                 Check.That(world.SetMaximumComponentCount<bool>(0)).IsTrue();
                 Check.That(world.SetMaximumComponentCount<bool>(42)).IsFalse();
@@ -103,11 +105,22 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SetMaximumComponentCount_Should_add()
+        public void GetMaximumComponentCount_Should_return_maxComponentCount()
         {
-            using (World world = new World(0))
+            using (World world = new World(100))
             {
-                Check.ThatCode(() => world.SetMaximumComponentCount<bool>(0)).DoesNotThrow();
+                world.SetMaximumComponentCount<bool>(42);
+                Check.That(world.GetMaximumComponentCount<bool>()).IsEqualTo(42);
+            }
+        }
+
+        [Fact]
+        public void GetMaximumComponentCount_Should_return_one_for_flag_type()
+        {
+            using (World world = new World(100))
+            {
+                world.SetMaximumComponentCount<FlagType>(42);
+                Check.That(world.GetMaximumComponentCount<FlagType>()).IsEqualTo(1);
             }
         }
 

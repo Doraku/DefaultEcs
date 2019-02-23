@@ -34,6 +34,8 @@ namespace DefaultEcs.Test
             }
         }
 
+        private struct FlagType { }
+
         #endregion
 
         #region Tests
@@ -143,6 +145,24 @@ namespace DefaultEcs.Test
                 entity.Set(true);
 
                 Check.That(entity.Get<bool>()).IsTrue();
+            }
+        }
+
+        [Fact]
+        public void Set_Should_only_produce_one_component_for_flag_type()
+        {
+            using (World world = new World(2))
+            {
+                Entity entity = world.CreateEntity();
+                Entity entity2 = world.CreateEntity();
+
+                entity.Set<FlagType>();
+                entity2.Set<FlagType>();
+
+                Check.That(entity.Has<FlagType>()).IsTrue();
+                Check.That(entity2.Has<FlagType>()).IsTrue();
+
+                Check.That(world.GetAllComponents<FlagType>().Length).IsEqualTo(1);
             }
         }
 

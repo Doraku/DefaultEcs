@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Technical.Helper;
@@ -11,6 +12,7 @@ namespace DefaultEcs.Technical
         #region Fields
 
         private readonly static bool _isReferenceType;
+        private readonly static bool _isFlagType;
 
         private readonly int _worldId;
         private readonly int _maxEntityCount;
@@ -34,14 +36,17 @@ namespace DefaultEcs.Technical
 
         static ComponentPool()
         {
-            _isReferenceType = !typeof(T).GetTypeInfo().IsValueType;
+            TypeInfo typeInfo = typeof(T).GetTypeInfo();
+
+            _isReferenceType = !typeInfo.IsValueType;
+            _isFlagType = typeInfo.IsValueType && !typeInfo.IsEnum && !typeInfo.IsPrimitive && !typeInfo.DeclaredFields.Any(f => !f.IsStatic);
         }
 
         public ComponentPool(int worldId, int maxEntityCount, int maxComponentCount)
         {
             _worldId = worldId;
             _maxEntityCount = maxEntityCount;
-            MaxComponentCount = Math.Min(maxEntityCount, maxComponentCount);
+            MaxComponentCount = _isFlagType ? 1 : Math.Min(maxEntityCount, maxComponentCount);
 
             _mapping = new int[0];
             _links = new ComponentLink[0];
@@ -107,6 +112,11 @@ namespace DefaultEcs.Technical
 
             if (_lastComponentIndex == MaxComponentCount - 1)
             {
+                if (_isFlagType)
+                {
+                    return SetSameAs(entityId, _links[_lastComponentIndex].EntityId);
+                }
+
                 ThrowMaxNumberOfComponentReached();
             }
 
