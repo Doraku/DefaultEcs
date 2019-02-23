@@ -39,7 +39,7 @@ namespace DefaultEcs.Technical
             TypeInfo typeInfo = typeof(T).GetTypeInfo();
 
             _isReferenceType = !typeInfo.IsValueType;
-            _isFlagType = typeInfo.IsValueType && !typeInfo.IsEnum && !typeInfo.IsPrimitive && !typeInfo.DeclaredFields.Any(f => !f.IsStatic);
+            _isFlagType = typeInfo.IsValueType && !typeInfo.IsEnum && !typeInfo.IsPrimitive && typeInfo.DeclaredFields.All(f => f.IsStatic);
         }
 
         public ComponentPool(int worldId, int maxEntityCount, int maxComponentCount)
