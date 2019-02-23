@@ -33,27 +33,67 @@ namespace DefaultEcs
 
         #endregion
 
+        #region Properties
+
+        private ref ComponentEnum Components => ref World.Infos[WorldId].EntityInfos[EntityId].Components;
+
+        /// <summary>
+        /// Gets whether the current <see cref="Entity"/> is enabled or not.
+        /// </summary>
+        /// <returns>true if the <see cref="Entity"/> has is enabled; otherwise, false.</returns>
+        public bool IsEnabled => WorldId == 0 ? false : Components[World.AliveFlag];
+
+        #endregion
+
         #region Methods
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void Throw(string message) => throw new InvalidOperationException(message);
+
+        /// <summary>
+        /// Enables the current <see cref="Entity"/> so it can appear in <see cref="EntitySet"/>.
+        /// </summary>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        public void Enable()
+        {
+            if (WorldId == 0) Throw("Entity was not created from a World");
+
+            ref ComponentEnum components = ref Components;
+            components[World.AliveFlag] = true;
+            Publisher.Publish(WorldId, new EntityEnabledMessage(EntityId, components));
+        }
+
+        /// <summary>
+        /// Disables the current <see cref="Entity"/> so it does not appear in <see cref="EntitySet"/>.
+        /// </summary>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        public void Disable()
+        {
+            if (WorldId == 0) Throw("Entity was not created from a World");
+
+            Components[World.AliveFlag] = false;
+            Publisher.Publish(WorldId, new EntityDisabledMessage(EntityId));
+        }
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
         public void Set<T>(in T component = default)
         {
-            if (WorldId == 0)
-            {
-                throw new InvalidOperationException("Entity was not created from a World");
-            }
+            if (WorldId == 0) Throw("Entity was not created from a World");
 
             if (ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component))
             {
-                ref ComponentEnum components = ref World.Infos[WorldId].EntityInfos[EntityId].Components;
+                ref ComponentEnum components = ref Components;
                 components[ComponentManager<T>.Flag] = true;
-
-                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
+                if (components[World.AliveFlag])
+                {
+                    Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
+                }
             }
         }
 
@@ -67,26 +107,19 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
         public void SetSameAs<T>(in Entity reference)
         {
-            if (WorldId == 0)
-            {
-                throw new InvalidOperationException("Entity was not created from a World");
-            }
-            if (WorldId != reference.WorldId)
-            {
-                throw new InvalidOperationException("Reference Entity comes from a different World");
-            }
+            if (WorldId == 0) Throw("Entity was not created from a World");
+            if (WorldId != reference.WorldId) Throw("Reference Entity comes from a different World");
             ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
-            if (!(pool?.Has(reference.EntityId) ?? false))
-            {
-                throw new InvalidOperationException($"Reference Entity does not have a component of type {nameof(T)}");
-            }
+            if (!(pool?.Has(reference.EntityId) ?? false)) Throw($"Reference Entity does not have a component of type {nameof(T)}");
 
             if (pool.SetSameAs(EntityId, reference.EntityId))
             {
-                ref ComponentEnum components = ref World.Infos[WorldId].EntityInfos[EntityId].Components;
+                ref ComponentEnum components = ref Components;
                 components[ComponentManager<T>.Flag] = true;
-
-                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
+                if (components[World.AliveFlag])
+                {
+                    Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
+                }
             }
         }
 
@@ -98,9 +131,12 @@ namespace DefaultEcs
         {
             if (ComponentManager<T>.Get(WorldId)?.Remove(EntityId) ?? false)
             {
-                ref ComponentEnum components = ref World.Infos[WorldId].EntityInfos[EntityId].Components;
+                ref ComponentEnum components = ref Components;
                 components[ComponentManager<T>.Flag] = false;
-                Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
+                if (components[World.AliveFlag])
+                {
+                    Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
+                }
             }
         }
 
@@ -129,14 +165,8 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
         public void SetAsChildOf(in Entity parent)
         {
-            if (WorldId != parent.WorldId)
-            {
-                throw new InvalidOperationException("Child and parent Entity come from a different World");
-            }
-            if (WorldId == 0)
-            {
-                throw new InvalidOperationException("Entity was not created from a World");
-            }
+            if (WorldId != parent.WorldId) Throw("Child and parent Entity come from a different World");
+            if (WorldId == 0) Throw("Entity was not created from a World");
 
             ref HashSet<int> children = ref World.Infos[WorldId].EntityInfos[parent.EntityId].Children;
             if (children == null)
@@ -167,14 +197,8 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
         public void RemoveFromChildrenOf(in Entity parent)
         {
-            if (WorldId != parent.WorldId)
-            {
-                throw new InvalidOperationException("Child and parent Entity come from a different World");
-            }
-            if (WorldId == 0)
-            {
-                throw new InvalidOperationException("Entity was not created from a World");
-            }
+            if (WorldId != parent.WorldId) Throw("Child and parent Entity come from a different World");
+            if (WorldId == 0) Throw("Entity was not created from a World");
 
             HashSet<int> children = World.Infos[WorldId].EntityInfos[parent.EntityId].Children;
             if (children?.Remove(EntityId) ?? false)
@@ -212,10 +236,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
         public Entity CopyTo(World world)
         {
-            if (WorldId == 0)
-            {
-                throw new InvalidOperationException("Entity was not created from a World");
-            }
+            if (WorldId == 0) Throw("Entity was not created from a World");
 
             Entity copy = world.CreateEntity();
             try

@@ -136,7 +136,13 @@ namespace DefaultEcs
 
         internal void Add(in EntityCreatedMessage message) => Add(message.EntityId);
 
-        internal void Remove(in EntityDisposedMessage message) => Remove(message.EntityId);
+        internal void CheckedAdd(in EntityEnabledMessage message)
+        {
+            if (_filter(message.Components))
+            {
+                Add(message.EntityId);
+            }
+        }
 
         internal void CheckedAdd<T>(in ComponentAddedMessage<T> message)
         {
@@ -145,6 +151,10 @@ namespace DefaultEcs
                 Add(message.EntityId);
             }
         }
+
+        internal void Remove(in EntityDisposedMessage message) => Remove(message.EntityId);
+
+        internal void Remove(in EntityDisabledMessage message) => Remove(message.EntityId);
 
         internal void Remove<T>(in ComponentRemovedMessage<T> message) => Remove(message.EntityId);
 

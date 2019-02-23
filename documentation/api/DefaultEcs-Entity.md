@@ -3,9 +3,13 @@
 ## Entity `type`
 Represents an item in the [World](./DefaultEcs-World.md 'DefaultEcs.World').
 Only use [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') generated from the [CreateEntity()](./DefaultEcs-World-CreateEntity().md 'DefaultEcs.World.CreateEntity()') method.
+### Properties
+- [IsEnabled](./DefaultEcs-Entity-IsEnabled.md 'DefaultEcs.Entity.IsEnabled')
 ### Methods
 - [CopyTo(DefaultEcs.World)](./DefaultEcs-Entity-CopyTo(DefaultEcs-World).md 'DefaultEcs.Entity.CopyTo(DefaultEcs.World)')
+- [Disable()](./DefaultEcs-Entity-Disable().md 'DefaultEcs.Entity.Disable()')
 - [Dispose()](./DefaultEcs-Entity-Dispose().md 'DefaultEcs.Entity.Dispose()')
+- [Enable()](./DefaultEcs-Entity-Enable().md 'DefaultEcs.Entity.Enable()')
 - [Equals(DefaultEcs.Entity)](./DefaultEcs-Entity-Equals(DefaultEcs-Entity).md 'DefaultEcs.Entity.Equals(DefaultEcs.Entity)')
 - [Equals(System.Object)](./DefaultEcs-Entity-Equals(System-Object).md 'DefaultEcs.Entity.Equals(System.Object)')
 - [Get&lt;T&gt;()](./DefaultEcs-Entity-Get-T-().md 'DefaultEcs.Entity.Get&lt;T&gt;()')

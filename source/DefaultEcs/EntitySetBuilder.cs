@@ -37,7 +37,9 @@ namespace DefaultEcs
             _world = world;
             _subscriptions = new List<Func<EntitySet, World, IDisposable>>
             {
-                (s, w) => w.Subscribe<EntityDisposedMessage>(s.Remove)
+                (s, w) => w.Subscribe<EntityDisposedMessage>(s.Remove),
+                (s, w) => w.Subscribe<EntityDisabledMessage>(s.Remove),
+                (s, w) => w.Subscribe<EntityEnabledMessage>(s.CheckedAdd)
             };
         }
 
@@ -115,7 +117,7 @@ namespace DefaultEcs
         {
             List<Func<EntitySet, World, IDisposable>> subscriptions = _subscriptions.ToList();
 
-            if (subscriptions.Count == 1 || (_withFilter.IsNull && _withAnyFilters == null))
+            if (subscriptions.Count == 3 || (_withFilter.IsNull && _withAnyFilters == null))
             {
                 subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Add));
             }

@@ -39,6 +39,42 @@ namespace DefaultEcs.Test
         #region Tests
 
         [Fact]
+        public void IsEnabled_Should_return_true_by_default()
+        {
+            using (World world = new World(1))
+            {
+                Entity entity = world.CreateEntity();
+
+                Check.That(entity.IsEnabled).IsTrue();
+            }
+        }
+
+        [Fact]
+        public void Disable_Should_disable_Entity()
+        {
+            using (World world = new World(1))
+            {
+                Entity entity = world.CreateEntity();
+                entity.Disable();
+
+                Check.That(entity.IsEnabled).IsFalse();
+            }
+        }
+
+        [Fact]
+        public void Enable_Should_enable_Entity()
+        {
+            using (World world = new World(1))
+            {
+                Entity entity = world.CreateEntity();
+                entity.Disable();
+                entity.Enable();
+
+                Check.That(entity.IsEnabled).IsTrue();
+            }
+        }
+
+        [Fact]
         public void Has_Should_return_false_When_World_does_not_have_component()
         {
             using (World world = new World(1))

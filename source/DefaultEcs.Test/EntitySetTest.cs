@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NFluent;
 using Xunit;
 
@@ -24,6 +25,28 @@ namespace DefaultEcs.Test
                 using (EntitySet set = world.GetEntities().Build())
                 {
                     Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+                }
+            }
+        }
+
+        [Fact]
+        public void GetEntities_Should_not_return_disabled_Entity()
+        {
+            using (World world = new World(4))
+            {
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                entities[0].Disable();
+
+                using (EntitySet set = world.GetEntities().Build())
+                {
+                    Check.That(set.GetEntities().ToArray()).ContainsExactly(entities.Skip(1));
                 }
             }
         }

@@ -18,4 +18,8 @@ The value of the component.
 
 [System.InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/System.InvalidOperationException 'System.InvalidOperationException')
 
+[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') was not created from a [World](./DefaultEcs-World.md 'DefaultEcs.World').
+
+[System.InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/System.InvalidOperationException 'System.InvalidOperationException')
+
 Max number of component of type [T](#DefaultEcs-Entity-Set-T-(T)-T 'DefaultEcs.Entity.Set&lt;T&gt;(T).T') reached.
