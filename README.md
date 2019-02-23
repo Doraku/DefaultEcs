@@ -388,13 +388,19 @@ This serializer is optimized for speed and file space.
 Some sample projects are available to give a better picture on how to use DefaultEcs. Those exemples were done relatively fast so they are probably not the best representation of the Entity Component System framework application.
 
 [DefaultBrick](https://github.com/Doraku/DefaultEcs/tree/master/source/Sample/DefaultBrick)
-![win10-x64](https://github.com/Doraku/DefaultEcs/releases/download/v0.9.0/DefaultBrick_win10-x64.zip)
+
+[win10-x64](https://github.com/Doraku/DefaultEcs/releases/download/v0.9.0/DefaultBrick_win10-x64.zip)
+
 ![](https://github.com/Doraku/DefaultEcs/raw/master/image/defaultbrick.gif)
+
 Basic breakout clone. The collision is buggy! As said not much time was spent debuging those. Ball moves faster as the more bricks you destroy and reset to default speed if lost. The stage reload once completed.
 
 [DefaultSlap](https://github.com/Doraku/DefaultEcs/tree/master/source/Sample/DefaultSlap)
-![win10-x64](https://github.com/Doraku/DefaultEcs/releases/download/v0.9.0/DefaultSlap_win10-x64.zip)
+
+[win10-x64](https://github.com/Doraku/DefaultEcs/releases/download/v0.9.0/DefaultSlap_win10-x64.zip)
+
 ![](https://github.com/Doraku/DefaultEcs/raw/master/image/defaultslap.gif)
+
 Basic fly swatter clone. Every five seconds, flies (blue square) will damage the player (up to 3 times until the "game" resets) and new ones will spawn.
 
 <a name='Performance'></a>
