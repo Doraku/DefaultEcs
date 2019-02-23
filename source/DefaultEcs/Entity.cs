@@ -260,43 +260,6 @@ namespace DefaultEcs
         /// <param name="reader">The <see cref="IComponentReader"/> instance to be used as callback with the current <see cref="Entity"/> components.</param>
         public void ReadAllComponents(IComponentReader reader) => Publisher.Publish(WorldId, new ComponentReadMessage(EntityId, reader ?? throw new ArgumentNullException(nameof(reader))));
 
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //public bool IsEnable<T>()
-        //{
-        //    ThrowIfNull();
-
-        //    return World.EntityComponents[WorldId][EntityId][ComponentManager<T>.Flag];
-        //}
-
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //public void Disable<T>()
-        //{
-        //    ThrowIfNull();
-
-        //    ref ComponentEnum components = ref World.EntityComponents[WorldId][EntityId];
-        //    if (components[ComponentManager<T>.Flag])
-        //    {
-        //        components[ComponentManager<T>.Flag] = false;
-        //        World.Publish(WorldId, new ComponentRemovedMessage<T>(this, components));
-        //    }
-        //}
-
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //public void Enable<T>()
-        //{
-        //    ThrowIfNull();
-
-        //    if (Has<T>())
-        //    {
-        //        ref ComponentEnum components = ref World.EntityComponents[WorldId][EntityId];
-        //        if (!components[ComponentManager<T>.Flag])
-        //        {
-        //            components[ComponentManager<T>.Flag] = true;
-        //            World.Publish(WorldId, new ComponentAddedMessage<T>(this, components));
-        //        }
-        //    }
-        //}
-
         #endregion
 
         #region IDisposable
