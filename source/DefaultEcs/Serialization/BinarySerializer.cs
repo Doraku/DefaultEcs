@@ -104,6 +104,12 @@ namespace DefaultEcs.Serialization
                                     stream.Read(buffer, 0, sizeof(int) * 2);
                                     entities[*(int*)bufferP].SetAsParentOf(entities[*((int*)bufferP + 1)]);
                                     break;
+
+                                case EntryType.DisabledEntity:
+                                    currentEntity = world.CreateEntity();
+                                    currentEntity.Disable();
+                                    entities.Add(currentEntity);
+                                    break;
                             }
                         }
 

@@ -90,6 +90,20 @@ namespace DefaultEcs.Serialization
                                     entities.Add(lineParts[1], currentEntity);
                                 }
                             }
+                            else if (nameof(EntryType.DisabledEntity).Equals(entry))
+                            {
+                                if (world == null)
+                                {
+                                    world = new World();
+                                }
+
+                                currentEntity = world.CreateEntity();
+                                currentEntity.Disable();
+                                if (lineParts.Length > 1)
+                                {
+                                    entities.Add(lineParts[1], currentEntity);
+                                }
+                            }
                             else if (lineParts.Length > 1)
                             {
                                 switch (entry)
@@ -152,7 +166,7 @@ namespace DefaultEcs.Serialization
                                     case nameof(EntryType.Component):
                                         if (currentEntity.Equals(default))
                                         {
-                                            throw new ArgumentException($"Encountered a component before creation of an Entity");
+                                            throw new ArgumentException("Encountered a component before creation of an Entity");
                                         }
                                         string[] componentEntry = lineParts[1].Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
                                         if (componentEntry.Length < 1)
@@ -170,7 +184,7 @@ namespace DefaultEcs.Serialization
                                     case nameof(EntryType.ComponentSameAs):
                                         if (currentEntity.Equals(default))
                                         {
-                                            throw new ArgumentException($"Encountered a component before creation of an Entity");
+                                            throw new ArgumentException("Encountered a component before creation of an Entity");
                                         }
                                         componentEntry = lineParts[1].Split(_split, StringSplitOptions.RemoveEmptyEntries);
                                         if (componentEntry.Length < 2)
@@ -205,9 +219,6 @@ namespace DefaultEcs.Serialization
                                         }
 
                                         parent.SetAsParentOf(child);
-                                        break;
-
-                                    default:
                                         break;
                                 }
                             }

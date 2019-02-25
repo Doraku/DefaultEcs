@@ -20,7 +20,8 @@ namespace DefaultEcs
         private static readonly object _lockObject;
         private static readonly IntDispenser _worldIdDispenser;
 
-        internal static readonly ComponentFlag AliveFlag;
+        internal static readonly ComponentFlag IsAliveFlag;
+        internal static readonly ComponentFlag IsEnabledFlag;
 
         internal static WorldInfo[] Infos;
 
@@ -51,7 +52,8 @@ namespace DefaultEcs
 
             Infos = new WorldInfo[2];
 
-            AliveFlag = ComponentFlag.GetNextFlag();
+            IsAliveFlag = ComponentFlag.GetNextFlag();
+            IsEnabledFlag = ComponentFlag.GetNextFlag();
         }
 
         /// <summary>
@@ -136,7 +138,8 @@ namespace DefaultEcs
 
             ArrayExtension.EnsureLength(ref Info.EntityInfos, entityId, MaxEntityCount);
 
-            Info.EntityInfos[entityId].Components[AliveFlag] = true;
+            Info.EntityInfos[entityId].Components[IsAliveFlag] = true;
+            Info.EntityInfos[entityId].Components[IsEnabledFlag] = true;
             Publish(new EntityCreatedMessage(entityId));
 
             return new Entity(WorldId, entityId);
@@ -191,7 +194,7 @@ namespace DefaultEcs
         {
             for (int i = 0; i <= Math.Min(Info.EntityInfos.Length, LastEntityId); ++i)
             {
-                if (Info.EntityInfos[i].Components[AliveFlag])
+                if (Info.EntityInfos[i].Components[IsAliveFlag])
                 {
                     yield return new Entity(WorldId, i);
                 }

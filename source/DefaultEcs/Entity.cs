@@ -48,7 +48,7 @@ namespace DefaultEcs
         /// Gets whether the current <see cref="Entity"/> is enabled or not.
         /// </summary>
         /// <returns>true if the <see cref="Entity"/> is enabled; otherwise, false.</returns>
-        public bool IsEnabled() => WorldId == 0 ? false : Components[World.AliveFlag];
+        public bool IsEnabled() => WorldId == 0 ? false : Components[World.IsEnabledFlag];
 
         /// <summary>
         /// Enables the current <see cref="Entity"/> so it can appear in <see cref="EntitySet"/>.
@@ -59,7 +59,7 @@ namespace DefaultEcs
             if (WorldId == 0) Throw("Entity was not created from a World");
 
             ref ComponentEnum components = ref Components;
-            components[World.AliveFlag] = true;
+            components[World.IsEnabledFlag] = true;
             Publisher.Publish(WorldId, new EntityEnabledMessage(EntityId, components));
         }
 
@@ -71,7 +71,7 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            Components[World.AliveFlag] = false;
+            Components[World.IsEnabledFlag] = false;
             Publisher.Publish(WorldId, new EntityDisabledMessage(EntityId));
         }
 
@@ -135,7 +135,7 @@ namespace DefaultEcs
             {
                 ref ComponentEnum components = ref Components;
                 components[ComponentManager<T>.Flag] = true;
-                if (components[World.AliveFlag])
+                if (components[World.IsEnabledFlag])
                 {
                     Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
                 }
@@ -161,7 +161,7 @@ namespace DefaultEcs
             {
                 ref ComponentEnum components = ref Components;
                 components[ComponentManager<T>.Flag] = true;
-                if (components[World.AliveFlag])
+                if (components[World.IsEnabledFlag])
                 {
                     Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
                 }
@@ -178,7 +178,7 @@ namespace DefaultEcs
             {
                 ref ComponentEnum components = ref Components;
                 components[ComponentManager<T>.Flag] = false;
-                if (components[World.AliveFlag])
+                if (components[World.IsEnabledFlag])
                 {
                     Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
                 }
@@ -264,7 +264,7 @@ namespace DefaultEcs
         /// <summary>
         /// Gets all the <see cref="Entity"/> setted as children of the current <see cref="Entity"/>.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An <see cref="IEnumerable{Entity}"/> of all the current <see cref="Entity"/> children.</returns>
         public IEnumerable<Entity> GetChildren()
         {
             foreach (int childId in World.Infos[WorldId].EntityInfos[EntityId].Children ?? Enumerable.Empty<int>())

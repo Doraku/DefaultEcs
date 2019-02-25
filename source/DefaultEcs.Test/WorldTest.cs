@@ -205,6 +205,25 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void GetAllEntities_Should_return_disabled_entities()
+        {
+            using (World world = new World(4))
+            {
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+                Entity entity = world.CreateEntity();
+                entities.Add(world.CreateEntity());
+                entity.Dispose();
+                entities[1].Disable();
+
+                Check.That(world.GetAllEntities()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
         public void ReadAllComponentTypes_Should_throw_ArgumentNullException_When_reader_is_null()
         {
             using (World world = new World(0))

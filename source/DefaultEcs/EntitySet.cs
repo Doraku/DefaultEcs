@@ -61,7 +61,8 @@ namespace DefaultEcs
             _maxEntityCount = world.MaxEntityCount;
 
             withFilter = withFilter.Copy();
-            withFilter[World.AliveFlag] = true;
+            withFilter[World.IsAliveFlag] = true;
+            withFilter[World.IsEnabledFlag] = true;
 
             ParameterExpression components = Expression.Parameter(typeof(ComponentEnum));
             Expression filter = Expression.Call(components, _componentsContains, Expression.Constant(withFilter));

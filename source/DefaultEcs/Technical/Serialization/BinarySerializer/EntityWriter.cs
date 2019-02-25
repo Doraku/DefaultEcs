@@ -45,7 +45,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         {
             foreach (Entity entity in entities)
             {
-                *_bufferP = (byte)EntryType.Entity;
+                *_bufferP = (byte)(entity.IsEnabled() ? EntryType.Entity : EntryType.DisabledEntity);
                 ++_entityCount;
 
                 _stream.Write(_buffer, 0, sizeof(byte));

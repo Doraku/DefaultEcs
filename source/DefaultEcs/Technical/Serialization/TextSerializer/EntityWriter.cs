@@ -42,7 +42,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 _currentEntity = entity;
 
                 _writer.WriteLine();
-                _writer.WriteLine($"{nameof(EntryType.Entity)} {_entityCount}");
+                string entry = entity.IsEnabled() ? nameof(EntryType.Entity) : nameof(EntryType.DisabledEntity);
+                _writer.WriteLine($"{entry} {_entityCount}");
 
                 entity.ReadAllComponents(this);
             }

@@ -144,6 +144,8 @@ namespace DefaultEcs.Test.Serialization
                 entities[0].Set<InnerClass>();
                 entities[0].Set<IEnumerable<int>>(new int[] { 1, 2, 3 });
 
+                entities[1].Disable();
+
                 entities[0].SetAsParentOf(entities[1]);
 
                 ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
@@ -194,6 +196,8 @@ namespace DefaultEcs.Test.Serialization
 
                         Check.That(entitiesCopy[0].Get<InnerClass>()).IsEqualTo(entities[0].Get<InnerClass>());
                         Check.That(entitiesCopy[0].Get<IEnumerable<int>>()).ContainsExactly(entities[0].Get<IEnumerable<int>>());
+
+                        Check.That(entitiesCopy[1].IsEnabled()).IsEqualTo(entities[1].IsEnabled());
 
                         entitiesCopy[0].Dispose();
 
@@ -247,6 +251,8 @@ namespace DefaultEcs.Test.Serialization
                 entities[0].Set<InnerClass>();
                 entities[0].Set<IEnumerable<int>>(new int[] { 1, 2, 3 });
 
+                entities[1].Disable();
+
                 entities[0].SetAsParentOf(entities[1]);
 
                 ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
@@ -294,6 +300,8 @@ namespace DefaultEcs.Test.Serialization
 
                         Check.That(entitiesCopy[0].Get<InnerClass>()).IsEqualTo(entities[0].Get<InnerClass>());
                         Check.That(entitiesCopy[0].Get<IEnumerable<int>>()).ContainsExactly(entities[0].Get<IEnumerable<int>>());
+
+                        Check.That(entitiesCopy[1].IsEnabled()).IsEqualTo(entities[1].IsEnabled());
 
                         entitiesCopy[0].Dispose();
 
