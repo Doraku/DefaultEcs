@@ -22,6 +22,8 @@ namespace DefaultEcs.Serialization
             void SetMaximumComponentCount(World world, int maxComponentCount);
             void SetComponent(in Entity entity, string line, StreamReader reader);
             void SetSameAsComponent(in Entity entity, in Entity reference);
+            void SetDisabledComponent(in Entity entity, string line, StreamReader reader);
+            void SetDisabledSameAsComponent(in Entity entity, in Entity reference);
         }
 
         private sealed class Operation<T> : IOperation
@@ -43,6 +45,20 @@ namespace DefaultEcs.Serialization
             }
 
             public void SetSameAsComponent(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
+
+            public void SetDisabledComponent(in Entity entity, string line, StreamReader reader)
+            {
+                try
+                {
+                    entity.SetDisabled(Converter<T>.Read(line, reader));
+                }
+                catch (Exception exception)
+                {
+                    throw new ArgumentException("Error while parsing", exception);
+                }
+            }
+
+            public void SetDisabledSameAsComponent(in Entity entity, in Entity reference) => entity.SetSameAsDisabled<T>(reference);
 
             #endregion
         }
@@ -97,8 +113,7 @@ namespace DefaultEcs.Serialization
                                     world = new World();
                                 }
 
-                                currentEntity = world.CreateEntity();
-                                currentEntity.Disable();
+                                currentEntity = world.CreateDisabledEntity();
                                 if (lineParts.Length > 1)
                                 {
                                     entities.Add(lineParts[1], currentEntity);
@@ -219,6 +234,46 @@ namespace DefaultEcs.Serialization
                                         }
 
                                         parent.SetAsParentOf(child);
+                                        break;
+
+                                    case nameof(EntryType.DisabledComponent):
+                                        if (currentEntity.Equals(default))
+                                        {
+                                            throw new ArgumentException("Encountered a component before creation of an Entity");
+                                        }
+                                        componentEntry = lineParts[1].Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
+                                        if (componentEntry.Length < 1)
+                                        {
+                                            throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
+                                        }
+                                        if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
+                                        {
+                                            throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
+                                        }
+
+                                        operation.SetDisabledComponent(currentEntity, componentEntry.Length > 1 ? componentEntry[1] : null, reader);
+                                        break;
+
+                                    case nameof(EntryType.DisabledComponentSameAs):
+                                        if (currentEntity.Equals(default))
+                                        {
+                                            throw new ArgumentException("Encountered a component before creation of an Entity");
+                                        }
+                                        componentEntry = lineParts[1].Split(_split, StringSplitOptions.RemoveEmptyEntries);
+                                        if (componentEntry.Length < 2)
+                                        {
+                                            throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
+                                        }
+                                        if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
+                                        {
+                                            throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
+                                        }
+                                        if (!entities.TryGetValue(componentEntry[1], out reference))
+                                        {
+                                            throw new ArgumentException($"Unknown reference Entity '{componentEntry[1]}'");
+                                        }
+
+                                        operation.SetDisabledSameAsComponent(currentEntity, reference);
                                         break;
                                 }
                             }

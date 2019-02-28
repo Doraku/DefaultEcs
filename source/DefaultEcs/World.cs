@@ -122,6 +122,22 @@ namespace DefaultEcs
 
         #region Methods
 
+        internal Entity CreateDisabledEntity()
+        {
+            int entityId = _entityIdDispenser.GetFreeInt();
+
+            if (entityId >= MaxEntityCount)
+            {
+                throw new InvalidOperationException("Max number of Entity reached");
+            }
+
+            ArrayExtension.EnsureLength(ref Info.EntityInfos, entityId, MaxEntityCount);
+
+            Info.EntityInfos[entityId].Components[IsAliveFlag] = true;
+
+            return new Entity(WorldId, entityId);
+        }
+
         /// <summary>
         /// Creates a new instance of the <see cref="Entity"/> struct.
         /// </summary>

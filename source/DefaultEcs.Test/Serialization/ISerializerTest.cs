@@ -140,6 +140,10 @@ namespace DefaultEcs.Test.Serialization
                 entities[1].SetSameAs<InnerTest>(entities[2]);
                 entities[1].Set(new Test(42));
                 entities[2].SetSameAs<Test>(entities[1]);
+                entities[2].SetSameAs<bool>(entities[0]);
+                entities[2].Disable<bool>();
+                entities[2].Set<sbyte>(42);
+                entities[2].Disable<sbyte>();
 
                 entities[0].Set<InnerClass>();
                 entities[0].Set<IEnumerable<int>>(new int[] { 1, 2, 3 });
@@ -199,6 +203,11 @@ namespace DefaultEcs.Test.Serialization
 
                         Check.That(entitiesCopy[1].IsEnabled()).IsEqualTo(entities[1].IsEnabled());
 
+                        Check.That(entitiesCopy[2].Get<bool>()).IsEqualTo(entities[2].Get<bool>());
+                        Check.That(entitiesCopy[2].IsEnabled<bool>()).IsFalse();
+                        Check.That(entitiesCopy[2].Get<sbyte>()).IsEqualTo(entities[2].Get<sbyte>());
+                        Check.That(entitiesCopy[2].IsEnabled<sbyte>()).IsFalse();
+
                         entitiesCopy[0].Dispose();
 
                         Check.That(copyWorld.GetAllEntities().Count()).IsEqualTo(1);
@@ -247,6 +256,10 @@ namespace DefaultEcs.Test.Serialization
                 entities[1].SetSameAs<InnerTest>(entities[2]);
                 entities[1].Set(new Test(42));
                 entities[2].SetSameAs<Test>(entities[1]);
+                entities[2].SetSameAs<bool>(entities[0]);
+                entities[2].Disable<bool>();
+                entities[2].Set<sbyte>(42);
+                entities[2].Disable<sbyte>();
 
                 entities[0].Set<InnerClass>();
                 entities[0].Set<IEnumerable<int>>(new int[] { 1, 2, 3 });
@@ -302,6 +315,11 @@ namespace DefaultEcs.Test.Serialization
                         Check.That(entitiesCopy[0].Get<IEnumerable<int>>()).ContainsExactly(entities[0].Get<IEnumerable<int>>());
 
                         Check.That(entitiesCopy[1].IsEnabled()).IsEqualTo(entities[1].IsEnabled());
+
+                        Check.That(entitiesCopy[2].Get<bool>()).IsEqualTo(entities[2].Get<bool>());
+                        Check.That(entitiesCopy[2].IsEnabled<bool>()).IsFalse();
+                        Check.That(entitiesCopy[2].Get<sbyte>()).IsEqualTo(entities[2].Get<sbyte>());
+                        Check.That(entitiesCopy[2].IsEnabled<sbyte>()).IsFalse();
 
                         entitiesCopy[0].Dispose();
 

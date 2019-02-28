@@ -44,6 +44,23 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void Throw(string message) => throw new InvalidOperationException(message);
 
+        internal void SetDisabled<T>(in T component)
+        {
+            if (WorldId == 0) Throw("Entity was not created from a World");
+
+            ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component);
+        }
+
+        internal void SetSameAsDisabled<T>(in Entity reference)
+        {
+            if (WorldId == 0) Throw("Entity was not created from a World");
+            if (WorldId != reference.WorldId) Throw("Reference Entity comes from a different World");
+            ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
+            if (!(pool?.Has(reference.EntityId) ?? false)) Throw($"Reference Entity does not have a component of type {nameof(T)}");
+
+            pool.SetSameAs(EntityId, reference.EntityId);
+        }
+
         /// <summary>
         /// Gets whether the current <see cref="Entity"/> is enabled or not.
         /// </summary>

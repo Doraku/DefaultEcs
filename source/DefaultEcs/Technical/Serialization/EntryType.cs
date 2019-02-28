@@ -9,6 +9,8 @@
         Component = 4,
         ComponentSameAs = 5,
         ParentChild = 6,
-        DisabledEntity = 7
+        DisabledEntity = 7,
+        DisabledComponent = 8,
+        DisabledComponentSameAs = 9
     }
 }

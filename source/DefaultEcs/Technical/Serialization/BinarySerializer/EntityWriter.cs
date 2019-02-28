@@ -93,7 +93,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             Tuple<Entity, Type> componentKey = Tuple.Create(componentOwner, typeof(T));
             if (_components.TryGetValue(componentKey, out int key))
             {
-                *_bufferP = (byte)EntryType.ComponentSameAs;
+                *_bufferP = (byte)(_currentEntity.IsEnabled<T>() ? EntryType.ComponentSameAs : EntryType.DisabledComponentSameAs);
                 ushort* typeId = (ushort*)(_bufferP + 1);
                 *typeId++ = _types[typeof(T)];
                 *(int*)typeId = key;
@@ -103,7 +103,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             else
             {
                 _components.Add(componentKey, _entityCount);
-                *_bufferP = (byte)EntryType.Component;
+                *_bufferP = (byte)(_currentEntity.IsEnabled<T>() ? EntryType.Component : EntryType.DisabledComponent);
                 *(ushort*)(_bufferP + 1) = _types[typeof(T)];
 
                 _stream.Write(_buffer, 0, sizeof(byte) + sizeof(ushort));

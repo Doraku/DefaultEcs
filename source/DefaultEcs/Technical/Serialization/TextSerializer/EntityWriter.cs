@@ -84,12 +84,14 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             Tuple<Entity, Type> componentKey = Tuple.Create(componentOwner, typeof(T));
             if (_components.TryGetValue(componentKey, out int key))
             {
-                _writer.WriteLine($"{nameof(EntryType.ComponentSameAs)} {_types[typeof(T)]} {key}");
+                string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.ComponentSameAs) : nameof(EntryType.DisabledComponentSameAs);
+                _writer.WriteLine($"{entry} {_types[typeof(T)]} {key}");
             }
             else
             {
                 _components.Add(componentKey, _entityCount);
-                _writer.Write($"{nameof(EntryType.Component)} {_types[typeof(T)]} ");
+                string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.Component) : nameof(EntryType.DisabledComponent);
+                _writer.Write($"{entry} {_types[typeof(T)]} ");
                 Converter<T>.Write(component, _writer, 0);
             }
         }

@@ -19,6 +19,8 @@ namespace DefaultEcs.Serialization
             void SetMaximumComponentCount(World world, int maxComponentCount);
             void SetComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP);
             void SetSameAsComponent(in Entity entity, in Entity reference);
+            void SetDisabledComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP);
+            void SetDisabledSameAsComponent(in Entity entity, in Entity reference);
         }
 
         private sealed class Operation<T> : IOperation
@@ -30,6 +32,10 @@ namespace DefaultEcs.Serialization
             public void SetComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP) => entity.Set(Converter<T>.Read(stream, buffer, bufferP));
 
             public void SetSameAsComponent(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
+
+            public void SetDisabledComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP) => entity.SetDisabled(Converter<T>.Read(stream, buffer, bufferP));
+
+            public void SetDisabledSameAsComponent(in Entity entity, in Entity reference) => entity.SetSameAsDisabled<T>(reference);
 
             #endregion
         }
@@ -106,9 +112,18 @@ namespace DefaultEcs.Serialization
                                     break;
 
                                 case EntryType.DisabledEntity:
-                                    currentEntity = world.CreateEntity();
-                                    currentEntity.Disable();
+                                    currentEntity = world.CreateDisabledEntity();
                                     entities.Add(currentEntity);
+                                    break;
+
+                                case EntryType.DisabledComponent:
+                                    stream.Read(buffer, 0, sizeof(ushort));
+                                    operations[*(ushort*)bufferP].SetDisabledComponent(currentEntity, stream, buffer, bufferP);
+                                    break;
+
+                                case EntryType.DisabledComponentSameAs:
+                                    stream.Read(buffer, 0, sizeof(ushort) + sizeof(int));
+                                    operations[*(ushort*)bufferP].SetDisabledSameAsComponent(currentEntity, entities[*(int*)((ushort*)bufferP + 1)]);
                                     break;
                             }
                         }
