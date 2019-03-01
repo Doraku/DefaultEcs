@@ -63,10 +63,7 @@ namespace DefaultEcs.Technical
 
         #region Callbacks
 
-        private void On(in ComponentTypeReadMessage message)
-        {
-            message.Reader.OnRead<T>(MaxComponentCount);
-        }
+        private void On(in ComponentTypeReadMessage message) => message.Reader.OnRead<T>(MaxComponentCount);
 
         private void On(in EntityDisposedMessage message) => Remove(message.EntityId);
 

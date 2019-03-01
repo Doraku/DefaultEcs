@@ -1,7 +1,7 @@
 #### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs](./DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## World `type`
-Represents a item use to create and manage [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') objects.
+Represents a item used to create and manage [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') objects.
 ### Constructors
 - [#ctor()](./DefaultEcs-World--ctor().md 'DefaultEcs.World.#ctor()')
 - [#ctor(System.Int32)](./DefaultEcs-World--ctor(System-Int32).md 'DefaultEcs.World.#ctor(System.Int32)')

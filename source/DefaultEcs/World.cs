@@ -10,7 +10,7 @@ using DefaultEcs.Technical.Message;
 namespace DefaultEcs
 {
     /// <summary>
-    /// Represents a item use to create and manage <see cref="Entity"/> objects.
+    /// Represents a item used to create and manage <see cref="Entity"/> objects.
     /// </summary>
     [DebuggerDisplay("World {WorldId}")]
     public sealed class World : IPublisher, IDisposable
