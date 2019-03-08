@@ -19,7 +19,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.9.1-alpha6</Version>
+    <Version>0.9.1</Version>
     <PackageReleaseNotes>
 added debug info for World
 added a way to enable/disable an entity without removing it
