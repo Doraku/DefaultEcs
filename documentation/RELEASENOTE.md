@@ -1,3 +1,11 @@
+## DefaultEcs 0.9.1
+added debug info for World
+added a way to enable/disable an entity without removing it
+handled empty struct as special flag case to not waste memory
+added a way to enable/disable a component on an entity without removing it
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.9.1)
+
 ## DefaultEcs 0.9.0
 updated System.Memory reference
 added WithAny filter for EntitySetBuilder
