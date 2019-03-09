@@ -41,6 +41,27 @@ namespace DefaultEcs.Test
         #region Tests
 
         [Fact]
+        public void IsAlive_Should_return_true()
+        {
+            using (World world = new World(1))
+            {
+                Entity entity = world.CreateEntity();
+                Check.That(entity.IsAlive).IsTrue();
+            }
+        }
+
+        [Fact]
+        public void IsAlive_Should_return_false_When_disposed()
+        {
+            using (World world = new World(1))
+            {
+                Entity entity = world.CreateEntity();
+                entity.Dispose();
+                Check.That(entity.IsAlive).IsFalse();
+            }
+        }
+
+        [Fact]
         public void IsEnabled_Should_return_true_by_default()
         {
             using (World world = new World(1))

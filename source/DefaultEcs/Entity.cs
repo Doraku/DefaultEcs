@@ -37,6 +37,16 @@ namespace DefaultEcs
 
         private ref ComponentEnum Components => ref World.Infos[WorldId].EntityInfos[EntityId].Components;
 
+        /// <summary>
+        /// Gets whether the current <see cref="Entity"/> is alive or not.
+        /// </summary>
+        /// <returns>true if the <see cref="Entity"/> is alive; otherwise, false.</returns>
+        public bool IsAlive
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => WorldId == 0 ? false : Components[World.IsAliveFlag];
+        }
+
         #endregion
 
         #region Methods
@@ -65,6 +75,7 @@ namespace DefaultEcs
         /// Gets whether the current <see cref="Entity"/> is enabled or not.
         /// </summary>
         /// <returns>true if the <see cref="Entity"/> is enabled; otherwise, false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsEnabled() => WorldId == 0 ? false : Components[World.IsEnabledFlag];
 
         /// <summary>
@@ -97,6 +108,7 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/> enabled; otherwise, false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsEnabled<T>() => WorldId == 0 ? false : Components[ComponentManager<T>.Flag];
 
         /// <summary>
@@ -328,7 +340,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Clean the current <see cref="Entity"/> of all its components.
-        /// The current <see cref="Entity"/> should not be used again after calling this method.
+        /// The current <see cref="Entity"/> should not be used again after calling this method and <see cref="IsAlive"/> will return false.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose() => Publisher.Publish(WorldId, new EntityDisposedMessage(EntityId));
