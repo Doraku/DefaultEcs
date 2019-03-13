@@ -14,7 +14,9 @@ namespace DefaultEcs
     {
         #region Fields
 
-        private static readonly MethodInfo _handleWithAny;
+        private static readonly MethodInfo _with;
+        private static readonly MethodInfo _without;
+        private static readonly MethodInfo _withAny;
 
         private readonly World _world;
         private readonly List<Func<EntitySet, World, IDisposable>> _subscriptions;
@@ -29,7 +31,9 @@ namespace DefaultEcs
 
         static EntitySetBuilder()
         {
-            _handleWithAny = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(HandleWithAny));
+            _with = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(With)).First(m => m.ContainsGenericParameters);
+            _without = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(Without)).First(m => m.ContainsGenericParameters);
+            _withAny = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WithAny)).First(m => m.ContainsGenericParameters);
         }
 
         internal EntitySetBuilder(World world)
@@ -47,7 +51,7 @@ namespace DefaultEcs
 
         #region Methods
 
-        private ComponentFlag HandleWithAny<T>()
+        private ComponentFlag WithAny<T>()
         {
             _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
             _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedRemove));
@@ -70,6 +74,24 @@ namespace DefaultEcs
         }
 
         /// <summary>
+        /// Makes a rule to obsverve <see cref="Entity"/> with all component of the given types.
+        /// </summary>
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder With(params Type[] componentTypes)
+        {
+            if (componentTypes?.Length > 0)
+            {
+                foreach (Type componentType in componentTypes)
+                {
+                    _with.MakeGenericMethod(componentType).Invoke(this, null);
+                }
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Makes a rule to ignore <see cref="Entity"/> with a component of type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
@@ -79,6 +101,24 @@ namespace DefaultEcs
             _withoutFilter[ComponentManager<T>.Flag] = true;
             _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.Remove));
             _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Makes a rule to ignore <see cref="Entity"/> with at least one component of the given types.
+        /// </summary>
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder Without(params Type[] componentTypes)
+        {
+            if (componentTypes?.Length > 0)
+            {
+                foreach (Type componentType in componentTypes)
+                {
+                    _without.MakeGenericMethod(componentType).Invoke(this, null);
+                }
+            }
 
             return this;
         }
@@ -100,7 +140,7 @@ namespace DefaultEcs
                 ComponentEnum filter = new ComponentEnum();
                 foreach (Type componentType in componentTypes)
                 {
-                    filter[(ComponentFlag)_handleWithAny.MakeGenericMethod(componentType).Invoke(this, null)] = true;
+                    filter[(ComponentFlag)_withAny.MakeGenericMethod(componentType).Invoke(this, null)] = true;
                 }
 
                 _withAnyFilters.Add(filter);

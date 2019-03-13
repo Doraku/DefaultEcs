@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -13,13 +14,28 @@ namespace DefaultEcs.System
     {
         #region Fields
 
-        private static readonly ConcurrentDictionary<Type, Func<World, EntitySet>> _entitySetFactories = new ConcurrentDictionary<Type, Func<World, EntitySet>>();
+        private static readonly ConcurrentDictionary<Type, Func<World, EntitySet>> _entitySetFactories;
+        private static readonly MethodInfo _with;
+        private static readonly MethodInfo _without;
+        private static readonly MethodInfo _withAny;
+        private static readonly MethodInfo _build;
 
         private readonly EntitySet _set;
 
         #endregion
 
         #region Initialisation
+
+        static AEntitySystem()
+        {
+            _entitySetFactories = new ConcurrentDictionary<Type, Func<World, EntitySet>>();
+
+            TypeInfo entitySetBuilder = typeof(EntitySetBuilder).GetTypeInfo();
+            _with = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.With)).First(m => !m.ContainsGenericParameters);
+            _without = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.Without)).First(m => !m.ContainsGenericParameters);
+            _withAny = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WithAny)).First(m => !m.ContainsGenericParameters);
+            _build = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.Build)).First(m => !m.ContainsGenericParameters);
+        }
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="EntitySet"/> and <see cref="SystemRunner{T}"/>.
@@ -71,11 +87,6 @@ namespace DefaultEcs.System
 
         private static Func<World, EntitySet> GetEntitySetFactory(Type type)
         {
-            TypeInfo entitySetBuilder = typeof(EntitySetBuilder).GetTypeInfo();
-            MethodInfo with = entitySetBuilder.GetDeclaredMethod(nameof(EntitySetBuilder.With));
-            MethodInfo without = entitySetBuilder.GetDeclaredMethod(nameof(EntitySetBuilder.Without));
-            MethodInfo withAny = entitySetBuilder.GetDeclaredMethod(nameof(EntitySetBuilder.WithAny));
-
             ParameterExpression world = Expression.Parameter(typeof(World));
             Expression expression = Expression.Call(world, typeof(World).GetTypeInfo().GetDeclaredMethod(nameof(World.GetEntities)));
 
@@ -84,28 +95,20 @@ namespace DefaultEcs.System
                 switch (attribute.FilterType)
                 {
                     case ComponentFilterType.With:
-                        foreach (Type componentType in attribute.ComponentTypes)
-                        {
-                            expression = Expression.Call(expression, with.MakeGenericMethod(componentType));
-                        }
+                        expression = Expression.Call(expression, _with, Expression.Constant(attribute.ComponentTypes));
                         break;
 
                     case ComponentFilterType.Without:
-                        foreach (Type componentType in attribute.ComponentTypes)
-                        {
-                            expression = Expression.Call(expression, without.MakeGenericMethod(componentType));
-                        }
+                        expression = Expression.Call(expression, _without, Expression.Constant(attribute.ComponentTypes));
                         break;
 
                     case ComponentFilterType.WithAny:
-                        expression = Expression.Call(expression, withAny, Expression.Constant(attribute.ComponentTypes));
+                        expression = Expression.Call(expression, _withAny, Expression.Constant(attribute.ComponentTypes));
                         break;
                 }
             }
-
-            expression = Expression.Call(expression, entitySetBuilder.GetDeclaredMethod(nameof(EntitySetBuilder.Build)));
-
-            return Expression.Lambda<Func<World, EntitySet>>(expression, world).Compile();
+            
+            return Expression.Lambda<Func<World, EntitySet>>(Expression.Call(expression, _build), world).Compile();
         }
 
         /// <summary>
