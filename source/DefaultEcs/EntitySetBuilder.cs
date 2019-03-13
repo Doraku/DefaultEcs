@@ -66,9 +66,12 @@ namespace DefaultEcs
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
         public EntitySetBuilder With<T>()
         {
-            _withFilter[ComponentManager<T>.Flag] = true;
-            _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
-            _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.Remove));
+            if (!_withFilter[ComponentManager<T>.Flag])
+            {
+                _withFilter[ComponentManager<T>.Flag] = true;
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.Remove));
+            }
 
             return this;
         }
@@ -98,9 +101,12 @@ namespace DefaultEcs
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
         public EntitySetBuilder Without<T>()
         {
-            _withoutFilter[ComponentManager<T>.Flag] = true;
-            _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.Remove));
-            _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
+            if (!_withoutFilter[ComponentManager<T>.Flag])
+            {
+                _withoutFilter[ComponentManager<T>.Flag] = true;
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.Remove));
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
+            }
 
             return this;
         }
