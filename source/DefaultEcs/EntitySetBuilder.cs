@@ -23,6 +23,7 @@ namespace DefaultEcs
 
         private ComponentEnum _withFilter;
         private ComponentEnum _withoutFilter;
+        private ComponentEnum _currentWithAnyFilter;
         private List<ComponentEnum> _withAnyFilters;
 
         #endregion
@@ -51,12 +52,14 @@ namespace DefaultEcs
 
         #region Methods
 
-        private ComponentFlag WithAny<T>()
+        private void WithAny<T>()
         {
-            _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
-            _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedRemove));
-
-            return ComponentManager<T>.Flag;
+            if (!_currentWithAnyFilter[ComponentManager<T>.Flag])
+            {
+                _currentWithAnyFilter[ComponentManager<T>.Flag] = true;
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedRemove));
+            }
         }
 
         /// <summary>
@@ -138,18 +141,23 @@ namespace DefaultEcs
         {
             if (componentTypes?.Length > 0)
             {
+                if (componentTypes.Length == 1)
+                {
+                    return With(componentTypes);
+                }
+
                 if (_withAnyFilters == null)
                 {
                     _withAnyFilters = new List<ComponentEnum>();
                 }
 
-                ComponentEnum filter = new ComponentEnum();
+                _currentWithAnyFilter = new ComponentEnum();
                 foreach (Type componentType in componentTypes)
                 {
-                    filter[(ComponentFlag)_withAny.MakeGenericMethod(componentType).Invoke(this, null)] = true;
+                    _withAny.MakeGenericMethod(componentType).Invoke(this, null);
                 }
 
-                _withAnyFilters.Add(filter);
+                _withAnyFilters.Add(_currentWithAnyFilter);
             }
 
             return this;
