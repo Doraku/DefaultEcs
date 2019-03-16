@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using DefaultEcs.Resource;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
 
@@ -11,8 +12,9 @@ namespace DefaultEcs.Technical
     {
         #region Fields
 
-        private readonly static bool _isReferenceType;
-        private readonly static bool _isFlagType;
+        private static readonly bool _isReferenceType;
+        private static readonly bool _isFlagType;
+        private static readonly bool _isManagedResourceType;
 
         private readonly int _worldId;
         private readonly int _maxEntityCount;
@@ -40,6 +42,7 @@ namespace DefaultEcs.Technical
 
             _isReferenceType = !typeInfo.IsValueType;
             _isFlagType = typeInfo.IsValueType && !typeInfo.IsEnum && !typeInfo.IsPrimitive && typeInfo.DeclaredFields.All(f => f.IsStatic);
+            _isManagedResourceType = typeInfo.GenericTypeArguments.Length > 0 && typeInfo.GetGenericTypeDefinition() == typeof(ManagedResource<,>);
         }
 
         public ComponentPool(int worldId, int maxEntityCount, int maxComponentCount)
@@ -102,7 +105,17 @@ namespace DefaultEcs.Technical
             ref int componentIndex = ref _mapping[entityId];
             if (componentIndex != -1)
             {
+                if (_isManagedResourceType)
+                {
+                    Publisher.Publish(_worldId, new ManagedResourceReleaseMessage<T>(_components[componentIndex]));
+                }
+
                 _components[componentIndex] = component;
+
+                if (_isManagedResourceType)
+                {
+                    Publisher.Publish(_worldId, new ManagedResourceRequestMessage<T>(new Entity(_worldId, entityId), component));
+                }
 
                 return false;
             }
@@ -124,6 +137,11 @@ namespace DefaultEcs.Technical
 
             _components[_lastComponentIndex] = component;
             _links[_lastComponentIndex] = new ComponentLink(entityId);
+
+            if (_isManagedResourceType)
+            {
+                Publisher.Publish(_worldId, new ManagedResourceRequestMessage<T>(new Entity(_worldId, entityId), component));
+            }
 
             return true;
         }
@@ -151,6 +169,11 @@ namespace DefaultEcs.Technical
             ++_links[referenceComponentIndex].ReferenceCount;
             componentIndex = referenceComponentIndex;
 
+            if (_isManagedResourceType)
+            {
+                Publisher.Publish(_worldId, new ManagedResourceRequestMessage<T>(new Entity(_worldId, entityId), _components[componentIndex]));
+            }
+
             return isNew;
         }
 
@@ -166,6 +189,11 @@ namespace DefaultEcs.Technical
             if (componentIndex == -1)
             {
                 return false;
+            }
+
+            if (_isManagedResourceType)
+            {
+                Publisher.Publish(_worldId, new ManagedResourceReleaseMessage<T>(_components[componentIndex]));
             }
 
             ref ComponentLink link = ref _links[componentIndex];

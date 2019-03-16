@@ -107,7 +107,7 @@ namespace DefaultEcs.System
                         break;
                 }
             }
-            
+
             return Expression.Lambda<Func<World, EntitySet>>(Expression.Call(expression, _build), world).Compile();
         }
 
