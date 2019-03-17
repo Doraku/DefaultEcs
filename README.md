@@ -10,6 +10,7 @@ DefaultEcs is an Entity Component System framework which aims to be accessible w
   - [World](#Overview_World)
   - [Entity](#Overview_Entity)
   - [Component](#Overview_Component)
+  - [Resource](#Overview_Resource)
   - [System](#Overview_System)
     - [ISystem](#Overview_System_ISystem)
     - [ActionSystem](#Overview_System_ActionSystem)
@@ -101,6 +102,45 @@ To get a component from an entity, simply do the following
 entity.Get<Example>();
 ```
 Note that the Get method return the component as a ref so you can directly update its value without using the Set method again (but it still need to be set at least once).
+
+<a name='Overview_Resource'></a>
+## Resource
+Not all components can easily be serialized to be loaded from data file (texture, sound, ...). To help with the handling of those cases, helper types are provided to give a way to load managed resources, shared across entities and even worlds, and automatically dispose them once no entity using them exist anymore.
+To setup a managed resource on an entity, the type `ManagedResource<TInfo, TResource>` need to be set as a component where TInfo is a type used as a single identifier for a single resource and information needed to load it, and TResource is the type of the resource.
+Should multiple resource of the same type be needed on a single entity, it is also possible to set the type `ManagedResource<TInfo[], TResource>` as component.
+If the `ManagedResource` component is removed from the entity or the entity holding it disposed, the internal reference count on the resource will decrease and it will be disposed if zero is reached.
+To actually load the resource, an implementation of the class `AResourceManager<TInfo, TResource>` is need as shown in the next exemple:
+```C#
+// TInfo is string, the name of the texture and TResource is Texture2D
+public sealed class TextureResourceManager : AResourceManager<string, Texture2D>
+{
+    private readonly GraphicsDevice _device;
+    private readonly ITextureLoader _loader;
+
+	// ITextureLoader is the actual loader, not shown here
+    public TextureResourceManager(GraphicsDevice device, ITextureLoader loader)
+    {
+        _device = device;
+        _loader = loader;
+    }
+
+	// this will only be called if the texture with the key info has never been loaded yet or it has previously been disposed because it was not used anymore
+    protected override Texture2D Load(string info) => _loader.Load(_device, info);
+
+	// this is the callback method where the entity with the ManagedResource<string, Texture2D> component is set, the TInfo and the resource are given do act as needed
+    protected override void OnResourceLoaded(in Entity entity, string info, Texture2D resource)
+    {
+	    // here we just set the texture to a field of an other component of the entity which contains all the information needed to draw it (position, size, origin, rotation, texture, ...)
+        entity.Get<DrawInfo>().Texture = resource;
+    }
+}
+
+// we simply set the special component like any other one
+entity.Set(new ManagedResource<string, Texture2D>("square.png"));
+
+// this is how to set up a resource manager on a world, it will process all curently existing entities with the special component type, and react to all futur entities also
+textureResourceManager.Manage(_world);
+```
 
 <a name='Overview_System'></a>
 ## System
