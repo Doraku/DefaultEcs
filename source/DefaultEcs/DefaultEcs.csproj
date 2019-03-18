@@ -5,4 +5,8 @@
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Update="DefaultDocumentation" Version="0.4.1" />
+  </ItemGroup>
 </Project>

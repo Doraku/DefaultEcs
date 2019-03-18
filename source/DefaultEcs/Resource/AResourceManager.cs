@@ -31,15 +31,7 @@ namespace DefaultEcs.Resource
 
             public void AddReference() => ++_referencesCount;
 
-            public bool RemoveReference()
-            {
-                if (--_referencesCount == 0)
-                {
-                    Value?.Dispose();
-                }
-
-                return _referencesCount == 0;
-            }
+            public bool RemoveReference() => --_referencesCount == 0;
         }
 
         private readonly object _lockObject;

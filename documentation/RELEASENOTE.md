@@ -1,3 +1,10 @@
+## DefaultEcs 0.9.2
+added IsAlive property on Entity
+added With(Type[]) and Without(Type[]) on EntitySetBuilder
+added managed resource helper class (probably not final)
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.9.2)
+
 ## DefaultEcs 0.9.1
 added debug info for World
 added a way to enable/disable an entity without removing it

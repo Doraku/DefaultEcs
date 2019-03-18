@@ -67,9 +67,9 @@ namespace DefaultEcs.Test.Resource
         [Fact]
         public void Should_dispose_resource_When_holding_entities_are_disposed()
         {
-            bool disposed = false;
+            int disposedCount = 0;
             IDisposable value = Substitute.For<IDisposable>();
-            value.When(d => d.Dispose()).Do(_ => disposed = true);
+            value.When(d => d.Dispose()).Do(_ => ++disposedCount);
 
             using (ResourceManagerTest manager = new ResourceManagerTest(value))
             using (World world = new World())
@@ -83,11 +83,11 @@ namespace DefaultEcs.Test.Resource
 
                 entity.Dispose();
 
-                Check.That(disposed).IsFalse();
+                Check.That(disposedCount).IsEqualTo(0);
 
                 entity2.Dispose();
 
-                Check.That(disposed).IsTrue();
+                Check.That(disposedCount).IsEqualTo(1);
             }
         }
 
