@@ -19,6 +19,7 @@ namespace DefaultEcs
 
         private static readonly MethodInfo _componentsContains;
         private static readonly MethodInfo _componentsDoNotContains;
+        private static readonly Dictionary<string, Predicate<ComponentEnum>> _filters;
 
         private readonly int _worldId;
         private readonly int _maxEntityCount;
@@ -48,6 +49,7 @@ namespace DefaultEcs
         {
             _componentsContains = typeof(ComponentEnum).GetTypeInfo().GetDeclaredMethod(nameof(ComponentEnum.Contains));
             _componentsDoNotContains = typeof(ComponentEnum).GetTypeInfo().GetDeclaredMethod(nameof(ComponentEnum.DoNotContains));
+            _filters = new Dictionary<string, Predicate<ComponentEnum>>();
         }
 
         internal EntitySet(
@@ -63,21 +65,8 @@ namespace DefaultEcs
             withFilter = withFilter.Copy();
             withFilter[World.IsAliveFlag] = true;
             withFilter[World.IsEnabledFlag] = true;
-
-            ParameterExpression components = Expression.Parameter(typeof(ComponentEnum));
-            Expression filter = Expression.Call(components, _componentsContains, Expression.Constant(withFilter));
-            if (!withoutFilter.IsNull)
-            {
-                filter = Expression.And(filter, Expression.Call(components, _componentsDoNotContains, Expression.Constant(withoutFilter.Copy())));
-            }
-            if (withAnyFilters != null)
-            {
-                foreach (ComponentEnum f in withAnyFilters)
-                {
-                    filter = Expression.And(filter, Expression.Not(Expression.Call(components, _componentsDoNotContains, Expression.Constant(f.Copy()))));
-                }
-            }
-            _filter = Expression.Lambda<Predicate<ComponentEnum>>(filter, components).Compile();
+            
+            _filter = GetFilter(withFilter, withoutFilter, withAnyFilters);
 
             _subscriptions = subscriptions.Select(s => s(this, world)).Merge();
 
@@ -97,6 +86,37 @@ namespace DefaultEcs
         #endregion
 
         #region Methods
+
+        private static Predicate<ComponentEnum> GetFilter(ComponentEnum withFilter, ComponentEnum withoutFilter, List<ComponentEnum> withAnyFilters)
+        {
+            string key = $"{withFilter} {withoutFilter} {string.Join(" ", withAnyFilters ?? Enumerable.Empty<ComponentEnum>())}";
+            Predicate<ComponentEnum> filter;
+
+            lock (_filters)
+            {
+                if (!_filters.TryGetValue(key, out filter))
+                {
+                    ParameterExpression components = Expression.Parameter(typeof(ComponentEnum));
+                    Expression filterEx = Expression.Call(components, _componentsContains, Expression.Constant(withFilter));
+                    if (!withoutFilter.IsNull)
+                    {
+                        filterEx = Expression.And(filterEx, Expression.Call(components, _componentsDoNotContains, Expression.Constant(withoutFilter.Copy())));
+                    }
+                    if (withAnyFilters != null)
+                    {
+                        foreach (ComponentEnum f in withAnyFilters)
+                        {
+                            filterEx = Expression.And(filterEx, Expression.Not(Expression.Call(components, _componentsDoNotContains, Expression.Constant(f.Copy()))));
+                        }
+                    }
+                    filter = Expression.Lambda<Predicate<ComponentEnum>>(filterEx, components).Compile();
+
+                    _filters.Add(key, filter);
+                }
+            }
+
+            return filter;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Add(int entityId)

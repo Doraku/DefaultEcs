@@ -96,6 +96,14 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear() => _bitArray?.Fill(0u);
 
+        public override unsafe string ToString()
+        {
+            fixed (uint* bits = _bitArray)
+            {
+                return new string((char*)bits, 0, (_bitArray?.Length ?? 0) * 2);
+            }
+        }
+
         #endregion
     }
 }
