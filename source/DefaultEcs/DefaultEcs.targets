@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="DefaultDocumentation" Version="0.4.0" PrivateAssets="all" />
+    <PackageReference Include="DefaultDocumentation" Version="0.4.1" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup Label="Reference">

@@ -646,6 +646,27 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void CopyTo_Should_copy_entity_with_its_components_and_its_state()
+        {
+            using (World world1 = new World(1))
+            using (World world2 = new World(1))
+            {
+                Entity main = world1.CreateEntity();
+
+                main.Set(42);
+                main.Disable<int>();
+                main.Set("kikoo");
+                main.Disable();
+
+                Entity copy = main.CopyTo(world2);
+
+                Check.That(main.IsEnabled()).IsEqualTo(copy.IsEnabled());
+                Check.That(main.IsEnabled<int>()).IsEqualTo(copy.IsEnabled<int>());
+                Check.That(main.IsEnabled<string>()).IsEqualTo(copy.IsEnabled<string>());
+            }
+        }
+
+        [Fact]
         public void CopyTo_Should_left_no_trace_When_there_is_an_exception()
         {
             using (World world1 = new World(1))

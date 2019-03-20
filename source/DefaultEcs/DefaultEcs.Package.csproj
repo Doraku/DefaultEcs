@@ -23,6 +23,7 @@
     <PackageReleaseNotes>
 fixed double Dispose in AResourceManager
 fixed reference count in AResourceManager when World is disposed
+fixed Entity.CopyTo to correctly copy enable/disable state
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

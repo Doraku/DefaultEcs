@@ -79,7 +79,7 @@ namespace DefaultEcs.Technical
         {
             if (Has(message.EntityId))
             {
-                message.Copy.Set(Get(message.EntityId));
+                message.Copy.SetDisabled(Get(message.EntityId));
             }
         }
 

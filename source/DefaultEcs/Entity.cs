@@ -312,10 +312,15 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            Entity copy = world.CreateEntity();
+            Entity copy = world.CreateDisabledEntity();
             try
             {
                 Publisher.Publish(WorldId, new EntityCopyMessage(EntityId, copy));
+                copy.Components = Components.Copy();
+                if (IsEnabled())
+                {
+                    copy.Enable();
+                }
             }
             catch
             {
