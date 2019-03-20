@@ -260,6 +260,7 @@ namespace DefaultEcs
                 Infos[WorldId] = null;
             }
 
+            Publish(new ManagedResourceReleaseAllMessage());
             Publisher.Publish(0, new WorldDisposedMessage(WorldId));
             _worldIdDispenser.ReleaseInt(WorldId);
 

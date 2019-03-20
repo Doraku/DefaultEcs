@@ -60,6 +60,11 @@ namespace DefaultEcs.Technical
             Publisher<EntityDisposedMessage>.Subscribe(_worldId, On);
             Publisher<EntityCopyMessage>.Subscribe(_worldId, On);
             Publisher<ComponentReadMessage>.Subscribe(_worldId, On);
+
+            if (_isManagedResourceType)
+            {
+                Publisher<ManagedResourceReleaseAllMessage>.Subscribe(_worldId, On);
+            }
         }
 
         #endregion
@@ -84,6 +89,17 @@ namespace DefaultEcs.Technical
             if (componentIndex != -1)
             {
                 message.Reader.OnRead(ref _components[componentIndex], new Entity(_worldId, _links[componentIndex].EntityId));
+            }
+        }
+
+        private void On(in ManagedResourceReleaseAllMessage message)
+        {
+            for (int i = 0; i <= _lastComponentIndex; ++i)
+            {
+                for (int j = 0; j < _links[i].ReferenceCount; ++j)
+                {
+                    Publisher.Publish(_worldId, new ManagedResourceReleaseMessage<T>(_components[i]));
+                }
             }
         }
 
@@ -249,21 +265,6 @@ namespace DefaultEcs.Technical
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> GetAll() => new Span<T>(_components, 0, _lastComponentIndex + 1);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Cleanup()
-        {
-            if (_isManagedResourceType)
-            {
-                for (int i = 0; i <= _lastComponentIndex; ++i)
-                {
-                    for (int j = 0; j < _links[i].ReferenceCount; ++j)
-                    {
-                        Publisher.Publish(_worldId, new ManagedResourceReleaseMessage<T>(_components[i]));
-                    }
-                }
-            }
-        }
 
         #endregion
     }

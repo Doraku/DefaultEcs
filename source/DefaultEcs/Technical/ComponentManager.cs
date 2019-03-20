@@ -35,18 +35,13 @@ namespace DefaultEcs.Technical
 
         private static void On(in WorldDisposedMessage message)
         {
-            ComponentPool<T> pool = null;
-
             lock (_lockObject)
             {
                 if (message.WorldId < Pools.Length)
                 {
-                    pool = Pools[message.WorldId];
                     Pools[message.WorldId] = null;
                 }
             }
-
-            pool?.Cleanup();
         }
 
         #endregion
