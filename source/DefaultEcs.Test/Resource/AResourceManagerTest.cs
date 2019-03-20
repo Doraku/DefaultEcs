@@ -91,6 +91,29 @@ namespace DefaultEcs.Test.Resource
             }
         }
 
+        [Fact]
+        public void Should_dispose_resource_When_world_is_disposed()
+        {
+            int disposedCount = 0;
+            IDisposable value = Substitute.For<IDisposable>();
+            value.When(d => d.Dispose()).Do(_ => ++disposedCount);
+
+            using (ResourceManagerTest manager = new ResourceManagerTest(value))
+            {
+                using (World world = new World())
+                {
+                    manager.Manage(world);
+                    Entity entity = world.CreateEntity();
+                    entity.Set(new ManagedResource<string, IDisposable>("dummy"));
+
+                    Entity entity2 = world.CreateEntity();
+                    entity2.SetSameAs<ManagedResource<string, IDisposable>>(entity);
+                }
+
+                Check.That(disposedCount).IsEqualTo(1);
+            }
+        }
+
         #endregion
     }
 }

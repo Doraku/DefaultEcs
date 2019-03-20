@@ -250,6 +250,21 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> GetAll() => new Span<T>(_components, 0, _lastComponentIndex + 1);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Cleanup()
+        {
+            if (_isManagedResourceType)
+            {
+                for (int i = 0; i <= _lastComponentIndex; ++i)
+                {
+                    for (int j = 0; j < _links[i].ReferenceCount; ++j)
+                    {
+                        Publisher.Publish(_worldId, new ManagedResourceReleaseMessage<T>(_components[i]));
+                    }
+                }
+            }
+        }
+
         #endregion
     }
 }
