@@ -57,9 +57,9 @@ namespace DefaultEcs.System
         /// <param name="components">The <typeparamref name="TComponent"/> to update.</param>
         protected virtual void Update(TState state, Span<TComponent> components)
         {
-            for (int i = 0; i < components.Length; ++i)
+            foreach (ref TComponent component in components)
             {
-                Update(state, ref components[i]);
+                Update(state, ref component);
             }
         }
 

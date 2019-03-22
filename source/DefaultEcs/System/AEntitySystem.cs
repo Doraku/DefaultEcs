@@ -138,9 +138,9 @@ namespace DefaultEcs.System
         protected virtual void Update(T state, ReadOnlySpan<Entity> entities)
 #pragma warning restore RCS1231 // Make parameter ref read-only.
         {
-            for (int i = 0; i < entities.Length; ++i)
+            foreach (ref readonly Entity entity in entities)
             {
-                Update(state, entities[i]);
+                Update(state, entity);
             }
         }
 
