@@ -230,13 +230,13 @@ namespace DefaultEcs
         #region IPublisher
 
         /// <summary>
-        /// Subscribes an <see cref="InAction{T}"/> to be called back when a <typeparamref name="T"/> object is published.
+        /// Subscribes an <see cref="ActionIn{T}"/> to be called back when a <typeparamref name="T"/> object is published.
         /// </summary>
         /// <typeparam name="T">The type of the object to be called back with.</typeparam>
         /// <param name="action">The delegate to be called back.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IDisposable Subscribe<T>(InAction<T> action) => Publisher<T>.Subscribe(WorldId, action);
+        public IDisposable Subscribe<T>(ActionIn<T> action) => Publisher<T>.Subscribe(WorldId, action);
 
         /// <summary>
         /// Publishes a <typeparamref name="T"/> object.

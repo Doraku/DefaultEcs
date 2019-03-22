@@ -8,12 +8,12 @@
         /// <summary>
         /// Event called when an <see cref="Entity"/> is added to the <see cref="EntitySet"/>.
         /// </summary>
-        public event InAction<Entity> OnEntityAdded;
+        public event ActionIn<Entity> OnEntityAdded;
 
         /// <summary>
         /// Event called when an <see cref="Entity"/> is removed from the <see cref="EntitySet"/>.
         /// </summary>
-        public event InAction<Entity> OnEntityRemoved;
+        public event ActionIn<Entity> OnEntityRemoved;
 
         void IEntitySetObserver.OnEntityAdded(in Entity entity) => OnEntityAdded?.Invoke(entity);
 
