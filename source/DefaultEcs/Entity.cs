@@ -348,7 +348,11 @@ namespace DefaultEcs
         /// The current <see cref="Entity"/> should not be used again after calling this method and <see cref="IsAlive"/> will return false.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Dispose() => Publisher.Publish(WorldId, new EntityDisposedMessage(EntityId));
+        public void Dispose()
+        {
+            Publisher.Publish(WorldId, new EntityDisposingMessage(EntityId));
+            Publisher.Publish(WorldId, new EntityDisposedMessage(EntityId));
+        }
 
         #endregion
 

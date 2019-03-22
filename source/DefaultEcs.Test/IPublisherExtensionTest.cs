@@ -12,7 +12,7 @@ namespace DefaultEcs.Test
         {
             public Delegate Action { get; private set; }
 
-            public IDisposable Subscribe<T>(SubscribeAction<T> action)
+            public IDisposable Subscribe<T>(InAction<T> action)
             {
                 Action = action;
 
@@ -128,7 +128,7 @@ namespace DefaultEcs.Test
 
             publisher.Subscribe<StaticMethod>();
 
-            Check.That(publisher.Action).IsEqualTo(new SubscribeAction<object>(StaticMethod.Method));
+            Check.That(publisher.Action).IsEqualTo(new InAction<object>(StaticMethod.Method));
         }
 
         [Fact]
@@ -161,7 +161,7 @@ namespace DefaultEcs.Test
 
             publisher.Subscribe(target);
 
-            Check.That(publisher.Action).IsEqualTo(new SubscribeAction<object>(target.Method));
+            Check.That(publisher.Action).IsEqualTo(new InAction<object>(target.Method));
         }
 
         [Fact]
@@ -172,7 +172,7 @@ namespace DefaultEcs.Test
 
             publisher.Subscribe(target);
 
-            Check.That(publisher.Action).IsEqualTo(new SubscribeAction<object>(target.Method));
+            Check.That(publisher.Action).IsEqualTo(new InAction<object>(target.Method));
         }
 
         [Fact]
@@ -183,7 +183,7 @@ namespace DefaultEcs.Test
 
             publisher.Subscribe(target);
 
-            Check.That(publisher.Action).IsEqualTo(new SubscribeAction<object>(target.Method));
+            Check.That(publisher.Action).IsEqualTo(new InAction<object>(target.Method));
         }
 
         #endregion

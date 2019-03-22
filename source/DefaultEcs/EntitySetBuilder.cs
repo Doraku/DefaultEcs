@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DefaultEcs.Observer;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
 
@@ -42,7 +43,7 @@ namespace DefaultEcs
             _world = world;
             _subscriptions = new List<Func<EntitySet, World, IDisposable>>
             {
-                (s, w) => w.Subscribe<EntityDisposedMessage>(s.Remove),
+                (s, w) => w.Subscribe<EntityDisposingMessage>(s.Remove),
                 (s, w) => w.Subscribe<EntityDisabledMessage>(s.Remove),
                 (s, w) => w.Subscribe<EntityEnabledMessage>(s.CheckedAdd)
             };
@@ -166,8 +167,9 @@ namespace DefaultEcs
         /// <summary>
         /// Returns an <see cref="EntitySet"/> with the specified rules.
         /// </summary>
+        /// <param name="observer">The <see cref="IEntitySetObserver"/> to notify when an entity is added/removed from the created <see cref="EntitySet"/>.</param>
         /// <returns>The <see cref="EntitySet"/>.</returns>
-        public EntitySet Build()
+        public EntitySet Build(IEntitySetObserver observer)
         {
             List<Func<EntitySet, World, IDisposable>> subscriptions = _subscriptions.ToList();
 
@@ -176,8 +178,14 @@ namespace DefaultEcs
                 subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Add));
             }
 
-            return new EntitySet(_world, _withFilter, _withoutFilter, _withAnyFilters, subscriptions);
+            return new EntitySet(_world, observer, _withFilter, _withoutFilter, _withAnyFilters, subscriptions);
         }
+
+        /// <summary>
+        /// Returns an <see cref="EntitySet"/> with the specified rules.
+        /// </summary>
+        /// <returns>The <see cref="EntitySet"/>.</returns>
+        public EntitySet Build() => Build(null);
 
         #endregion
     }

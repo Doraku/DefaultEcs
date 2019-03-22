@@ -3,23 +3,23 @@
 namespace DefaultEcs
 {
     /// <summary>
-    /// Encapsulates a method that has a single in parameter and does not return a value used for <see cref="World.Subscribe{T}(SubscribeAction{T})"/> method.
+    /// Encapsulates a method that has a single in parameter and does not return a value used for <see cref="World.Subscribe{T}(InAction{T})"/> method.
     /// </summary>
     /// <typeparam name="T">The type of message to subscribe to.</typeparam>
-    public delegate void SubscribeAction<T>(in T message);
+    public delegate void InAction<T>(in T message);
 
     /// <summary>
-    /// Exposes methods to subscribe to <see cref="SubscribeAction{T}"/> and publish message to callback those subscriptions.
+    /// Exposes methods to subscribe to <see cref="InAction{T}"/> and publish message to callback those subscriptions.
     /// </summary>
     public interface IPublisher : IDisposable
     {
         /// <summary>
-        /// Subscribes an <see cref="SubscribeAction{T}"/> to be called back when a <typeparamref name="T"/> object is published.
+        /// Subscribes an <see cref="InAction{T}"/> to be called back when a <typeparamref name="T"/> object is published.
         /// </summary>
         /// <typeparam name="T">The type of the object to be called back with.</typeparam>
         /// <param name="action">The delegate to be called back.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
-        IDisposable Subscribe<T>(SubscribeAction<T> action);
+        IDisposable Subscribe<T>(InAction<T> action);
 
         /// <summary>
         /// Publishes a <typeparamref name="T"/> object.

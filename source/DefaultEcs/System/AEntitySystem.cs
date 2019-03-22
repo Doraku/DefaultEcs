@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using DefaultEcs.Observer;
 
 namespace DefaultEcs.System
 {
@@ -14,11 +15,10 @@ namespace DefaultEcs.System
     {
         #region Fields
 
-        private static readonly ConcurrentDictionary<Type, Func<World, EntitySet>> _entitySetFactories;
+        private static readonly ConcurrentDictionary<Type, Func<World, EntitySetBuilder>> _entitySetBuilderFactories;
         private static readonly MethodInfo _with;
         private static readonly MethodInfo _without;
         private static readonly MethodInfo _withAny;
-        private static readonly MethodInfo _build;
 
         private readonly EntitySet _set;
 
@@ -28,13 +28,12 @@ namespace DefaultEcs.System
 
         static AEntitySystem()
         {
-            _entitySetFactories = new ConcurrentDictionary<Type, Func<World, EntitySet>>();
+            _entitySetBuilderFactories = new ConcurrentDictionary<Type, Func<World, EntitySetBuilder>>();
 
             TypeInfo entitySetBuilder = typeof(EntitySetBuilder).GetTypeInfo();
             _with = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.With)).First(m => !m.ContainsGenericParameters);
             _without = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.Without)).First(m => !m.ContainsGenericParameters);
             _withAny = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WithAny)).First(m => !m.ContainsGenericParameters);
-            _build = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.Build)).First(m => !m.ContainsGenericParameters);
         }
 
         /// <summary>
@@ -63,13 +62,25 @@ namespace DefaultEcs.System
         /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
+        /// <param name="observer">The <see cref="IEntitySetObserver"/> to notify when an entity is added/removed from the created inner <see cref="EntitySet"/>.</param>
+        /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
+        protected AEntitySystem(World world, IEntitySetObserver observer, SystemRunner<T> runner)
+            : base(runner)
+        {
+            _set = _entitySetBuilderFactories.GetOrAdd(GetType(), GetEntitySetBuilderFactory)(world ?? throw new ArgumentNullException(nameof(world))).Build(observer);
+        }
+
+        /// <summary>
+        /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="World"/>.
+        /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
+        /// </summary>
+        /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntitySystem(World world, SystemRunner<T> runner)
-            : base(runner)
-        {
-            _set = _entitySetFactories.GetOrAdd(GetType(), GetEntitySetFactory)(world ?? throw new ArgumentNullException(nameof(world)));
-        }
+            : this(world, null, runner)
+        { }
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="World"/>.
@@ -85,7 +96,7 @@ namespace DefaultEcs.System
 
         #region Methods
 
-        private static Func<World, EntitySet> GetEntitySetFactory(Type type)
+        private static Func<World, EntitySetBuilder> GetEntitySetBuilderFactory(Type type)
         {
             ParameterExpression world = Expression.Parameter(typeof(World));
             Expression expression = Expression.Call(world, typeof(World).GetTypeInfo().GetDeclaredMethod(nameof(World.GetEntities)));
@@ -108,7 +119,7 @@ namespace DefaultEcs.System
                 }
             }
 
-            return Expression.Lambda<Func<World, EntitySet>>(Expression.Call(expression, _build), world).Compile();
+            return Expression.Lambda<Func<World, EntitySetBuilder>>(expression, world).Compile();
         }
 
         /// <summary>

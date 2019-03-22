@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using DefaultEcs.Observer;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
@@ -23,6 +24,7 @@ namespace DefaultEcs
 
         private readonly int _worldId;
         private readonly int _maxEntityCount;
+        private readonly IEntitySetObserver _observer;
         private readonly Predicate<ComponentEnum> _filter;
         private readonly IDisposable _subscriptions;
 
@@ -54,6 +56,7 @@ namespace DefaultEcs
 
         internal EntitySet(
             World world,
+            IEntitySetObserver observer,
             ComponentEnum withFilter,
             ComponentEnum withoutFilter,
             List<ComponentEnum> withAnyFilters,
@@ -61,11 +64,12 @@ namespace DefaultEcs
         {
             _worldId = world.WorldId;
             _maxEntityCount = world.MaxEntityCount;
+            _observer = observer;
 
             withFilter = withFilter.Copy();
             withFilter[World.IsAliveFlag] = true;
             withFilter[World.IsEnabledFlag] = true;
-            
+
             _filter = GetFilter(withFilter, withoutFilter, withAnyFilters);
 
             _subscriptions = subscriptions.Select(s => s(this, world)).Merge();
@@ -131,6 +135,7 @@ namespace DefaultEcs
                 ArrayExtension.EnsureLength(ref _entities, _lastIndex, _maxEntityCount);
 
                 _entities[_lastIndex] = new Entity(_worldId, entityId);
+                _observer?.OnEntityAdded(_entities[_lastIndex]);
             }
         }
 
@@ -152,6 +157,8 @@ namespace DefaultEcs
                     --_lastIndex;
                     index = -1;
                 }
+
+                _observer?.OnEntityRemoved(_entities[_lastIndex]);
             }
         }
 
@@ -173,7 +180,7 @@ namespace DefaultEcs
             }
         }
 
-        internal void Remove(in EntityDisposedMessage message) => Remove(message.EntityId);
+        internal void Remove(in EntityDisposingMessage message) => Remove(message.EntityId);
 
         internal void Remove(in EntityDisabledMessage message) => Remove(message.EntityId);
 

@@ -5,11 +5,15 @@
 - [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet')
 - [EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder')
 - [EntitySetBuilderExtension](./DefaultEcs-EntitySetBuilderExtension.md 'DefaultEcs.EntitySetBuilderExtension')
+- [InAction&lt;T&gt;](./DefaultEcs-InAction-T-.md 'DefaultEcs.InAction&lt;T&gt;')
 - [IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher')
 - [IPublisherExtension](./DefaultEcs-IPublisherExtension.md 'DefaultEcs.IPublisherExtension')
-- [SubscribeAction&lt;T&gt;](./DefaultEcs-SubscribeAction-T-.md 'DefaultEcs.SubscribeAction&lt;T&gt;')
 - [SubscribeAttribute](./DefaultEcs-SubscribeAttribute.md 'DefaultEcs.SubscribeAttribute')
 - [World](./DefaultEcs-World.md 'DefaultEcs.World')
+<a name='DefaultEcs-Observer'></a>
+## DefaultEcs.Observer
+- [EntitySetObserverEvents](./DefaultEcs-Observer-EntitySetObserverEvents.md 'DefaultEcs.Observer.EntitySetObserverEvents')
+- [IEntitySetObserver](./DefaultEcs-Observer-IEntitySetObserver.md 'DefaultEcs.Observer.IEntitySetObserver')
 <a name='DefaultEcs-Resource'></a>
 ## DefaultEcs.Resource
 - [AResourceManager&lt;TInfo, TResource&gt;](./DefaultEcs-Resource-AResourceManager-TInfo-_TResource-.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo, TResource&gt;')

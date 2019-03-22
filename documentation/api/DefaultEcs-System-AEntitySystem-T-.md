@@ -12,6 +12,7 @@ The type of the object used as state to update the system.
 - [#ctor(DefaultEcs.EntitySet)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-EntitySet).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.EntitySet)')
 - [#ctor(DefaultEcs.EntitySet, DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-EntitySet-_DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.EntitySet, DefaultEcs.System.SystemRunner&lt;T&gt;)')
 - [#ctor(DefaultEcs.World)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.World)')
+- [#ctor(DefaultEcs.World, DefaultEcs.Observer.IEntitySetObserver, DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World-_DefaultEcs-Observer-IEntitySetObserver-_DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.World, DefaultEcs.Observer.IEntitySetObserver, DefaultEcs.System.SystemRunner&lt;T&gt;)')
 - [#ctor(DefaultEcs.World, DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World-_DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.World, DefaultEcs.System.SystemRunner&lt;T&gt;)')
 ### Properties
 - [IsEnabled](./DefaultEcs-System-AEntitySystem-T--IsEnabled.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.IsEnabled')
