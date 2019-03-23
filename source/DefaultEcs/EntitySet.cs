@@ -147,18 +147,19 @@ namespace DefaultEcs
                 ref int index = ref _mapping[entityId];
                 if (index != -1)
                 {
+                    Entity entity = _entities[index];
+
                     if (index != _lastIndex)
                     {
-                        ref Entity entity = ref _entities[index];
-                        entity = _entities[_lastIndex];
-                        _mapping[entity.EntityId] = index;
+                        _entities[index] = _entities[_lastIndex];
+                        _mapping[_entities[_lastIndex].EntityId] = index;
                     }
 
                     --_lastIndex;
                     index = -1;
-                }
 
-                _observer?.OnEntityRemoved(_entities[_lastIndex]);
+                    _observer?.OnEntityRemoved(entity);
+                }
             }
         }
 

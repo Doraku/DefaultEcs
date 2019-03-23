@@ -19,11 +19,15 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.9.2</Version>
+    <Version>0.10.0</Version>
     <PackageReleaseNotes>
 fixed double Dispose in AResourceManager
 fixed reference count in AResourceManager when World is disposed
 fixed Entity.CopyTo to correctly copy enable/disable state
+
+added IEntitySetObserver (basic implementation EntitySetObserverEvents) to get add/remove operation on EntitySet
+
+breaking change: SubscribeAction renamed ActionIn
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
