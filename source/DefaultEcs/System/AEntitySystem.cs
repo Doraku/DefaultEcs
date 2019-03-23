@@ -87,9 +87,20 @@ namespace DefaultEcs.System
         /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
+        /// <param name="observer">The <see cref="IEntitySetObserver"/> to notify when an entity is added/removed from the created inner <see cref="EntitySet"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
+        protected AEntitySystem(World world, IEntitySetObserver observer)
+            : this(world, observer, null)
+        { }
+
+        /// <summary>
+        /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="World"/>.
+        /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
+        /// </summary>
+        /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntitySystem(World world)
-            : this(world, null)
+            : this(world, null, null)
         { }
 
         #endregion
