@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using DefaultEcs.Observer;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;

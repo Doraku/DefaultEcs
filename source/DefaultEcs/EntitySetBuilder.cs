@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DefaultEcs.Observer;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
 

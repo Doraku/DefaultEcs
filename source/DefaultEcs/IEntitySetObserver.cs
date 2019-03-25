@@ -1,4 +1,4 @@
-﻿namespace DefaultEcs.Observer
+﻿namespace DefaultEcs
 {
     /// <summary>
     /// Exposes methods called when <see cref="Entity"/> are added/removed from an <see cref="EntitySet"/>.

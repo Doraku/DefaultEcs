@@ -1,4 +1,4 @@
-﻿namespace DefaultEcs.Observer
+﻿namespace DefaultEcs
 {
     /// <summary>
     /// Basic implementation of <see cref="IEntitySetObserver"/> using events to dynamically add/remove subscriptions.

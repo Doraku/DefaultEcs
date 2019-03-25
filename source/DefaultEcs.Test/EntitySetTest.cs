@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DefaultEcs.Observer;
 using NFluent;
 using NSubstitute;
 using Xunit;

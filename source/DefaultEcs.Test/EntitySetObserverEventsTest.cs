@@ -1,5 +1,4 @@
-﻿using DefaultEcs.Observer;
-using NFluent;
+﻿using NFluent;
 using Xunit;
 
 namespace DefaultEcs.Test.Observer
