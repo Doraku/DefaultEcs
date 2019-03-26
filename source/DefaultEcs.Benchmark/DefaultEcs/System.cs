@@ -19,6 +19,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
     }
 
+    [MemoryDiagnoser]
     [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 20, invocationCount: 1000)]
     public class System
     {

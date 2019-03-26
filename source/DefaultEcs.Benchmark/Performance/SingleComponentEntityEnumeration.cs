@@ -11,6 +11,7 @@ using DefaultWorld = DefaultEcs.World;
 
 namespace DefaultEcs.Benchmark.Performance
 {
+    [MemoryDiagnoser]
     [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 10, invocationCount: 10)]
     public class SingleComponentEntityEnumeration
     {

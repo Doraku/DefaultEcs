@@ -3,7 +3,8 @@ using BenchmarkDotNet.Engines;
 
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
-    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 1, targetCount: 10, invocationCount: 10000000)]
+    [MemoryDiagnoser]
+    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 1, targetCount: 10, invocationCount: 1000000)]
     public class CreateEntity
     {
         private World _world;
@@ -11,7 +12,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         [IterationSetup]
         public void Setup()
         {
-            _world = new World(10000000);
+            _world = new World();
         }
 
         [IterationCleanup]

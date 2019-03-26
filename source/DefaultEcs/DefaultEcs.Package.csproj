@@ -25,7 +25,8 @@ fixed double Dispose in AResourceManager
 fixed reference count in AResourceManager when World is disposed
 fixed Entity.CopyTo to correctly copy enable/disable state
 
-added IEntitySetObserver (basic implementation EntitySetObserverEvents) to get add/remove operation on EntitySet
+added IEntitySetObserver (basic implementation EntitySetObserverEvents) to get add/remove operations on EntitySet
+added EntityCommandRecorder to defer structural entity changes
 
 breaking change: SubscribeAction renamed ActionIn
     </PackageReleaseNotes>
