@@ -15,15 +15,15 @@
 
         public void Disable() => _recorder.Disable(_offset);
 
-        public void Enable<T>() where T : unmanaged => _recorder.Enable<T>(_offset);
+        public void Enable<T>() => _recorder.Enable<T>(_offset);
 
-        public void Disable<T>() where T : unmanaged => _recorder.Disable<T>(_offset);
+        public void Disable<T>() => _recorder.Disable<T>(_offset);
 
-        public void Set<T>(in T component = default) where T : unmanaged => _recorder.Set(_offset, component);
+        public void Set<T>(in T component = default) => _recorder.Set(_offset, component);
 
-        public void SetSameAs<T>(in EntityRecord reference) where T : unmanaged => _recorder.SetSameAs<T>(_offset, reference._offset);
+        public void SetSameAs<T>(in EntityRecord reference) => _recorder.SetSameAs<T>(_offset, reference._offset);
 
-        public void Remove<T>() where T : unmanaged => _recorder.Remove<T>(_offset);
+        public void Remove<T>() => _recorder.Remove<T>(_offset);
 
         public void SetAsChildOf(in EntityRecord parent) => _recorder.SetAsChildOf(_offset, parent._offset);
 

@@ -11,7 +11,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private World _world;
         private Entity _entity;
         private EntityCommandRecorder _recorder;
-        
+
         [GlobalSetup]
         public void Setup()
         {
@@ -25,7 +25,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         {
             _world.Dispose();
         }
-        
+
         [Benchmark]
         public void WithCode()
         {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
+using DefaultEcs.Technical.Command;
 
 namespace DefaultEcs.Command
 {
@@ -27,15 +29,20 @@ namespace DefaultEcs.Command
         {
             void Enable(in Entity entity);
             void Disable(in Entity entity);
-            void Set(byte* memory, int* data);
+            void Set(List<object> objects, byte* memory, int* data);
             void SetSameAs(byte* memory, int* data);
             void Remove(in Entity entity);
         }
 
         private class ComponentCommand<T> : IComponentCommand
-            where T : unmanaged
         {
+            private static readonly ComponentCommandCreateSet<T> _createSetAction;
+            private static readonly ComponentCommandSet _setAction;
+
+#pragma warning disable RCS1158 // Static member in generic type should use a type parameter.
             public static readonly int Index;
+            public static readonly int SizeOfT;
+#pragma warning restore RCS1158 // Static member in generic type should use a type parameter.
 
             static ComponentCommand()
             {
@@ -44,13 +51,38 @@ namespace DefaultEcs.Command
                     Index = _componentCommands.Count;
                     _componentCommands.Add(new ComponentCommand<T>());
                 }
+
+                try
+                {
+                    TypeInfo typeInfo = typeof(UnmanagedComponentCommand<>)
+                        .MakeGenericType(typeof(T))
+                        .GetTypeInfo();
+
+                    SizeOfT = (int)typeInfo.GetDeclaredField(nameof(UnmanagedComponentCommand<bool>.SizeOfT)).GetValue(null);
+
+                    _createSetAction = (ComponentCommandCreateSet<T>)typeInfo
+                        .GetDeclaredMethod(nameof(UnmanagedComponentCommand<bool>.CreateSet))
+                        .CreateDelegate(typeof(ComponentCommandCreateSet<T>));
+                    _setAction = (ComponentCommandSet)typeInfo
+                        .GetDeclaredMethod(nameof(UnmanagedComponentCommand<bool>.Set))
+                        .CreateDelegate(typeof(ComponentCommandSet));
+                }
+                catch
+                {
+                    SizeOfT = sizeof(int);
+
+                    _createSetAction = ManagedComponentCommand<T>.CreateSet;
+                    _setAction = ManagedComponentCommand<T>.Set;
+                }
             }
+
+            public static void CreateSet(List<object> objects, int* memory, in T component) => _createSetAction(objects, memory, component);
 
             public void Enable(in Entity entity) => entity.Enable<T>();
 
             public void Disable(in Entity entity) => entity.Disable<T>();
 
-            public void Set(byte* memory, int* data) => (*(Entity*)(memory + *data++)).Set(*(T*)data);
+            public void Set(List<object> objects, byte* memory, int* data) => _setAction(objects, memory, data);
 
             public void SetSameAs(byte* memory, int* data) => (*(Entity*)(memory + *data++)).SetSameAs<T>(*(Entity*)(memory + *data));
 
@@ -58,33 +90,40 @@ namespace DefaultEcs.Command
         }
 
         private const int _baseCommandSize = sizeof(int) + sizeof(byte);
-        private static readonly int _baseComponentCommandSize = _baseCommandSize + sizeof(int);
+        private const int _baseComponentCommandSize = _baseCommandSize + sizeof(int);
 
-        private static readonly List<IComponentCommand> _componentCommands = new List<IComponentCommand>();
-
-        private static readonly ConcurrentDictionary<CommandType, int> _commandSizes = new ConcurrentDictionary<CommandType, int>
-        {
-            [CommandType.Entity] = _baseCommandSize + sizeof(Entity),
-            [CommandType.CreateEntity] = _baseCommandSize + sizeof(Entity),
-            [CommandType.Enable] = _baseCommandSize + sizeof(int),
-            [CommandType.Disable] = _baseCommandSize + sizeof(int),
-            [CommandType.EnableT] = _baseComponentCommandSize + sizeof(int),
-            [CommandType.DisableT] = _baseComponentCommandSize + sizeof(int),
-            [CommandType.Set] = _baseComponentCommandSize + sizeof(int),
-            [CommandType.SetSameAs] = _baseComponentCommandSize + sizeof(int) + sizeof(int),
-            [CommandType.Remove] = _baseComponentCommandSize + sizeof(int),
-            [CommandType.SetAsChildOf] = _baseCommandSize + sizeof(int) + sizeof(int),
-            [CommandType.RemoveFromChildrenOf] = _baseCommandSize + sizeof(int) + sizeof(int),
-            [CommandType.Dispose] = _baseCommandSize + sizeof(int),
-        };
+        private static readonly List<IComponentCommand> _componentCommands;
+        private static readonly ConcurrentDictionary<CommandType, int> _commandSizes;
 
         private readonly byte[] _memory;
+        private readonly List<object> _objects;
 
         private int _nextCommandOffset;
+
+        static EntityCommandRecorder()
+        {
+            _componentCommands = new List<IComponentCommand>();
+            _commandSizes = new ConcurrentDictionary<CommandType, int>
+            {
+                [CommandType.Entity] = _baseCommandSize + sizeof(Entity),
+                [CommandType.CreateEntity] = _baseCommandSize + sizeof(Entity),
+                [CommandType.Enable] = _baseCommandSize + sizeof(int),
+                [CommandType.Disable] = _baseCommandSize + sizeof(int),
+                [CommandType.EnableT] = _baseComponentCommandSize + sizeof(int),
+                [CommandType.DisableT] = _baseComponentCommandSize + sizeof(int),
+                [CommandType.Set] = _baseComponentCommandSize + sizeof(int),
+                [CommandType.SetSameAs] = _baseComponentCommandSize + sizeof(int) + sizeof(int),
+                [CommandType.Remove] = _baseComponentCommandSize + sizeof(int),
+                [CommandType.SetAsChildOf] = _baseCommandSize + sizeof(int) + sizeof(int),
+                [CommandType.RemoveFromChildrenOf] = _baseCommandSize + sizeof(int) + sizeof(int),
+                [CommandType.Dispose] = _baseCommandSize + sizeof(int),
+            };
+        }
 
         public EntityCommandRecorder(int size)
         {
             _memory = new byte[size];
+            _objects = new List<object>();
             _nextCommandOffset = 0;
         }
 
@@ -115,7 +154,6 @@ namespace DefaultEcs.Command
         private byte* ReserveNextCommand(byte* memory, CommandType commandType, int extraSize = 0) => ReserveNextCommand(memory, commandType, out _, extraSize);
 
         private byte* ReserveNextCommand<T>(byte* memory, CommandType commandType, int extraSize = 0)
-            where T : unmanaged
         {
             int* componentCommandIndexP = (int*)ReserveNextCommand(memory, commandType, out _, extraSize);
             *componentCommandIndexP++ = ComponentCommand<T>.Index;
@@ -140,7 +178,6 @@ namespace DefaultEcs.Command
         }
 
         internal void Enable<T>(int entityOffset)
-            where T : unmanaged
         {
             fixed (byte* memory = _memory)
             {
@@ -149,7 +186,6 @@ namespace DefaultEcs.Command
         }
 
         internal void Disable<T>(int entityOffset)
-            where T : unmanaged
         {
             fixed (byte* memory = _memory)
             {
@@ -158,18 +194,16 @@ namespace DefaultEcs.Command
         }
 
         internal void Set<T>(int entityOffset, in T component)
-            where T : unmanaged
         {
             fixed (byte* memory = _memory)
             {
-                int* entityP = (int*)ReserveNextCommand<T>(memory, CommandType.Set, sizeof(T));
+                int* entityP = (int*)ReserveNextCommand<T>(memory, CommandType.Set, ComponentCommand<T>.SizeOfT);
                 *entityP++ = entityOffset;
-                *(T*)entityP = component;
+                ComponentCommand<T>.CreateSet(_objects, entityP, component);
             }
         }
 
         internal void SetSameAs<T>(int entityOffset, int referenceOffset)
-            where T : unmanaged
         {
             fixed (byte* memory = _memory)
             {
@@ -180,7 +214,6 @@ namespace DefaultEcs.Command
         }
 
         internal void Remove<T>(int entityOffset)
-            where T : unmanaged
         {
             fixed (byte* memory = _memory)
             {
@@ -267,7 +300,7 @@ namespace DefaultEcs.Command
                             break;
 
                         case CommandType.Set:
-                            _componentCommands[*(int*)(commands + _baseCommandSize)].Set(memory, (int*)(commands + _baseComponentCommandSize));
+                            _componentCommands[*(int*)(commands + _baseCommandSize)].Set(_objects, memory, (int*)(commands + _baseComponentCommandSize));
                             break;
 
                         case CommandType.SetSameAs:
@@ -294,6 +327,8 @@ namespace DefaultEcs.Command
                     commands += commandSize;
                     _nextCommandOffset -= commandSize;
                 }
+
+                _objects.Clear();
             }
         }
     }
