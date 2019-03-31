@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -7,33 +6,11 @@ using DefaultEcs.Technical.Command;
 
 namespace DefaultEcs.Command
 {
+    /// <summary>
+    /// Represents a buffer of structural modifications to apply on <see cref="Entity"/> to record as postoned commands. 
+    /// </summary>
     public sealed unsafe class EntityCommandRecorder
     {
-        private enum CommandType : byte
-        {
-            Entity = 0,
-            CreateEntity = 1,
-            Enable = 2,
-            Disable = 3,
-            EnableT = 4,
-            DisableT = 5,
-            Set = 6,
-            SetSameAs = 7,
-            Remove = 8,
-            SetAsChildOf = 9,
-            RemoveFromChildrenOf = 10,
-            Dispose = 11
-        }
-
-        private interface IComponentCommand
-        {
-            void Enable(in Entity entity);
-            void Disable(in Entity entity);
-            void Set(List<object> objects, byte* memory, int* data);
-            void SetSameAs(byte* memory, int* data);
-            void Remove(in Entity entity);
-        }
-
         private class ComponentCommand<T> : IComponentCommand
         {
             private static readonly ComponentCommandCreateSet<T> _createSetAction;
@@ -82,18 +59,18 @@ namespace DefaultEcs.Command
 
             public void Disable(in Entity entity) => entity.Disable<T>();
 
-            public void Set(List<object> objects, byte* memory, int* data) => _setAction(objects, memory, data);
+            public int Set(List<object> objects, byte* memory, int* data) => _setAction(objects, memory, data);
 
             public void SetSameAs(byte* memory, int* data) => (*(Entity*)(memory + *data++)).SetSameAs<T>(*(Entity*)(memory + *data));
 
             public void Remove(in Entity entity) => entity.Remove<T>();
         }
 
-        private const int _baseCommandSize = sizeof(int) + sizeof(byte);
+        private const int _baseCommandSize = sizeof(byte);
         private const int _baseComponentCommandSize = _baseCommandSize + sizeof(int);
 
         private static readonly List<IComponentCommand> _componentCommands;
-        private static readonly ConcurrentDictionary<CommandType, int> _commandSizes;
+        private static readonly Dictionary<CommandType, int> _commandSizes;
 
         private readonly byte[] _memory;
         private readonly List<object> _objects;
@@ -103,7 +80,7 @@ namespace DefaultEcs.Command
         static EntityCommandRecorder()
         {
             _componentCommands = new List<IComponentCommand>();
-            _commandSizes = new ConcurrentDictionary<CommandType, int>
+            _commandSizes = new Dictionary<CommandType, int>(12)
             {
                 [CommandType.Entity] = _baseCommandSize + sizeof(Entity),
                 [CommandType.CreateEntity] = _baseCommandSize + sizeof(Entity),
@@ -136,7 +113,7 @@ namespace DefaultEcs.Command
             do
             {
                 commandOffset = _nextCommandOffset;
-                if (commandOffset > _memory.Length)
+                if (commandOffset + commandSize > _memory.Length)
                 {
                     Throw();
                 }
@@ -144,7 +121,6 @@ namespace DefaultEcs.Command
             while (Interlocked.CompareExchange(ref _nextCommandOffset, commandOffset + commandSize, commandOffset) != commandOffset);
 
             int* nextCommandP = (int*)(memory + commandOffset);
-            *nextCommandP++ = commandSize;
             byte* commandTypeP = (byte*)nextCommandP;
             *commandTypeP++ = (byte)commandType;
 
@@ -249,6 +225,12 @@ namespace DefaultEcs.Command
             }
         }
 
+        /// <summary>
+        /// Gives an <see cref="EntityRecord"/> to record action on the given <see cref="Entity"/>.
+        /// This command takes 9 bytes.
+        /// </summary>
+        /// <param name="entity">The <see cref="EntityRecord"/> used to record action on the given <see cref="Entity"/>.</param>
+        /// <returns></returns>
         public EntityRecord Record(in Entity entity)
         {
             fixed (byte* memory = _memory)
@@ -259,6 +241,11 @@ namespace DefaultEcs.Command
             }
         }
 
+        /// <summary>
+        /// Records the creation of an <see cref="Entity"/> and returns an <see cref="EntityRecord"/> to record action on it.
+        /// This command takes 9 bytes.
+        /// </summary>
+        /// <returns>The <see cref="EntityRecord"/> used to record actions on the later created <see cref="Entity"/>.</returns>
         public EntityRecord CreateEntity()
         {
             fixed (byte* memory = _memory)
@@ -269,6 +256,10 @@ namespace DefaultEcs.Command
             }
         }
 
+        /// <summary>
+        /// Executes all recorded commands and clears those commands.
+        /// </summary>
+        /// <param name="world">The <see cref="World"/> on which the commands to create new <see cref="Entity"/> will be executed.</param>
         public void Execute(World world)
         {
             fixed (byte* memory = _memory)
@@ -276,8 +267,9 @@ namespace DefaultEcs.Command
                 byte* commands = memory;
                 while (_nextCommandOffset > 0)
                 {
-                    int commandSize = *(int*)commands;
-                    switch (*(CommandType*)(commands + sizeof(int)))
+                    CommandType commandType = *(CommandType*)commands;
+                    int commandSize = _commandSizes[commandType];
+                    switch (commandType)
                     {
                         case CommandType.CreateEntity:
                             *(Entity*)(commands + _baseCommandSize) = world.CreateEntity();
@@ -300,7 +292,7 @@ namespace DefaultEcs.Command
                             break;
 
                         case CommandType.Set:
-                            _componentCommands[*(int*)(commands + _baseCommandSize)].Set(_objects, memory, (int*)(commands + _baseComponentCommandSize));
+                            commandSize += _componentCommands[*(int*)(commands + _baseCommandSize)].Set(_objects, memory, (int*)(commands + _baseComponentCommandSize));
                             break;
 
                         case CommandType.SetSameAs:
@@ -320,7 +312,7 @@ namespace DefaultEcs.Command
                             break;
 
                         case CommandType.Dispose:
-                            (*(Entity*)(memory + *(int*)(commands + _baseComponentCommandSize))).Dispose();
+                            (*(Entity*)(memory + *(int*)(commands + _baseCommandSize))).Dispose();
                             break;
                     }
 

@@ -11,6 +11,11 @@ namespace DefaultEcs.Technical.Command
 
         public static void CreateSet(List<object> _, int* data, in T component) => *(T*)data = component;
 
-        public static void Set(List<object> _, byte* memory, int* data) => (*(Entity*)(memory + *data++)).Set(*(T*)data);
+        public static int Set(List<object> _, byte* memory, int* data)
+        {
+            (*(Entity*)(memory + *data++)).Set(*(T*)data);
+
+            return SizeOfT;
+        }
     }
 }

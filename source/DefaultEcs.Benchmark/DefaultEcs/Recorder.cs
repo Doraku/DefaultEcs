@@ -5,11 +5,12 @@ using DefaultEcs.Command;
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
     [MemoryDiagnoser]
-    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 20, invocationCount: 1000000)]
+    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 20, invocationCount: 100000)]
     public class Recorder
     {
         private World _world;
         private Entity _entity;
+        private EntitySet _set;
         private EntityCommandRecorder _recorder;
 
         [GlobalSetup]
@@ -17,12 +18,14 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         {
             _world = new World();
             _entity = _world.CreateEntity();
+            _set = _world.GetEntities().With<bool>().With<int>().Build();
             _recorder = new EntityCommandRecorder(1024);
         }
 
         [GlobalCleanup]
         public void Cleanup()
         {
+            _set.Dispose();
             _world.Dispose();
         }
 
