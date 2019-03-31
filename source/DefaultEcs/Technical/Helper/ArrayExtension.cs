@@ -19,7 +19,6 @@ namespace DefaultEcs.Technical.Helper
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Fill<T>(this T[] array, in T value, int start = 0)
-            where T : unmanaged
         {
             for (int i = start; i < array.Length; ++i)
             {
@@ -38,7 +37,6 @@ namespace DefaultEcs.Technical.Helper
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void EnsureLength<T>(ref T[] array, int index, int maxLength, in T defaultValue)
-            where T : unmanaged
         {
             if (index >= array.Length)
             {
