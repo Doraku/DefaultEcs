@@ -172,7 +172,7 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Sets the value of the component of type <typeparamref name="T"/> on the current Entity to the same instance of an other <see cref="Entity"/>.
+        /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/> to the same instance of an other <see cref="Entity"/>.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="reference">The other <see cref="Entity"/> used as reference.</param>
