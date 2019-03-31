@@ -17,6 +17,8 @@ namespace DefaultEcs.Resource
     public abstract class AResourceManager<TInfo, TResource> : IDisposable
         where TResource : IDisposable
     {
+        #region Types
+
         private sealed class Resource
         {
             public readonly TResource Value;
@@ -34,8 +36,16 @@ namespace DefaultEcs.Resource
             public bool RemoveReference() => --_referencesCount == 0;
         }
 
+        #endregion
+
+        #region Fields
+
         private readonly object _lockObject;
         private readonly Dictionary<TInfo, Resource> _resources;
+
+        #endregion
+
+        #region Initialisation
 
         /// <summary>
         /// Creates an instance of type <see cref="AResourceManager{TInfo, TResource}"/>.
@@ -45,6 +55,10 @@ namespace DefaultEcs.Resource
             _lockObject = new object();
             _resources = new Dictionary<TInfo, Resource>();
         }
+
+        #endregion
+
+        #region Callbacks
 
         private void On(in ManagedResourceRequestMessage<ManagedResource<TInfo, TResource>> message)
         {
@@ -92,6 +106,10 @@ namespace DefaultEcs.Resource
             }
         }
 
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Loads a resource of type <typeparamref name="TResource"/> using the provided <typeparamref name="TInfo"/> parameter.
         /// </summary>
@@ -135,6 +153,10 @@ namespace DefaultEcs.Resource
             return GetSubscriptions(world).Merge();
         }
 
+        #endregion
+
+        #region IDisposable
+
         /// <summary>
         /// Disposes all loaded resources.
         /// </summary>
@@ -147,5 +169,7 @@ namespace DefaultEcs.Resource
 
             _resources.Clear();
         }
+
+        #endregion
     }
 }
