@@ -6,8 +6,8 @@ namespace DefaultEcs.Technical.Command
     {
         void Enable(in Entity entity);
         void Disable(in Entity entity);
-        int Set(List<object> objects, byte* memory, int* data);
-        void SetSameAs(byte* memory, int* data);
+        int Set(in Entity entity, List<object> objects, byte* memory);
+        void SetSameAs(in Entity entity, in Entity reference);
         void Remove(in Entity entity);
     }
 }

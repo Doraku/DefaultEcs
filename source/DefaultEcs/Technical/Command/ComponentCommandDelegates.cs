@@ -2,7 +2,7 @@
 
 namespace DefaultEcs.Technical.Command
 {
-    internal unsafe delegate void ComponentCommandCreateSet<T>(List<object> objects, int* memory, in T component);
+    internal unsafe delegate void WriteComponent<T>(List<object> objects, byte* memory, in T component);
 
-    internal unsafe delegate int ComponentCommandSet(List<object> objects, byte* memory, int* data);
+    internal unsafe delegate int SetComponent(in Entity entity, List<object> objects, byte* memory);
 }

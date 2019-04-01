@@ -4,18 +4,18 @@ namespace DefaultEcs.Technical.Command
 {
     internal sealed unsafe class ManagedComponentCommand<T>
     {
-        public static void CreateSet(List<object> objects, int* data, in T component)
+        public static void WriteComponent(List<object> objects, byte* data, in T component)
         {
             lock (objects)
             {
-                *data = objects.Count;
+                *(int*)data = objects.Count;
                 objects.Add(component);
             }
         }
 
-        public static int Set(List<object> objects, byte* memory, int* data)
+        public static int Set(in Entity entity, List<object> objects, byte* memory)
         {
-            (*(Entity*)(memory + *data++)).Set((T)objects[*data]);
+            entity.Set((T)objects[*(int*)memory]);
 
             return sizeof(int);
         }

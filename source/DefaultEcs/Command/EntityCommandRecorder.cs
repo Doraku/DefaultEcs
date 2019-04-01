@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
 using DefaultEcs.Technical.Command;
+using DefaultEcs.Technical.Helper;
 
 namespace DefaultEcs.Command
 {
@@ -11,219 +11,142 @@ namespace DefaultEcs.Command
     /// </summary>
     public sealed unsafe class EntityCommandRecorder
     {
-        private class ComponentCommand<T> : IComponentCommand
-        {
-            private static readonly ComponentCommandCreateSet<T> _createSetAction;
-            private static readonly ComponentCommandSet _setAction;
+        #region Fields
 
-#pragma warning disable RCS1158 // Static member in generic type should use a type parameter.
-            public static readonly int Index;
-            public static readonly int SizeOfT;
-#pragma warning restore RCS1158 // Static member in generic type should use a type parameter.
-
-            static ComponentCommand()
-            {
-                lock (_componentCommands)
-                {
-                    Index = _componentCommands.Count;
-                    _componentCommands.Add(new ComponentCommand<T>());
-                }
-
-                try
-                {
-                    TypeInfo typeInfo = typeof(UnmanagedComponentCommand<>)
-                        .MakeGenericType(typeof(T))
-                        .GetTypeInfo();
-
-                    SizeOfT = (int)typeInfo.GetDeclaredField(nameof(UnmanagedComponentCommand<bool>.SizeOfT)).GetValue(null);
-
-                    _createSetAction = (ComponentCommandCreateSet<T>)typeInfo
-                        .GetDeclaredMethod(nameof(UnmanagedComponentCommand<bool>.CreateSet))
-                        .CreateDelegate(typeof(ComponentCommandCreateSet<T>));
-                    _setAction = (ComponentCommandSet)typeInfo
-                        .GetDeclaredMethod(nameof(UnmanagedComponentCommand<bool>.Set))
-                        .CreateDelegate(typeof(ComponentCommandSet));
-                }
-                catch
-                {
-                    SizeOfT = sizeof(int);
-
-                    _createSetAction = ManagedComponentCommand<T>.CreateSet;
-                    _setAction = ManagedComponentCommand<T>.Set;
-                }
-            }
-
-            public static void CreateSet(List<object> objects, int* memory, in T component) => _createSetAction(objects, memory, component);
-
-            public void Enable(in Entity entity) => entity.Enable<T>();
-
-            public void Disable(in Entity entity) => entity.Disable<T>();
-
-            public int Set(List<object> objects, byte* memory, int* data) => _setAction(objects, memory, data);
-
-            public void SetSameAs(byte* memory, int* data) => (*(Entity*)(memory + *data++)).SetSameAs<T>(*(Entity*)(memory + *data));
-
-            public void Remove(in Entity entity) => entity.Remove<T>();
-        }
-
-        private const int _baseCommandSize = sizeof(byte);
-        private const int _baseComponentCommandSize = _baseCommandSize + sizeof(int);
-
-        private static readonly List<IComponentCommand> _componentCommands;
-        private static readonly Dictionary<CommandType, int> _commandSizes;
-
-        private readonly byte[] _memory;
+        private readonly int _maxCapacity;
         private readonly List<object> _objects;
 
+        private ReaderWriterLockSlim _lockObject;
+        private byte[] _memory;
         private int _nextCommandOffset;
 
-        static EntityCommandRecorder()
-        {
-            _componentCommands = new List<IComponentCommand>();
-            _commandSizes = new Dictionary<CommandType, int>(12)
-            {
-                [CommandType.Entity] = _baseCommandSize + sizeof(Entity),
-                [CommandType.CreateEntity] = _baseCommandSize + sizeof(Entity),
-                [CommandType.Enable] = _baseCommandSize + sizeof(int),
-                [CommandType.Disable] = _baseCommandSize + sizeof(int),
-                [CommandType.EnableT] = _baseComponentCommandSize + sizeof(int),
-                [CommandType.DisableT] = _baseComponentCommandSize + sizeof(int),
-                [CommandType.Set] = _baseComponentCommandSize + sizeof(int),
-                [CommandType.SetSameAs] = _baseComponentCommandSize + sizeof(int) + sizeof(int),
-                [CommandType.Remove] = _baseComponentCommandSize + sizeof(int),
-                [CommandType.SetAsChildOf] = _baseCommandSize + sizeof(int) + sizeof(int),
-                [CommandType.RemoveFromChildrenOf] = _baseCommandSize + sizeof(int) + sizeof(int),
-                [CommandType.Dispose] = _baseCommandSize + sizeof(int),
-            };
-        }
+        #endregion
 
-        public EntityCommandRecorder(int size)
+        #region Initialisation
+
+        public EntityCommandRecorder(int maxCapacity, int startCapacity)
         {
-            _memory = new byte[size];
+            if (maxCapacity < 0)
+            {
+                throw new ArgumentException("Argument cannot be negative.", nameof(maxCapacity));
+            }
+            if (startCapacity < 0)
+            {
+                throw new ArgumentException("Argument cannot be negative.", nameof(startCapacity));
+            }
+            if (maxCapacity < startCapacity)
+            {
+                throw new ArgumentException($"{nameof(maxCapacity)} is inferior to {nameof(startCapacity)}.");
+            }
+
+            _maxCapacity = maxCapacity;
             _objects = new List<object>();
+            _lockObject = maxCapacity == startCapacity ? null : new ReaderWriterLockSlim();
+            _memory = new byte[startCapacity];
             _nextCommandOffset = 0;
         }
 
-        private byte* ReserveNextCommand(byte* memory, CommandType commandType, out int commandOffset, int extraSize = 0)
+        public EntityCommandRecorder(int maxCapacity)
+            : this(maxCapacity, maxCapacity)
+        { }
+
+        public EntityCommandRecorder()
+            : this(int.MaxValue, 1024)
+        { }
+
+        #endregion
+
+        #region Methods
+
+        private void WriteCommand<T>(int offset, in T command)
+            where T : unmanaged
+        {
+            _lockObject?.EnterReadLock();
+            try
+            {
+                fixed (byte* memory = _memory)
+                {
+                    *(T*)(memory + offset) = command;
+                }
+            }
+            finally
+            {
+                _lockObject?.ExitReadLock();
+            }
+        }
+
+        private int ReserveNextCommand(int commandSize)
         {
             void Throw() => throw new Exception("CommandBuffer is full.");
 
-            int commandSize = _commandSizes[commandType] + extraSize;
+            int commandOffset;
+            int nextCommandOffset;
 
             do
             {
                 commandOffset = _nextCommandOffset;
-                if (commandOffset + commandSize > _memory.Length)
+                nextCommandOffset = commandOffset + commandSize;
+                if (nextCommandOffset > _memory.Length)
                 {
-                    Throw();
+                    if (nextCommandOffset > _maxCapacity)
+                    {
+                        Throw();
+                    }
+
+                    _lockObject?.EnterWriteLock();
+                    try
+                    {
+                        ArrayExtension.EnsureLength(ref _memory, nextCommandOffset, _maxCapacity);
+                    }
+                    finally
+                    {
+                        _lockObject?.ExitWriteLock();
+                    }
                 }
             }
-            while (Interlocked.CompareExchange(ref _nextCommandOffset, commandOffset + commandSize, commandOffset) != commandOffset);
+            while (Interlocked.CompareExchange(ref _nextCommandOffset, nextCommandOffset, commandOffset) != commandOffset);
 
-            int* nextCommandP = (int*)(memory + commandOffset);
-            byte* commandTypeP = (byte*)nextCommandP;
-            *commandTypeP++ = (byte)commandType;
-
-            return commandTypeP;
+            return commandOffset;
         }
 
-        private byte* ReserveNextCommand(byte* memory, CommandType commandType, int extraSize = 0) => ReserveNextCommand(memory, commandType, out _, extraSize);
+        private void WriteCommand<T>(in T command) where T : unmanaged => WriteCommand(ReserveNextCommand(sizeof(T)), command);
 
-        private byte* ReserveNextCommand<T>(byte* memory, CommandType commandType, int extraSize = 0)
-        {
-            int* componentCommandIndexP = (int*)ReserveNextCommand(memory, commandType, out _, extraSize);
-            *componentCommandIndexP++ = ComponentCommand<T>.Index;
+        internal void Enable(int entityOffset) => WriteCommand(new EntityOffsetCommand(CommandType.Enable, entityOffset));
 
-            return (byte*)componentCommandIndexP;
-        }
+        internal void Disable(int entityOffset) => WriteCommand(new EntityOffsetCommand(CommandType.Disable, entityOffset));
 
-        internal void Enable(int entityOffset)
-        {
-            fixed (byte* memory = _memory)
-            {
-                *(int*)ReserveNextCommand(memory, CommandType.Enable) = entityOffset;
-            }
-        }
+        internal void Enable<T>(int entityOffset) => WriteCommand(new EntityOffsetComponentCommand(CommandType.EnableT, ComponentCommands.ComponentCommand<T>.Index, entityOffset));
 
-        internal void Disable(int entityOffset)
-        {
-            fixed (byte* memory = _memory)
-            {
-                *(int*)ReserveNextCommand(memory, CommandType.Disable) = entityOffset;
-            }
-        }
-
-        internal void Enable<T>(int entityOffset)
-        {
-            fixed (byte* memory = _memory)
-            {
-                *(int*)ReserveNextCommand<T>(memory, CommandType.EnableT) = entityOffset;
-            }
-        }
-
-        internal void Disable<T>(int entityOffset)
-        {
-            fixed (byte* memory = _memory)
-            {
-                *(int*)ReserveNextCommand<T>(memory, CommandType.DisableT) = entityOffset;
-            }
-        }
+        internal void Disable<T>(int entityOffset) => WriteCommand(new EntityOffsetComponentCommand(CommandType.DisableT, ComponentCommands.ComponentCommand<T>.Index, entityOffset));
 
         internal void Set<T>(int entityOffset, in T component)
         {
-            fixed (byte* memory = _memory)
+            int offset = ReserveNextCommand(sizeof(EntityOffsetComponentCommand) + ComponentCommands.ComponentCommand<T>.SizeOfT);
+
+            _lockObject?.EnterReadLock();
+            try
             {
-                int* entityP = (int*)ReserveNextCommand<T>(memory, CommandType.Set, ComponentCommand<T>.SizeOfT);
-                *entityP++ = entityOffset;
-                ComponentCommand<T>.CreateSet(_objects, entityP, component);
+                fixed (byte* memory = _memory)
+                {
+                    *(EntityOffsetComponentCommand*)(memory + offset) = new EntityOffsetComponentCommand(CommandType.Set, ComponentCommands.ComponentCommand<T>.Index, entityOffset);
+                    ComponentCommands.ComponentCommand<T>.WriteComponent(_objects, memory + offset + sizeof(EntityOffsetComponentCommand), component);
+                }
+            }
+            finally
+            {
+                _lockObject?.ExitReadLock();
             }
         }
 
-        internal void SetSameAs<T>(int entityOffset, int referenceOffset)
-        {
-            fixed (byte* memory = _memory)
-            {
-                int* entityP = (int*)ReserveNextCommand<T>(memory, CommandType.SetSameAs);
-                *entityP++ = entityOffset;
-                *entityP = referenceOffset;
-            }
-        }
+        internal void SetSameAs<T>(int entityOffset, int referenceOffset) => WriteCommand(new EntityReferenceOffsetComponentCommand(CommandType.SetSameAs, ComponentCommands.ComponentCommand<T>.Index, entityOffset, referenceOffset));
 
-        internal void Remove<T>(int entityOffset)
-        {
-            fixed (byte* memory = _memory)
-            {
-                *(int*)ReserveNextCommand<T>(memory, CommandType.Remove) = entityOffset;
-            }
-        }
+        internal void Remove<T>(int entityOffset) => WriteCommand(new EntityOffsetComponentCommand(CommandType.Remove, ComponentCommands.ComponentCommand<T>.Index, entityOffset));
 
-        internal void SetAsChildOf(int chidOffset, int parentOffset)
-        {
-            fixed (byte* memory = _memory)
-            {
-                int* entityP = (int*)ReserveNextCommand(memory, CommandType.SetAsChildOf);
-                *entityP++ = chidOffset;
-                *entityP = parentOffset;
-            }
-        }
+        internal void SetAsChildOf(int childOffset, int parentOffset) => WriteCommand(new ChildParentOffsetCommand(CommandType.SetAsChildOf, childOffset, parentOffset));
 
-        internal void RemoveFromChildrenOf(int chidOffset, int parentOffset)
-        {
-            fixed (byte* memory = _memory)
-            {
-                int* entityP = (int*)ReserveNextCommand(memory, CommandType.RemoveFromChildrenOf);
-                *entityP++ = chidOffset;
-                *entityP = parentOffset;
-            }
-        }
+        internal void RemoveFromChildrenOf(int childOffset, int parentOffset) => WriteCommand(new ChildParentOffsetCommand(CommandType.RemoveFromChildrenOf, childOffset, parentOffset));
 
-        internal void Dispose(int entityOffset)
-        {
-            fixed (byte* memory = _memory)
-            {
-                *(int*)ReserveNextCommand(memory, CommandType.Dispose) = entityOffset;
-            }
-        }
+        internal void Dispose(int entityOffset) => WriteCommand(new EntityOffsetCommand(CommandType.Dispose, entityOffset));
 
         /// <summary>
         /// Gives an <see cref="EntityRecord"/> to record action on the given <see cref="Entity"/>.
@@ -233,12 +156,11 @@ namespace DefaultEcs.Command
         /// <returns></returns>
         public EntityRecord Record(in Entity entity)
         {
-            fixed (byte* memory = _memory)
-            {
-                *(Entity*)ReserveNextCommand(memory, CommandType.Entity, out int offset) = entity;
+            int offset = ReserveNextCommand(sizeof(EntityCommand));
 
-                return new EntityRecord(this, offset + _baseCommandSize);
-            }
+            WriteCommand(offset, new EntityCommand(CommandType.Entity, entity));
+
+            return new EntityRecord(this, offset + sizeof(CommandType));
         }
 
         /// <summary>
@@ -248,12 +170,11 @@ namespace DefaultEcs.Command
         /// <returns>The <see cref="EntityRecord"/> used to record actions on the later created <see cref="Entity"/>.</returns>
         public EntityRecord CreateEntity()
         {
-            fixed (byte* memory = _memory)
-            {
-                ReserveNextCommand(memory, CommandType.CreateEntity, out int offset);
+            int offset = ReserveNextCommand(sizeof(EntityCommand));
 
-                return new EntityRecord(this, offset + _baseCommandSize);
-            }
+            WriteCommand(offset, new EntityCommand(CommandType.CreateEntity, default));
+
+            return new EntityRecord(this, offset + sizeof(CommandType));
         }
 
         /// <summary>
@@ -267,61 +188,93 @@ namespace DefaultEcs.Command
                 byte* commands = memory;
                 while (_nextCommandOffset > 0)
                 {
-                    CommandType commandType = *(CommandType*)commands;
-                    int commandSize = _commandSizes[commandType];
-                    switch (commandType)
+                    int commandSize = 0;
+
+                    switch (*(CommandType*)commands)
                     {
+                        case CommandType.Entity:
+                            commandSize = sizeof(EntityCommand);
+                            break;
+
                         case CommandType.CreateEntity:
-                            *(Entity*)(commands + _baseCommandSize) = world.CreateEntity();
+                            (*(EntityCommand*)commands).Entity = world.CreateEntity();
+                            commandSize = sizeof(EntityCommand);
                             break;
 
                         case CommandType.Enable:
-                            (*(Entity*)(memory + *(int*)(commands + _baseCommandSize))).Enable();
+                            (*(Entity*)(memory + (*(EntityOffsetCommand*)commands).EntityOffset)).Enable();
+                            commandSize = sizeof(EntityOffsetCommand);
                             break;
 
                         case CommandType.Disable:
-                            (*(Entity*)(memory + *(int*)(commands + _baseCommandSize))).Disable();
+                            (*(Entity*)(memory + (*(EntityOffsetCommand*)commands).EntityOffset)).Disable();
+                            commandSize = sizeof(EntityOffsetCommand);
                             break;
 
                         case CommandType.EnableT:
-                            _componentCommands[*(int*)(commands + _baseCommandSize)].Enable(*(Entity*)(memory + *(int*)(commands + _baseComponentCommandSize)));
+                            EntityOffsetComponentCommand* componentCommand = (EntityOffsetComponentCommand*)commands;
+                            ComponentCommands.GetCommand((*componentCommand).ComponentIndex).Enable(*(Entity*)(memory + (*componentCommand).EntityOffset));
+                            commandSize = sizeof(EntityOffsetComponentCommand);
                             break;
 
                         case CommandType.DisableT:
-                            _componentCommands[*(int*)(commands + _baseCommandSize)].Disable(*(Entity*)(memory + *(int*)(commands + _baseComponentCommandSize)));
+                            componentCommand = (EntityOffsetComponentCommand*)commands;
+                            ComponentCommands.GetCommand((*componentCommand).ComponentIndex).Disable(*(Entity*)(memory + (*componentCommand).EntityOffset));
+                            commandSize = sizeof(EntityOffsetComponentCommand);
                             break;
 
                         case CommandType.Set:
-                            commandSize += _componentCommands[*(int*)(commands + _baseCommandSize)].Set(_objects, memory, (int*)(commands + _baseComponentCommandSize));
+                            componentCommand = (EntityOffsetComponentCommand*)commands;
+                            commandSize = sizeof(EntityOffsetComponentCommand);
+                            commandSize += ComponentCommands.GetCommand((*componentCommand).ComponentIndex).Set(*(Entity*)(memory + (*componentCommand).EntityOffset), _objects, commands + sizeof(EntityOffsetComponentCommand));
                             break;
 
                         case CommandType.SetSameAs:
-                            _componentCommands[*(int*)(commands + _baseCommandSize)].SetSameAs(memory, (int*)(commands + _baseComponentCommandSize));
+                            EntityReferenceOffsetComponentCommand* entityReferenceComponentCommand = (EntityReferenceOffsetComponentCommand*)commands;
+                            ComponentCommands.GetCommand((*entityReferenceComponentCommand).ComponentIndex).SetSameAs(
+                                *(Entity*)(memory + (*entityReferenceComponentCommand).EntityOffset),
+                                *(Entity*)(memory + (*entityReferenceComponentCommand).ReferenceOffset));
+                            commandSize = sizeof(EntityOffsetComponentCommand);
                             break;
 
                         case CommandType.Remove:
-                            _componentCommands[*(int*)(commands + _baseCommandSize)].Remove(*(Entity*)(memory + *(int*)(commands + _baseComponentCommandSize)));
+                            componentCommand = (EntityOffsetComponentCommand*)commands;
+                            ComponentCommands.GetCommand((*componentCommand).ComponentIndex).Remove(*(Entity*)(memory + (*componentCommand).EntityOffset));
+                            commandSize = sizeof(EntityOffsetComponentCommand);
                             break;
 
                         case CommandType.SetAsChildOf:
-                            (*(Entity*)(memory + *(int*)(commands + _baseCommandSize))).SetAsChildOf(*(Entity*)(memory + *(int*)(commands + _baseCommandSize + sizeof(int))));
+                            ChildParentOffsetCommand* childParent = (ChildParentOffsetCommand*)commands;
+                            (*(Entity*)(memory + (*childParent).ChildOffset)).SetAsChildOf(*(Entity*)(memory + (*childParent).ParentOffset));
+                            commandSize = sizeof(ChildParentOffsetCommand);
                             break;
 
                         case CommandType.RemoveFromChildrenOf:
-                            (*(Entity*)(memory + *(int*)(commands + _baseCommandSize))).RemoveFromChildrenOf(*(Entity*)(memory + *(int*)(commands + _baseCommandSize + sizeof(int))));
+                            childParent = (ChildParentOffsetCommand*)commands;
+                            (*(Entity*)(memory + (*childParent).ChildOffset)).RemoveFromChildrenOf(*(Entity*)(memory + (*childParent).ParentOffset));
+                            commandSize = sizeof(ChildParentOffsetCommand);
                             break;
 
                         case CommandType.Dispose:
-                            (*(Entity*)(memory + *(int*)(commands + _baseCommandSize))).Dispose();
+                            (*(Entity*)(memory + (*(EntityOffsetCommand*)commands).EntityOffset)).Dispose();
+                            commandSize = sizeof(ChildParentOffsetCommand);
                             break;
                     }
 
                     commands += commandSize;
                     _nextCommandOffset -= commandSize;
                 }
+            }
 
-                _objects.Clear();
+            _objects.Clear();
+
+            if (_lockObject != null && _maxCapacity == _memory.Length)
+            {
+                _lockObject.Dispose();
+                _lockObject = null;
             }
         }
+
+        #endregion
     }
 }
