@@ -7,6 +7,10 @@ namespace DefaultEcs.Technical.Command
     {
         #region Types
 
+        public unsafe delegate void WriteComponent<T>(List<object> objects, byte* memory, in T component);
+
+        public unsafe delegate int SetComponent(in Entity entity, List<object> objects, byte* memory);
+
         public unsafe class ComponentCommand<T> : IComponentCommand
         {
             #region Fields

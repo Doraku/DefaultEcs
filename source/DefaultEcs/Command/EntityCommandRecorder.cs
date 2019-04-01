@@ -109,15 +109,7 @@ namespace DefaultEcs.Command
             return commandOffset;
         }
 
-        private void WriteCommand<T>(in T command) where T : unmanaged => WriteCommand(ReserveNextCommand(sizeof(T)), command);
-
-        internal void Enable(int entityOffset) => WriteCommand(new EntityOffsetCommand(CommandType.Enable, entityOffset));
-
-        internal void Disable(int entityOffset) => WriteCommand(new EntityOffsetCommand(CommandType.Disable, entityOffset));
-
-        internal void Enable<T>(int entityOffset) => WriteCommand(new EntityOffsetComponentCommand(CommandType.EnableT, ComponentCommands.ComponentCommand<T>.Index, entityOffset));
-
-        internal void Disable<T>(int entityOffset) => WriteCommand(new EntityOffsetComponentCommand(CommandType.DisableT, ComponentCommands.ComponentCommand<T>.Index, entityOffset));
+        internal void WriteCommand<T>(in T command) where T : unmanaged => WriteCommand(ReserveNextCommand(sizeof(T)), command);
 
         internal void Set<T>(int entityOffset, in T component)
         {
@@ -137,16 +129,6 @@ namespace DefaultEcs.Command
                 _lockObject?.ExitReadLock();
             }
         }
-
-        internal void SetSameAs<T>(int entityOffset, int referenceOffset) => WriteCommand(new EntityReferenceOffsetComponentCommand(CommandType.SetSameAs, ComponentCommands.ComponentCommand<T>.Index, entityOffset, referenceOffset));
-
-        internal void Remove<T>(int entityOffset) => WriteCommand(new EntityOffsetComponentCommand(CommandType.Remove, ComponentCommands.ComponentCommand<T>.Index, entityOffset));
-
-        internal void SetAsChildOf(int childOffset, int parentOffset) => WriteCommand(new ChildParentOffsetCommand(CommandType.SetAsChildOf, childOffset, parentOffset));
-
-        internal void RemoveFromChildrenOf(int childOffset, int parentOffset) => WriteCommand(new ChildParentOffsetCommand(CommandType.RemoveFromChildrenOf, childOffset, parentOffset));
-
-        internal void Dispose(int entityOffset) => WriteCommand(new EntityOffsetCommand(CommandType.Dispose, entityOffset));
 
         /// <summary>
         /// Gives an <see cref="EntityRecord"/> to record action on the given <see cref="Entity"/>.
