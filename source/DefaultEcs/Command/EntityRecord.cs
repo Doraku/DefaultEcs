@@ -60,7 +60,7 @@ namespace DefaultEcs.Command
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
-        public void Set<T>(in T component = default) => _recorder.Set(_offset, component);
+        public void Set<T>(in T component = default) => _recorder.WriteSetCommand(_offset, component);
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the corresponding <see cref="Entity"/> to the same instance of an other <see cref="EntityRecord"/>.
