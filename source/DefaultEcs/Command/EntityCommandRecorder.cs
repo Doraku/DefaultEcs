@@ -183,96 +183,9 @@ namespace DefaultEcs.Command
         /// <param name="world">The <see cref="World"/> on which the commands to create new <see cref="Entity"/> will be executed.</param>
         public void Execute(World world)
         {
-            fixed (byte* memory = _memory)
-            {
-                byte* commands = memory;
-                while (_nextCommandOffset > 0)
-                {
-                    int commandSize = 0;
+            Executer.Execute(_memory, _nextCommandOffset, _objects, world);
 
-                    switch (*(CommandType*)commands)
-                    {
-                        case CommandType.Entity:
-                            commandSize = sizeof(EntityCommand);
-                            break;
-
-                        case CommandType.CreateEntity:
-                            (*(EntityCommand*)commands).Entity = world.CreateEntity();
-                            commandSize = sizeof(EntityCommand);
-                            break;
-
-                        case CommandType.Enable:
-                            (*(Entity*)(memory + (*(EntityOffsetCommand*)commands).EntityOffset)).Enable();
-                            commandSize = sizeof(EntityOffsetCommand);
-                            break;
-
-                        case CommandType.Disable:
-                            (*(Entity*)(memory + (*(EntityOffsetCommand*)commands).EntityOffset)).Disable();
-                            commandSize = sizeof(EntityOffsetCommand);
-                            break;
-
-                        case CommandType.EnableT:
-                            EntityOffsetComponentCommand* componentCommand = (EntityOffsetComponentCommand*)commands;
-                            ComponentCommands.GetCommand((*componentCommand).ComponentIndex).Enable(*(Entity*)(memory + (*componentCommand).EntityOffset));
-                            commandSize = sizeof(EntityOffsetComponentCommand);
-                            break;
-
-                        case CommandType.DisableT:
-                            componentCommand = (EntityOffsetComponentCommand*)commands;
-                            ComponentCommands.GetCommand((*componentCommand).ComponentIndex).Disable(*(Entity*)(memory + (*componentCommand).EntityOffset));
-                            commandSize = sizeof(EntityOffsetComponentCommand);
-                            break;
-
-                        case CommandType.Set:
-                            componentCommand = (EntityOffsetComponentCommand*)commands;
-                            commandSize = sizeof(EntityOffsetComponentCommand);
-                            commandSize += ComponentCommands.GetCommand((*componentCommand).ComponentIndex).Set(*(Entity*)(memory + (*componentCommand).EntityOffset), _objects, commands + sizeof(EntityOffsetComponentCommand));
-                            break;
-
-                        case CommandType.SetSameAs:
-                            EntityReferenceOffsetComponentCommand* entityReferenceComponentCommand = (EntityReferenceOffsetComponentCommand*)commands;
-                            ComponentCommands.GetCommand((*entityReferenceComponentCommand).ComponentIndex).SetSameAs(
-                                *(Entity*)(memory + (*entityReferenceComponentCommand).EntityOffset),
-                                *(Entity*)(memory + (*entityReferenceComponentCommand).ReferenceOffset));
-                            commandSize = sizeof(EntityOffsetComponentCommand);
-                            break;
-
-                        case CommandType.Remove:
-                            componentCommand = (EntityOffsetComponentCommand*)commands;
-                            ComponentCommands.GetCommand((*componentCommand).ComponentIndex).Remove(*(Entity*)(memory + (*componentCommand).EntityOffset));
-                            commandSize = sizeof(EntityOffsetComponentCommand);
-                            break;
-
-                        case CommandType.SetAsChildOf:
-                            ChildParentOffsetCommand* childParent = (ChildParentOffsetCommand*)commands;
-                            (*(Entity*)(memory + (*childParent).ChildOffset)).SetAsChildOf(*(Entity*)(memory + (*childParent).ParentOffset));
-                            commandSize = sizeof(ChildParentOffsetCommand);
-                            break;
-
-                        case CommandType.RemoveFromChildrenOf:
-                            childParent = (ChildParentOffsetCommand*)commands;
-                            (*(Entity*)(memory + (*childParent).ChildOffset)).RemoveFromChildrenOf(*(Entity*)(memory + (*childParent).ParentOffset));
-                            commandSize = sizeof(ChildParentOffsetCommand);
-                            break;
-
-                        case CommandType.Dispose:
-                            (*(Entity*)(memory + (*(EntityOffsetCommand*)commands).EntityOffset)).Dispose();
-                            commandSize = sizeof(ChildParentOffsetCommand);
-                            break;
-                    }
-
-                    commands += commandSize;
-                    _nextCommandOffset -= commandSize;
-                }
-            }
-
-            _objects.Clear();
-
-            if (_lockObject != null && _maxCapacity == _memory.Length)
-            {
-                _lockObject.Dispose();
-                _lockObject = null;
-            }
+            Clear();
         }
 
         /// <summary>
@@ -282,7 +195,15 @@ namespace DefaultEcs.Command
         {
             _nextCommandOffset = 0;
             _objects.Clear();
+
+            if (_lockObject != null && _maxCapacity == _memory.Length)
+            {
+                _lockObject.Dispose();
+                _lockObject = null;
+            }
         }
+
+        internal EntityCommandPlayer ToPlayer() => new EntityCommandPlayer(_memory.AsSpan(0, _nextCommandOffset).ToArray(), _objects.ToArray());
 
         #endregion
 

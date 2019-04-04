@@ -15,7 +15,7 @@ namespace DefaultEcs.Technical.Command
         {
             #region Fields
 
-            private static readonly WriteComponent<T> _createSetAction;
+            private static readonly WriteComponent<T> _writeComponentAction;
             private static readonly SetComponent _setAction;
 
 #pragma warning disable RCS1158 // Static member in generic type should use a type parameter.
@@ -37,13 +37,11 @@ namespace DefaultEcs.Technical.Command
 
                 try
                 {
-                    TypeInfo typeInfo = typeof(UnmanagedComponentCommand<>)
-                        .MakeGenericType(typeof(T))
-                        .GetTypeInfo();
+                    TypeInfo typeInfo = typeof(UnmanagedComponentCommand<>).MakeGenericType(typeof(T)).GetTypeInfo();
 
                     SizeOfT = (int)typeInfo.GetDeclaredField(nameof(UnmanagedComponentCommand<bool>.SizeOfT)).GetValue(null);
 
-                    _createSetAction = (WriteComponent<T>)typeInfo
+                    _writeComponentAction = (WriteComponent<T>)typeInfo
                         .GetDeclaredMethod(nameof(UnmanagedComponentCommand<bool>.WriteComponent))
                         .CreateDelegate(typeof(WriteComponent<T>));
                     _setAction = (SetComponent)typeInfo
@@ -54,7 +52,7 @@ namespace DefaultEcs.Technical.Command
                 {
                     SizeOfT = sizeof(int);
 
-                    _createSetAction = ManagedComponentCommand<T>.WriteComponent;
+                    _writeComponentAction = ManagedComponentCommand<T>.WriteComponent;
                     _setAction = ManagedComponentCommand<T>.Set;
                 }
             }
@@ -63,7 +61,7 @@ namespace DefaultEcs.Technical.Command
 
             #region Methods
 
-            public static void WriteComponent(List<object> objects, byte* memory, in T component) => _createSetAction(objects, memory, component);
+            public static void WriteComponent(List<object> objects, byte* memory, in T component) => _writeComponentAction(objects, memory, component);
 
             #endregion
 
