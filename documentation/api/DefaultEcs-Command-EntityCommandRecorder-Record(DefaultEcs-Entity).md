@@ -10,4 +10,9 @@ This command takes 9 bytes.
 
 The [EntityRecord](./DefaultEcs-Command-EntityRecord.md 'DefaultEcs.Command.EntityRecord') used to record action on the given [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').
 ### Returns
+The [EntityRecord](./DefaultEcs-Command-EntityRecord.md 'DefaultEcs.Command.EntityRecord') used to record actions on the given [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').
+### Exceptions
 
+[System.InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/System.InvalidOperationException 'System.InvalidOperationException')
+
+Command buffer is full.

@@ -13,3 +13,16 @@ The default size of the [EntityCommandRecorder](./DefaultEcs-Command-EntityComma
 `maxCapacity`
 
 The maximum capacity of the [EntityCommandRecorder](./DefaultEcs-Command-EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder').
+### Exceptions
+
+[System.ArgumentException](https://docs.microsoft.com/en-us/dotnet/api/System.ArgumentException 'System.ArgumentException')
+
+[defaultCapacity](#DefaultEcs-Command-EntityCommandRecorder--ctor(System-Int32-_System-Int32)-defaultCapacity 'DefaultEcs.Command.EntityCommandRecorder.#ctor(System.Int32, System.Int32).defaultCapacity') cannot be negative.
+
+[System.ArgumentException](https://docs.microsoft.com/en-us/dotnet/api/System.ArgumentException 'System.ArgumentException')
+
+[maxCapacity](#DefaultEcs-Command-EntityCommandRecorder--ctor(System-Int32-_System-Int32)-maxCapacity 'DefaultEcs.Command.EntityCommandRecorder.#ctor(System.Int32, System.Int32).maxCapacity') cannot be negative.
+
+[System.ArgumentException](https://docs.microsoft.com/en-us/dotnet/api/System.ArgumentException 'System.ArgumentException')
+
+[maxCapacity](#DefaultEcs-Command-EntityCommandRecorder--ctor(System-Int32-_System-Int32)-maxCapacity 'DefaultEcs.Command.EntityCommandRecorder.#ctor(System.Int32, System.Int32).maxCapacity') is inferior to [defaultCapacity](#DefaultEcs-Command-EntityCommandRecorder--ctor(System-Int32-_System-Int32)-defaultCapacity 'DefaultEcs.Command.EntityCommandRecorder.#ctor(System.Int32, System.Int32).defaultCapacity').

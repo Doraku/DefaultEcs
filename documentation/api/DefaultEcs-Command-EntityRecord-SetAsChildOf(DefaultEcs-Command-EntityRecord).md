@@ -8,3 +8,8 @@ Makes it so when given [EntityRecord](./DefaultEcs-Command-EntityRecord.md 'Defa
 `parent`
 
 The [EntityRecord](./DefaultEcs-Command-EntityRecord.md 'DefaultEcs.Command.EntityRecord') which acts as parent.
+### Exceptions
+
+[System.InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/System.InvalidOperationException 'System.InvalidOperationException')
+
+Command buffer is full.

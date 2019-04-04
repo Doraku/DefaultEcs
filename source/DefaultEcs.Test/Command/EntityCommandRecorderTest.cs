@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using DefaultEcs.Command;
 using NFluent;
 using Xunit;
@@ -554,6 +555,49 @@ namespace DefaultEcs.Test.Command
                 recorder.Execute(world);
 
                 Check.That(world.GetAllEntities().Skip(1).Single().GetChildren()).IsEmpty();
+            }
+        }
+
+        [Fact]
+        public void Should_work_in_multithread()
+        {
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(8, int.MaxValue))
+            using (World world = new World())
+            {
+                Enumerable.Range(0, 100000).AsParallel().ForAll(_ => recorder.CreateEntity());
+
+                recorder.Execute(world);
+
+                Check.That(world.GetAllEntities().Count()).IsEqualTo(100000);
+            }
+        }
+
+        [Fact]
+        public void EntityCommandRecorder_Should_throw_When_maxCapacity_inferior_to_zero()
+        {
+            Check.ThatCode(() => new EntityCommandRecorder(-1)).Throws<ArgumentException>();
+        }
+
+        [Fact]
+        public void EntityCommandRecorder_Should_throw_When_defaultCapacity_inferior_to_zero()
+        {
+            Check.ThatCode(() => new EntityCommandRecorder(-1, 42)).Throws<ArgumentException>();
+        }
+
+        [Fact]
+        public void EntityCommandRecorder_Should_throw_When_maxCapacity_inferior_to_defaultCapacity()
+        {
+            Check.ThatCode(() => new EntityCommandRecorder(1337, 42)).Throws<ArgumentException>();
+        }
+
+        [Fact]
+        public void Shoud_throw_When_no_more_space()
+        {
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(16))
+            {
+                recorder.CreateEntity();
+
+                Check.ThatCode(() => recorder.CreateEntity()).Throws<InvalidOperationException>();
             }
         }
 

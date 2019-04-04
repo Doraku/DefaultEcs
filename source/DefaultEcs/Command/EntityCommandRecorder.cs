@@ -29,6 +29,9 @@ namespace DefaultEcs.Command
         /// </summary>
         /// <param name="defaultCapacity">The default size of the <see cref="EntityCommandRecorder"/>.</param>
         /// <param name="maxCapacity">The maximum capacity of the <see cref="EntityCommandRecorder"/>.</param>
+        /// <exception cref="ArgumentException"><paramref name="defaultCapacity"/> cannot be negative.</exception>
+        /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
+        /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> is inferior to <paramref name="defaultCapacity"/>.</exception>
         public EntityCommandRecorder(int defaultCapacity, int maxCapacity)
         {
             if (defaultCapacity < 0)
@@ -54,7 +57,8 @@ namespace DefaultEcs.Command
         /// <summary>
         /// Creates a fixed sized <see cref="EntityCommandRecorder"/>.
         /// </summary>
-        /// <param name="maxCapacity"></param>
+        /// <param name="maxCapacity">The size of the <see cref="EntityCommandRecorder"/>.</param>
+        /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
         public EntityCommandRecorder(int maxCapacity)
             : this(maxCapacity, maxCapacity)
         { }
@@ -89,7 +93,7 @@ namespace DefaultEcs.Command
 
         private int ReserveNextCommand(int commandSize)
         {
-            void Throw() => throw new Exception("CommandBuffer is full.");
+            void Throw() => throw new InvalidOperationException("CommandBuffer is full.");
 
             int commandOffset;
             int nextCommandOffset;
@@ -147,7 +151,8 @@ namespace DefaultEcs.Command
         /// This command takes 9 bytes.
         /// </summary>
         /// <param name="entity">The <see cref="EntityRecord"/> used to record action on the given <see cref="Entity"/>.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="EntityRecord"/> used to record actions on the given <see cref="Entity"/>.</returns>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public EntityRecord Record(in Entity entity)
         {
             int offset = ReserveNextCommand(sizeof(EntityCommand));
@@ -162,6 +167,7 @@ namespace DefaultEcs.Command
         /// This command takes 9 bytes.
         /// </summary>
         /// <returns>The <see cref="EntityRecord"/> used to record actions on the later created <see cref="Entity"/>.</returns>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public EntityRecord CreateEntity()
         {
             int offset = ReserveNextCommand(sizeof(EntityCommand));

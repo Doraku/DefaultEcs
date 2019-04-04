@@ -8,3 +8,8 @@ Makes it so when corresponding [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entit
 `child`
 
 The [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') which acts as child.
+### Exceptions
+
+[System.InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/System.InvalidOperationException 'System.InvalidOperationException')
+
+Command buffer is full.

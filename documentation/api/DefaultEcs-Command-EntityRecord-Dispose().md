@@ -4,3 +4,8 @@
 Clean the corresponding [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') of all its components.
 The current [EntityRecord](./DefaultEcs-Command-EntityRecord.md 'DefaultEcs.Command.EntityRecord') should not be used again after calling this method.
 This command takes 5 bytes.
+### Exceptions
+
+[System.InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/System.InvalidOperationException 'System.InvalidOperationException')
+
+Command buffer is full.

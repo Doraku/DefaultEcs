@@ -1,4 +1,5 @@
-﻿using DefaultEcs.Technical.Command;
+﻿using System;
+using DefaultEcs.Technical.Command;
 
 namespace DefaultEcs.Command
 {
@@ -30,12 +31,14 @@ namespace DefaultEcs.Command
         /// Enables the corresponding <see cref="Entity"/> so it can appear in <see cref="EntitySet"/>.
         /// This command takes 5 bytes.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void Enable() => _recorder.WriteCommand(new EntityOffsetCommand(CommandType.Enable, _offset));
 
         /// <summary>
         /// Disables the corresponding <see cref="Entity"/> so it does not appear in <see cref="EntitySet"/>.
         /// This command takes 5 bytes.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void Disable() => _recorder.WriteCommand(new EntityOffsetCommand(CommandType.Disable, _offset));
 
         /// <summary>
@@ -44,6 +47,7 @@ namespace DefaultEcs.Command
         /// This command takes 9 bytes.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void Enable<T>() => _recorder.WriteCommand(new EntityOffsetComponentCommand(CommandType.EnableT, ComponentCommands.ComponentCommand<T>.Index, _offset));
 
         /// <summary>
@@ -51,6 +55,7 @@ namespace DefaultEcs.Command
         /// This command takes 9 bytes.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void Disable<T>() => _recorder.WriteCommand(new EntityOffsetComponentCommand(CommandType.DisableT, ComponentCommands.ComponentCommand<T>.Index, _offset));
 
         /// <summary>
@@ -60,6 +65,7 @@ namespace DefaultEcs.Command
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void Set<T>(in T component = default) => _recorder.WriteSetCommand(_offset, component);
 
         /// <summary>
@@ -68,6 +74,7 @@ namespace DefaultEcs.Command
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="reference">The other <see cref="EntityRecord"/> used as reference.</param>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void SetSameAs<T>(in EntityRecord reference) => _recorder.WriteCommand(new EntityReferenceOffsetComponentCommand(CommandType.SetSameAs, ComponentCommands.ComponentCommand<T>.Index, _offset, reference._offset));
 
         /// <summary>
@@ -75,30 +82,35 @@ namespace DefaultEcs.Command
         /// This command takes 9 bytes.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void Remove<T>() => _recorder.WriteCommand(new EntityOffsetComponentCommand(CommandType.Remove, ComponentCommands.ComponentCommand<T>.Index, _offset));
 
         /// <summary>
         /// Makes it so when given <see cref="EntityRecord"/> corresponding <see cref="Entity"/> is disposed, corresponding <see cref="Entity"/> will also be disposed.
         /// </summary>
         /// <param name="parent">The <see cref="EntityRecord"/> which acts as parent.</param>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void SetAsChildOf(in EntityRecord parent) => _recorder.WriteCommand(new ChildParentOffsetCommand(CommandType.SetAsChildOf, _offset, parent._offset));
 
         /// <summary>
         /// Makes it so when corresponding <see cref="Entity"/> is disposed, given <see cref="EntityRecord"/> corresponding <see cref="Entity"/> will also be disposed.
         /// </summary>
         /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void SetAsParentOf(in EntityRecord child) => child.SetAsChildOf(this);
 
         /// <summary>
         /// Remove the given <see cref="EntityRecord"/> corresponding <see cref="Entity"/> from corresponding <see cref="Entity"/> parents.
         /// </summary>
         /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void RemoveFromChildrenOf(in EntityRecord parent) => _recorder.WriteCommand(new ChildParentOffsetCommand(CommandType.RemoveFromChildrenOf, _offset, parent._offset));
 
         /// <summary>
         /// Remove the given <see cref="EntityRecord"/> corresponding <see cref="Entity"/> from corresponding <see cref="Entity"/> children.
         /// </summary>
         /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void RemoveFromParentsOf(in EntityRecord child) => child.RemoveFromChildrenOf(this);
 
         /// <summary>
@@ -106,6 +118,7 @@ namespace DefaultEcs.Command
         /// The current <see cref="EntityRecord"/> should not be used again after calling this method.
         /// This command takes 5 bytes.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void Dispose() => _recorder.WriteCommand(new EntityOffsetCommand(CommandType.Dispose, _offset));
 
         #endregion

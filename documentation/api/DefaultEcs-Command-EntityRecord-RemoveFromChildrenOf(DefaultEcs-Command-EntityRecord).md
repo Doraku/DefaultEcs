@@ -8,3 +8,8 @@ Remove the given [EntityRecord](./DefaultEcs-Command-EntityRecord.md 'DefaultEcs
 `parent`
 
 The [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') which acts as parent.
+### Exceptions
+
+[System.InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/System.InvalidOperationException 'System.InvalidOperationException')
+
+Command buffer is full.

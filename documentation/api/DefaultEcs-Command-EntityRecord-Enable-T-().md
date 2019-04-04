@@ -10,3 +10,8 @@ This command takes 9 bytes.
 `T`
 
 The type of the component.
+### Exceptions
+
+[System.InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/System.InvalidOperationException 'System.InvalidOperationException')
+
+Command buffer is full.
