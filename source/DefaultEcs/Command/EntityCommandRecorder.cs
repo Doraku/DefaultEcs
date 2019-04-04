@@ -275,6 +275,15 @@ namespace DefaultEcs.Command
             }
         }
 
+        /// <summary>
+        /// Clears all recorded commands.
+        /// </summary>
+        public void Clear()
+        {
+            _nextCommandOffset = 0;
+            _objects.Clear();
+        }
+
         #endregion
 
         #region IDisposable

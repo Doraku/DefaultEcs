@@ -601,6 +601,37 @@ namespace DefaultEcs.Test.Command
             }
         }
 
+        [Fact]
+        public void Execute_Should_clear_recorded_command_after_executing()
+        {
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder())
+            using (World world = new World())
+            {
+                recorder.CreateEntity();
+                recorder.Execute(world);
+
+                Check.That(world.GetAllEntities().Count()).IsEqualTo(1);
+
+                recorder.Execute(world);
+
+                Check.That(world.GetAllEntities().Count()).IsEqualTo(1);
+            }
+        }
+
+        [Fact]
+        public void Clear_Should_clear_recorded_command()
+        {
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder())
+            using (World world = new World())
+            {
+                recorder.CreateEntity();
+                recorder.Clear();
+                recorder.Execute(world);
+
+                Check.That(world.GetAllEntities().Count()).IsZero();
+            }
+        }
+
         #endregion
     }
 }

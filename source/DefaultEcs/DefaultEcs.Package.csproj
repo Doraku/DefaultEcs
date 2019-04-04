@@ -19,13 +19,13 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.10.0</Version>
+    <Version>0.10.0-alpha1</Version>
     <PackageReleaseNotes>
 fixed double Dispose in AResourceManager
 fixed reference count in AResourceManager when World is disposed
-fixed Entity.CopyTo to correctly copy enable/disable state
+fixed Entity.CopyTo to correctly copy enabled/disabled state
 
-added IEntitySetObserver (basic implementation EntitySetObserverEvents) to get add/remove operations on EntitySet
+added IEntitySetObserver and basic implementation EntitySetObserverEvents to get add/remove operations on EntitySet
 added EntityCommandRecorder to defer structural entity changes
 
 breaking change: SubscribeAction renamed ActionIn

@@ -7,6 +7,7 @@ Represents a buffer of structural modifications to apply on [Entity](./DefaultEc
 - [#ctor(System.Int32)](./DefaultEcs-Command-EntityCommandRecorder--ctor(System-Int32).md 'DefaultEcs.Command.EntityCommandRecorder.#ctor(System.Int32)')
 - [#ctor(System.Int32, System.Int32)](./DefaultEcs-Command-EntityCommandRecorder--ctor(System-Int32-_System-Int32).md 'DefaultEcs.Command.EntityCommandRecorder.#ctor(System.Int32, System.Int32)')
 ### Methods
+- [Clear()](./DefaultEcs-Command-EntityCommandRecorder-Clear().md 'DefaultEcs.Command.EntityCommandRecorder.Clear()')
 - [CreateEntity()](./DefaultEcs-Command-EntityCommandRecorder-CreateEntity().md 'DefaultEcs.Command.EntityCommandRecorder.CreateEntity()')
 - [Dispose()](./DefaultEcs-Command-EntityCommandRecorder-Dispose().md 'DefaultEcs.Command.EntityCommandRecorder.Dispose()')
 - [Execute(DefaultEcs.World)](./DefaultEcs-Command-EntityCommandRecorder-Execute(DefaultEcs-World).md 'DefaultEcs.Command.EntityCommandRecorder.Execute(DefaultEcs.World)')
