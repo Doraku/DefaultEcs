@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using DefaultEcs.Technical.Helper;
 
 namespace DefaultEcs.Technical.Command
 {
@@ -35,7 +36,7 @@ namespace DefaultEcs.Technical.Command
                     _componentCommands.Add(new ComponentCommand<T>());
                 }
 
-                try
+                if (typeof(T).IsUnmanaged())
                 {
                     TypeInfo typeInfo = typeof(UnmanagedComponentCommand<>).MakeGenericType(typeof(T)).GetTypeInfo();
 
@@ -48,7 +49,7 @@ namespace DefaultEcs.Technical.Command
                         .GetDeclaredMethod(nameof(UnmanagedComponentCommand<bool>.SetComponent))
                         .CreateDelegate(typeof(SetComponent));
                 }
-                catch
+                else
                 {
                     SizeOfT = sizeof(int);
 
