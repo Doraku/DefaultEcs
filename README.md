@@ -1,7 +1,7 @@
 ![DefaultEcs](https://github.com/Doraku/DefaultEcs/raw/master/image/DefaultEcsLogo.png)
 DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
-[![NuGet](https://img.shields.io/badge/nuget-v0.9.2-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
+[![NuGet](https://img.shields.io/badge/nuget-v0.10.0-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
 
 - [Requirement](#Requirement)
 - [Release note](./documentation/RELEASENOTE.md 'Release note')
@@ -18,6 +18,7 @@ DefaultEcs is an Entity Component System framework which aims to be accessible w
     - [AEntitySystem](#Overview_System_AEntitySystem)
     - [AComponentSystem](#Overview_System_AComponentSystem)
     - [SystemRunner](#Overview_System_SystemRunner)
+  - [Command](#Overview_Command)
   - [Message](#Overview_Message)
   - [Serialization](#Overview_Serialization)
     - [TextSerializer](#Overview_Serialization_TextSerializer)
@@ -305,6 +306,39 @@ It is safe to run a system with multithreading when:
   * there is no new Set, Remove or Dispose action on entity (only read or update)
 * for an AComponentSystem
   * each component can be safely updated separately with no dependency to an other component
+
+<a name='Overview_Command'></a>
+## Command
+Since it is not possible to make structural modification on an Entity in a multithreading  context, the EntityCommandRecorder type is provided to adress this short-coming.
+It is possible de record command on entities in a thread-safe way to later execute them when those structural modifications are safe to do.
+```C#
+// This creates an expandable recorder with a default capacity of 1Ko
+EntityCommandRecorder recorder = new EntityCommandRecorder();
+
+// This creates a fixed capacity recorder of 512Ko
+EntityCommandRecorder recorder = new EntityCommandRecorder(512);
+
+// This creates an expandable recorder with a default capacity of .5Ko which can have a maximum capacity of 2Ko
+EntityCommandRecorder recorder = new EntityCommandRecorder(512, 2048);
+```
+
+Note that a fixed capacity EntityCommandRecorder (or one which has expanded to its max capacity) has better performance.
+When needed, an expandable EntityCommandRecorder will double its capacity so it is prefered to use a power of 2 as default capacity.
+
+```C#
+// Create a new Entity defered and give an EntityRecord to record commands on it
+EntityRecord newRecord = recorder.CreateEntity();
+
+// Register an Entity and give an EntityRecord to record commands on it
+EntityRecord record = recorder.Record(entity);
+
+// EntityRecord has the same API as Entity so all action expected are available to record as command this way
+newRecord.Set<bool>(true);
+record.SetAsParentOf(newRecord);
+
+// To execute all recorded commands
+recorder.Execute(world);
+```
 
 <a name='Overview_Message'></a>
 ## Message

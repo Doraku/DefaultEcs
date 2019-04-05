@@ -1,4 +1,17 @@
 ## DefaultEcs 0.9.2
+fixed double Dispose in AResourceManager
+fixed reference count in AResourceManager when World is disposed
+fixed Entity.CopyTo to correctly copy enabled/disabled state
+fixed non unmanaged struct serialization in BinarySerializer
+
+added IEntitySetObserver and basic implementation EntitySetObserverEvents to get add/remove operations on EntitySet
+added EntityCommandRecorder to defer structural entity changes
+
+breaking change: SubscribeAction renamed ActionIn
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.10.0)
+
+## DefaultEcs 0.9.2
 added IsAlive property on Entity
 added With(Type[]) and Without(Type[]) on EntitySetBuilder
 added managed resource helper class (probably not final)
