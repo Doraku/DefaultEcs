@@ -21,15 +21,7 @@
 
     <Version>0.10.0</Version>
     <PackageReleaseNotes>
-fixed double Dispose in AResourceManager
-fixed reference count in AResourceManager when World is disposed
-fixed Entity.CopyTo to correctly copy enabled/disabled state
-fixed non unmanaged struct serialization in BinarySerializer
-
-added IEntitySetObserver and basic implementation EntitySetObserverEvents to get add/remove operations on EntitySet
-added EntityCommandRecorder to defer structural entity changes
-
-breaking change: SubscribeAction renamed ActionIn
+fixed multiple subscriptions on IPublisherExtension.Subscribe when a virtual method is decorated and overriden in a derived type
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

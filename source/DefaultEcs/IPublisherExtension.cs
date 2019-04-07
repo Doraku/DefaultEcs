@@ -35,7 +35,7 @@ namespace DefaultEcs
                 while (type != null)
                 {
                     foreach (MethodInfo method in type.GetTypeInfo().DeclaredMethods
-                        .Where(m => m.GetCustomAttribute<SubscribeAttribute>(true) != null && (m.IsStatic || target != null)))
+                        .Where(m => m.GetCustomAttribute<SubscribeAttribute>(false) != null && (m.IsStatic || target != null)))
                     {
                         ParameterInfo[] parameters = method.GetParameters();
 

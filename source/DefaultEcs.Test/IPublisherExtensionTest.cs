@@ -1,5 +1,6 @@
 ﻿using System;
 using NFluent;
+using NSubstitute;
 using Xunit;
 
 namespace DefaultEcs.Test
@@ -10,11 +11,14 @@ namespace DefaultEcs.Test
 
         private sealed class Publisher : IPublisher
         {
+            public int SubscribeCount;
+
             public Delegate Action { get; private set; }
 
             public IDisposable Subscribe<T>(ActionIn<T> action)
             {
                 Action = action;
+                ++SubscribeCount;
 
                 return null;
             }
@@ -73,6 +77,18 @@ namespace DefaultEcs.Test
 
         private sealed class ImplementClass : AbstractMethod
         {
+            public override void Method(in object arg)
+            { }
+        }
+
+        private abstract class AbstractNonDecoratedMethod
+        {
+            public abstract void Method(in object arg);
+        }
+
+        private sealed class ImplementNonDecoratedClass : AbstractNonDecoratedMethod
+        {
+            [Subscribe]
             public override void Method(in object arg)
             { }
         }
@@ -179,11 +195,33 @@ namespace DefaultEcs.Test
         public void Subscribe_target_Should_call_publisher_Subscribe_on_decorated_abstract_method()
         {
             Publisher publisher = new Publisher();
-            ImplementClass target = new ImplementClass();
+            AbstractMethod target = new ImplementClass();
 
             publisher.Subscribe(target);
 
             Check.That(publisher.Action).IsEqualTo(new ActionIn<object>(target.Method));
+        }
+
+        [Fact]
+        public void Subscribe_target_Should_call_publisher_Subscribe_on_decorated_overriden_method()
+        {
+            Publisher publisher = new Publisher();
+            AbstractNonDecoratedMethod target = new ImplementNonDecoratedClass();
+
+            publisher.Subscribe(target);
+
+            Check.That(publisher.Action).IsEqualTo(new ActionIn<object>(target.Method));
+        }
+
+        [Fact]
+        public void Subscribe_target_Should_call_publisher_Subscribe_once_for_each_decorate_method()
+        {
+            Publisher publisher = new Publisher();
+            ImplementClass target = new ImplementClass();
+
+            publisher.Subscribe(target);
+
+            Check.That(publisher.SubscribeCount).IsEqualTo(1);
         }
 
         #endregion
