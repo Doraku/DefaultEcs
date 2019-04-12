@@ -315,7 +315,7 @@ It is possible de record command on entities in a thread-safe way to later execu
 // This creates an expandable recorder with a default capacity of 1Ko
 EntityCommandRecorder recorder = new EntityCommandRecorder();
 
-// This creates a fixed capacity recorder of 512Ko
+// This creates a fixed capacity recorder of .5Ko
 EntityCommandRecorder recorder = new EntityCommandRecorder(512);
 
 // This creates an expandable recorder with a default capacity of .5Ko which can have a maximum capacity of 2Ko
