@@ -1,3 +1,8 @@
+## DefaultEcs 0.10.1
+fixed multiple subscriptions on IPublisherExtension.Subscribe when a virtual method is decorated and overriden in a derived type
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.10.1)
+
 ## DefaultEcs 0.10.0
 fixed double Dispose in AResourceManager  
 fixed reference count in AResourceManager when World is disposed  

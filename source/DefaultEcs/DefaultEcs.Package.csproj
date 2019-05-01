@@ -19,7 +19,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.10.0</Version>
+    <Version>0.10.1</Version>
     <PackageReleaseNotes>
 fixed multiple subscriptions on IPublisherExtension.Subscribe when a virtual method is decorated and overriden in a derived type
     </PackageReleaseNotes>
