@@ -1,7 +1,7 @@
 ![DefaultEcs](https://github.com/Doraku/DefaultEcs/raw/master/image/DefaultEcsLogo.png)
 DefaultEcs is an Entity Component System framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
-[![NuGet](https://img.shields.io/badge/nuget-v0.10.0-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
+[![NuGet](https://img.shields.io/badge/nuget-v0.10.1-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
 
 - [Requirement](#Requirement)
 - [Release note](./documentation/RELEASENOTE.md 'Release note')
@@ -34,7 +34,7 @@ DefaultEcs uses heavily features from C#7.0 and Span from the System.Memory pack
 # Overview
 <a name='Overview_World'></a>
 ## World
-The World class act as a manager to create entity, get a selection of specific entities, get a family of component or publish and subscribe to messages that can be used to communicate in a decoupled way between the different elements.
+The World class act as a manager to create entity, get a selection of specific entities, get a family of component or publish and subscribe to messages that can be used to communicate in a decoupled way between the different elements.  
 Multiple World objects can be used in parallel, each instance being thread-safe from one an other but operations performed on a single instance and all of its created items should be thought as non thread-safe but depending on what is done, it is still possible to process operations concurrently to optimise performance.
 
 Worlds are created as such
@@ -106,10 +106,10 @@ Note that the Get method return the component as a ref so you can directly updat
 
 <a name='Overview_Resource'></a>
 ## Resource
-Not all components can easily be serialized to be loaded from data file (texture, sound, ...). To help with the handling of those cases, helper types are provided to give a way to load managed resources, shared across entities and even worlds, and automatically dispose them once no entity using them exist anymore.
-To setup a managed resource on an entity, the type `ManagedResource<TInfo, TResource>` need to be set as a component where TInfo is a type used as a single identifier for a single resource and information needed to load it, and TResource is the type of the resource.
-Should multiple resource of the same type be needed on a single entity, it is also possible to set the type `ManagedResource<TInfo[], TResource>` as component.
-If the `ManagedResource` component is removed from the entity or the entity holding it disposed, the internal reference count on the resource will decrease and it will be disposed if zero is reached.
+Not all components can easily be serialized to be loaded from data file (texture, sound, ...). To help with the handling of those cases, helper types are provided to give a way to load managed resources, shared across entities and even worlds, and automatically dispose them once no entity using them exist anymore.  
+To setup a managed resource on an entity, the type `ManagedResource<TInfo, TResource>` need to be set as a component where TInfo is a type used as a single identifier for a single resource and information needed to load it, and TResource is the type of the resource.  
+Should multiple resource of the same type be needed on a single entity, it is also possible to set the type `ManagedResource<TInfo[], TResource>` as component.  
+If the `ManagedResource` component is removed from the entity or the entity holding it disposed, the internal reference count on the resource will decrease and it will be disposed if zero is reached.  
 To actually load the resource, an implementation of the class `AResourceManager<TInfo, TResource>` is need as shown in the next exemple:
 ```C#
 // TInfo is string, the name of the texture and TResource is Texture2D
@@ -145,7 +145,7 @@ textureResourceManager.Manage(_world);
 
 <a name='Overview_System'></a>
 ## System
-To perform operation, systems should get EntitySet from the World instance. EntitySet are updated as components are added/removed from entities and are used to get a subset of entities with the required component.
+To perform operation, systems should get EntitySet from the World instance. EntitySet are updated as components are added/removed from entities and are used to get a subset of entities with the required component.  
 EntitySet are created from EntitySetBuilder and it is possible to apply rules for required components or excluded components
 ```C#
 // this set when enumerated will give all the entities with an Example component
@@ -309,7 +309,7 @@ It is safe to run a system with multithreading when:
 
 <a name='Overview_Command'></a>
 ## Command
-Since it is not possible to make structural modification on an Entity in a multithreading  context, the EntityCommandRecorder type is provided to adress this short-coming.
+Since it is not possible to make structural modification on an Entity in a multithreading  context, the EntityCommandRecorder type is provided to adress this short-coming.  
 It is possible de record command on entities in a thread-safe way to later execute them when those structural modifications are safe to do.
 ```C#
 // This creates an expandable recorder with a default capacity of 1Ko
@@ -322,7 +322,7 @@ EntityCommandRecorder recorder = new EntityCommandRecorder(512);
 EntityCommandRecorder recorder = new EntityCommandRecorder(512, 2048);
 ```
 
-Note that a fixed capacity EntityCommandRecorder (or one which has expanded to its max capacity) has better performance.
+Note that a fixed capacity EntityCommandRecorder (or one which has expanded to its max capacity) has better performance.  
 When needed, an expandable EntityCommandRecorder will double its capacity so it is prefered to use a power of 2 as default capacity.
 
 ```C#
@@ -388,8 +388,8 @@ DefaultEcs support serialization to save and load a World state. Two implementat
 - IComponentTypeReader is used to get the settings of the serialized World in case a maxComponentCount has been set for a specific type different from the maxEntityCount
 - IComponentReader is used to get all the components of an Entity
 
-The provided implementation TextSerializer and BinarySerializer are highly permissive and will serialize every fields and properties even if the are private or readonly and do not require any attribute decoration to work.
-This was a target from the get go as graphic and framework libraries do not always have well decorated type which would be used as component.
+The provided implementation TextSerializer and BinarySerializer are highly permissive and will serialize every fields and properties even if the are private or readonly and do not require any attribute decoration to work.  
+This was a target from the get go as graphic and framework libraries do not always have well decorated type which would be used as component.  
 Although the lowest target is netstandard1.1, please be aware that the capability of both implementation to handle type with no default constructor maybe not work if the version of your .NET plateform is too low.
 
 

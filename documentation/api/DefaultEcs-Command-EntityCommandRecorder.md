@@ -1,7 +1,7 @@
 #### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs.Command](./DefaultEcs.md#DefaultEcs-Command 'DefaultEcs.Command')
 ## EntityCommandRecorder `type`
-Represents a buffer of structural modifications to apply on [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') to record as postoned commands. 
+Represents a buffer of structural modifications to apply on [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') to record as postoned commands.
 ### Constructors
 - [#ctor()](./DefaultEcs-Command-EntityCommandRecorder--ctor().md 'DefaultEcs.Command.EntityCommandRecorder.#ctor()')
 - [#ctor(System.Int32)](./DefaultEcs-Command-EntityCommandRecorder--ctor(System-Int32).md 'DefaultEcs.Command.EntityCommandRecorder.#ctor(System.Int32)')

@@ -1,7 +1,7 @@
 #### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs](./DefaultEcs.md#DefaultEcs 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Enable&lt;T&gt;() `method`
-Enables the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') component of type [T](#DefaultEcs-Entity-Enable-T-()-T 'DefaultEcs.Entity.Enable&lt;T&gt;().T') so it can appear in [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet').
+Enables the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') component of type [T](#DefaultEcs-Entity-Enable-T-()-T 'DefaultEcs.Entity.Enable&lt;T&gt;().T') so it can appear in [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet').  
 Does nothing if current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') does not have a component of type [T](#DefaultEcs-Entity-Enable-T-()-T 'DefaultEcs.Entity.Enable&lt;T&gt;().T').
 ### Type parameters
 

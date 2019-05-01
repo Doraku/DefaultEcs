@@ -1,7 +1,7 @@
 #### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs](./DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## Entity `type`
-Represents an item in the [World](./DefaultEcs-World.md 'DefaultEcs.World').
+Represents an item in the [World](./DefaultEcs-World.md 'DefaultEcs.World').  
 Only use [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') generated from the [CreateEntity()](./DefaultEcs-World-CreateEntity().md 'DefaultEcs.World.CreateEntity()') method.
 ### Properties
 - [IsAlive](./DefaultEcs-Entity-IsAlive.md 'DefaultEcs.Entity.IsAlive')
