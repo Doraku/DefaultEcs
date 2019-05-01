@@ -1,4 +1,4 @@
-## DefaultEcs 0.9.2
+## DefaultEcs 0.10.0
 fixed double Dispose in AResourceManager  
 fixed reference count in AResourceManager when World is disposed  
 fixed Entity.CopyTo to correctly copy enabled/disabled state  
