@@ -21,7 +21,6 @@
 
     <Version>0.10.1</Version>
     <PackageReleaseNotes>
-fixed multiple subscriptions on IPublisherExtension.Subscribe when a virtual method is decorated and overriden in a derived type
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
