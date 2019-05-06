@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Serialization;
 using DefaultEcs.Technical;
+using DefaultEcs.Technical.Debug;
 using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs
@@ -13,6 +14,7 @@ namespace DefaultEcs
     /// Represents an item in the <see cref="World"/>.
     /// Only use <see cref="Entity"/> generated from the <see cref="World.CreateEntity"/> method.
     /// </summary>
+    [DebuggerTypeProxy(typeof(EntityDebugView))]
     [DebuggerDisplay("Entity {WorldId}:{EntityId}")]
     public readonly struct Entity : IDisposable, IEquatable<Entity>
     {
@@ -296,7 +298,7 @@ namespace DefaultEcs
         /// <returns>An <see cref="IEnumerable{Entity}"/> of all the current <see cref="Entity"/> children.</returns>
         public IEnumerable<Entity> GetChildren()
         {
-            foreach (int childId in World.Infos[WorldId].EntityInfos[EntityId].Children ?? Enumerable.Empty<int>())
+            foreach (int childId in World.Infos[WorldId]?.EntityInfos[EntityId].Children ?? Enumerable.Empty<int>())
             {
                 yield return new Entity(WorldId, childId);
             }
