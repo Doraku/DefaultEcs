@@ -15,7 +15,6 @@ namespace DefaultEcs
     /// Only use <see cref="Entity"/> generated from the <see cref="World.CreateEntity"/> method.
     /// </summary>
     [DebuggerTypeProxy(typeof(EntityDebugView))]
-    [DebuggerDisplay("Entity {WorldId}:{EntityId}")]
     public readonly struct Entity : IDisposable, IEquatable<Entity>
     {
         #region Fields
@@ -37,12 +36,14 @@ namespace DefaultEcs
 
         #region Properties
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ref ComponentEnum Components => ref World.Infos[WorldId].EntityInfos[EntityId].Components;
 
         /// <summary>
         /// Gets whether the current <see cref="Entity"/> is alive or not.
         /// </summary>
         /// <returns>true if the <see cref="Entity"/> is alive; otherwise, false.</returns>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public bool IsAlive
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -386,6 +387,12 @@ namespace DefaultEcs
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode() => EntityId;
+
+        /// <summary>
+        /// Returns a string representation of this instance.
+        /// </summary>
+        /// <returns>A string representing this instance.</returns>
+        public override string ToString() => $"Entity {WorldId}:{EntityId}";
 
         #endregion
     }

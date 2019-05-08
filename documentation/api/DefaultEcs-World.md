@@ -18,3 +18,4 @@ Represents a item used to create and manage [Entity](./DefaultEcs-Entity.md 'Def
 - [ReadAllComponentTypes(DefaultEcs.Serialization.IComponentTypeReader)](./DefaultEcs-World-ReadAllComponentTypes(DefaultEcs-Serialization-IComponentTypeReader).md 'DefaultEcs.World.ReadAllComponentTypes(DefaultEcs.Serialization.IComponentTypeReader)')
 - [SetMaximumComponentCount&lt;T&gt;(System.Int32)](./DefaultEcs-World-SetMaximumComponentCount-T-(System-Int32).md 'DefaultEcs.World.SetMaximumComponentCount&lt;T&gt;(System.Int32)')
 - [Subscribe&lt;T&gt;(DefaultEcs.ActionIn&lt;T&gt;)](./DefaultEcs-World-Subscribe-T-(DefaultEcs-ActionIn-T-).md 'DefaultEcs.World.Subscribe&lt;T&gt;(DefaultEcs.ActionIn&lt;T&gt;)')
+- [ToString()](./DefaultEcs-World-ToString().md 'DefaultEcs.World.ToString()')

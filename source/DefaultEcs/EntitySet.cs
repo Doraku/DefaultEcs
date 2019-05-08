@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Technical;
+using DefaultEcs.Technical.Debug;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
 
@@ -13,6 +15,8 @@ namespace DefaultEcs
     /// <summary>
     /// Represents a sub-selection of <see cref="Entity"/> instances from a <see cref="World"/>.
     /// </summary>
+    [DebuggerTypeProxy(typeof(EntitySetDebugView))]
+    [DebuggerDisplay("EntitySet[{Count}]")]
     public sealed class EntitySet : IDisposable
     {
         #region Fields

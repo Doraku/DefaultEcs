@@ -21,7 +21,7 @@
 
     <Version>0.10.1</Version>
     <PackageReleaseNotes>
-added DebuggerTypeProxy for Entity to display more information
+enhanced debugging experience on World, Entity and EntitySet
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

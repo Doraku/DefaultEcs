@@ -28,3 +28,4 @@ Only use [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') generated from the
 - [SetAsChildOf(DefaultEcs.Entity)](./DefaultEcs-Entity-SetAsChildOf(DefaultEcs-Entity).md 'DefaultEcs.Entity.SetAsChildOf(DefaultEcs.Entity)')
 - [SetAsParentOf(DefaultEcs.Entity)](./DefaultEcs-Entity-SetAsParentOf(DefaultEcs-Entity).md 'DefaultEcs.Entity.SetAsParentOf(DefaultEcs.Entity)')
 - [SetSameAs&lt;T&gt;(DefaultEcs.Entity)](./DefaultEcs-Entity-SetSameAs-T-(DefaultEcs-Entity).md 'DefaultEcs.Entity.SetSameAs&lt;T&gt;(DefaultEcs.Entity)')
+- [ToString()](./DefaultEcs-Entity-ToString().md 'DefaultEcs.Entity.ToString()')

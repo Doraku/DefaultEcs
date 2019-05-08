@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Serialization;
 using DefaultEcs.Technical;
+using DefaultEcs.Technical.Debug;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
 
@@ -12,7 +13,7 @@ namespace DefaultEcs
     /// <summary>
     /// Represents a item used to create and manage <see cref="Entity"/> objects.
     /// </summary>
-    [DebuggerDisplay("World {WorldId}")]
+    [DebuggerTypeProxy(typeof(WorldDebugView))]
     public sealed class World : IPublisher, IDisposable
     {
         #region Fields
@@ -267,6 +268,16 @@ namespace DefaultEcs
 
             GC.SuppressFinalize(this);
         }
+
+        #endregion
+
+        #region Object
+
+        /// <summary>
+        /// Returns a string representation of this instance.
+        /// </summary>
+        /// <returns>A string representing this instance.</returns>
+        public override string ToString() => $"World {WorldId}";
 
         #endregion
     }

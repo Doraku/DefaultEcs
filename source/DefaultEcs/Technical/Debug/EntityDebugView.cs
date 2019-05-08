@@ -9,7 +9,7 @@ namespace DefaultEcs.Technical.Debug
     internal sealed class EntityDebugView
     {
         [DebuggerDisplay("Component {Type}")]
-        private sealed class Component<T>
+        private sealed class Component<T> : IComponent
         {
             public readonly bool IsEnabled;
             public readonly T Value;
@@ -26,9 +26,9 @@ namespace DefaultEcs.Technical.Debug
         private sealed class DebugComponentReader : IComponentReader
         {
             private readonly Entity _entity;
-            private readonly List<object> _components;
+            private readonly List<IComponent> _components;
 
-            public DebugComponentReader(in Entity entity, List<object> components)
+            public DebugComponentReader(in Entity entity, List<IComponent> components)
             {
                 _components = components;
                 _entity = entity;
@@ -38,19 +38,21 @@ namespace DefaultEcs.Technical.Debug
         }
 
         private readonly Entity _entity;
-        private readonly List<object> _components;
+        private readonly List<IComponent> _components;
 
         public bool IsAlive => _entity.IsAlive;
         public bool IsEnabled => _entity.IsEnabled();
-        public IEnumerable<Entity> Children => _entity.GetChildren().ToArray();
-        public IEnumerable<object> Components => _components;
+        public Entity[] Children => _entity.GetChildren().ToArray();
+        public IComponent[] Components => _components.ToArray();
 
         public EntityDebugView(Entity entity)
         {
             _entity = entity;
-            _components = new List<object>();
+            _components = new List<IComponent>();
 
             entity.ReadAllComponents(new DebugComponentReader(_entity, _components));
+
+            _components.Sort((o1, o2) => string.Compare(o1.Type.FullName, o2.Type.FullName));
         }
     }
 }
