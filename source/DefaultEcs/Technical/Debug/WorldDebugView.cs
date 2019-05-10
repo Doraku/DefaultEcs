@@ -44,6 +44,7 @@ namespace DefaultEcs.Technical.Debug
         private readonly World _world;
         private readonly List<IComponent> _components;
 
+        public int MaxEntityCount => _world.MaxEntityCount;
         public Entity[] Entities => _world.GetAllEntities().ToArray();
         public IComponent[] Components => _components.ToArray();
 

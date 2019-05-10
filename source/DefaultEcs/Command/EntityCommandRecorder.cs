@@ -13,12 +13,30 @@ namespace DefaultEcs.Command
     {
         #region Fields
 
-        private readonly int _maxCapacity;
         private readonly List<object> _objects;
 
         private ReaderWriterLockSlim _lockObject;
         private byte[] _memory;
         private int _nextCommandOffset;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the maximum capacity the current instance can grow to.
+        /// </summary>
+        public int MaxCapacity { get; }
+
+        /// <summary>
+        /// Gets current capacity of the current instance.
+        /// </summary>
+        public int Capacity => _memory.Length;
+
+        /// <summary>
+        /// Gets the size taken by recorded commands in current instance.
+        /// </summary>
+        public int Size => _nextCommandOffset;
 
         #endregion
 
@@ -47,7 +65,7 @@ namespace DefaultEcs.Command
                 throw new ArgumentException($"{nameof(maxCapacity)} is inferior to {nameof(defaultCapacity)}.");
             }
 
-            _maxCapacity = maxCapacity;
+            MaxCapacity = maxCapacity;
             _objects = new List<object>();
             _lockObject = maxCapacity == defaultCapacity ? null : new ReaderWriterLockSlim();
             _memory = new byte[defaultCapacity];
@@ -104,7 +122,7 @@ namespace DefaultEcs.Command
                 nextCommandOffset = commandOffset + commandSize;
                 if (nextCommandOffset > _memory.Length)
                 {
-                    if (nextCommandOffset > _maxCapacity)
+                    if (nextCommandOffset > MaxCapacity)
                     {
                         Throw();
                     }
@@ -112,7 +130,7 @@ namespace DefaultEcs.Command
                     _lockObject?.EnterWriteLock();
                     try
                     {
-                        ArrayExtension.EnsureLength(ref _memory, nextCommandOffset, _maxCapacity);
+                        ArrayExtension.EnsureLength(ref _memory, nextCommandOffset, MaxCapacity);
                     }
                     finally
                     {
@@ -196,7 +214,7 @@ namespace DefaultEcs.Command
             _nextCommandOffset = 0;
             _objects.Clear();
 
-            if (_lockObject != null && _maxCapacity == _memory.Length)
+            if (_lockObject != null && MaxCapacity == _memory.Length)
             {
                 _lockObject.Dispose();
                 _lockObject = null;
