@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using DefaultEcs.Technical.Helper;
 
 namespace DefaultEcs.System
 {
@@ -29,7 +30,7 @@ namespace DefaultEcs.System
             : base(runner)
         {
             _mainSystem = mainSystem;
-            _systems = systems ?? new ISystem<T>[0];
+            _systems = systems ?? EmptyArray<ISystem<T>>.Value;
         }
 
         /// <summary>

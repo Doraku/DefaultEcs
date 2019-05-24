@@ -24,7 +24,7 @@ namespace DefaultEcs.Technical
 
             Flag = ComponentFlag.GetNextFlag();
 
-            Pools = new ComponentPool<T>[0];
+            Pools = EmptyArray<ComponentPool<T>>.Value;
 
             Publisher<WorldDisposedMessage>.Subscribe(0, On);
         }

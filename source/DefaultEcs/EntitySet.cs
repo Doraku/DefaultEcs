@@ -77,8 +77,8 @@ namespace DefaultEcs
 
             _subscriptions = subscriptions.Select(s => s(this, world)).Merge();
 
-            _mapping = new int[0];
-            _entities = new Entity[0];
+            _mapping = EmptyArray<int>.Value;
+            _entities = EmptyArray<Entity>.Value;
             _lastIndex = -1;
 
             for (int i = 0; i <= Math.Min(world.Info.EntityInfos.Length, world.LastEntityId); ++i)

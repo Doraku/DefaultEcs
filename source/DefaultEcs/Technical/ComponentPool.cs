@@ -51,9 +51,9 @@ namespace DefaultEcs.Technical
             _maxEntityCount = maxEntityCount;
             MaxComponentCount = _isFlagType ? 1 : Math.Min(maxEntityCount, maxComponentCount);
 
-            _mapping = new int[0];
-            _links = new ComponentLink[0];
-            _components = new T[0];
+            _mapping = EmptyArray<int>.Value;
+            _links = EmptyArray<ComponentLink>.Value;
+            _components = EmptyArray<T>.Value;
             _lastComponentIndex = -1;
 
             Publisher<ComponentTypeReadMessage>.Subscribe(_worldId, On);

@@ -1,4 +1,6 @@
-﻿namespace DefaultEcs.System
+﻿using DefaultEcs.Technical.Helper;
+
+namespace DefaultEcs.System
 {
     /// <summary>
     /// Represents a collection of <see cref="ISystem{T}"/> to update sequentially.
@@ -20,7 +22,7 @@
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
         public SequentialSystem(params ISystem<T>[] systems)
         {
-            _systems = systems ?? new ISystem<T>[0];
+            _systems = systems ?? EmptyArray<ISystem<T>>.Value;
             IsEnabled = true;
         }
 

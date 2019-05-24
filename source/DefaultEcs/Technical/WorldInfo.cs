@@ -1,4 +1,6 @@
-﻿namespace DefaultEcs.Technical
+﻿using DefaultEcs.Technical.Helper;
+
+namespace DefaultEcs.Technical
 {
     internal sealed class WorldInfo
     {
@@ -10,7 +12,7 @@
         {
             MaxEntityCount = maxEntityCount;
 
-            EntityInfos = new EntityInfo[0];
+            EntityInfos = EmptyArray<EntityInfo>.Value;
         }
     }
 }
