@@ -77,7 +77,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         void IComponentReader.OnRead<T>(ref T component, in Entity componentOwner)
         {
-            if (!_types.TryGetValue(typeof(T), out ushort currentType))
+            if (!_types.TryGetValue(typeof(T), out ushort _))
             {
                 _types.Add(typeof(T), _currentType);
 

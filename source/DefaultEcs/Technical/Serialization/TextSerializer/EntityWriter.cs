@@ -66,9 +66,9 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         void IComponentReader.OnRead<T>(ref T component, in Entity componentOwner)
         {
-            if (!_types.TryGetValue(typeof(T), out string typeName))
+            if (!_types.TryGetValue(typeof(T), out _))
             {
-                typeName = typeof(T).Name;
+                string typeName = typeof(T).Name;
 
                 int repeatCount = 1;
                 while (_types.ContainsValue(typeName))
