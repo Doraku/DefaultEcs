@@ -21,6 +21,7 @@
 
     <Version>0.10.1</Version>
     <PackageReleaseNotes>
+updated System.Memory reference
 enhanced debugging experience on World, Entity and EntitySet
 added MaxCapacity, Capacity and Size properties on EntityCommandRecorder
     </PackageReleaseNotes>
