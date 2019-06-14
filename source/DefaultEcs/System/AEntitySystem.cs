@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
+using DefaultEcs.Technical.System;
 
 namespace DefaultEcs.System
 {
@@ -14,26 +11,11 @@ namespace DefaultEcs.System
     {
         #region Fields
 
-        private static readonly ConcurrentDictionary<Type, Func<World, EntitySetBuilder>> _entitySetBuilderFactories;
-        private static readonly MethodInfo _with;
-        private static readonly MethodInfo _without;
-        private static readonly MethodInfo _withAny;
-
         private readonly EntitySet _set;
 
         #endregion
 
         #region Initialisation
-
-        static AEntitySystem()
-        {
-            _entitySetBuilderFactories = new ConcurrentDictionary<Type, Func<World, EntitySetBuilder>>();
-
-            TypeInfo entitySetBuilder = typeof(EntitySetBuilder).GetTypeInfo();
-            _with = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.With)).First(m => !m.ContainsGenericParameters);
-            _without = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.Without)).First(m => !m.ContainsGenericParameters);
-            _withAny = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WithAny)).First(m => !m.ContainsGenericParameters);
-        }
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="EntitySet"/> and <see cref="SystemRunner{T}"/>.
@@ -66,7 +48,7 @@ namespace DefaultEcs.System
         protected AEntitySystem(World world, SystemRunner<T> runner)
             : base(runner)
         {
-            _set = _entitySetBuilderFactories.GetOrAdd(GetType(), GetEntitySetBuilderFactory)(world ?? throw new ArgumentNullException(nameof(world))).Build();
+            _set = EntitySetBuilderFactory.Create(GetType())(world ?? throw new ArgumentNullException(nameof(world))).Build();
         }
 
         /// <summary>
@@ -82,32 +64,6 @@ namespace DefaultEcs.System
         #endregion
 
         #region Methods
-
-        private static Func<World, EntitySetBuilder> GetEntitySetBuilderFactory(Type type)
-        {
-            ParameterExpression world = Expression.Parameter(typeof(World));
-            Expression expression = Expression.Call(world, typeof(World).GetTypeInfo().GetDeclaredMethod(nameof(World.GetEntities)));
-
-            foreach (ComponentAttribute attribute in type.GetTypeInfo().GetCustomAttributes<ComponentAttribute>(true))
-            {
-                switch (attribute.FilterType)
-                {
-                    case ComponentFilterType.With:
-                        expression = Expression.Call(expression, _with, Expression.Constant(attribute.ComponentTypes));
-                        break;
-
-                    case ComponentFilterType.Without:
-                        expression = Expression.Call(expression, _without, Expression.Constant(attribute.ComponentTypes));
-                        break;
-
-                    case ComponentFilterType.WithAny:
-                        expression = Expression.Call(expression, _withAny, Expression.Constant(attribute.ComponentTypes));
-                        break;
-                }
-            }
-
-            return Expression.Lambda<Func<World, EntitySetBuilder>>(expression, world).Compile();
-        }
 
         /// <summary>
         /// Update the given <see cref="Entity"/> instance once.
