@@ -166,9 +166,8 @@ namespace DefaultEcs
         /// <summary>
         /// Returns an <see cref="EntitySet"/> with the specified rules.
         /// </summary>
-        /// <param name="observer">The <see cref="IEntitySetObserver"/> to notify when an entity is added/removed from the created <see cref="EntitySet"/>.</param>
         /// <returns>The <see cref="EntitySet"/>.</returns>
-        public EntitySet Build(IEntitySetObserver observer)
+        public EntitySet Build()
         {
             List<Func<EntitySet, World, IDisposable>> subscriptions = _subscriptions.ToList();
 
@@ -177,14 +176,8 @@ namespace DefaultEcs
                 subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Add));
             }
 
-            return new EntitySet(_world, observer, _withFilter, _withoutFilter, _withAnyFilters, subscriptions);
+            return new EntitySet(_world, _withFilter, _withoutFilter, _withAnyFilters, subscriptions);
         }
-
-        /// <summary>
-        /// Returns an <see cref="EntitySet"/> with the specified rules.
-        /// </summary>
-        /// <returns>The <see cref="EntitySet"/>.</returns>
-        public EntitySet Build() => Build(null);
 
         #endregion
     }

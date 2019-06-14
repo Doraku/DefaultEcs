@@ -61,36 +61,13 @@ namespace DefaultEcs.System
         /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
-        /// <param name="observer">The <see cref="IEntitySetObserver"/> to notify when an entity is added/removed from the created inner <see cref="EntitySet"/>.</param>
-        /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AEntitySystem(World world, IEntitySetObserver observer, SystemRunner<T> runner)
-            : base(runner)
-        {
-            _set = _entitySetBuilderFactories.GetOrAdd(GetType(), GetEntitySetBuilderFactory)(world ?? throw new ArgumentNullException(nameof(world))).Build(observer);
-        }
-
-        /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="World"/>.
-        /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
-        /// </summary>
-        /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntitySystem(World world, SystemRunner<T> runner)
-            : this(world, null, runner)
-        { }
-
-        /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="World"/>.
-        /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
-        /// </summary>
-        /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
-        /// <param name="observer">The <see cref="IEntitySetObserver"/> to notify when an entity is added/removed from the created inner <see cref="EntitySet"/>.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AEntitySystem(World world, IEntitySetObserver observer)
-            : this(world, observer, null)
-        { }
+            : base(runner)
+        {
+            _set = _entitySetBuilderFactories.GetOrAdd(GetType(), GetEntitySetBuilderFactory)(world ?? throw new ArgumentNullException(nameof(world))).Build();
+        }
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="World"/>.
@@ -99,7 +76,7 @@ namespace DefaultEcs.System
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntitySystem(World world)
-            : this(world, null, null)
+            : this(world, null)
         { }
 
         #endregion

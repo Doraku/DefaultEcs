@@ -1,6 +1,5 @@
 ﻿using System;
 using NFluent;
-using NSubstitute;
 using Xunit;
 
 namespace DefaultEcs.Test

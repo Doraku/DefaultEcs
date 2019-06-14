@@ -24,6 +24,9 @@
 updated System.Memory reference
 enhanced debugging experience on World, Entity and EntitySet
 added MaxCapacity, Capacity and Size properties on EntityCommandRecorder
+
+breaking changes
+removed IEntitySetObserver and implementation, use OnEntityAdded and OnEntityRemoved events on EntitySet instead
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

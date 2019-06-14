@@ -27,13 +27,22 @@ namespace DefaultEcs
 
         private readonly int _worldId;
         private readonly int _maxEntityCount;
-        private readonly IEntitySetObserver _observer;
         private readonly Predicate<ComponentEnum> _filter;
         private readonly IDisposable _subscriptions;
 
         private int[] _mapping;
         private Entity[] _entities;
         private int _lastIndex;
+
+        /// <summary>
+        /// Event called when an <see cref="Entity"/> is added to the <see cref="EntitySet"/>.
+        /// </summary>
+        public event ActionIn<Entity> OnEntityAdded;
+
+        /// <summary>
+        /// Event called when an <see cref="Entity"/> is removed from the <see cref="EntitySet"/>.
+        /// </summary>
+        public event ActionIn<Entity> OnEntityRemoved;
 
         #endregion
 
@@ -59,7 +68,6 @@ namespace DefaultEcs
 
         internal EntitySet(
             World world,
-            IEntitySetObserver observer,
             ComponentEnum withFilter,
             ComponentEnum withoutFilter,
             List<ComponentEnum> withAnyFilters,
@@ -67,7 +75,6 @@ namespace DefaultEcs
         {
             _worldId = world.WorldId;
             _maxEntityCount = world.MaxEntityCount;
-            _observer = observer;
 
             withFilter = withFilter.Copy();
             withFilter[World.IsAliveFlag] = true;
@@ -138,7 +145,7 @@ namespace DefaultEcs
                 ArrayExtension.EnsureLength(ref _entities, _lastIndex, _maxEntityCount);
 
                 _entities[_lastIndex] = new Entity(_worldId, entityId);
-                _observer?.OnEntityAdded(_entities[_lastIndex]);
+                OnEntityAdded?.Invoke(_entities[_lastIndex]);
             }
         }
 
@@ -161,7 +168,7 @@ namespace DefaultEcs
                     --_lastIndex;
                     index = -1;
 
-                    _observer?.OnEntityRemoved(entity);
+                    OnEntityRemoved?.Invoke(entity);
                 }
             }
         }
