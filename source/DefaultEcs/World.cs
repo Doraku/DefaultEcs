@@ -81,7 +81,7 @@ namespace DefaultEcs
                 Infos[WorldId] = Info;
             }
 
-            this.Subscribe(this);
+            Subscribe<EntityDisposedMessage>(On);
         }
 
         /// <summary>
@@ -95,7 +95,6 @@ namespace DefaultEcs
 
         #region Callbacks
 
-        [Subscribe]
         private void On(in EntityDisposedMessage message)
         {
             ref EntityInfo entityInfo = ref Info.EntityInfos[message.EntityId];
