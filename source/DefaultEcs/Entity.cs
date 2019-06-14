@@ -170,14 +170,18 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
+            ref ComponentEnum components = ref Components;
             if (ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component))
             {
-                ref ComponentEnum components = ref Components;
                 components[ComponentManager<T>.Flag] = true;
                 if (components[World.IsEnabledFlag])
                 {
                     Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
                 }
+            }
+            else if (components[World.IsEnabledFlag] && components[ComponentManager<T>.Flag])
+            {
+                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
             }
         }
 
@@ -196,14 +200,18 @@ namespace DefaultEcs
             ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
             if (!(pool?.Has(reference.EntityId) ?? false)) Throw($"Reference Entity does not have a component of type {nameof(T)}");
 
+            ref ComponentEnum components = ref Components;
             if (pool.SetSameAs(EntityId, reference.EntityId))
             {
-                ref ComponentEnum components = ref Components;
                 components[ComponentManager<T>.Flag] = true;
                 if (components[World.IsEnabledFlag])
                 {
                     Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
                 }
+            }
+            else if (components[World.IsEnabledFlag] && components[ComponentManager<T>.Flag])
+            {
+                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
             }
         }
 
