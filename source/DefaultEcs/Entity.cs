@@ -90,8 +90,11 @@ namespace DefaultEcs
             if (WorldId == 0) Throw("Entity was not created from a World");
 
             ref ComponentEnum components = ref Components;
-            components[World.IsEnabledFlag] = true;
-            Publisher.Publish(WorldId, new EntityEnabledMessage(EntityId, components));
+            if (!components[World.IsEnabledFlag])
+            {
+                components[World.IsEnabledFlag] = true;
+                Publisher.Publish(WorldId, new EntityEnabledMessage(EntityId, components));
+            }
         }
 
         /// <summary>
@@ -102,8 +105,12 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            Components[World.IsEnabledFlag] = false;
-            Publisher.Publish(WorldId, new EntityDisabledMessage(EntityId));
+            ref ComponentEnum components = ref Components;
+            if (components[World.IsEnabledFlag])
+            {
+                components[World.IsEnabledFlag] = false;
+                Publisher.Publish(WorldId, new EntityDisabledMessage(EntityId));
+            }
         }
 
         /// <summary>
@@ -322,7 +329,7 @@ namespace DefaultEcs
                 copy.Components = Components.Copy();
                 if (IsEnabled())
                 {
-                    copy.Enable();
+                    Publisher.Publish(WorldId, new EntityEnabledMessage(copy.EntityId, copy.Components));
                 }
             }
             catch
