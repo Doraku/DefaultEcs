@@ -13,6 +13,25 @@ namespace DefaultEcs.System
 
         private readonly EntitySet _set;
 
+        /// <summary>
+        /// Event called when an <see cref="Entity"/> is added to the inner <see cref="EntitySet"/>.
+        /// </summary>
+        public event ActionIn<Entity> OnEntityAdded
+        {
+            add => _set.OnEntityAdded += value;
+            remove => _set.OnEntityAdded -= value;
+        }
+
+        /// <summary>
+        /// Event called when an <see cref="Entity"/> is removed from the inner <see cref="EntitySet"/>.
+        /// </summary>
+        public event ActionIn<Entity> OnEntityRemoved
+        {
+            add => _set.OnEntityRemoved += value;
+            remove => _set.OnEntityRemoved -= value;
+        }
+
+
         #endregion
 
         #region Initialisation

@@ -94,6 +94,22 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void Should_call_OnEntityAdded_When_entity_already_present()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().With<bool>().Build())
+            {
+                Entity entity = world.CreateEntity();
+                entity.Set<bool>();
+
+                Entity addedEntity = default;
+                set.OnEntityAdded += (in Entity e) => addedEntity = e;
+
+                Check.That(addedEntity).IsEqualTo(entity);
+            }
+        }
+
+        [Fact]
         public void Should_call_OnEntityRemoved_When_entity_removed()
         {
             using (World world = new World(4))

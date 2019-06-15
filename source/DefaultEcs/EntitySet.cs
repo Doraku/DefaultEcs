@@ -33,11 +33,26 @@ namespace DefaultEcs
         private int[] _mapping;
         private Entity[] _entities;
         private int _lastIndex;
+        private event ActionIn<Entity> _onEntityAdded;
 
         /// <summary>
         /// Event called when an <see cref="Entity"/> is added to the <see cref="EntitySet"/>.
         /// </summary>
-        public event ActionIn<Entity> OnEntityAdded;
+        public event ActionIn<Entity> OnEntityAdded
+        {
+            add
+            {
+                if (value != null)
+                {
+                    foreach (ref readonly Entity entity in GetEntities())
+                    {
+                        value(entity);
+                    }
+                }
+                _onEntityAdded += value;
+            }
+            remove => _onEntityAdded -= value;
+        }
 
         /// <summary>
         /// Event called when an <see cref="Entity"/> is removed from the <see cref="EntitySet"/>.
@@ -145,7 +160,7 @@ namespace DefaultEcs
                 ArrayExtension.EnsureLength(ref _entities, _lastIndex, _maxEntityCount);
 
                 _entities[_lastIndex] = new Entity(_worldId, entityId);
-                OnEntityAdded?.Invoke(_entities[_lastIndex]);
+                _onEntityAdded?.Invoke(_entities[_lastIndex]);
             }
         }
 

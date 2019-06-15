@@ -177,6 +177,57 @@ namespace DefaultEcs.Test.System
             }
         }
 
+        [Fact]
+        public void Should_call_OnEntityAdded_When_entity_added()
+        {
+            using (World world = new World(4))
+            using (System system = new System(world.GetEntities().With<bool>().Build()))
+            {
+                Entity addedEntity = default;
+                system.OnEntityAdded += (in Entity e) => addedEntity = e;
+
+                Entity entity = world.CreateEntity();
+                entity.Set<bool>();
+
+                Check.That(addedEntity).IsEqualTo(entity);
+            }
+        }
+
+        [Fact]
+        public void Should_call_OnEntityAdded_When_entity_already_present()
+        {
+            using (World world = new World(4))
+            {
+                Entity entity = world.CreateEntity();
+                entity.Set<bool>();
+
+                using (System system = new System(world.GetEntities().With<bool>().Build()))
+                {
+                    Entity addedEntity = default;
+                    system.OnEntityAdded += (in Entity e) => addedEntity = e;
+
+                    Check.That(addedEntity).IsEqualTo(entity);
+                }
+            }
+        }
+
+        [Fact]
+        public void Should_call_OnEntityRemoved_When_entity_removed()
+        {
+            using (World world = new World(4))
+            using (System system = new System(world.GetEntities().With<bool>().Build()))
+            {
+                Entity removedEntity = default;
+                system.OnEntityRemoved += (in Entity e) => removedEntity = e;
+
+                Entity entity = world.CreateEntity();
+                entity.Set<bool>();
+                entity.Remove<bool>();
+
+                Check.That(removedEntity).IsEqualTo(entity);
+            }
+        }
+
         #endregion
     }
 }
