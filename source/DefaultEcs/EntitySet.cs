@@ -32,7 +32,6 @@ namespace DefaultEcs
 
         private int[] _mapping;
         private Entity[] _entities;
-        private int _lastIndex;
         private event ActionIn<Entity> _onEntityAdded;
 
         /// <summary>
@@ -63,12 +62,14 @@ namespace DefaultEcs
 
         #region Properties
 
-        internal bool IsNotEmpty => _lastIndex > -1;
-
         /// <summary>
         /// Gets the numbers of <see cref="Entity"/> in the current <see cref="EntitySet"/>.
         /// </summary>
-        public int Count => _lastIndex + 1;
+        public int Count
+        {
+            get;
+            private set;
+        }
 
         #endregion
 
@@ -101,7 +102,7 @@ namespace DefaultEcs
 
             _mapping = EmptyArray<int>.Value;
             _entities = EmptyArray<Entity>.Value;
-            _lastIndex = -1;
+            Count = 0;
 
             for (int i = 0; i <= Math.Min(world.Info.EntityInfos.Length, world.LastEntityId); ++i)
             {
@@ -155,12 +156,12 @@ namespace DefaultEcs
             ref int index = ref _mapping[entityId];
             if (index == -1)
             {
-                index = ++_lastIndex;
+                index = Count++;
 
-                ArrayExtension.EnsureLength(ref _entities, _lastIndex, _maxEntityCount);
+                ArrayExtension.EnsureLength(ref _entities, index, _maxEntityCount);
 
-                _entities[_lastIndex] = new Entity(_worldId, entityId);
-                _onEntityAdded?.Invoke(_entities[_lastIndex]);
+                _entities[index] = new Entity(_worldId, entityId);
+                _onEntityAdded?.Invoke(_entities[index]);
             }
         }
 
@@ -173,14 +174,14 @@ namespace DefaultEcs
                 if (index != -1)
                 {
                     Entity entity = _entities[index];
+                    --Count;
 
-                    if (index != _lastIndex)
+                    if (index != Count)
                     {
-                        _entities[index] = _entities[_lastIndex];
-                        _mapping[_entities[_lastIndex].EntityId] = index;
+                        _entities[index] = _entities[Count];
+                        _mapping[_entities[Count].EntityId] = index;
                     }
 
-                    --_lastIndex;
                     index = -1;
 
                     OnEntityRemoved?.Invoke(entity);
@@ -206,13 +207,13 @@ namespace DefaultEcs
             }
         }
 
-        internal void Remove(in EntityDisposingMessage message) => Remove(message.EntityId);
-
-        internal void Remove(in EntityDisabledMessage message) => Remove(message.EntityId);
-
-        internal void Remove<T>(in ComponentRemovedMessage<T> message) => Remove(message.EntityId);
-
-        internal void Remove<T>(in ComponentAddedMessage<T> message) => Remove(message.EntityId);
+        internal void CheckedAdd<T>(in ComponentChangedMessage<T> message)
+        {
+            if (_filter(message.Components))
+            {
+                Add(message.EntityId);
+            }
+        }
 
         internal void CheckedAdd<T>(in ComponentRemovedMessage<T> message)
         {
@@ -221,6 +222,14 @@ namespace DefaultEcs
                 Add(message.EntityId);
             }
         }
+
+        internal void Remove(in EntityDisposingMessage message) => Remove(message.EntityId);
+
+        internal void Remove(in EntityDisabledMessage message) => Remove(message.EntityId);
+
+        internal void Remove<T>(in ComponentRemovedMessage<T> message) => Remove(message.EntityId);
+
+        internal void Remove<T>(in ComponentAddedMessage<T> message) => Remove(message.EntityId);
 
         internal void CheckedRemove<T>(in ComponentRemovedMessage<T> message)
         {
@@ -235,7 +244,7 @@ namespace DefaultEcs
         /// </summary>
         /// <returns>A <see cref="ReadOnlySpan{T}"/> of the <see cref="Entity"/> contained in the current <see cref="EntitySet"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<Entity> GetEntities() => new ReadOnlySpan<Entity>(_entities, 0, _lastIndex + 1);
+        public ReadOnlySpan<Entity> GetEntities() => new ReadOnlySpan<Entity>(_entities, 0, Count);
 
         #endregion
 

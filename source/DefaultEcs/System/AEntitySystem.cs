@@ -31,7 +31,6 @@ namespace DefaultEcs.System
             remove => _set.OnEntityRemoved -= value;
         }
 
-
         #endregion
 
         #region Initialisation
@@ -116,7 +115,7 @@ namespace DefaultEcs.System
         /// </summary>
         public sealed override bool IsEnabled
         {
-            get { return base.IsEnabled && _set.IsNotEmpty; }
+            get { return base.IsEnabled && _set.Count > 0; }
             set { base.IsEnabled = value; }
         }
 
