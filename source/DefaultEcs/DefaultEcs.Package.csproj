@@ -26,6 +26,7 @@ enhanced debugging experience on World, Entity and EntitySet
 added MaxCapacity, Capacity and Size properties on EntityCommandRecorder
 added OnEntityAdded and OnEntityRemoved events on EntitySet
 added OnEntityAdded and OnEntityRemoved events on AEntitySystem
+added OnEntityDisposed event on World
 
 breaking changes
 removed IEntitySetObserver and implementation, use OnEntityAdded and OnEntityRemoved events on EntitySet instead

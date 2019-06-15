@@ -31,6 +31,12 @@ namespace DefaultEcs
         internal readonly int WorldId;
         internal readonly WorldInfo Info;
 
+        /// <summary>
+        /// Event called just before an <see cref="Entity"/> from the current <see cref="World"/> instance is disposed.
+        /// The Entity still contains all its components.
+        /// </summary>
+        public event ActionIn<Entity> OnEntityDisposed;
+
         #endregion
 
         #region Properties
@@ -81,6 +87,7 @@ namespace DefaultEcs
                 Infos[WorldId] = Info;
             }
 
+            Subscribe<EntityDisposingMessage>(On);
             Subscribe<EntityDisposedMessage>(On);
         }
 
@@ -94,6 +101,8 @@ namespace DefaultEcs
         #endregion
 
         #region Callbacks
+
+        private void On(in EntityDisposingMessage message) => OnEntityDisposed?.Invoke(new Entity(WorldId, message.EntityId));
 
         private void On(in EntityDisposedMessage message)
         {

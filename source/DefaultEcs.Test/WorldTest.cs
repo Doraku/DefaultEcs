@@ -257,6 +257,21 @@ namespace DefaultEcs.Test
             }
         }
 
+        [Fact]
+        public void Should_call_OnEntityDisposed_When_entity_disposed()
+        {
+            using (World world = new World(4))
+            {
+                Entity disposedEntity = default;
+                world.OnEntityDisposed += (in Entity e) => disposedEntity = e;
+
+                Entity entity = world.CreateEntity();
+                entity.Dispose();
+
+                Check.That(disposedEntity).IsEqualTo(entity);
+            }
+        }
+
         #endregion
     }
 }
