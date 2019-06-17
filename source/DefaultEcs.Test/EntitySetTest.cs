@@ -78,13 +78,13 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Should_call_OnEntityAdded_When_entity_added()
+        public void Should_call_EntityAdded_When_entity_added()
         {
             using (World world = new World(4))
             using (EntitySet set = world.GetEntities().With<bool>().Build())
             {
                 Entity addedEntity = default;
-                set.OnEntityAdded += (in Entity e) => addedEntity = e;
+                set.EntityAdded += (in Entity e) => addedEntity = e;
 
                 Entity entity = world.CreateEntity();
                 entity.Set<bool>();
@@ -94,7 +94,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Should_call_OnEntityAdded_When_entity_already_present()
+        public void Should_call_EntityAdded_When_entity_already_present()
         {
             using (World world = new World(4))
             using (EntitySet set = world.GetEntities().With<bool>().Build())
@@ -103,20 +103,20 @@ namespace DefaultEcs.Test
                 entity.Set<bool>();
 
                 Entity addedEntity = default;
-                set.OnEntityAdded += (in Entity e) => addedEntity = e;
+                set.EntityAdded += (in Entity e) => addedEntity = e;
 
                 Check.That(addedEntity).IsEqualTo(entity);
             }
         }
 
         [Fact]
-        public void Should_call_OnEntityRemoved_When_entity_removed()
+        public void Should_call_EntityRemoved_When_entity_removed()
         {
             using (World world = new World(4))
             using (EntitySet set = world.GetEntities().With<bool>().Build())
             {
                 Entity removedEntity = default;
-                set.OnEntityRemoved += (in Entity e) => removedEntity = e;
+                set.EntityRemoved += (in Entity e) => removedEntity = e;
 
                 Entity entity = world.CreateEntity();
                 entity.Set<bool>();

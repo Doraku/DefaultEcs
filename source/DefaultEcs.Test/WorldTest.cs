@@ -258,12 +258,12 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Should_call_OnEntityDisposed_When_entity_disposed()
+        public void Should_call_EntityDisposed_When_entity_disposed()
         {
             using (World world = new World(4))
             {
                 Entity disposedEntity = default;
-                world.OnEntityDisposed += (in Entity e) => disposedEntity = e;
+                world.EntityDisposed += (in Entity e) => disposedEntity = e;
 
                 Entity entity = world.CreateEntity();
                 entity.Dispose();

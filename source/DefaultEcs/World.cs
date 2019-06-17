@@ -35,7 +35,7 @@ namespace DefaultEcs
         /// Event called just before an <see cref="Entity"/> from the current <see cref="World"/> instance is disposed.
         /// The Entity still contains all its components.
         /// </summary>
-        public event ActionIn<Entity> OnEntityDisposed;
+        public event ActionIn<Entity> EntityDisposed;
 
         #endregion
 
@@ -102,7 +102,7 @@ namespace DefaultEcs
 
         #region Callbacks
 
-        private void On(in EntityDisposingMessage message) => OnEntityDisposed?.Invoke(new Entity(WorldId, message.EntityId));
+        private void On(in EntityDisposingMessage message) => EntityDisposed?.Invoke(new Entity(WorldId, message.EntityId));
 
         private void On(in EntityDisposedMessage message)
         {

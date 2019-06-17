@@ -37,7 +37,7 @@ namespace DefaultEcs
         /// <summary>
         /// Event called when an <see cref="Entity"/> is added to the <see cref="EntitySet"/>.
         /// </summary>
-        public event ActionIn<Entity> OnEntityAdded
+        public event ActionIn<Entity> EntityAdded
         {
             add
             {
@@ -56,7 +56,7 @@ namespace DefaultEcs
         /// <summary>
         /// Event called when an <see cref="Entity"/> is removed from the <see cref="EntitySet"/>.
         /// </summary>
-        public event ActionIn<Entity> OnEntityRemoved;
+        public event ActionIn<Entity> EntityRemoved;
 
         #endregion
 
@@ -184,7 +184,7 @@ namespace DefaultEcs
 
                     index = -1;
 
-                    OnEntityRemoved?.Invoke(entity);
+                    EntityRemoved?.Invoke(entity);
                 }
             }
         }

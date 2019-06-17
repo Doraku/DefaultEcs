@@ -178,13 +178,13 @@ namespace DefaultEcs.Test.System
         }
 
         [Fact]
-        public void Should_call_OnEntityAdded_When_entity_added()
+        public void Should_call_EntityAdded_When_entity_added()
         {
             using (World world = new World(4))
             using (System system = new System(world.GetEntities().With<bool>().Build()))
             {
                 Entity addedEntity = default;
-                system.OnEntityAdded += (in Entity e) => addedEntity = e;
+                system.EntityAdded += (in Entity e) => addedEntity = e;
 
                 Entity entity = world.CreateEntity();
                 entity.Set<bool>();
@@ -194,7 +194,7 @@ namespace DefaultEcs.Test.System
         }
 
         [Fact]
-        public void Should_call_OnEntityAdded_When_entity_already_present()
+        public void Should_call_EntityAdded_When_entity_already_present()
         {
             using (World world = new World(4))
             {
@@ -204,7 +204,7 @@ namespace DefaultEcs.Test.System
                 using (System system = new System(world.GetEntities().With<bool>().Build()))
                 {
                     Entity addedEntity = default;
-                    system.OnEntityAdded += (in Entity e) => addedEntity = e;
+                    system.EntityAdded += (in Entity e) => addedEntity = e;
 
                     Check.That(addedEntity).IsEqualTo(entity);
                 }
@@ -212,13 +212,13 @@ namespace DefaultEcs.Test.System
         }
 
         [Fact]
-        public void Should_call_OnEntityRemoved_When_entity_removed()
+        public void Should_call_EntityRemoved_When_entity_removed()
         {
             using (World world = new World(4))
             using (System system = new System(world.GetEntities().With<bool>().Build()))
             {
                 Entity removedEntity = default;
-                system.OnEntityRemoved += (in Entity e) => removedEntity = e;
+                system.EntityRemoved += (in Entity e) => removedEntity = e;
 
                 Entity entity = world.CreateEntity();
                 entity.Set<bool>();
