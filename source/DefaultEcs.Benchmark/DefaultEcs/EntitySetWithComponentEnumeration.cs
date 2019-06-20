@@ -5,14 +5,17 @@ using BenchmarkDotNet.Engines;
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
     //[HardwareCounters(HardwareCounter.LlcMisses)]
+    [MemoryDiagnoser]
     [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 1, targetCount: 10, invocationCount: 10000)]
     public class EntitySetWithComponentEnumeration
     {
         private World _world;
         private EntitySet _set;
+#pragma warning disable IDE0052 // Remove unread private members
         private int _count;
         private uint _uCount;
         private long _lCount;
+#pragma warning restore IDE0052 // Remove unread private members
 
         [Params(1000)]
         public int EntityCount { get; set; }

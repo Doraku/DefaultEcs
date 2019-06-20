@@ -32,7 +32,9 @@ namespace DefaultEcs.Test
         private sealed class InvalidNumberOfParameter
         {
             [Subscribe]
+#pragma warning disable IDE0060 // Remove unused parameter
             public static void Method(object _, object __) { }
+#pragma warning restore IDE0060 // Remove unused parameter
         }
 
         private sealed class InvalidReturnType

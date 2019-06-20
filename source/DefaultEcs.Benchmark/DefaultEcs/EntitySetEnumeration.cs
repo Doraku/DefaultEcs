@@ -4,12 +4,15 @@ using BenchmarkDotNet.Engines;
 
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
+    [MemoryDiagnoser]
     [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 1, targetCount: 10, invocationCount: 1000)]
     public class EntitySetEnumeration
     {
         private World _world;
         private EntitySet _set;
+#pragma warning disable IDE0052 // Remove unread private members
         private int _count;
+#pragma warning restore IDE0052 // Remove unread private members
 
         [Params(1000, 100000)]
         public int EntityCount { get; set; }
@@ -36,7 +39,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         [Benchmark]
         public void DefaultEnumeration()
         {
-            foreach (Entity entity in _set.GetEntities())
+            foreach (ref readonly Entity _ in _set.GetEntities())
             {
                 ++_count;
             }
@@ -56,7 +59,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         {
             Span<Entity> entities = stackalloc Entity[_set.Count];
             _set.GetEntities().CopyTo(entities);
-            foreach (Entity entity in entities)
+            foreach (ref Entity _ in entities)
             {
                 ++_count;
             }
@@ -67,7 +70,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         {
             Span<Entity> entities = new Entity[_set.Count];
             _set.GetEntities().CopyTo(entities);
-            foreach (Entity entity in entities)
+            foreach (ref Entity _ in entities)
             {
                 ++_count;
             }

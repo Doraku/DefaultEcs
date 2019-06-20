@@ -3,6 +3,7 @@ using BenchmarkDotNet.Engines;
 
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
+    [MemoryDiagnoser]
     [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 1, targetCount: 10, invocationCount: 1000)]
     public class EntitySetFilter
     {

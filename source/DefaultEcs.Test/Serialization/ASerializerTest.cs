@@ -13,23 +13,25 @@ namespace DefaultEcs.Test.Serialization
         {
             public int _1;
             public readonly int _2;
-            public int _3 { get; }
+            public int P3 { get; }
 
             public SimpleStruct(int i)
             {
                 _1 = i + 1;
                 _2 = i + 2;
-                _3 = i + 3;
+                P3 = i + 3;
             }
         }
 
         private class SimpleClass
         {
 #pragma warning disable RCS1169 // Mark field as read-only.
+#pragma warning disable IDE0044 // Add readonly modifier
             private int _1;
+#pragma warning restore IDE0044 // Add readonly modifier
 #pragma warning restore RCS1169 // Mark field as read-only.
             private readonly int _2;
-            private int _3 { get; }
+            private int P3 { get; }
 
             public SimpleClass()
             { }
@@ -38,7 +40,7 @@ namespace DefaultEcs.Test.Serialization
             {
                 _1 = i + 1;
                 _2 = i + 2;
-                _3 = i + 3;
+                P3 = i + 3;
             }
 
             public override bool Equals(object obj)
@@ -46,7 +48,7 @@ namespace DefaultEcs.Test.Serialization
                 return obj is SimpleClass other
                     && _1 == other._1
                     && _2 == other._2
-                    && _3 == other._3;
+                    && P3 == other.P3;
             }
 
             public override int GetHashCode() => _1;

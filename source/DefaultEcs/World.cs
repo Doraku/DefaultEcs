@@ -87,8 +87,7 @@ namespace DefaultEcs
                 Infos[WorldId] = Info;
             }
 
-            Subscribe<EntityDisposingMessage>(On);
-            Subscribe<EntityDisposedMessage>(On);
+            this.Subscribe(this);
         }
 
         /// <summary>
@@ -101,14 +100,20 @@ namespace DefaultEcs
         #endregion
 
         #region Callbacks
+#pragma warning disable IDE0051 // Remove unused private members
 
-        private void On(in EntityDisposingMessage message) => EntityDisposed?.Invoke(new Entity(WorldId, message.EntityId));
+        [Subscribe]
+        private void On(in EntityDisposingMessage message)
+        {
+            Info.EntityInfos[message.EntityId].Components.Clear();
+            EntityDisposed?.Invoke(new Entity(WorldId, message.EntityId));
+        }
 
+        [Subscribe]
         private void On(in EntityDisposedMessage message)
         {
             ref EntityInfo entityInfo = ref Info.EntityInfos[message.EntityId];
 
-            entityInfo.Components.Clear();
             _entityIdDispenser.ReleaseInt(message.EntityId);
 
             Func<int, bool> cleanParent = entityInfo.Parents;
@@ -128,6 +133,7 @@ namespace DefaultEcs
             }
         }
 
+#pragma warning restore IDE0051 // Remove unused private members
         #endregion
 
         #region Methods

@@ -14,6 +14,7 @@ namespace DefaultEcs.Test.Serialization
 
         private struct Test
         {
+#pragma warning disable IDE0052 // Remove unread private members
 #pragma warning disable IDE0044 // Add readonly modifier
 #pragma warning disable RCS1169 // Mark field as read-only.
             private int _privateField;
@@ -25,6 +26,7 @@ namespace DefaultEcs.Test.Serialization
             private int PrivateProperty { get; set; }
 #pragma warning restore RCS1170 // Use read-only auto-implemented property.
             private int PrivateReadOnlyProperty { get; }
+#pragma warning restore IDE0052 // Remove unread private members
 
             public int PublicField;
             public readonly int PublicReadOnlyField;

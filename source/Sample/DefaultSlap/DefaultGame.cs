@@ -73,19 +73,15 @@ namespace DefaultSlap
         #endregion
 
         #region Callbacks
+#pragma warning disable IDE0051 // Remove unused private members
 
         [Subscribe]
-        private void On(in SlapMessage _)
-        {
-            _slapSound.Play();
-        }
+        private void On(in SlapMessage _) => _slapSound.Play();
 
         [Subscribe]
-        private void On(in PlayerHitMessage _)
-        {
-            _bounceSound.Play();
-        }
+        private void On(in PlayerHitMessage _) => _bounceSound.Play();
 
+#pragma warning restore IDE0051 // Remove unused private members
         #endregion
 
         #region Game

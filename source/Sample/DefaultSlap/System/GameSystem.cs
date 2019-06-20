@@ -48,6 +48,8 @@ namespace DefaultSlap.System
             _score = 0;
         }
 
+#pragma warning disable IDE0051 // Remove unused private members
+
         [Subscribe]
         private void On(in PlayerHitMessage _) => --_life;
 
@@ -67,6 +69,8 @@ namespace DefaultSlap.System
                 }
             }
         }
+
+#pragma warning restore IDE0051 // Remove unused private members
 
         public bool IsEnabled { get; set; } = true;
 

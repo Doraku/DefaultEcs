@@ -24,23 +24,18 @@ namespace DefaultBrick.System
             _world.Subscribe(this);
         }
 
-        [Subscribe]
-        private void On(in BallDroppedMessage _)
-        {
-            --_ballCount;
-        }
+#pragma warning disable IDE0051 // Remove unused private members
 
         [Subscribe]
-        private void On(in BrickBrokenMessage _)
-        {
-            --_brickCount;
-        }
+        private void On(in BallDroppedMessage _) => --_ballCount;
 
         [Subscribe]
-        private void On(in NewBrickMessage _)
-        {
-            ++_brickCount;
-        }
+        private void On(in BrickBrokenMessage _) => --_brickCount;
+
+        [Subscribe]
+        private void On(in NewBrickMessage _) => ++_brickCount;
+
+#pragma warning restore IDE0051 // Remove unused private members
 
         public bool IsEnabled { get; set; } = true;
 

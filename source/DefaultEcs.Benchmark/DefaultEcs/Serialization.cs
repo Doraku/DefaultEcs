@@ -6,6 +6,7 @@ using DefaultEcs.Serialization;
 
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
+    [MemoryDiagnoser]
     [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 1, invocationCount: 1)]
     public class Serialization
     {
@@ -62,6 +63,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public void CopyCleanup()
         {
             _worldSCopy?.Dispose();
+            _worldCCopy?.Dispose();
         }
 
         [GlobalCleanup]
