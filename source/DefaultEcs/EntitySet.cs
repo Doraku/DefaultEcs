@@ -239,12 +239,15 @@ namespace DefaultEcs
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal ReadOnlySpan<Entity> GetEntities(int start, int length) => new ReadOnlySpan<Entity>(_entities, start, length);
+
         /// <summary>
         /// Gets the <see cref="Entity"/> contained in the current <see cref="EntitySet"/>.
         /// </summary>
         /// <returns>A <see cref="ReadOnlySpan{T}"/> of the <see cref="Entity"/> contained in the current <see cref="EntitySet"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<Entity> GetEntities() => new ReadOnlySpan<Entity>(_entities, 0, Count);
+        public ReadOnlySpan<Entity> GetEntities() => GetEntities(0, Count);
 
         #endregion
 

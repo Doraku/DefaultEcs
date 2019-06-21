@@ -121,17 +121,14 @@ namespace DefaultEcs.System
 
         internal sealed override void Update(int index, int maxIndex)
         {
-            ReadOnlySpan<Entity> entities = _set.GetEntities();
-            int entitiesToUpdate = entities.Length / (maxIndex + 1);
-
+            int entitiesToUpdate = _set.Count / (maxIndex + 1);
+            int start = index * entitiesToUpdate;
             if (index == maxIndex)
             {
-                Update(CurrentState, index == 0 ? entities : entities.Slice(index * entitiesToUpdate));
+                entitiesToUpdate = _set.Count - start;
             }
-            else
-            {
-                Update(CurrentState, entities.Slice(index * entitiesToUpdate, entitiesToUpdate));
-            }
+
+            Update(CurrentState, _set.GetEntities(start, entitiesToUpdate));
         }
 
         /// <summary>
