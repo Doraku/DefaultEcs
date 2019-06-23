@@ -144,6 +144,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Disables the current <see cref="Entity"/> component of type <typeparamref name="T"/> so it does not appear in <see cref="EntitySet"/>.
+        /// Does nothing if current <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
