@@ -28,6 +28,9 @@
     <Reference Include="Entitas">
       <HintPath>..\..\dependency\Entitas.dll</HintPath>
     </Reference>
+    <Reference Include="DesperateDevs.Utils">
+      <HintPath>..\..\dependency\DesperateDevs.Utils.dll</HintPath>
+    </Reference>
     <!--v2.7.0--><!--
     <Reference Include="Svelto.ECS">
       <HintPath>..\..\dependency\Svelto.ECS.dll</HintPath>

@@ -176,6 +176,138 @@ namespace DefaultEcs.Test
             }
         }
 
+        [Fact]
+        public void Build_WhenAdded_T_Should_return_EntitySet_with_all_Entity_when_component_T_is_added()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().WhenAdded<bool>().Build())
+            {
+                List<Entity> entities = new List<Entity>
+                    {
+                        world.CreateEntity(),
+                        world.CreateEntity(),
+                        world.CreateEntity(),
+                        world.CreateEntity()
+                    };
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                set.Complete();
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(false);
+                }
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Disable<bool>();
+                }
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Enable<bool>();
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
+        public void Build_WhenChanged_T_Should_return_EntitySet_with_all_Entity_when_component_T_is_added_and_changed()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().WhenChanged<bool>().Build())
+            {
+                List<Entity> entities = new List<Entity>
+                    {
+                        world.CreateEntity(),
+                        world.CreateEntity(),
+                        world.CreateEntity(),
+                        world.CreateEntity()
+                    };
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.Count).IsZero();
+
+                set.Complete();
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(false);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
+        public void Build_WhenRemoved_T_Should_return_EntitySet_with_all_Entity_when_component_T_is_removed()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().WhenRemoved<bool>().Build())
+            {
+                List<Entity> entities = new List<Entity>
+                    {
+                        world.CreateEntity(),
+                        world.CreateEntity(),
+                        world.CreateEntity(),
+                        world.CreateEntity()
+                    };
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Disable<bool>();
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Enable<bool>();
+                }
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Remove<bool>();
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
         #endregion
     }
 }

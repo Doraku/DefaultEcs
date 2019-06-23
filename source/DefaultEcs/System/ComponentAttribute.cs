@@ -21,6 +21,21 @@ namespace DefaultEcs.System
         /// At least one of the given component types should be present.
         /// </summary>
         WithAny,
+
+        /// <summary>
+        /// Given component types are added.
+        /// </summary>
+        WhenAdded,
+
+        /// <summary>
+        /// Given component types are changed.
+        /// </summary>
+        WhenChanged,
+
+        /// <summary>
+        /// Given component types are removed.
+        /// </summary>
+        WhenRemoved,
     }
 
     /// <summary>
@@ -91,6 +106,48 @@ namespace DefaultEcs.System
         /// <param name="componentTypes">The types of the component to include.</param>
         public WithAnyAttribute(params Type[] componentTypes)
             : base(ComponentFilterType.WithAny, componentTypes)
+        { }
+    }
+
+    /// <summary>
+    /// Represents a component type to react to its addition when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// </summary>
+    public sealed class WhenAddedAttribute : ComponentAttribute
+    {
+        /// <summary>
+        /// Initialize a new instance of the <see cref="WhenAddedAttribute"/> type.
+        /// </summary>
+        /// <param name="componentTypes">The types of the component to react to their addition.</param>
+        public WhenAddedAttribute(params Type[] componentTypes)
+            : base(ComponentFilterType.WhenAdded, componentTypes)
+        { }
+    }
+
+    /// <summary>
+    /// Represents a component type to react to its change when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// </summary>
+    public sealed class WhenChangedAttribute : ComponentAttribute
+    {
+        /// <summary>
+        /// Initialize a new instance of the <see cref="WhenChangedAttribute"/> type.
+        /// </summary>
+        /// <param name="componentTypes">The types of the component to react to their change.</param>
+        public WhenChangedAttribute(params Type[] componentTypes)
+            : base(ComponentFilterType.WhenChanged, componentTypes)
+        { }
+    }
+
+    /// <summary>
+    /// Represents a component type to react to its deletion when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// </summary>
+    public sealed class WhenRemovedAttribute : ComponentAttribute
+    {
+        /// <summary>
+        /// Initialize a new instance of the <see cref="WhenRemovedAttribute"/> type.
+        /// </summary>
+        /// <param name="componentTypes">The types of the component to react to their deletion.</param>
+        public WhenRemovedAttribute(params Type[] componentTypes)
+            : base(ComponentFilterType.WhenRemoved, componentTypes)
         { }
     }
 }

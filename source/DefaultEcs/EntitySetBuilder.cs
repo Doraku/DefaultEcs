@@ -17,12 +17,19 @@ namespace DefaultEcs
         private static readonly MethodInfo _with;
         private static readonly MethodInfo _without;
         private static readonly MethodInfo _withAny;
+        private static readonly MethodInfo _whenAdded;
+        private static readonly MethodInfo _whenChanged;
+        private static readonly MethodInfo _whenRemoved;
 
         private readonly World _world;
         private readonly List<Func<EntitySet, World, IDisposable>> _subscriptions;
+        private readonly List<Func<EntitySet, World, IDisposable>> _nonReactSubscriptions;
 
         private ComponentEnum _withFilter;
         private ComponentEnum _withoutFilter;
+        private ComponentEnum _whenAddedFilter;
+        private ComponentEnum _whenChangedFilter;
+        private ComponentEnum _whenRemovedFilter;
         private ComponentEnum _currentWithAnyFilter;
         private List<ComponentEnum> _withAnyFilters;
 
@@ -35,6 +42,9 @@ namespace DefaultEcs
             _with = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(With)).First(m => m.ContainsGenericParameters);
             _without = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(Without)).First(m => m.ContainsGenericParameters);
             _withAny = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WithAny)).First(m => m.ContainsGenericParameters);
+            _whenAdded = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenAdded)).First(m => m.ContainsGenericParameters);
+            _whenChanged = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenChanged)).First(m => m.ContainsGenericParameters);
+            _whenRemoved = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenRemoved)).First(m => m.ContainsGenericParameters);
         }
 
         internal EntitySetBuilder(World world)
@@ -43,7 +53,10 @@ namespace DefaultEcs
             _subscriptions = new List<Func<EntitySet, World, IDisposable>>
             {
                 (s, w) => w.Subscribe<EntityDisposingMessage>(s.Remove),
-                (s, w) => w.Subscribe<EntityDisabledMessage>(s.Remove),
+                (s, w) => w.Subscribe<EntityDisabledMessage>(s.Remove)
+            };
+            _nonReactSubscriptions = new List<Func<EntitySet, World, IDisposable>>
+            {
                 (s, w) => w.Subscribe<EntityEnabledMessage>(s.CheckedAdd)
             };
         }
@@ -57,7 +70,7 @@ namespace DefaultEcs
             if (!_currentWithAnyFilter[ComponentManager<T>.Flag])
             {
                 _currentWithAnyFilter[ComponentManager<T>.Flag] = true;
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
+                _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
                 _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedRemove));
             }
         }
@@ -72,7 +85,7 @@ namespace DefaultEcs
             if (!_withFilter[ComponentManager<T>.Flag])
             {
                 _withFilter[ComponentManager<T>.Flag] = true;
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
+                _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
                 _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.Remove));
             }
 
@@ -107,8 +120,8 @@ namespace DefaultEcs
             if (!_withoutFilter[ComponentManager<T>.Flag])
             {
                 _withoutFilter[ComponentManager<T>.Flag] = true;
+                _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
                 _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.Remove));
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
             }
 
             return this;
@@ -146,18 +159,124 @@ namespace DefaultEcs
                     return With(componentTypes);
                 }
 
-                if (_withAnyFilters == null)
-                {
-                    _withAnyFilters = new List<ComponentEnum>();
-                }
-
                 _currentWithAnyFilter = new ComponentEnum();
                 foreach (Type componentType in componentTypes)
                 {
                     _withAny.MakeGenericMethod(componentType).Invoke(this, null);
                 }
 
-                _withAnyFilters.Add(_currentWithAnyFilter);
+                if (!_currentWithAnyFilter.IsNull)
+                {
+                    (_withAnyFilters ?? (_withAnyFilters = new List<ComponentEnum>())).Add(_currentWithAnyFilter);
+                }
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is added.
+        /// </summary>
+        /// <typeparam name="T">The type of component.</typeparam>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder WhenAdded<T>()
+        {
+            With<T>();
+
+            if (!_whenAddedFilter[ComponentManager<T>.Flag])
+            {
+                _whenAddedFilter[ComponentManager<T>.Flag] = true;
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Makes a rule to obsverve <see cref="Entity"/> when all component of the given types are added.
+        /// </summary>
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder WhenAdded(params Type[] componentTypes)
+        {
+            if (componentTypes?.Length > 0)
+            {
+                foreach (Type componentType in componentTypes)
+                {
+                    _whenAdded.MakeGenericMethod(componentType).Invoke(this, null);
+                }
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is changed.
+        /// </summary>
+        /// <typeparam name="T">The type of component.</typeparam>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder WhenChanged<T>()
+        {
+            With<T>();
+
+            if (!_whenChangedFilter[ComponentManager<T>.Flag])
+            {
+                _whenChangedFilter[ComponentManager<T>.Flag] = true;
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.CheckedAdd));
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Makes a rule to obsverve <see cref="Entity"/> when all component of the given types are changed.
+        /// </summary>
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder WhenChanged(params Type[] componentTypes)
+        {
+            if (componentTypes?.Length > 0)
+            {
+                foreach (Type componentType in componentTypes)
+                {
+                    _whenChanged.MakeGenericMethod(componentType).Invoke(this, null);
+                }
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is removed.
+        /// </summary>
+        /// <typeparam name="T">The type of component.</typeparam>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder WhenRemoved<T>()
+        {
+            Without<T>();
+
+            if (!_whenRemovedFilter[ComponentManager<T>.Flag])
+            {
+                _whenRemovedFilter[ComponentManager<T>.Flag] = true;
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Makes a rule to obsverve <see cref="Entity"/> when all component of the given types are removed.
+        /// </summary>
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder WhenRemoved(params Type[] componentTypes)
+        {
+            if (componentTypes?.Length > 0)
+            {
+                foreach (Type componentType in componentTypes)
+                {
+                    _whenRemoved.MakeGenericMethod(componentType).Invoke(this, null);
+                }
             }
 
             return this;
@@ -170,13 +289,18 @@ namespace DefaultEcs
         public EntitySet Build()
         {
             List<Func<EntitySet, World, IDisposable>> subscriptions = _subscriptions.ToList();
+            bool hasWhenFilter = !_whenAddedFilter.IsNull || !_whenChangedFilter.IsNull || !_whenRemovedFilter.IsNull;
+            if (!hasWhenFilter)
+            {
+                subscriptions.AddRange(_nonReactSubscriptions);
+            }
 
-            if (subscriptions.Count == 3 || (_withFilter.IsNull && _withAnyFilters == null))
+            if (subscriptions.Count == 3 || (_withFilter.IsNull && _withAnyFilters == null && !hasWhenFilter))
             {
                 subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Add));
             }
 
-            return new EntitySet(_world, _withFilter, _withoutFilter, _withAnyFilters, subscriptions);
+            return new EntitySet(hasWhenFilter, _world, _withFilter, _withoutFilter, _withAnyFilters, subscriptions);
         }
 
         #endregion

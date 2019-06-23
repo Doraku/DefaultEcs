@@ -25,6 +25,7 @@ namespace DefaultEcs
         private static readonly MethodInfo _componentsDoNotContains;
         private static readonly Dictionary<string, Predicate<ComponentEnum>> _filters;
 
+        private readonly bool _needClearing;
         private readonly int _worldId;
         private readonly int _maxEntityCount;
         private readonly Predicate<ComponentEnum> _filter;
@@ -83,12 +84,14 @@ namespace DefaultEcs
         }
 
         internal EntitySet(
+            bool needClearing,
             World world,
             ComponentEnum withFilter,
             ComponentEnum withoutFilter,
             List<ComponentEnum> withAnyFilters,
             List<Func<EntitySet, World, IDisposable>> subscriptions)
         {
+            _needClearing = needClearing;
             _worldId = world.WorldId;
             _maxEntityCount = world.MaxEntityCount;
 
@@ -104,11 +107,14 @@ namespace DefaultEcs
             _entities = EmptyArray<Entity>.Value;
             Count = 0;
 
-            for (int i = 0; i <= Math.Min(world.Info.EntityInfos.Length, world.LastEntityId); ++i)
+            if (!_needClearing)
             {
-                if (_filter(world.Info.EntityInfos[i].Components))
+                for (int i = 0; i <= Math.Min(world.Info.EntityInfos.Length, world.LastEntityId); ++i)
                 {
-                    Add(i);
+                    if (_filter(world.Info.EntityInfos[i].Components))
+                    {
+                        Add(i);
+                    }
                 }
             }
         }
@@ -132,12 +138,9 @@ namespace DefaultEcs
                     {
                         filterEx = Expression.And(filterEx, Expression.Call(components, _componentsDoNotContains, Expression.Constant(withoutFilter.Copy())));
                     }
-                    if (withAnyFilters != null)
+                    foreach (ComponentEnum f in withAnyFilters ?? Enumerable.Empty<ComponentEnum>())
                     {
-                        foreach (ComponentEnum f in withAnyFilters)
-                        {
-                            filterEx = Expression.And(filterEx, Expression.Not(Expression.Call(components, _componentsDoNotContains, Expression.Constant(f.Copy()))));
-                        }
+                        filterEx = Expression.And(filterEx, Expression.Not(Expression.Call(components, _componentsDoNotContains, Expression.Constant(f.Copy()))));
                     }
                     filter = Expression.Lambda<Predicate<ComponentEnum>>(filterEx, components).Compile();
 
@@ -248,6 +251,20 @@ namespace DefaultEcs
         /// <returns>A <see cref="ReadOnlySpan{T}"/> of the <see cref="Entity"/> contained in the current <see cref="EntitySet"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<Entity> GetEntities() => GetEntities(0, Count);
+
+        /// <summary>
+        /// Clears current instance of its entities if it was created with some reactive filter (<seealso cref="EntitySetBuilder.WhenAdded{T}"/>, <see cref="EntitySetBuilder.WhenChanged{T}"/> or <see cref="EntitySetBuilder.WhenRemoved{T}"/>).
+        /// Does nothing if it was created from a static filter.
+        /// This method need to be called after current instance content has been processed in a update cycle.
+        /// </summary>
+        public void Complete()
+        {
+            if (_needClearing && Count > 0)
+            {
+                Count = 0;
+                _mapping.Fill(-1);
+            }
+        }
 
         #endregion
 

@@ -132,6 +132,17 @@ namespace DefaultEcs.System
         }
 
         /// <summary>
+        /// Performs a post-update treatment.
+        /// </summary>
+        /// <param name="state">The state to use.</param>
+        protected override void PostUpdate(T state)
+        {
+            _set.Complete();
+
+            base.PostUpdate(state);
+        }
+
+        /// <summary>
         /// Disposes of the inner <see cref="EntitySet"/> instance.
         /// </summary>
         public override void Dispose()

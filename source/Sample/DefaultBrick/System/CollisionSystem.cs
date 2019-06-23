@@ -91,6 +91,7 @@ namespace DefaultBrick.System
                 }
             }
 
+            entity.Set(position);
             velocity.Value += Vector2.Normalize(velocity.Value) * speedUp * 10f;
         }
     }

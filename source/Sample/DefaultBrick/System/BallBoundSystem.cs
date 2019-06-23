@@ -44,6 +44,8 @@ namespace DefaultBrick.System
                 _toRemove.Add(entity);
                 _world.Publish<BallDroppedMessage>(default);
             }
+
+            entity.Set(position);
         }
 
         protected override void PostUpdate(float state)
