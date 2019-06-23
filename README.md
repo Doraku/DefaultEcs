@@ -164,6 +164,27 @@ EntitySet set = world.GetEntities().WithAny<Example, int>().Build();
 Span<Example> components = world.GetAllComponents<Example>();
 ```
 
+There is also some special rules which will make the EntitySet react to some events
+```C#
+// this set when enumerated will give all the entities on which an Example component has been added for the first time
+EntitySet set = world.GetEntities().WhenAdded<Example>().Build();
+
+// this set when enumerated will give all the entities on which the Example component has been explicitly changed with Entity.Set<Example> method
+EntitySet set = world.GetEntities().WhenChanged<Example>().Build();
+
+// this set when enumerated will give all the entities on which the Example component has been removed
+EntitySet set = world.GetEntities().WhenRemoved<Example>().Build();
+
+// this set when enumerated will give all the entities on which the Example component has been added or changed
+EntitySet set = world.GetEntities().WhenAdded<Example>().WhenChanged<Example>().Build();
+
+// this set when enumerated will give all the entities with an int component on which the Example component has been changed, the order is important
+EntitySet set = world.GetEntities().With<int>().WhenChanged<Example>().Build();
+```
+
+Note that if such a rule is used, the method `Complete` of the EntitySet needs to be called once every Entity has been processed to clear the EntitySet of its content.  
+Calling this method on an EntitySet created with only static filtering will do nothing.
+
 Although there is no obligation, a set of base classes are provided to help the creation of systems:
 <a name='Overview_System_ISystem'></a>
 ### ISystem<T>

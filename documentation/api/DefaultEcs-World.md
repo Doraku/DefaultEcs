@@ -5,6 +5,8 @@ Represents a item used to create and manage [Entity](./DefaultEcs-Entity.md 'Def
 ### Constructors
 - [#ctor()](./DefaultEcs-World--ctor().md 'DefaultEcs.World.#ctor()')
 - [#ctor(System.Int32)](./DefaultEcs-World--ctor(System-Int32).md 'DefaultEcs.World.#ctor(System.Int32)')
+### Events
+- [EntityDisposed](./DefaultEcs-World-EntityDisposed.md 'DefaultEcs.World.EntityDisposed')
 ### Properties
 - [MaxEntityCount](./DefaultEcs-World-MaxEntityCount.md 'DefaultEcs.World.MaxEntityCount')
 ### Methods

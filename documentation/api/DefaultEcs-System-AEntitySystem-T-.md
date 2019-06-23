@@ -12,12 +12,14 @@ The type of the object used as state to update the system.
 - [#ctor(DefaultEcs.EntitySet)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-EntitySet).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.EntitySet)')
 - [#ctor(DefaultEcs.EntitySet, DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-EntitySet-_DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.EntitySet, DefaultEcs.System.SystemRunner&lt;T&gt;)')
 - [#ctor(DefaultEcs.World)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.World)')
-- [#ctor(DefaultEcs.World, DefaultEcs.IEntitySetObserver)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World-_DefaultEcs-IEntitySetObserver).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.World, DefaultEcs.IEntitySetObserver)')
-- [#ctor(DefaultEcs.World, DefaultEcs.IEntitySetObserver, DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World-_DefaultEcs-IEntitySetObserver-_DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.World, DefaultEcs.IEntitySetObserver, DefaultEcs.System.SystemRunner&lt;T&gt;)')
 - [#ctor(DefaultEcs.World, DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-AEntitySystem-T---ctor(DefaultEcs-World-_DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.#ctor(DefaultEcs.World, DefaultEcs.System.SystemRunner&lt;T&gt;)')
+### Events
+- [EntityAdded](./DefaultEcs-System-AEntitySystem-T--EntityAdded.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.EntityAdded')
+- [EntityRemoved](./DefaultEcs-System-AEntitySystem-T--EntityRemoved.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.EntityRemoved')
 ### Properties
 - [IsEnabled](./DefaultEcs-System-AEntitySystem-T--IsEnabled.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.IsEnabled')
 ### Methods
 - [Dispose()](./DefaultEcs-System-AEntitySystem-T--Dispose().md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.Dispose()')
+- [PostUpdate(T)](./DefaultEcs-System-AEntitySystem-T--PostUpdate(T).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.PostUpdate(T)')
 - [Update(T, DefaultEcs.Entity)](./DefaultEcs-System-AEntitySystem-T--Update(T-_DefaultEcs-Entity).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.Update(T, DefaultEcs.Entity)')
 - [Update(T, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;)](./DefaultEcs-System-AEntitySystem-T--Update(T-_System-ReadOnlySpan-DefaultEcs-Entity-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.Update(T, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;)')
