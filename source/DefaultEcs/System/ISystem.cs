@@ -6,7 +6,7 @@ namespace DefaultEcs.System
     /// Exposes a method to update a system.
     /// </summary>
     /// <typeparam name="T">The type of the object used as state to update the system.</typeparam>
-    public interface ISystem<T> : IDisposable
+    public interface ISystem<in T> : IDisposable
     {
         /// <summary>
         /// Gets or sets whether the current <see cref="ISystem{T}"/> instance should update or not.
