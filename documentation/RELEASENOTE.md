@@ -1,16 +1,16 @@
 ## DefaultEcs 0.11.0
-updated System.Memory reference
-enhanced debugging experience on World, Entity and EntitySet
-added MaxCapacity, Capacity and Size properties on EntityCommandRecorder
-added EntityAdded and EntityRemoved events on EntitySet
-added EntityAdded and EntityRemoved events on AEntitySystem
-added EntityDisposed event on World
-added WhenAdded, WhenChanged and WhenRemoved filter on EntitySetBuilder to create reactive EntitySet
-added WhenAddedAttribute, WhenChangedAttribute and WhenRemovedAttribute for automatique AEntitySystem EntitySet creation from a World
-added Complete method on EntitySet to clear its content if created with a reactive filter
+updated System.Memory reference  
+enhanced debugging experience on World, Entity and EntitySet  
+added MaxCapacity, Capacity and Size properties on EntityCommandRecorder  
+added EntityAdded and EntityRemoved events on EntitySet  
+added EntityAdded and EntityRemoved events on AEntitySystem  
+added EntityDisposed event on World  
+added WhenAdded, WhenChanged and WhenRemoved filter on EntitySetBuilder to create reactive EntitySet  
+added WhenAddedAttribute, WhenChangedAttribute and WhenRemovedAttribute for automatique AEntitySystem EntitySet creation from a World  
+added Complete method on EntitySet to clear its content if created with a reactive filter  
 made T of ISystem contravariant
 
-breaking changes
+breaking changes  
 removed IEntitySetObserver and implementation, use EntityAdded and EntityRemoved events on EntitySet instead
 
 [nuget package](https://www.nuget.org/packages/DefaultEcs/0.11.0)
