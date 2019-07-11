@@ -6,11 +6,13 @@ namespace DefaultEcs.Technical.Helper
 {
     internal static class TypeExtension
     {
-        public static bool IsUnmanaged(this Type type)
-        {
-            TypeInfo info = type.GetTypeInfo();
+        public static bool IsFlagType(this TypeInfo typeInfo) => typeInfo.IsValueType && !typeInfo.IsEnum && !typeInfo.IsPrimitive && typeInfo.DeclaredFields.All(f => f.IsStatic);
 
-            return info.IsEnum || (info.IsValueType && (info.IsPrimitive || info.DeclaredFields.Where(f => !f.IsStatic).All(f => f.FieldType.IsUnmanaged())));
+        public static bool IsUnmanaged(this TypeInfo typeInfo)
+        {
+            return typeInfo.IsEnum || (typeInfo.IsValueType && (typeInfo.IsPrimitive || typeInfo.DeclaredFields.Where(f => !f.IsStatic).All(f => f.FieldType.IsUnmanaged())));
         }
+
+        public static bool IsUnmanaged(this Type type) => type.GetTypeInfo().IsUnmanaged();
     }
 }

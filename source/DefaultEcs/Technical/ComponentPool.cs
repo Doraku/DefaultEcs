@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Resource;
@@ -41,7 +40,7 @@ namespace DefaultEcs.Technical
             TypeInfo typeInfo = typeof(T).GetTypeInfo();
 
             _isReferenceType = !typeInfo.IsValueType;
-            _isFlagType = typeInfo.IsValueType && !typeInfo.IsEnum && !typeInfo.IsPrimitive && typeInfo.DeclaredFields.All(f => f.IsStatic);
+            _isFlagType = typeInfo.IsFlagType();
             _isManagedResourceType = typeInfo.GenericTypeArguments.Length > 0 && typeInfo.GetGenericTypeDefinition() == typeof(ManagedResource<,>);
         }
 

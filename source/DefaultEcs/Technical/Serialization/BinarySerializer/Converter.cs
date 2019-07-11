@@ -114,7 +114,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             {
                 try
                 {
-                    if (_type.IsUnmanaged())
+                    if (typeInfo.IsUnmanaged())
                     {
                         TypeInfo unmanagedType = typeof(UnmanagedConverter<>).MakeGenericType(_type).GetTypeInfo();
 

@@ -75,8 +75,8 @@ namespace DefaultEcs.System
         /// </summary>
         public sealed override bool IsEnabled
         {
-            get { return base.IsEnabled && _component.IsNotEmpty; }
-            set { base.IsEnabled = value; }
+            get => base.IsEnabled && _component.IsNotEmpty;
+            set => base.IsEnabled = value;
         }
 
         internal sealed override void Update(int index, int maxIndex)
