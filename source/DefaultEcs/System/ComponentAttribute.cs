@@ -13,14 +13,14 @@ namespace DefaultEcs.System
         With,
 
         /// <summary>
-        /// Given component type should be absent.
-        /// </summary>
-        Without,
-
-        /// <summary>
         /// At least one of the given component types should be present.
         /// </summary>
         WithEither,
+
+        /// <summary>
+        /// Given component type should be absent.
+        /// </summary>
+        Without,
 
         /// <summary>
         /// Given component types are added.
@@ -28,9 +28,19 @@ namespace DefaultEcs.System
         WhenAdded,
 
         /// <summary>
+        /// At least one of the given component types is added.
+        /// </summary>
+        WhenAddedEither,
+
+        /// <summary>
         /// Given component types are changed.
         /// </summary>
         WhenChanged,
+
+        /// <summary>
+        /// At least one of the given component types is changed.
+        /// </summary>
+        WhenChangedEither,
 
         /// <summary>
         /// Given component types are removed.
@@ -82,20 +92,6 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
-    /// Represents a component type to exclude when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
-    /// </summary>
-    public sealed class WithoutAttribute : ComponentAttribute
-    {
-        /// <summary>
-        /// Initialize a new instance of the <see cref="WithoutAttribute"/> type.
-        /// </summary>
-        /// <param name="componentTypes">The types of the component to exclude.</param>
-        public WithoutAttribute(params Type[] componentTypes)
-            : base(ComponentFilterType.Without, componentTypes)
-        { }
-    }
-
-    /// <summary>
     /// Represents a group of component types which at least one should be present when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
     public sealed class WithEitherAttribute : ComponentAttribute
@@ -106,6 +102,20 @@ namespace DefaultEcs.System
         /// <param name="componentTypes">The types of the component to include.</param>
         public WithEitherAttribute(params Type[] componentTypes)
             : base(ComponentFilterType.WithEither, componentTypes)
+        { }
+    }
+
+    /// <summary>
+    /// Represents a component type to exclude when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// </summary>
+    public sealed class WithoutAttribute : ComponentAttribute
+    {
+        /// <summary>
+        /// Initialize a new instance of the <see cref="WithoutAttribute"/> type.
+        /// </summary>
+        /// <param name="componentTypes">The types of the component to exclude.</param>
+        public WithoutAttribute(params Type[] componentTypes)
+            : base(ComponentFilterType.Without, componentTypes)
         { }
     }
 
@@ -124,6 +134,20 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
+    /// Represents a group of component types to react to at least one of their addition when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// </summary>
+    public sealed class WhenAddedEitherAttribute : ComponentAttribute
+    {
+        /// <summary>
+        /// Initialize a new instance of the <see cref="WithEitherAttribute"/> type.
+        /// </summary>
+        /// <param name="componentTypes">The types of the component to react to their addition.</param>
+        public WhenAddedEitherAttribute(params Type[] componentTypes)
+            : base(ComponentFilterType.WhenAddedEither, componentTypes)
+        { }
+    }
+
+    /// <summary>
     /// Represents a component type to react to its change when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
     public sealed class WhenChangedAttribute : ComponentAttribute
@@ -134,6 +158,20 @@ namespace DefaultEcs.System
         /// <param name="componentTypes">The types of the component to react to their change.</param>
         public WhenChangedAttribute(params Type[] componentTypes)
             : base(ComponentFilterType.WhenChanged, componentTypes)
+        { }
+    }
+
+    /// <summary>
+    /// Represents a group of component types to react to at least one of their change when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// </summary>
+    public sealed class WhenChangedEitherAttribute : ComponentAttribute
+    {
+        /// <summary>
+        /// Initialize a new instance of the <see cref="WithEitherAttribute"/> type.
+        /// </summary>
+        /// <param name="componentTypes">The types of the component to react to their change.</param>
+        public WhenChangedEitherAttribute(params Type[] componentTypes)
+            : base(ComponentFilterType.WhenChangedEither, componentTypes)
         { }
     }
 

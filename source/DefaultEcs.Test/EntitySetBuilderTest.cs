@@ -38,12 +38,12 @@ namespace DefaultEcs.Test
             using (EntitySet set = world.GetEntities().With<bool>().Build())
             {
                 List<Entity> entities = new List<Entity>
-                    {
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity()
-                    };
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
 
                 Check.That(set.GetEntities().ToArray()).IsEmpty();
 
@@ -68,12 +68,12 @@ namespace DefaultEcs.Test
             using (EntitySet set = world.GetEntities().With<bool>().With<int>().Build())
             {
                 List<Entity> entities = new List<Entity>
-                    {
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity()
-                    };
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
 
                 Check.That(set.GetEntities().ToArray()).IsEmpty();
 
@@ -111,12 +111,12 @@ namespace DefaultEcs.Test
             using (EntitySet set = world.GetEntities().Without<int>().Build())
             {
                 List<Entity> entities = new List<Entity>
-                    {
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity()
-                    };
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
 
                 Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
@@ -141,12 +141,12 @@ namespace DefaultEcs.Test
             using (EntitySet set = world.GetEntities().WithEither<bool, int>().Build())
             {
                 List<Entity> entities = new List<Entity>
-                    {
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity()
-                    };
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
 
                 Check.That(set.GetEntities().ToArray()).IsEmpty();
 
@@ -183,12 +183,12 @@ namespace DefaultEcs.Test
             using (EntitySet set = world.GetEntities().WhenAdded<bool>().Build())
             {
                 List<Entity> entities = new List<Entity>
-                    {
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity()
-                    };
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
 
                 Check.That(set.Count).IsZero();
 
@@ -227,18 +227,59 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void Build_WhenAddedEither_T1_T2_Should_return_EntitySet_with_all_Entity_when_component_T1_or_T2_is_added()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().WhenAddedEither<bool, int>().Build())
+            {
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                set.Complete();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(false);
+                }
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
         public void Build_WhenChanged_T_Should_return_EntitySet_with_all_Entity_when_component_T_is_added_and_changed()
         {
             using (World world = new World(4))
             using (EntitySet set = world.GetEntities().WhenChanged<bool>().Build())
             {
                 List<Entity> entities = new List<Entity>
-                    {
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity()
-                    };
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
 
                 Check.That(set.Count).IsZero();
 
@@ -263,18 +304,60 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void Build_WhenChangedEither_T1_T2_Should_return_EntitySet_with_all_Entity_when_component_T1_or_T2_is_changed()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().WhenChangedEither<bool, int>().Build())
+            {
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                    entity.Set(42);
+                }
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(false);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+                set.Complete();
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(1337);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
         public void Build_WhenRemoved_T_Should_return_EntitySet_with_all_Entity_when_component_T_is_removed()
         {
             using (World world = new World(4))
             using (EntitySet set = world.GetEntities().WhenRemoved<bool>().Build())
             {
                 List<Entity> entities = new List<Entity>
-                    {
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity(),
-                        world.CreateEntity()
-                    };
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
 
                 Check.That(set.Count).IsZero();
 

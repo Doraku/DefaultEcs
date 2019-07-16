@@ -23,6 +23,10 @@
     <PackageReleaseNotes>
 breaking change:
 renamed EntitySetBuilder.WithAny and WithAny attribute to WithEither
+removed some methods from EntitySetBuilderExtension, Either methods stops at 3 components types but it is easy to add more if needed
+
+added WhenAddedEither filter for EntitySet
+added WhenChangedEither filter for EntitySet
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

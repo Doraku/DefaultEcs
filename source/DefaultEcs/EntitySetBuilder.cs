@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
 
@@ -15,10 +16,12 @@ namespace DefaultEcs
         #region Fields
 
         private static readonly MethodInfo _with;
-        private static readonly MethodInfo _without;
         private static readonly MethodInfo _withEither;
+        private static readonly MethodInfo _without;
         private static readonly MethodInfo _whenAdded;
+        private static readonly MethodInfo _whenAddedEither;
         private static readonly MethodInfo _whenChanged;
+        private static readonly MethodInfo _whenChangedEither;
         private static readonly MethodInfo _whenRemoved;
 
         private readonly World _world;
@@ -27,10 +30,10 @@ namespace DefaultEcs
 
         private ComponentEnum _withFilter;
         private ComponentEnum _withoutFilter;
+        private ComponentEnum _eitherFilter;
         private ComponentEnum _whenAddedFilter;
         private ComponentEnum _whenChangedFilter;
         private ComponentEnum _whenRemovedFilter;
-        private ComponentEnum _currentWithEitherFilter;
         private List<ComponentEnum> _withEitherFilters;
 
         #endregion
@@ -39,12 +42,14 @@ namespace DefaultEcs
 
         static EntitySetBuilder()
         {
-            _with = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(With)).First(m => m.ContainsGenericParameters);
-            _without = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(Without)).First(m => m.ContainsGenericParameters);
-            _withEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WithEither)).First(m => m.ContainsGenericParameters);
-            _whenAdded = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenAdded)).First(m => m.ContainsGenericParameters);
-            _whenChanged = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenChanged)).First(m => m.ContainsGenericParameters);
-            _whenRemoved = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenRemoved)).First(m => m.ContainsGenericParameters);
+            _with = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(With)).Single(m => m.ContainsGenericParameters);
+            _withEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WithEither)).Single(m => m.ContainsGenericParameters);
+            _without = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(Without)).Single(m => m.ContainsGenericParameters);
+            _whenAdded = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenAdded)).Single(m => m.ContainsGenericParameters);
+            _whenAddedEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenAddedEither)).Single(m => m.ContainsGenericParameters);
+            _whenChanged = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenChanged)).Single(m => m.ContainsGenericParameters);
+            _whenChangedEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenChangedEither)).Single(m => m.ContainsGenericParameters);
+            _whenRemoved = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenRemoved)).Single(m => m.ContainsGenericParameters);
         }
 
         internal EntitySetBuilder(World world)
@@ -65,13 +70,40 @@ namespace DefaultEcs
 
         #region Methods
 
-        private void WithEither<T>()
+        private void WithEither<T>(StrongBox<ComponentEnum> components)
         {
-            if (!_currentWithEitherFilter[ComponentManager<T>.Flag])
+            ComponentFlag flag = ComponentManager<T>.Flag;
+            if (!components.Value[flag])
             {
-                _currentWithEitherFilter[ComponentManager<T>.Flag] = true;
-                _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedRemove));
+                components.Value[flag] = true;
+                if (!_eitherFilter[flag])
+                {
+                    _eitherFilter[flag] = true;
+                    _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
+                    _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedRemove));
+                }
+            }
+        }
+
+        private void WhenAddedEither<T>(StrongBox<ComponentEnum> components)
+        {
+            WithEither<T>(components);
+
+            if (!_whenAddedFilter[ComponentManager<T>.Flag])
+            {
+                _whenAddedFilter[ComponentManager<T>.Flag] = true;
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
+            }
+        }
+
+        private void WhenChangedEither<T>(StrongBox<ComponentEnum> components)
+        {
+            WithEither<T>(components);
+
+            if (!_whenChangedFilter[ComponentManager<T>.Flag])
+            {
+                _whenChangedFilter[ComponentManager<T>.Flag] = true;
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.CheckedAdd));
             }
         }
 
@@ -111,6 +143,36 @@ namespace DefaultEcs
         }
 
         /// <summary>
+        /// Makes a rule to obsverve <see cref="Entity"/> with at least one component of the given types.
+        /// </summary>
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder WithEither(params Type[] componentTypes)
+        {
+            if (componentTypes?.Length > 0)
+            {
+                if (componentTypes.Length == 1)
+                {
+                    return With(componentTypes);
+                }
+
+                StrongBox<ComponentEnum> components = new StrongBox<ComponentEnum>();
+                object[] parameters = new[] { components };
+                foreach (Type componentType in componentTypes)
+                {
+                    _withEither.MakeGenericMethod(componentType).Invoke(this, parameters);
+                }
+
+                if (!components.Value.IsNull)
+                {
+                    (_withEitherFilters ?? (_withEitherFilters = new List<ComponentEnum>())).Add(components.Value);
+                }
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Makes a rule to ignore <see cref="Entity"/> with a component of type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
@@ -139,35 +201,6 @@ namespace DefaultEcs
                 foreach (Type componentType in componentTypes)
                 {
                     _without.MakeGenericMethod(componentType).Invoke(this, null);
-                }
-            }
-
-            return this;
-        }
-
-        /// <summary>
-        /// Makes a rule to obsverve <see cref="Entity"/> with at least one component of the given types.
-        /// </summary>
-        /// <param name="componentTypes">The types of component.</param>
-        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        public EntitySetBuilder WithEither(params Type[] componentTypes)
-        {
-            if (componentTypes?.Length > 0)
-            {
-                if (componentTypes.Length == 1)
-                {
-                    return With(componentTypes);
-                }
-
-                _currentWithEitherFilter = new ComponentEnum();
-                foreach (Type componentType in componentTypes)
-                {
-                    _withEither.MakeGenericMethod(componentType).Invoke(this, null);
-                }
-
-                if (!_currentWithEitherFilter.IsNull)
-                {
-                    (_withEitherFilters ?? (_withEitherFilters = new List<ComponentEnum>())).Add(_currentWithEitherFilter);
                 }
             }
 
@@ -211,6 +244,36 @@ namespace DefaultEcs
         }
 
         /// <summary>
+        /// Makes a rule to observe <see cref="Entity"/> when one component of the given types is added.
+        /// </summary>
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder WhenAddedEither(params Type[] componentTypes)
+        {
+            if (componentTypes?.Length > 0)
+            {
+                if (componentTypes.Length == 1)
+                {
+                    return WhenAdded(componentTypes);
+                }
+
+                StrongBox<ComponentEnum> components = new StrongBox<ComponentEnum>();
+                object[] parameters = new[] { components };
+                foreach (Type componentType in componentTypes)
+                {
+                    _whenAddedEither.MakeGenericMethod(componentType).Invoke(this, parameters);
+                }
+
+                if (!components.Value.IsNull)
+                {
+                    (_withEitherFilters ?? (_withEitherFilters = new List<ComponentEnum>())).Add(components.Value);
+                }
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is changed.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
@@ -240,6 +303,36 @@ namespace DefaultEcs
                 foreach (Type componentType in componentTypes)
                 {
                     _whenChanged.MakeGenericMethod(componentType).Invoke(this, null);
+                }
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Makes a rule to observe <see cref="Entity"/> when one component of the given types is changed.
+        /// </summary>
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder WhenChangedEither(params Type[] componentTypes)
+        {
+            if (componentTypes?.Length > 0)
+            {
+                if (componentTypes.Length == 1)
+                {
+                    return WhenChanged(componentTypes);
+                }
+
+                StrongBox<ComponentEnum> components = new StrongBox<ComponentEnum>();
+                object[] parameters = new[] { components };
+                foreach (Type componentType in componentTypes)
+                {
+                    _whenChangedEither.MakeGenericMethod(componentType).Invoke(this, parameters);
+                }
+
+                if (!components.Value.IsNull)
+                {
+                    (_withEitherFilters ?? (_withEitherFilters = new List<ComponentEnum>())).Add(components.Value);
                 }
             }
 

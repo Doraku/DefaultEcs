@@ -44,7 +44,8 @@ namespace DefaultEcs.Technical
                     {
                         filterEx = Expression.And(filterEx, Expression.Call(components, _componentsDoNotContains, Expression.Constant(withoutFilter.Copy())));
                     }
-                    foreach (ComponentEnum f in withEitherFilters ?? Enumerable.Empty<ComponentEnum>())
+                    HashSet<string> eitherFilters = new HashSet<string>();
+                    foreach (ComponentEnum f in (withEitherFilters ?? Enumerable.Empty<ComponentEnum>()).Where(f => eitherFilters.Add(f.ToString())))
                     {
                         filterEx = Expression.And(filterEx, Expression.Not(Expression.Call(components, _componentsDoNotContains, Expression.Constant(f.Copy()))));
                     }
