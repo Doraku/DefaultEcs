@@ -18,23 +18,27 @@ namespace DefaultEcs
         private static readonly MethodInfo _with;
         private static readonly MethodInfo _withEither;
         private static readonly MethodInfo _without;
+        private static readonly MethodInfo _withoutEither;
         private static readonly MethodInfo _whenAdded;
         private static readonly MethodInfo _whenAddedEither;
         private static readonly MethodInfo _whenChanged;
         private static readonly MethodInfo _whenChangedEither;
         private static readonly MethodInfo _whenRemoved;
+        private static readonly MethodInfo _whenRemovedEither;
 
         private readonly World _world;
         private readonly List<Func<EntitySet, World, IDisposable>> _subscriptions;
         private readonly List<Func<EntitySet, World, IDisposable>> _nonReactSubscriptions;
 
         private ComponentEnum _withFilter;
+        private ComponentEnum _withEitherFilter;
         private ComponentEnum _withoutFilter;
-        private ComponentEnum _eitherFilter;
+        private ComponentEnum _withoutEitherFilter;
         private ComponentEnum _whenAddedFilter;
         private ComponentEnum _whenChangedFilter;
         private ComponentEnum _whenRemovedFilter;
         private List<ComponentEnum> _withEitherFilters;
+        private List<ComponentEnum> _withoutEitherFilters;
 
         #endregion
 
@@ -45,11 +49,13 @@ namespace DefaultEcs
             _with = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(With)).Single(m => m.ContainsGenericParameters);
             _withEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WithEither)).Single(m => m.ContainsGenericParameters);
             _without = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(Without)).Single(m => m.ContainsGenericParameters);
+            _withoutEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WithoutEither)).Single(m => m.ContainsGenericParameters);
             _whenAdded = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenAdded)).Single(m => m.ContainsGenericParameters);
             _whenAddedEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenAddedEither)).Single(m => m.ContainsGenericParameters);
             _whenChanged = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenChanged)).Single(m => m.ContainsGenericParameters);
             _whenChangedEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenChangedEither)).Single(m => m.ContainsGenericParameters);
             _whenRemoved = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenRemoved)).Single(m => m.ContainsGenericParameters);
+            _whenRemovedEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenRemovedEither)).Single(m => m.ContainsGenericParameters);
         }
 
         internal EntitySetBuilder(World world)
@@ -76,11 +82,26 @@ namespace DefaultEcs
             if (!components.Value[flag])
             {
                 components.Value[flag] = true;
-                if (!_eitherFilter[flag])
+                if (!_withEitherFilter[flag])
                 {
-                    _eitherFilter[flag] = true;
+                    _withEitherFilter[flag] = true;
                     _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
                     _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedRemove));
+                }
+            }
+        }
+
+        private void WithoutEither<T>(StrongBox<ComponentEnum> components)
+        {
+            ComponentFlag flag = ComponentManager<T>.Flag;
+            if (!components.Value[flag])
+            {
+                components.Value[flag] = true;
+                if (!_withoutEitherFilter[flag])
+                {
+                    _withoutEitherFilter[flag] = true;
+                    _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
+                    _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedRemove));
                 }
             }
         }
@@ -104,6 +125,17 @@ namespace DefaultEcs
             {
                 _whenChangedFilter[ComponentManager<T>.Flag] = true;
                 _subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.CheckedAdd));
+            }
+        }
+
+        private void WhenRemovedEither<T>(StrongBox<ComponentEnum> components)
+        {
+            WithoutEither<T>(components);
+
+            if (!_whenRemovedFilter[ComponentManager<T>.Flag])
+            {
+                _whenRemovedFilter[ComponentManager<T>.Flag] = true;
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
             }
         }
 
@@ -201,6 +233,36 @@ namespace DefaultEcs
                 foreach (Type componentType in componentTypes)
                 {
                     _without.MakeGenericMethod(componentType).Invoke(this, null);
+                }
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Makes a rule to obsverve <see cref="Entity"/> without at least one component of the given types.
+        /// </summary>
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder WithoutEither(params Type[] componentTypes)
+        {
+            if (componentTypes?.Length > 0)
+            {
+                if (componentTypes.Length == 1)
+                {
+                    return Without(componentTypes);
+                }
+
+                StrongBox<ComponentEnum> components = new StrongBox<ComponentEnum>();
+                object[] parameters = new[] { components };
+                foreach (Type componentType in componentTypes)
+                {
+                    _withoutEither.MakeGenericMethod(componentType).Invoke(this, parameters);
+                }
+
+                if (!components.Value.IsNull)
+                {
+                    (_withoutEitherFilters ?? (_withoutEitherFilters = new List<ComponentEnum>())).Add(components.Value);
                 }
             }
 
@@ -376,6 +438,36 @@ namespace DefaultEcs
         }
 
         /// <summary>
+        /// Makes a rule to observe <see cref="Entity"/> when one component of the given types is removed.
+        /// </summary>
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder WhenRemovedEither(params Type[] componentTypes)
+        {
+            if (componentTypes?.Length > 0)
+            {
+                if (componentTypes.Length == 1)
+                {
+                    return WhenRemoved(componentTypes);
+                }
+
+                StrongBox<ComponentEnum> components = new StrongBox<ComponentEnum>();
+                object[] parameters = new[] { components };
+                foreach (Type componentType in componentTypes)
+                {
+                    _whenRemovedEither.MakeGenericMethod(componentType).Invoke(this, parameters);
+                }
+
+                if (!components.Value.IsNull)
+                {
+                    (_withoutEitherFilters ?? (_withoutEitherFilters = new List<ComponentEnum>())).Add(components.Value);
+                }
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Returns an <see cref="EntitySet"/> with the specified rules.
         /// </summary>
         /// <returns>The <see cref="EntitySet"/>.</returns>
@@ -393,7 +485,7 @@ namespace DefaultEcs
                 subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Add));
             }
 
-            return new EntitySet(hasWhenFilter, _world, _withFilter, _withoutFilter, _withEitherFilters, subscriptions);
+            return new EntitySet(hasWhenFilter, _world, _withFilter, _withoutFilter, _withEitherFilters, _withoutEitherFilters, subscriptions);
         }
 
         #endregion

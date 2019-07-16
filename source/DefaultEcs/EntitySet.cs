@@ -76,6 +76,7 @@ namespace DefaultEcs
             ComponentEnum withFilter,
             ComponentEnum withoutFilter,
             List<ComponentEnum> withEitherFilters,
+            List<ComponentEnum> withoutEitherFilters,
             List<Func<EntitySet, World, IDisposable>> subscriptions)
         {
             _needClearing = needClearing;
@@ -86,7 +87,7 @@ namespace DefaultEcs
             withFilter[World.IsAliveFlag] = true;
             withFilter[World.IsEnabledFlag] = true;
 
-            _filter = EntitySetFilterFactory.GetFilter(withFilter, withoutFilter, withEitherFilters);
+            _filter = EntitySetFilterFactory.GetFilter(withFilter, withoutFilter, withEitherFilters, withoutEitherFilters);
 
             _subscriptions = subscriptions.Select(s => s(this, world)).Merge();
 
@@ -194,6 +195,14 @@ namespace DefaultEcs
         internal void Remove<T>(in ComponentAddedMessage<T> message) => Remove(message.EntityId);
 
         internal void CheckedRemove<T>(in ComponentRemovedMessage<T> message)
+        {
+            if (!_filter(message.Components))
+            {
+                Remove(message.EntityId);
+            }
+        }
+
+        internal void CheckedRemove<T>(in ComponentAddedMessage<T> message)
         {
             if (!_filter(message.Components))
             {

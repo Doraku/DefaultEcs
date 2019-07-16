@@ -105,36 +105,6 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Build_Without_T_Should_return_EntitySet_with_all_Entity_without_component_T()
-        {
-            using (World world = new World(4))
-            using (EntitySet set = world.GetEntities().Without<int>().Build())
-            {
-                List<Entity> entities = new List<Entity>
-                {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
-
-                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
-
-                foreach (Entity entity in entities)
-                {
-                    entity.Set(42);
-                }
-
-                Check.That(set.GetEntities().ToArray()).IsEmpty();
-
-                Entity temp = entities[2];
-                temp.Remove<int>();
-
-                Check.That(set.GetEntities().ToArray()).ContainsExactly(temp);
-            }
-        }
-
-        [Fact]
         public void Build_WithEither_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_or_T2()
         {
             using (World world = new World(4))
@@ -171,6 +141,75 @@ namespace DefaultEcs.Test
 
                 temp.Remove<int>();
                 entities.Remove(temp);
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
+        public void Build_Without_T_Should_return_EntitySet_with_all_Entity_without_component_T()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().Without<int>().Build())
+            {
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42);
+                }
+
+                Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+                Entity temp = entities[2];
+                temp.Remove<int>();
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(temp);
+            }
+        }
+
+        [Fact]
+        public void Build_WithoutEither_T1_T2_Should_return_EntitySet_with_all_Entity_without_component_T1_or_T2()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().WithoutEither<bool, int>().Build())
+            {
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(42);
+                }
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Remove<bool>();
+                }
 
                 Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
             }
@@ -385,6 +424,48 @@ namespace DefaultEcs.Test
                 foreach (Entity entity in entities)
                 {
                     entity.Remove<bool>();
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            }
+        }
+
+        [Fact]
+        public void Build_WhenRemovedEither_T1_T2_Should_return_EntitySet_with_all_Entity_when_component_T1_or_T2_is_changed()
+        {
+            using (World world = new World(4))
+            using (EntitySet set = world.GetEntities().WhenRemovedEither<bool, int>().Build())
+            {
+                List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Set(true);
+                    entity.Set(42);
+                }
+
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Remove<bool>();
+                }
+
+                Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+                set.Complete();
+                Check.That(set.Count).IsZero();
+
+                foreach (Entity entity in entities)
+                {
+                    entity.Remove<int>();
                 }
 
                 Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);

@@ -23,6 +23,11 @@ namespace DefaultEcs.System
         Without,
 
         /// <summary>
+        /// At least one of the given component types should not be present.
+        /// </summary>
+        WithoutEither,
+
+        /// <summary>
         /// Given component types are added.
         /// </summary>
         WhenAdded,
@@ -46,6 +51,11 @@ namespace DefaultEcs.System
         /// Given component types are removed.
         /// </summary>
         WhenRemoved,
+
+        /// <summary>
+        /// At least one of the given component types is removed.
+        /// </summary>
+        WhenRemovedEither,
     }
 
     /// <summary>
@@ -120,6 +130,20 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
+    /// Represents a group of component types which at least one should not be present when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// </summary>
+    public sealed class WithoutEitherAttribute : ComponentAttribute
+    {
+        /// <summary>
+        /// Initialize a new instance of the <see cref="WithEitherAttribute"/> type.
+        /// </summary>
+        /// <param name="componentTypes">The types of the component to exclude.</param>
+        public WithoutEitherAttribute(params Type[] componentTypes)
+            : base(ComponentFilterType.WithEither, componentTypes)
+        { }
+    }
+
+    /// <summary>
     /// Represents a component type to react to its addition when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
     public sealed class WhenAddedAttribute : ComponentAttribute
@@ -186,6 +210,20 @@ namespace DefaultEcs.System
         /// <param name="componentTypes">The types of the component to react to their deletion.</param>
         public WhenRemovedAttribute(params Type[] componentTypes)
             : base(ComponentFilterType.WhenRemoved, componentTypes)
+        { }
+    }
+
+    /// <summary>
+    /// Represents a group of component types to react to at least one of their deletion when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// </summary>
+    public sealed class WhenRemovedEitherAttribute : ComponentAttribute
+    {
+        /// <summary>
+        /// Initialize a new instance of the <see cref="WithEitherAttribute"/> type.
+        /// </summary>
+        /// <param name="componentTypes">The types of the component to react to their change.</param>
+        public WhenRemovedEitherAttribute(params Type[] componentTypes)
+            : base(ComponentFilterType.WhenRemovedEither, componentTypes)
         { }
     }
 }

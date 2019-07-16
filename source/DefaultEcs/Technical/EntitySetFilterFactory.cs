@@ -29,9 +29,9 @@ namespace DefaultEcs.Technical
 
         #region Methods
 
-        public static Predicate<ComponentEnum> GetFilter(ComponentEnum withFilter, ComponentEnum withoutFilter, List<ComponentEnum> withEitherFilters)
+        public static Predicate<ComponentEnum> GetFilter(ComponentEnum withFilter, ComponentEnum withoutFilter, List<ComponentEnum> withEitherFilters, List<ComponentEnum> withoutEitherFilters)
         {
-            string key = $"{withFilter} {withoutFilter} {string.Join(" ", withEitherFilters ?? Enumerable.Empty<ComponentEnum>())}";
+            string key = $"{withFilter} {withoutFilter} {string.Join(" ", withEitherFilters ?? Enumerable.Empty<ComponentEnum>())} {string.Join(" ", withoutEitherFilters ?? Enumerable.Empty<ComponentEnum>())}";
             Predicate<ComponentEnum> filter;
 
             lock (_filters)
@@ -48,6 +48,11 @@ namespace DefaultEcs.Technical
                     foreach (ComponentEnum f in (withEitherFilters ?? Enumerable.Empty<ComponentEnum>()).Where(f => eitherFilters.Add(f.ToString())))
                     {
                         filterEx = Expression.And(filterEx, Expression.Not(Expression.Call(components, _componentsDoNotContains, Expression.Constant(f.Copy()))));
+                    }
+                    eitherFilters.Clear();
+                    foreach (ComponentEnum f in (withoutEitherFilters ?? Enumerable.Empty<ComponentEnum>()).Where(f => eitherFilters.Add(f.ToString())))
+                    {
+                        filterEx = Expression.And(filterEx, Expression.Not(Expression.Call(components, _componentsContains, Expression.Constant(f.Copy()))));
                     }
                     filter = Expression.Lambda<Predicate<ComponentEnum>>(filterEx, components).Compile();
 

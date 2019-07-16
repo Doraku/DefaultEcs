@@ -15,11 +15,13 @@ namespace DefaultEcs.Technical.System
         private static readonly MethodInfo _with;
         private static readonly MethodInfo _withEither;
         private static readonly MethodInfo _without;
+        private static readonly MethodInfo _withoutEither;
         private static readonly MethodInfo _whenAdded;
         private static readonly MethodInfo _whenAddedEither;
         private static readonly MethodInfo _whenChanged;
         private static readonly MethodInfo _whenChangedEither;
         private static readonly MethodInfo _whenRemoved;
+        private static readonly MethodInfo _whenRemovedEither;
 
         #endregion
 
@@ -33,11 +35,13 @@ namespace DefaultEcs.Technical.System
             _with = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.With)).First(m => !m.ContainsGenericParameters);
             _withEither = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WithEither)).First(m => !m.ContainsGenericParameters);
             _without = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.Without)).First(m => !m.ContainsGenericParameters);
+            _withoutEither = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WithoutEither)).First(m => !m.ContainsGenericParameters);
             _whenAdded = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WhenAdded)).First(m => !m.ContainsGenericParameters);
             _whenAddedEither = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WhenAddedEither)).First(m => !m.ContainsGenericParameters);
             _whenChanged = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WhenChanged)).First(m => !m.ContainsGenericParameters);
             _whenChangedEither = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WhenChangedEither)).First(m => !m.ContainsGenericParameters);
             _whenRemoved = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WhenRemoved)).First(m => !m.ContainsGenericParameters);
+            _whenRemovedEither = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WhenRemovedEither)).First(m => !m.ContainsGenericParameters);
         }
 
         #endregion
@@ -65,6 +69,10 @@ namespace DefaultEcs.Technical.System
                         expression = Expression.Call(expression, _without, Expression.Constant(attribute.ComponentTypes));
                         break;
 
+                    case ComponentFilterType.WithoutEither:
+                        expression = Expression.Call(expression, _withoutEither, Expression.Constant(attribute.ComponentTypes));
+                        break;
+
                     case ComponentFilterType.WhenAdded:
                         expression = Expression.Call(expression, _whenAdded, Expression.Constant(attribute.ComponentTypes));
                         break;
@@ -83,6 +91,10 @@ namespace DefaultEcs.Technical.System
 
                     case ComponentFilterType.WhenRemoved:
                         expression = Expression.Call(expression, _whenRemoved, Expression.Constant(attribute.ComponentTypes));
+                        break;
+
+                    case ComponentFilterType.WhenRemovedEither:
+                        expression = Expression.Call(expression, _whenRemovedEither, Expression.Constant(attribute.ComponentTypes));
                         break;
                 }
             }
