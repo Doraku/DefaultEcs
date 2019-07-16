@@ -19,8 +19,10 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.11.0</Version>
+    <Version>0.12.0</Version>
     <PackageReleaseNotes>
+breaking change:
+renamed EntitySetBuilder.WithAny and WithAny attribute to WithEither
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

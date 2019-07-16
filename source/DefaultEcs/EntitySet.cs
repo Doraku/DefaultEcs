@@ -75,7 +75,7 @@ namespace DefaultEcs
             World world,
             ComponentEnum withFilter,
             ComponentEnum withoutFilter,
-            List<ComponentEnum> withAnyFilters,
+            List<ComponentEnum> withEitherFilters,
             List<Func<EntitySet, World, IDisposable>> subscriptions)
         {
             _needClearing = needClearing;
@@ -86,7 +86,7 @@ namespace DefaultEcs
             withFilter[World.IsAliveFlag] = true;
             withFilter[World.IsEnabledFlag] = true;
 
-            _filter = EntitySetFilterFactory.GetFilter(withFilter, withoutFilter, withAnyFilters);
+            _filter = EntitySetFilterFactory.GetFilter(withFilter, withoutFilter, withEitherFilters);
 
             _subscriptions = subscriptions.Select(s => s(this, world)).Merge();
 

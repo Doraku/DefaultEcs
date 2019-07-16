@@ -16,7 +16,7 @@ namespace DefaultEcs
 
         private static readonly MethodInfo _with;
         private static readonly MethodInfo _without;
-        private static readonly MethodInfo _withAny;
+        private static readonly MethodInfo _withEither;
         private static readonly MethodInfo _whenAdded;
         private static readonly MethodInfo _whenChanged;
         private static readonly MethodInfo _whenRemoved;
@@ -30,8 +30,8 @@ namespace DefaultEcs
         private ComponentEnum _whenAddedFilter;
         private ComponentEnum _whenChangedFilter;
         private ComponentEnum _whenRemovedFilter;
-        private ComponentEnum _currentWithAnyFilter;
-        private List<ComponentEnum> _withAnyFilters;
+        private ComponentEnum _currentWithEitherFilter;
+        private List<ComponentEnum> _withEitherFilters;
 
         #endregion
 
@@ -41,7 +41,7 @@ namespace DefaultEcs
         {
             _with = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(With)).First(m => m.ContainsGenericParameters);
             _without = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(Without)).First(m => m.ContainsGenericParameters);
-            _withAny = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WithAny)).First(m => m.ContainsGenericParameters);
+            _withEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WithEither)).First(m => m.ContainsGenericParameters);
             _whenAdded = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenAdded)).First(m => m.ContainsGenericParameters);
             _whenChanged = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenChanged)).First(m => m.ContainsGenericParameters);
             _whenRemoved = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenRemoved)).First(m => m.ContainsGenericParameters);
@@ -65,11 +65,11 @@ namespace DefaultEcs
 
         #region Methods
 
-        private void WithAny<T>()
+        private void WithEither<T>()
         {
-            if (!_currentWithAnyFilter[ComponentManager<T>.Flag])
+            if (!_currentWithEitherFilter[ComponentManager<T>.Flag])
             {
-                _currentWithAnyFilter[ComponentManager<T>.Flag] = true;
+                _currentWithEitherFilter[ComponentManager<T>.Flag] = true;
                 _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
                 _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedRemove));
             }
@@ -150,7 +150,7 @@ namespace DefaultEcs
         /// </summary>
         /// <param name="componentTypes">The types of component.</param>
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        public EntitySetBuilder WithAny(params Type[] componentTypes)
+        public EntitySetBuilder WithEither(params Type[] componentTypes)
         {
             if (componentTypes?.Length > 0)
             {
@@ -159,15 +159,15 @@ namespace DefaultEcs
                     return With(componentTypes);
                 }
 
-                _currentWithAnyFilter = new ComponentEnum();
+                _currentWithEitherFilter = new ComponentEnum();
                 foreach (Type componentType in componentTypes)
                 {
-                    _withAny.MakeGenericMethod(componentType).Invoke(this, null);
+                    _withEither.MakeGenericMethod(componentType).Invoke(this, null);
                 }
 
-                if (!_currentWithAnyFilter.IsNull)
+                if (!_currentWithEitherFilter.IsNull)
                 {
-                    (_withAnyFilters ?? (_withAnyFilters = new List<ComponentEnum>())).Add(_currentWithAnyFilter);
+                    (_withEitherFilters ?? (_withEitherFilters = new List<ComponentEnum>())).Add(_currentWithEitherFilter);
                 }
             }
 
@@ -295,12 +295,12 @@ namespace DefaultEcs
                 subscriptions.AddRange(_nonReactSubscriptions);
             }
 
-            if (subscriptions.Count == 3 || (_withFilter.IsNull && _withAnyFilters == null && !hasWhenFilter))
+            if (subscriptions.Count == 3 || (_withFilter.IsNull && _withEitherFilters == null && !hasWhenFilter))
             {
                 subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Add));
             }
 
-            return new EntitySet(hasWhenFilter, _world, _withFilter, _withoutFilter, _withAnyFilters, subscriptions);
+            return new EntitySet(hasWhenFilter, _world, _withFilter, _withoutFilter, _withEitherFilters, subscriptions);
         }
 
         #endregion

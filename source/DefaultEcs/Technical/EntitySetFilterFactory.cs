@@ -29,9 +29,9 @@ namespace DefaultEcs.Technical
 
         #region Methods
 
-        public static Predicate<ComponentEnum> GetFilter(ComponentEnum withFilter, ComponentEnum withoutFilter, List<ComponentEnum> withAnyFilters)
+        public static Predicate<ComponentEnum> GetFilter(ComponentEnum withFilter, ComponentEnum withoutFilter, List<ComponentEnum> withEitherFilters)
         {
-            string key = $"{withFilter} {withoutFilter} {string.Join(" ", withAnyFilters ?? Enumerable.Empty<ComponentEnum>())}";
+            string key = $"{withFilter} {withoutFilter} {string.Join(" ", withEitherFilters ?? Enumerable.Empty<ComponentEnum>())}";
             Predicate<ComponentEnum> filter;
 
             lock (_filters)
@@ -44,7 +44,7 @@ namespace DefaultEcs.Technical
                     {
                         filterEx = Expression.And(filterEx, Expression.Call(components, _componentsDoNotContains, Expression.Constant(withoutFilter.Copy())));
                     }
-                    foreach (ComponentEnum f in withAnyFilters ?? Enumerable.Empty<ComponentEnum>())
+                    foreach (ComponentEnum f in withEitherFilters ?? Enumerable.Empty<ComponentEnum>())
                     {
                         filterEx = Expression.And(filterEx, Expression.Not(Expression.Call(components, _componentsDoNotContains, Expression.Constant(f.Copy()))));
                     }

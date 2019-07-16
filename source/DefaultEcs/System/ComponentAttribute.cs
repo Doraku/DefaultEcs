@@ -20,7 +20,7 @@ namespace DefaultEcs.System
         /// <summary>
         /// At least one of the given component types should be present.
         /// </summary>
-        WithAny,
+        WithEither,
 
         /// <summary>
         /// Given component types are added.
@@ -96,16 +96,16 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
-    /// Represents a group of component types to include when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// Represents a group of component types which at least one should be present when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
-    public sealed class WithAnyAttribute : ComponentAttribute
+    public sealed class WithEitherAttribute : ComponentAttribute
     {
         /// <summary>
-        /// Initialize a new instance of the <see cref="WithAnyAttribute"/> type.
+        /// Initialize a new instance of the <see cref="WithEitherAttribute"/> type.
         /// </summary>
         /// <param name="componentTypes">The types of the component to include.</param>
-        public WithAnyAttribute(params Type[] componentTypes)
-            : base(ComponentFilterType.WithAny, componentTypes)
+        public WithEitherAttribute(params Type[] componentTypes)
+            : base(ComponentFilterType.WithEither, componentTypes)
         { }
     }
 

@@ -14,7 +14,7 @@ namespace DefaultEcs.Technical.System
         private static readonly ConcurrentDictionary<Type, Func<World, EntitySetBuilder>> _entitySetBuilderFactories;
         private static readonly MethodInfo _with;
         private static readonly MethodInfo _without;
-        private static readonly MethodInfo _withAny;
+        private static readonly MethodInfo _withEither;
         private static readonly MethodInfo _whenAdded;
         private static readonly MethodInfo _whenChanged;
         private static readonly MethodInfo _whenRemoved;
@@ -30,7 +30,7 @@ namespace DefaultEcs.Technical.System
             TypeInfo entitySetBuilder = typeof(EntitySetBuilder).GetTypeInfo();
             _with = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.With)).First(m => !m.ContainsGenericParameters);
             _without = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.Without)).First(m => !m.ContainsGenericParameters);
-            _withAny = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WithAny)).First(m => !m.ContainsGenericParameters);
+            _withEither = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WithEither)).First(m => !m.ContainsGenericParameters);
             _whenAdded = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WhenAdded)).First(m => !m.ContainsGenericParameters);
             _whenChanged = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WhenChanged)).First(m => !m.ContainsGenericParameters);
             _whenRemoved = entitySetBuilder.GetDeclaredMethods(nameof(EntitySetBuilder.WhenRemoved)).First(m => !m.ContainsGenericParameters);
@@ -57,8 +57,8 @@ namespace DefaultEcs.Technical.System
                         expression = Expression.Call(expression, _without, Expression.Constant(attribute.ComponentTypes));
                         break;
 
-                    case ComponentFilterType.WithAny:
-                        expression = Expression.Call(expression, _withAny, Expression.Constant(attribute.ComponentTypes));
+                    case ComponentFilterType.WithEither:
+                        expression = Expression.Call(expression, _withEither, Expression.Constant(attribute.ComponentTypes));
                         break;
 
                     case ComponentFilterType.WhenAdded:
