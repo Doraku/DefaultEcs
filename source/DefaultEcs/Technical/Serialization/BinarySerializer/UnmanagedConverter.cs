@@ -48,7 +48,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 }
                 else
                 {
-                    throw new Exception($"Could not deserialize type {typeof(T).FullName}");
+                    throw new EndOfStreamException($"Could not deserialize type {typeof(T).FullName}");
                 }
             }
             else
@@ -64,7 +64,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
                     if (length <= 0)
                     {
-                        throw new Exception($"Could not deserialize type {typeof(T).FullName}");
+                        throw new EndOfStreamException($"Could not deserialize type {typeof(T).FullName}");
                     }
 
                     totalLength -= length;
