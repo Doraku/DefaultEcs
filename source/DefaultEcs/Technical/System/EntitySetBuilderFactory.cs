@@ -13,7 +13,7 @@ namespace DefaultEcs.Technical.System
         #region Fields
 
         private static readonly ConcurrentDictionary<Type, Func<World, EntitySetBuilder>> _entitySetBuilderFactories;
-        private static Dictionary<ComponentFilterType, MethodInfo> _filters;
+        private static readonly Dictionary<ComponentFilterType, MethodInfo> _filters;
 
         #endregion
 

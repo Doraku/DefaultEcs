@@ -45,8 +45,10 @@ namespace DefaultEcs.Test.System
                 Entity entity3 = world.CreateEntity();
                 entity3.Set<bool>();
 
-                ISystem<int> system = new System(world);
-                system.Update(0);
+                using (ISystem<int> system = new System(world))
+                {
+                    system.Update(0);
+                }
 
                 Check.That(entity1.Get<bool>()).IsTrue();
                 Check.That(entity2.Get<bool>()).IsTrue();
@@ -68,11 +70,11 @@ namespace DefaultEcs.Test.System
                 Entity entity3 = world.CreateEntity();
                 entity3.Set<bool>();
 
-                ISystem<int> system = new System(world)
+                using (ISystem<int> system = new System(world))
                 {
-                    IsEnabled = false
-                };
-                system.Update(0);
+                    system.IsEnabled = false;
+                    system.Update(0);
+                }
 
                 Check.That(entity1.Get<bool>()).IsFalse();
                 Check.That(entity2.Get<bool>()).IsFalse();
@@ -95,8 +97,10 @@ namespace DefaultEcs.Test.System
                 Entity entity3 = world.CreateEntity();
                 entity3.Set<bool>();
 
-                ISystem<int> system = new System(world, runner);
-                system.Update(0);
+                using (ISystem<int> system = new System(world, runner))
+                {
+                    system.Update(0);
+                }
 
                 Check.That(entity1.Get<bool>()).IsTrue();
                 Check.That(entity2.Get<bool>()).IsTrue();

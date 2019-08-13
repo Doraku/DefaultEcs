@@ -99,6 +99,7 @@ namespace DefaultSlap
         {
             _runner.Dispose();
             _world.Dispose();
+            _system.Dispose();
             _slapSound.Dispose();
             _bounceSound.Dispose();
             _square.Dispose();

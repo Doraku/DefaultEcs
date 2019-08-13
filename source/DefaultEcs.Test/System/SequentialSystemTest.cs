@@ -15,11 +15,12 @@ namespace DefaultEcs.Test.System
             bool done1 = false;
             bool done2 = false;
 
-            ISystem<int> system = new SequentialSystem<int>(
+            using (ISystem<int> system = new SequentialSystem<int>(
                 new ActionSystem<int>(_ => done1 = true),
-                new ActionSystem<int>(_ => done2 = true));
-
-            system.Update(0);
+                new ActionSystem<int>(_ => done2 = true)))
+            {
+                system.Update(0);
+            }
 
             Check.That(done1).IsTrue();
             Check.That(done2).IsTrue();
@@ -31,14 +32,13 @@ namespace DefaultEcs.Test.System
             bool done1 = false;
             bool done2 = false;
 
-            ISystem<int> system = new SequentialSystem<int>(
+            using (ISystem<int> system = new SequentialSystem<int>(
                 new ActionSystem<int>(_ => done1 = true),
-                new ActionSystem<int>(_ => done2 = true))
+                new ActionSystem<int>(_ => done2 = true)))
             {
-                IsEnabled = false
-            };
-
-            system.Update(0);
+                system.IsEnabled = false;
+                system.Update(0);
+            }
 
             Check.That(done1).IsFalse();
             Check.That(done2).IsFalse();

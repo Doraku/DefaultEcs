@@ -96,6 +96,7 @@ namespace DefaultBrick
         {
             _runner.Dispose();
             _world.Dispose();
+            _system.Dispose();
             _breakSound.Dispose();
             _bounceSound.Dispose();
             _square.Dispose();

@@ -16,13 +16,14 @@ namespace DefaultEcs.Test.System
             bool done1 = false;
             bool done2 = false;
 
-            ISystem<int> system = new ParallelSystem<int>(
+            using (ISystem<int> system = new ParallelSystem<int>(
                 new ActionSystem<int>(_ => mainDone = true),
                 null,
                 new ActionSystem<int>(_ => done1 = true),
-                new ActionSystem<int>(_ => done2 = true));
-
-            system.Update(0);
+                new ActionSystem<int>(_ => done2 = true)))
+            {
+                system.Update(0);
+            }
 
             Check.That(mainDone).IsTrue();
             Check.That(done1).IsTrue();
@@ -38,14 +39,13 @@ namespace DefaultEcs.Test.System
             bool done4 = false;
 
             using (SystemRunner<int> runner = new SystemRunner<int>(2))
+            using (ISystem<int> system = new ParallelSystem<int>(
+                runner,
+                new ActionSystem<int>(_ => done1 = true),
+                new ActionSystem<int>(_ => done2 = true),
+                new ActionSystem<int>(_ => done3 = true),
+                new ActionSystem<int>(_ => done4 = true)))
             {
-                ISystem<int> system = new ParallelSystem<int>(
-                    runner,
-                    new ActionSystem<int>(_ => done1 = true),
-                    new ActionSystem<int>(_ => done2 = true),
-                    new ActionSystem<int>(_ => done3 = true),
-                    new ActionSystem<int>(_ => done4 = true));
-
                 system.Update(0);
             }
 
@@ -64,17 +64,14 @@ namespace DefaultEcs.Test.System
             bool done4 = false;
 
             using (SystemRunner<int> runner = new SystemRunner<int>(2))
+            using (ISystem<int> system = new ParallelSystem<int>(
+                runner,
+                new ActionSystem<int>(_ => done1 = true),
+                new ActionSystem<int>(_ => done2 = true),
+                new ActionSystem<int>(_ => done3 = true),
+                new ActionSystem<int>(_ => done4 = true)))
             {
-                ISystem<int> system = new ParallelSystem<int>(
-                    runner,
-                    new ActionSystem<int>(_ => done1 = true),
-                    new ActionSystem<int>(_ => done2 = true),
-                    new ActionSystem<int>(_ => done3 = true),
-                    new ActionSystem<int>(_ => done4 = true))
-                {
-                    IsEnabled = false
-                };
-
+                system.IsEnabled = false;
                 system.Update(0);
             }
 

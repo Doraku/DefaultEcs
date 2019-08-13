@@ -25,27 +25,27 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void CreateEntity_Should_create_an_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
-            recorder.CreateEntity();
-            recorder.CreateEntity();
-            recorder.CreateEntity();
-            recorder.CreateEntity();
-            recorder.CreateEntity();
-
-            using (World world = new World())
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             {
-                recorder.Execute(world);
+                recorder.CreateEntity();
+                recorder.CreateEntity();
+                recorder.CreateEntity();
+                recorder.CreateEntity();
+                recorder.CreateEntity();
 
-                Check.That(world.GetAllEntities().Count()).IsEqualTo(5);
+                using (World world = new World())
+                {
+                    recorder.Execute(world);
+
+                    Check.That(world.GetAllEntities().Count()).IsEqualTo(5);
+                }
             }
         }
 
         [Fact]
         public void Disable_Should_disable_recorded_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity entity = world.CreateEntity();
@@ -62,8 +62,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void Disable_Should_disable_created_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 EntityRecord record = recorder.CreateEntity();
@@ -78,8 +77,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void Enable_Should_enable_recorded_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity entity = world.CreateEntity();
@@ -97,8 +95,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void Enable_Should_enable_created_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 EntityRecord record = recorder.CreateEntity();
@@ -114,8 +111,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void Set_Should_set__blittable_component_on_recorded_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity entity = world.CreateEntity();
@@ -132,16 +128,17 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void Set_Should_set__blittable_component_on_created_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
-            using (World world = new World())
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             {
-                EntityRecord record = recorder.CreateEntity();
-                record.Set(true);
+                using (World world = new World())
+                {
+                    EntityRecord record = recorder.CreateEntity();
+                    record.Set(true);
 
-                recorder.Execute(world);
+                    recorder.Execute(world);
 
-                Check.That(world.GetAllEntities().Single().Get<bool>()).IsTrue();
+                    Check.That(world.GetAllEntities().Single().Get<bool>()).IsTrue();
+                }
             }
         }
 
@@ -149,8 +146,7 @@ namespace DefaultEcs.Test.Command
         public void Set_Should_set__reference_component_on_recorded_entity()
         {
             object o = new object();
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity entity = world.CreateEntity();
@@ -168,8 +164,7 @@ namespace DefaultEcs.Test.Command
         public void Set_Should_set__reference_component_on_created_entity()
         {
             object o = new object();
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 EntityRecord record = recorder.CreateEntity();
@@ -185,8 +180,7 @@ namespace DefaultEcs.Test.Command
         public void Set_Should_set__non_blittable_component_on_recorded_entity()
         {
             object o = new object();
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity entity = world.CreateEntity();
@@ -205,8 +199,7 @@ namespace DefaultEcs.Test.Command
         public void Set_Should_set__non_blittable_component_on_created_entity()
         {
             object o = new object();
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 EntityRecord record = recorder.CreateEntity();
@@ -222,8 +215,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void DisableT_Should_disable_component_of_type_T_on_recorded_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity entity = world.CreateEntity();
@@ -241,8 +233,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void DisableT_Should_disable_component_of_type_T_on_created_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 EntityRecord record = recorder.CreateEntity();
@@ -258,8 +249,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void EnableT_Should_enable_component_of_type_T_on_recorded_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity entity = world.CreateEntity();
@@ -278,8 +268,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void EnableT_Should_enable_component_of_type_T_on_created_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 EntityRecord record = recorder.CreateEntity();
@@ -296,8 +285,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void Remove_Should_remove_component_on_recorded_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity entity = world.CreateEntity();
@@ -315,8 +303,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void Remove_Should_remove_component_on_created_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 EntityRecord record = recorder.CreateEntity();
@@ -332,8 +319,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void Dispose_Should_dispose_recorded_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity entity = world.CreateEntity();
@@ -350,8 +336,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void Dispose_Should_dispose_created_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 EntityRecord record = recorder.CreateEntity();
@@ -366,8 +351,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void SetSameAs_Should_set_same_as_on_recorded_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity reference = world.CreateEntity();
@@ -386,8 +370,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void SetSameAs_Should_set_same_as_on_created_entity()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity reference = world.CreateEntity();
@@ -407,8 +390,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void SetAsChildOf_Should_set_recorded_entity_as_child()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity parent = world.CreateEntity();
@@ -426,8 +408,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void SetAsParentOf_Should_set_recorded_entity_as_parent()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity child = world.CreateEntity();
@@ -445,8 +426,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void SetAsChildOf_Should_set_created_entity_as_child()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity parent = world.CreateEntity();
@@ -463,8 +443,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void SetAsParentOf_Should_set_created_entity_as_child()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity child = world.CreateEntity();
@@ -481,8 +460,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void RemoveFromChildrenOf_Should_set_recorded_entity_as_child()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity parent = world.CreateEntity();
@@ -501,8 +479,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void RemoveFromParentsOf_Should_set_recorded_entity_as_parent()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity child = world.CreateEntity();
@@ -521,8 +498,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void RemoveFromChildrenOf_Should_set_created_entity_as_child()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity parent = world.CreateEntity();
@@ -541,8 +517,7 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void RemoveFromParentsOf_Should_set_created_entity_as_child()
         {
-            EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
+            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
             using (World world = new World())
             {
                 Entity child = world.CreateEntity();

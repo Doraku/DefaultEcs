@@ -99,7 +99,10 @@ namespace DefaultEcs.Benchmark.DefaultEcs
                 });
             }
 
-            public void Dispose() { }
+            public void Dispose()
+            {
+                _set.Dispose();
+            }
         }
 
         private World _world;
@@ -137,6 +140,11 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         {
             _runner.Dispose();
             _world.Dispose();
+            _systemSingle.Dispose();
+            _system.Dispose();
+            _system2Single.Dispose();
+            _system2.Dispose();
+            _systemTPL.Dispose();
         }
 
         [Benchmark]
