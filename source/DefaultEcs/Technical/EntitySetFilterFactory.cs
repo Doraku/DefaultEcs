@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 
 namespace DefaultEcs.Technical
 {
@@ -10,8 +8,6 @@ namespace DefaultEcs.Technical
     {
         #region Fields
 
-        private static readonly MethodInfo _componentsContains;
-        private static readonly MethodInfo _componentsDoNotContains;
         private static readonly Dictionary<string, Predicate<ComponentEnum>> _filters;
 
         #endregion
@@ -20,14 +16,95 @@ namespace DefaultEcs.Technical
 
         static EntitySetFilterFactory()
         {
-            _componentsContains = typeof(ComponentEnum).GetTypeInfo().GetDeclaredMethod(nameof(ComponentEnum.Contains));
-            _componentsDoNotContains = typeof(ComponentEnum).GetTypeInfo().GetDeclaredMethod(nameof(ComponentEnum.DoNotContains));
             _filters = new Dictionary<string, Predicate<ComponentEnum>>();
         }
 
         #endregion
 
         #region Methods
+
+        private static Predicate<ComponentEnum> GetLambdaFilter(
+            ComponentEnum withFilter,
+            ComponentEnum withoutFilter,
+            List<ComponentEnum> withEitherFilters,
+            List<ComponentEnum> withoutEitherFilters)
+        {
+            if (withoutFilter.IsNull)
+            {
+                if (withEitherFilters is null)
+                {
+                    if (withoutEitherFilters is null)
+                    {
+                        return c => c.Contains(withFilter);
+                    }
+
+                    if (withoutEitherFilters.Count == 1)
+                    {
+                        ComponentEnum withoutEitherFilter = withoutEitherFilters[0];
+                        return c => c.Contains(withFilter)
+                            && !c.Contains(withoutEitherFilter);
+                    }
+
+                    return c => c.Contains(withFilter)
+                        && withoutEitherFilters.All(f => !c.Contains(f));
+                }
+                else if (withoutEitherFilters is null)
+                {
+                    if (withEitherFilters.Count == 1)
+                    {
+                        ComponentEnum withEitherFilter = withEitherFilters[0];
+                        return c => c.Contains(withFilter)
+                            && !c.DoNotContains(withEitherFilter);
+                    }
+
+                    return c => c.Contains(withFilter)
+                        && withEitherFilters.All(f => !c.DoNotContains(f));
+                }
+
+                return c => c.Contains(withFilter)
+                    && withEitherFilters.All(f => !c.DoNotContains(f))
+                    && withoutEitherFilters.All(f => !c.Contains(f));
+            }
+            else if (withEitherFilters is null)
+            {
+                if (withoutEitherFilters is null)
+                {
+                    return c => c.Contains(withFilter)
+                        && c.DoNotContains(withoutFilter);
+                }
+
+                if (withoutEitherFilters.Count == 1)
+                {
+                    ComponentEnum withoutEitherFilter = withoutEitherFilters[0];
+                    return c => c.Contains(withFilter)
+                        && c.DoNotContains(withoutFilter)
+                        && !c.Contains(withoutEitherFilter);
+                }
+
+                return c => c.Contains(withFilter)
+                    && c.DoNotContains(withoutFilter)
+                    && withoutEitherFilters.All(f => !c.Contains(f));
+            }
+            else if (withoutEitherFilters is null)
+            {
+                if (withEitherFilters.Count == 1)
+                {
+                    ComponentEnum withEitherFilter = withEitherFilters[0];
+                    return c => c.Contains(withFilter)
+                        && c.DoNotContains(withoutFilter)
+                        && !c.DoNotContains(withEitherFilter);
+                }
+
+                return c => c.Contains(withFilter)
+                    && c.DoNotContains(withoutFilter)
+                    && withEitherFilters.All(f => !c.DoNotContains(f));
+            }
+
+            return c => c.Contains(withFilter)
+                && c.DoNotContains(withoutFilter)
+                && withEitherFilters.All(f => !c.DoNotContains(f))
+                && withoutEitherFilters.All(f => !c.Contains(f));
+        }
 
         public static Predicate<ComponentEnum> GetFilter(ComponentEnum withFilter, ComponentEnum withoutFilter, List<ComponentEnum> withEitherFilters, List<ComponentEnum> withoutEitherFilters)
         {
@@ -38,23 +115,7 @@ namespace DefaultEcs.Technical
             {
                 if (!_filters.TryGetValue(key, out filter))
                 {
-                    ParameterExpression components = Expression.Parameter(typeof(ComponentEnum));
-                    Expression filterEx = Expression.Call(components, _componentsContains, Expression.Constant(withFilter));
-                    if (!withoutFilter.IsNull)
-                    {
-                        filterEx = Expression.And(filterEx, Expression.Call(components, _componentsDoNotContains, Expression.Constant(withoutFilter.Copy())));
-                    }
-                    HashSet<string> eitherFilters = new HashSet<string>();
-                    foreach (ComponentEnum f in (withEitherFilters ?? Enumerable.Empty<ComponentEnum>()).Where(f => eitherFilters.Add(f.ToString())))
-                    {
-                        filterEx = Expression.And(filterEx, Expression.Not(Expression.Call(components, _componentsDoNotContains, Expression.Constant(f.Copy()))));
-                    }
-                    eitherFilters.Clear();
-                    foreach (ComponentEnum f in (withoutEitherFilters ?? Enumerable.Empty<ComponentEnum>()).Where(f => eitherFilters.Add(f.ToString())))
-                    {
-                        filterEx = Expression.And(filterEx, Expression.Not(Expression.Call(components, _componentsContains, Expression.Constant(f.Copy()))));
-                    }
-                    filter = Expression.Lambda<Predicate<ComponentEnum>>(filterEx, components).Compile();
+                    filter = GetLambdaFilter(withFilter, withoutFilter, withEitherFilters, withoutEitherFilters);
 
                     _filters.Add(key, filter);
                 }

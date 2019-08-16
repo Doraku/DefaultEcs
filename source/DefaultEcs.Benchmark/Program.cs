@@ -9,10 +9,10 @@ namespace DefaultEcs.Benchmark
             BenchmarkSwitcher.FromTypes(new[]
             {
                 //typeof(DefaultEcs.CreateEntity),
-                //typeof(DefaultEcs.EntitySetFilter),
+                typeof(DefaultEcs.EntitySetFilter),
                 //typeof(DefaultEcs.EntitySetEnumeration),
                 //typeof(DefaultEcs.EntitySetWithComponentEnumeration),
-                typeof(DefaultEcs.System),
+                //typeof(DefaultEcs.System),
                 //typeof(DefaultEcs.Recorder),
                 //typeof(DefaultEcs.Serialization),
                 //typeof(Performance.SingleComponentEntityEnumeration),

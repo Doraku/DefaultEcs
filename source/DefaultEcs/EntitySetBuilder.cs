@@ -195,7 +195,8 @@ namespace DefaultEcs
                     _withEither.MakeGenericMethod(componentType).Invoke(this, parameters);
                 }
 
-                if (!components.Value.IsNull)
+                if (!components.Value.IsNull
+                    && (!_withEitherFilters?.Select(f => f.ToString()).Contains(components.Value.ToString()) ?? true))
                 {
                     (_withEitherFilters ?? (_withEitherFilters = new List<ComponentEnum>())).Add(components.Value);
                 }
@@ -260,7 +261,8 @@ namespace DefaultEcs
                     _withoutEither.MakeGenericMethod(componentType).Invoke(this, parameters);
                 }
 
-                if (!components.Value.IsNull)
+                if (!components.Value.IsNull
+                    && (!_withoutEitherFilters?.Select(f => f.ToString()).Contains(components.Value.ToString()) ?? true))
                 {
                     (_withoutEitherFilters ?? (_withoutEitherFilters = new List<ComponentEnum>())).Add(components.Value);
                 }
@@ -485,7 +487,7 @@ namespace DefaultEcs
                 subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Add));
             }
 
-            return new EntitySet(hasWhenFilter, _world, _withFilter, _withoutFilter, _withEitherFilters, _withoutEitherFilters, subscriptions);
+            return new EntitySet(hasWhenFilter, _world, _withFilter.Copy(), _withoutFilter.Copy(), _withEitherFilters?.ToList(), _withoutEitherFilters?.ToList(), subscriptions);
         }
 
         #endregion

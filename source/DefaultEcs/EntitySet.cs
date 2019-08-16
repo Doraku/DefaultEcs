@@ -83,7 +83,6 @@ namespace DefaultEcs
             _worldId = world.WorldId;
             _maxEntityCount = world.MaxEntityCount;
 
-            withFilter = withFilter.Copy();
             withFilter[World.IsAliveFlag] = true;
             withFilter[World.IsEnabledFlag] = true;
 
