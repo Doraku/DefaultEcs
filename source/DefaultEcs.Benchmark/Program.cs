@@ -9,7 +9,8 @@ namespace DefaultEcs.Benchmark
             BenchmarkSwitcher.FromTypes(new[]
             {
                 //typeof(DefaultEcs.CreateEntity),
-                typeof(DefaultEcs.EntitySetFilter),
+                //typeof(DefaultEcs.EntitySetFilter),
+                typeof(DefaultEcs.MultipleFilterImpact),
                 //typeof(DefaultEcs.EntitySetEnumeration),
                 //typeof(DefaultEcs.EntitySetWithComponentEnumeration),
                 //typeof(DefaultEcs.System),
