@@ -2,12 +2,9 @@
 
 DEL /q package
 dotnet clean source\DefaultEcs\DefaultEcs.csproj -c Release
+dotnet clean source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release
 
-cd source\DefaultEcs.Test
-
-dotnet xunit -configuration Release -xml ..\..\package\test.xml -fxversion 2.1.0
-
-cd ..\..
+dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -r ..\..\package -l trx
 
 IF %ERRORLEVEL% GTR 0 GOTO :end
 
