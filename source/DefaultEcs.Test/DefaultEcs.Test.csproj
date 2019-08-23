@@ -2,9 +2,10 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFrameworks>
-      netcoreapp2.1;
-      net461;
-      net472;
+      net452;
+      net48;
+      netcoreapp1.0;
+      netcoreapp2.2;
     </TargetFrameworks>
     <DefineConstants></DefineConstants>
     <Optimize>true</Optimize>
@@ -18,8 +19,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
-    
     <PackageReference Include="NFluent" Version="2.6.0" />
     <PackageReference Include="NSubstitute" Version="4.2.1" />
     <PackageReference Include="xunit" Version="2.4.1" />

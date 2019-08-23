@@ -2,6 +2,7 @@
 DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
 [![NuGet](https://img.shields.io/badge/nuget-v0.11.0-brightgreen.svg)](https://www.nuget.org/packages/DefaultEcs)
+[![Coverage](https://github.com/Doraku/DefaultEcs/raw/master/documentation/coverage/badge_combined.svg)](./documentation/coverage/index.htm)
 
 - [Requirement](#Requirement)
 - [Release note](./documentation/RELEASENOTE.md 'Release note')
@@ -158,7 +159,7 @@ EntitySet set = world.GetEntities().Without<Example>().Build();
 EntitySet set = world.GetEntities().With<Example>().With<int>().Build();
 
 // this set when enumerated will give all the entities with either an Example or an int component
-EntitySet set = world.GetEntities().WithAny<Example, int>().Build();
+EntitySet set = world.GetEntities().WithEither<Example, int>().Build();
 
 // this gives all the component of type Example currently used in the world
 Span<Example> components = world.GetAllComponents<Example>();
