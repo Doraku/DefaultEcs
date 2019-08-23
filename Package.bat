@@ -18,6 +18,6 @@ DEL /q documentation\coverage
 rem dotnet tool install -g coverlet.console
 rem dotnet tool install -g dotnet-reportgenerator-globaltool
 coverlet source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll -t "dotnet" -a "vstest source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll" -o package\coverage.xml -f opencover
-reportgenerator -reports:package\coverage.xml -targetdir:documentation\coverage -reporttypes:Html;Badges
+reportgenerator -reports:package\coverage.xml -targetdir:documentation\coverage -reporttypes:HtmlSummary;Badges
 
 :end
