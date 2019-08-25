@@ -12,6 +12,9 @@ namespace DefaultEcs.Test.Serialization
     {
         #region Types
 
+        private struct Int32
+        { }
+
         private struct Test
         {
 #pragma warning disable IDE0052 // Remove unread private members
@@ -122,6 +125,7 @@ namespace DefaultEcs.Test.Serialization
                     world.CreateEntity(),
                     world.CreateEntity()
                 };
+                entities[0].Set<Int32>();
                 entities[0].Set<bool>(true);
                 entities[0].Set<sbyte>(13);
                 entities[0].Set<byte>(7);
@@ -176,6 +180,7 @@ namespace DefaultEcs.Test.Serialization
 
                         Entity[] entitiesCopy = copyWorld.GetAllEntities().ToArray();
 
+                        Check.That(entitiesCopy[0].Has<Int32>());
                         Check.That(entitiesCopy[0].Get<bool>()).IsEqualTo(entities[0].Get<bool>());
                         Check.That(entitiesCopy[0].Get<sbyte>()).IsEqualTo(entities[0].Get<sbyte>());
                         Check.That(entitiesCopy[0].Get<byte>()).IsEqualTo(entities[0].Get<byte>());
@@ -238,6 +243,7 @@ namespace DefaultEcs.Test.Serialization
                     world.CreateEntity(),
                     world.CreateEntity()
                 };
+                entities[0].Set<Int32>();
                 entities[0].Set<bool>(true);
                 entities[0].Set<sbyte>(13);
                 entities[0].Set<byte>(7);
@@ -277,7 +283,7 @@ namespace DefaultEcs.Test.Serialization
                 {
                     using (Stream stream = File.Create(filePath))
                     {
-                        serializer.Serialize(stream, entities);
+                        serializer.Serialize(stream, entities[0], entities[1], entities[2]);
                     }
 
                     using (World copyWorld = new World(42))
@@ -289,6 +295,7 @@ namespace DefaultEcs.Test.Serialization
                             entitiesCopy = serializer.Deserialize(stream, copyWorld).ToArray();
                         }
 
+                        Check.That(entitiesCopy[0].Has<Int32>());
                         Check.That(entitiesCopy[0].Get<bool>()).IsEqualTo(entities[0].Get<bool>());
                         Check.That(entitiesCopy[0].Get<sbyte>()).IsEqualTo(entities[0].Get<sbyte>());
                         Check.That(entitiesCopy[0].Get<byte>()).IsEqualTo(entities[0].Get<byte>());

@@ -26,6 +26,7 @@ namespace DefaultEcs.Test.Resource
                     entity.Set(0);
                 }
 
+                entity.Set(info);
                 ++entity.Get<int>();
             }
         }
@@ -35,16 +36,23 @@ namespace DefaultEcs.Test.Resource
         [Fact]
         public void Should_load_resource()
         {
-            IDisposable value = Substitute.For<IDisposable>();
-
-            using (ResourceManagerTest manager = new ResourceManagerTest(value))
             using (World world = new World(1))
             {
-                manager.Manage(world);
                 Entity entity = world.CreateEntity();
                 entity.Set(new ManagedResource<string, IDisposable>("dummy"));
 
-                Check.That(entity.Get<int>()).IsEqualTo(1);
+                using (ResourceManagerTest manager = new ResourceManagerTest(null))
+                {
+                    manager.Manage(world);
+
+                    Check.That(entity.Get<string>()).IsEqualTo("dummy");
+                    Check.That(entity.Get<int>()).IsEqualTo(1);
+
+                    entity.Set(new ManagedResource<string, IDisposable>("dummy2"));
+
+                    Check.That(entity.Get<string>()).IsEqualTo("dummy2");
+                    Check.That(entity.Get<int>()).IsEqualTo(2);
+                }
             }
         }
 
@@ -53,8 +61,8 @@ namespace DefaultEcs.Test.Resource
         {
             IDisposable value = Substitute.For<IDisposable>();
 
-            using (ResourceManagerTest manager = new ResourceManagerTest(value))
             using (World world = new World(1))
+            using (ResourceManagerTest manager = new ResourceManagerTest(value))
             {
                 manager.Manage(world);
                 Entity entity = world.CreateEntity();

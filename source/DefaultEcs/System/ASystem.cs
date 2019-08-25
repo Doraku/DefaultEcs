@@ -26,13 +26,6 @@
             IsEnabled = true;
         }
 
-        /// <summary>
-        /// Initialise a new instance of the <see cref="ASystem{T}"/> class.
-        /// </summary>
-        protected ASystem()
-            : this(null)
-        { }
-
         #endregion
 
         #region Methods

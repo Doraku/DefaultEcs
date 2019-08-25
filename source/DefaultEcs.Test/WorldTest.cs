@@ -14,6 +14,12 @@ namespace DefaultEcs.Test
         #region Tests
 
         [Fact]
+        public void New_Should_throw_When_maxEntityCount_is_inferior_to_0()
+        {
+            Check.ThatCode(() => new World(-1)).Throws<ArgumentException>();
+        }
+
+        [Fact]
         public void Subscribe_Should_subscribe()
         {
             using (World world = new World(0))

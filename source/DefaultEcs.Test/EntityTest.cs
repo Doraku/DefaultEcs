@@ -209,6 +209,49 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void Set_Should_not_thow_When_more_than_32_components()
+        {
+            using (World world = new World(1))
+            {
+                world.SetMaximumComponentCount<bool>(1);
+                Entity entity = world.CreateEntity();
+
+                entity.Set<bool>();
+                entity.Set<short>();
+                entity.Set<ushort>();
+                entity.Set<long>();
+                entity.Set<ulong>();
+                entity.Set<int>();
+                entity.Set<uint>();
+                entity.Set<double>();
+                entity.Set<float>();
+                entity.Set<decimal>();
+                entity.Set<object>();
+                entity.Set<string>();
+                entity.Set<char>();
+                entity.Set<byte>();
+                entity.Set<World>();
+                entity.Set<Entity>();
+                entity.Set<Delegate>();
+                entity.Set<Action>();
+                entity.Set<Action<bool>>();
+                entity.Set<Action<short>>();
+                entity.Set<Action<ushort>>();
+                entity.Set<Action<long>>();
+                entity.Set<Action<ulong>>();
+                entity.Set<Action<int>>();
+                entity.Set<Action<uint>>();
+                entity.Set<Action<double>>();
+                entity.Set<Action<float>>();
+                entity.Set<Action<decimal>>();
+                entity.Set<Action<object>>();
+                entity.Set<Action<string>>();
+                entity.Set<Action<char>>();
+                entity.Set<Action<byte>>();
+            }
+        }
+
+        [Fact]
         public void Set_Should_only_produce_one_component_for_flag_type()
         {
             using (World world = new World(2))
@@ -306,6 +349,17 @@ namespace DefaultEcs.Test
                 entity.Set(false);
 
                 Check.That(reference.Get<bool>()).IsEqualTo(entity.Get<bool>());
+            }
+        }
+
+        [Fact]
+        public void Remove_Should_not_throw_When_no_component()
+        {
+            using (World world = new World(1))
+            {
+                Entity entity = world.CreateEntity();
+
+                entity.Remove<bool>();
             }
         }
 

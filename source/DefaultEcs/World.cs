@@ -105,8 +105,8 @@ namespace DefaultEcs
         [Subscribe]
         private void On(in EntityDisposingMessage message)
         {
-            Info.EntityInfos[message.EntityId].Components.Clear();
             EntityDisposed?.Invoke(new Entity(WorldId, message.EntityId));
+            Info.EntityInfos[message.EntityId].Components.Clear();
         }
 
         [Subscribe]

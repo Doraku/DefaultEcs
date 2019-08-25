@@ -30,6 +30,8 @@ namespace DefaultEcs.Test.System
 
             protected override void Update(int state, in Entity entity)
             {
+                base.Update(state, entity);
+
                 entity.Get<bool>() = true;
             }
         }
@@ -184,12 +186,22 @@ namespace DefaultEcs.Test.System
             using (System system = new System(world.GetEntities().With<bool>().Build()))
             {
                 Entity addedEntity = default;
-                system.EntityAdded += (in Entity e) => addedEntity = e;
+
+                ActionIn<Entity> callback = (in Entity e) => addedEntity = e;
+
+                system.EntityAdded += callback;
 
                 Entity entity = world.CreateEntity();
                 entity.Set<bool>();
 
                 Check.That(addedEntity).IsEqualTo(entity);
+
+                system.EntityAdded -= callback;
+                addedEntity = default;
+                entity.Remove<bool>();
+                entity.Set<bool>();
+
+                Check.That(addedEntity).IsEqualTo(default(Entity));
             }
         }
 
@@ -204,6 +216,7 @@ namespace DefaultEcs.Test.System
                 using (System system = new System(world.GetEntities().With<bool>().Build()))
                 {
                     Entity addedEntity = default;
+
                     system.EntityAdded += (in Entity e) => addedEntity = e;
 
                     Check.That(addedEntity).IsEqualTo(entity);
@@ -218,13 +231,23 @@ namespace DefaultEcs.Test.System
             using (System system = new System(world.GetEntities().With<bool>().Build()))
             {
                 Entity removedEntity = default;
-                system.EntityRemoved += (in Entity e) => removedEntity = e;
+
+                ActionIn<Entity> callback = (in Entity e) => removedEntity = e;
+
+                system.EntityRemoved += callback;
 
                 Entity entity = world.CreateEntity();
                 entity.Set<bool>();
                 entity.Remove<bool>();
 
                 Check.That(removedEntity).IsEqualTo(entity);
+
+                system.EntityRemoved -= callback;
+                removedEntity = default;
+                entity.Set<bool>();
+                entity.Remove<bool>();
+
+                Check.That(removedEntity).IsEqualTo(default(Entity));
             }
         }
 

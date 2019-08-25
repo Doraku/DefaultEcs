@@ -19,6 +19,8 @@ namespace DefaultEcs.Test.System
 
             protected override void Update(int state, ref bool component)
             {
+                base.Update(state, ref component);
+
                 component = true;
             }
         }

@@ -41,12 +41,18 @@ namespace DefaultEcs.Test
                     world.CreateEntity(),
                     world.CreateEntity()
                 };
-
-                entities[0].Disable();
-
+                
                 using (EntitySet set = world.GetEntities().Build())
                 {
-                    Check.That(set.GetEntities().ToArray()).ContainsExactly(entities.Skip(1));
+                    Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+                    entities[3].Disable();
+
+                    Check.That(set.GetEntities().ToArray()).ContainsExactly(entities.Take(3));
+
+                    entities[3].Enable();
+
+                    Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
                 }
             }
         }
