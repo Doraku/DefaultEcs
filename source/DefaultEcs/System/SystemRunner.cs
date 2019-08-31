@@ -8,6 +8,16 @@ using DefaultEcs.Technical.System;
 
 namespace DefaultEcs.System
 {
+    //public interface ISystemRunner<T> : IDisposable
+    //{
+    //    void Update(ASystem<T> system);
+    //}
+
+    //public interface IRunnableSystem<T> : ISystem<T>
+    //{
+    //    void Update(int index, int maxIndex);
+    //}
+
     /// <summary>
     /// Represents an helper object used to update a system in parallel.
     /// </summary>

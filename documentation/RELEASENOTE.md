@@ -1,3 +1,16 @@
+## DefaultEcs 0.12.0
+breaking change:  
+renamed EntitySetBuilder.WithAny and WithAny attribute to WithEither  
+removed some methods from EntitySetBuilderExtension, Either methods stops at 3 components types but it is easy to add more if needed
+
+added WithoutEither filter for EntitySet  
+added WhenAddedEither filter for EntitySet  
+added WhenChangedEither filter for EntitySet  
+added WhenRemovedEither filter for EntitySet  
+changed BinarySerializer Exception to EndOfStreamException
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.12.0)
+
 ## DefaultEcs 0.11.0
 updated System.Memory reference  
 enhanced debugging experience on World, Entity and EntitySet  

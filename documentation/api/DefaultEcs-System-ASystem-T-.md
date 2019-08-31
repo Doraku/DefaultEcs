@@ -9,7 +9,6 @@ Represents a base class to process updates, supporting a [SystemRunner&lt;T&gt;]
 
 The type of the object used as state to update the system.
 ### Constructors
-- [#ctor()](./DefaultEcs-System-ASystem-T---ctor().md 'DefaultEcs.System.ASystem&lt;T&gt;.#ctor()')
 - [#ctor(DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-ASystem-T---ctor(DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.ASystem&lt;T&gt;.#ctor(DefaultEcs.System.SystemRunner&lt;T&gt;)')
 ### Properties
 - [IsEnabled](./DefaultEcs-System-ASystem-T--IsEnabled.md 'DefaultEcs.System.ASystem&lt;T&gt;.IsEnabled')
