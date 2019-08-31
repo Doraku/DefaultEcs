@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <DefineConstants></DefineConstants>
     <Optimize>true</Optimize>
     <Configurations>Debug;Release</Configurations>

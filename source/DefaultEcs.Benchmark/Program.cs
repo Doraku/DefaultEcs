@@ -10,10 +10,10 @@ namespace DefaultEcs.Benchmark
             {
                 //typeof(DefaultEcs.CreateEntity),
                 //typeof(DefaultEcs.EntitySetFilter),
-                typeof(DefaultEcs.MultipleFilterImpact),
+                //typeof(DefaultEcs.MultipleFilterImpact),
                 //typeof(DefaultEcs.EntitySetEnumeration),
                 //typeof(DefaultEcs.EntitySetWithComponentEnumeration),
-                //typeof(DefaultEcs.System),
+                typeof(DefaultEcs.System),
                 //typeof(DefaultEcs.Recorder),
                 //typeof(DefaultEcs.Serialization),
                 //typeof(Performance.SingleComponentEntityEnumeration),

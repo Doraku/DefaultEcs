@@ -20,7 +20,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
     }
 
     [MemoryDiagnoser]
-    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 20, invocationCount: 1000)]
+    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 20, invocationCount: 100)]
     public class System
     {
         private struct Position
@@ -59,18 +59,15 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 
             protected override void Update(float state, ReadOnlySpan<Entity> entities)
             {
-                for (int i = 0; i < entities.Length; i++)
+                foreach (ref readonly Entity entity in entities)
                 {
-                    Speed speed = entities[i].Get<Speed>();
-                    ref Position position = ref entities[i].Get<Position>();
+                    Speed speed = entity.Get<Speed>();
+                    ref Position position = ref entity.Get<Position>();
 
                     position.X += speed.X * state;
                     position.Y += speed.Y * state;
                 }
             }
-
-            protected override void Update(float state, in Entity entity)
-            { }
         }
 
         private sealed class TestSystemTPL : ISystem<float>
