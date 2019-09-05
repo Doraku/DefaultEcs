@@ -2,6 +2,9 @@ name: Continuous Integration
 
 on:
   push:
+    branches:    
+      - master
+      - '*/*'
     paths:
       - '*.cs'
       - '*.csproj'
