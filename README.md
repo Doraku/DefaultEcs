@@ -2,8 +2,7 @@
 DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) framework which aims to be accessible with little constraints while retaining as much performance as possible for game development.
 
 [![NuGet](https://buildstats.info/nuget/DefaultEcs)](https://www.nuget.org/packages/DefaultEcs)
-[![Coverage](https://github.com/Doraku/DefaultEcs/blob/master/image/badge_coverage.svg)](https://doraku.github.io/DefaultEcs/coverage/index.htm)
-
+[![Coverage](https://coveralls.io/repos/github/Doraku/DefaultEcs/badge.svg?branch=master)](https://coveralls.io/github/Doraku/DefaultEcs?branch=master)
 ![continuous integration status](https://github.com/doraku/defaultecs/workflows/continuous%20integration/badge.svg)
 
 - [Requirement](#Requirement)

@@ -16,10 +16,6 @@ dotnet pack source\DefaultEcs\DefaultEcs.Package.csproj -c Release -o ..\..\pack
 DEL /q docs\coverage
 
 rem dotnet tool install -g coverlet.console
-rem dotnet tool install -g dotnet-reportgenerator-globaltool
 coverlet source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll -t "dotnet" -a "vstest source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll" -o package\coverage.xml -f opencover
-reportgenerator -reports:package\coverage.xml -targetdir:docs\coverage -reporttypes:Html
-reportgenerator -reports:package\coverage.xml -targetdir:package -reporttypes:Badges
-copy package\badge_combined.svg image\badge_coverage.svg /y
 
 :end
