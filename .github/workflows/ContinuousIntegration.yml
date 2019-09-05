@@ -9,13 +9,27 @@ jobs:
   continuous_integration:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@master
-    - uses: actions/setup-dotnet@master
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Set up dotnet
+      uses: actions/setup-dotnet@master
       with:
         dotnet-version: '2.2.401'
-    - run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release
-    - run: dotnet tool install -g coverlet.console
-    - run: coverlet source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll -t "dotnet" -a "vstest source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll" -o coverage\lcov.info -f lcov
-    - uses: coverallsapp/github-action@master
+        
+    - name: Set DOTNET_ROOT environment variable
+      run: FOR /F "tokens=*" %g IN ('where dotnet') do (SET DOTNET_ROOT=%g)
+
+    - name: Run tests
+      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release
+
+    - name: Install coverlet tool
+      run: dotnet tool install -g coverlet.console
+
+    - name: Create coverage file
+      run: coverlet source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll -t "dotnet" -a "vstest source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll" -o coverage\lcov.info -f lcov
+
+    - name: Upload coverage to coverallsapp
+      uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
