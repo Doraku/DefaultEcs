@@ -200,6 +200,9 @@ namespace DefaultEcs.Test.Serialization
         [Fact]
         public void Should_handle_bigger_than_buffer_struct() => Test(new BigStruct(0));
 
+        [Fact]
+        public void Should_handle_struct_as_object() => Test<object>(42);
+
 #if !NET452 // unsuported
         [Fact]
         public void Should_handle_class_with_no_default_constructor() => Test(new NoConstructorClass(42));
