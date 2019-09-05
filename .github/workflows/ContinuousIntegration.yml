@@ -4,9 +4,6 @@ on:
   push:
     branches:    
       - master
-    paths:
-      - '*.cs'
-      - '*.csproj'
 
 jobs:
   build:
