@@ -3,8 +3,8 @@ name: Continuous Integration
 on:
   push:
     paths:
-      - *.cs
-      - *.csproj
+      - '*.cs'
+      - '*.csproj'
 
 jobs:
   build:
