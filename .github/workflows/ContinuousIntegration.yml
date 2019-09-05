@@ -16,15 +16,12 @@ jobs:
       uses: actions/setup-dotnet@master
       with:
         dotnet-version: '2.2.401'
-        
-    - name: Set DOTNET_ROOT environment variable
-      run: cmd FOR /F "tokens=*" %g IN ('where dotnet') do (SET DOTNET_ROOT=%g)
-
+      
     - name: Run tests
       run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release
 
     - name: Install coverlet tool
-      run: dotnet tool install -g coverlet.console
+      run: dotnet tool install --tool-path . coverlet.console
 
     - name: Create coverage file
       run: coverlet source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll -t "dotnet" -a "vstest source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll" -o coverage\lcov.info -f lcov
