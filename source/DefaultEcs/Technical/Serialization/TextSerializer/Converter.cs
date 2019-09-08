@@ -14,15 +14,53 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
     {
         #region Types
 
+        private interface IReadActionWrapper
+        {
+            ReadAction<T> Get<T>();
+        }
+
+        private class ClassReadActionWrapper : IReadActionWrapper
+        {
+            private readonly Delegate _readAction;
+
+            public ClassReadActionWrapper(Delegate readAction)
+            {
+                _readAction = readAction;
+            }
+
+            public ReadAction<T> Get<T>() => (ReadAction<T>)_readAction;
+        }
+
+        private class StructReadActionWrapper<TReal> : IReadActionWrapper
+        {
+            private readonly ReadAction<TReal> _readAction;
+
+            public StructReadActionWrapper(Delegate readAction)
+            {
+                _readAction = (ReadAction<TReal>)readAction;
+            }
+
+            public ReadAction<T> Get<T>()
+            {
+                if (typeof(TReal) == typeof(T))
+                {
+                    return (ReadAction<T>)(Delegate)_readAction;
+                }
+
+                return (l, r) => (T)(object)_readAction(l, r);
+            }
+        }
+
         public delegate void WriteAction<T>(in T value, StreamWriter writer, int indentation);
         public delegate T ReadAction<out T>(string line, StreamReader reader);
+
 
         #endregion
 
         #region Fields
 
         private static readonly ConcurrentDictionary<Type, WriteAction<object>> _writeActions = new ConcurrentDictionary<Type, WriteAction<object>>();
-        private static readonly ConcurrentDictionary<Type, Delegate> _readActions = new ConcurrentDictionary<Type, Delegate>();
+        private static readonly ConcurrentDictionary<Type, IReadActionWrapper> _readActions = new ConcurrentDictionary<Type, IReadActionWrapper>();
 
         #endregion
 
@@ -38,16 +76,9 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 {
                     if (!_writeActions.ContainsKey(type))
                     {
-                        DynamicMethod writeMethod = new DynamicMethod($"Write_{type}", typeof(void), new[] { typeof(object).MakeByRefType(), typeof(StreamWriter), typeof(int) }, typeof(Converter), true);
-                        ILGenerator writeGenerator = writeMethod.GetILGenerator();
-
-                        writeGenerator.Emit(OpCodes.Ldarg_0);
-                        writeGenerator.Emit(OpCodes.Ldarg_1);
-                        writeGenerator.Emit(OpCodes.Ldarg_2);
-                        writeGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(type).GetTypeInfo().GetDeclaredMethod(nameof(Converter<string>.Write)));
-                        writeGenerator.Emit(OpCodes.Ret);
-
-                        writeAction = (WriteAction<object>)writeMethod.CreateDelegate(typeof(WriteAction<object>));
+                        writeAction = (WriteAction<object>)typeof(Converter<>).MakeGenericType(type).GetTypeInfo()
+                            .GetDeclaredMethod(nameof(Converter<string>.WrapperWrite))
+                            .CreateDelegate(typeof(WriteAction<object>));
 
                         _writeActions.AddOrUpdate(type, writeAction, (_, d) => d);
                     }
@@ -59,22 +90,33 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         public static ReadAction<T> GetReadAction<T>(Type type)
         {
-            if (!_readActions.TryGetValue(type, out Delegate readAction))
+            if (!_readActions.TryGetValue(type, out IReadActionWrapper readAction))
             {
                 lock (_readActions)
                 {
                     if (!_readActions.ContainsKey(type))
                     {
-                        readAction = typeof(Converter<>).MakeGenericType(type).GetTypeInfo()
+                        TypeInfo typeInfo = type.GetTypeInfo();
+
+                        Delegate action = typeof(Converter<>).MakeGenericType(type).GetTypeInfo()
                             .GetDeclaredMethod(nameof(Converter<string>.Read))
                             .CreateDelegate(typeof(ReadAction<>).MakeGenericType(type));
+
+                        if (!typeInfo.IsValueType || type == typeof(T))
+                        {
+                            readAction = typeInfo.IsValueType ? (IReadActionWrapper)new StructReadActionWrapper<T>(action) : new ClassReadActionWrapper(action);
+                        }
+                        else
+                        {
+                            readAction = (IReadActionWrapper)Activator.CreateInstance(typeof(StructReadActionWrapper<>).MakeGenericType(type), action);
+                        }
 
                         _readActions.AddOrUpdate(type, readAction, (_, d) => d);
                     }
                 }
             }
 
-            return (ReadAction<T>)readAction;
+            return readAction.Get<T>();
         }
 
         #endregion
@@ -421,6 +463,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 return _readAction(line, reader);
             }
         }
+
+        public static void WrapperWrite(in object value, StreamWriter writer, int indentation) => Write((T)value, writer, indentation);
 
         #endregion
     }

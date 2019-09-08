@@ -19,17 +19,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
 
-    <Version>0.12.0</Version>
+    <Version>0.12.1-alpha1</Version>
     <PackageReleaseNotes>
-breaking change:
-renamed EntitySetBuilder.WithAny and WithAny attribute to WithEither
-removed some methods from EntitySetBuilderExtension, Either methods stops at 3 components types but it is easy to add more if needed
-
-added WithoutEither filter for EntitySet
-added WhenAddedEither filter for EntitySet
-added WhenChangedEither filter for EntitySet
-added WhenRemovedEither filter for EntitySet
-changed BinarySerializer Exception to EndOfStreamException
+fixed serialization of struct as an object
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

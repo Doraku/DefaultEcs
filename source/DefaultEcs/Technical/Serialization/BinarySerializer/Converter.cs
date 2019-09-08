@@ -12,6 +12,43 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
     {
         #region Types
 
+        private interface IReadActionWrapper
+        {
+            ReadAction<T> Get<T>();
+        }
+
+        private class ClassReadActionWrapper : IReadActionWrapper
+        {
+            private readonly Delegate _readAction;
+
+            public ClassReadActionWrapper(Delegate readAction)
+            {
+                _readAction = readAction;
+            }
+
+            public ReadAction<T> Get<T>() => (ReadAction<T>)_readAction;
+        }
+
+        private class StructReadActionWrapper<TReal> : IReadActionWrapper
+        {
+            private readonly ReadAction<TReal> _readAction;
+
+            public StructReadActionWrapper(Delegate readAction)
+            {
+                _readAction = (ReadAction<TReal>)readAction;
+            }
+
+            public ReadAction<T> Get<T>()
+            {
+                if (typeof(TReal) == typeof(T))
+                {
+                    return (ReadAction<T>)(Delegate)_readAction;
+                }
+
+                return (s, b, p) => (T)(object)_readAction(s, b, p);
+            }
+        }
+
         public delegate void WriteAction<T>(in T value, Stream stream, byte[] buffer, byte* bufferP);
         public delegate T ReadAction<out T>(Stream stream, byte[] buffer, byte* bufferP);
 
@@ -20,7 +57,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         #region Fields
 
         private static readonly ConcurrentDictionary<string, WriteAction<object>> _writeActions = new ConcurrentDictionary<string, WriteAction<object>>();
-        private static readonly ConcurrentDictionary<string, Delegate> _readActions = new ConcurrentDictionary<string, Delegate>();
+        private static readonly ConcurrentDictionary<string, IReadActionWrapper> _readActions = new ConcurrentDictionary<string, IReadActionWrapper>();
 
         #endregion
 
@@ -34,19 +71,9 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 {
                     if (!_writeActions.ContainsKey(typeName))
                     {
-                        Type type = Type.GetType(typeName, true);
-
-                        DynamicMethod writeMethod = new DynamicMethod($"Write_{typeName}", typeof(void), new[] { typeof(object).MakeByRefType(), typeof(Stream), typeof(byte[]), typeof(byte*) }, typeof(Converter), true);
-                        ILGenerator writeGenerator = writeMethod.GetILGenerator();
-
-                        writeGenerator.Emit(OpCodes.Ldarg_0);
-                        writeGenerator.Emit(OpCodes.Ldarg_1);
-                        writeGenerator.Emit(OpCodes.Ldarg_2);
-                        writeGenerator.Emit(OpCodes.Ldarg_3);
-                        writeGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(type).GetTypeInfo().GetDeclaredMethod(nameof(Converter<string>.Write)));
-                        writeGenerator.Emit(OpCodes.Ret);
-
-                        writeAction = (WriteAction<object>)writeMethod.CreateDelegate(typeof(WriteAction<object>));
+                        writeAction = (WriteAction<object>)typeof(Converter<>).MakeGenericType(Type.GetType(typeName, true)).GetTypeInfo()
+                            .GetDeclaredMethod(nameof(Converter<string>.WrapperWrite))
+                            .CreateDelegate(typeof(WriteAction<object>));
 
                         _writeActions.AddOrUpdate(typeName, writeAction, (_, d) => d);
                     }
@@ -58,24 +85,34 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         public static ReadAction<T> GetReadAction<T>(string typeName)
         {
-            if (!_readActions.TryGetValue(typeName, out Delegate readAction))
+            if (!_readActions.TryGetValue(typeName, out IReadActionWrapper readAction))
             {
                 lock (_readActions)
                 {
                     if (!_readActions.ContainsKey(typeName))
                     {
                         Type type = Type.GetType(typeName, true);
+                        TypeInfo typeInfo = type.GetTypeInfo();
 
-                        readAction = typeof(Converter<>).MakeGenericType(type).GetTypeInfo()
+                        Delegate action = typeof(Converter<>).MakeGenericType(type).GetTypeInfo()
                             .GetDeclaredMethod(nameof(Converter<string>.Read))
                             .CreateDelegate(typeof(ReadAction<>).MakeGenericType(type));
+
+                        if (!typeInfo.IsValueType || type == typeof(T))
+                        {
+                            readAction = typeInfo.IsValueType ? (IReadActionWrapper)new StructReadActionWrapper<T>(action) : new ClassReadActionWrapper(action);
+                        }
+                        else
+                        {
+                            readAction = (IReadActionWrapper)Activator.CreateInstance(typeof(StructReadActionWrapper<>).MakeGenericType(type), action);
+                        }
 
                         _readActions.AddOrUpdate(typeName, readAction, (_, d) => d);
                     }
                 }
             }
 
-            return (ReadAction<T>)readAction;
+            return readAction.Get<T>();
         }
 
         #endregion
@@ -261,6 +298,8 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                     return Converter.GetReadAction<T>(StringConverter.Read(stream, buffer, bufferP))(stream, buffer, bufferP);
             }
         }
+
+        public static void WrapperWrite(in object value, Stream stream, byte[] buffer, byte* bufferP) => Write((T)value, stream, buffer, bufferP);
 
         #endregion
     }
