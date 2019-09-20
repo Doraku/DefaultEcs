@@ -13,9 +13,4 @@ dotnet clean source\DefaultEcs\DefaultEcs.Package.csproj -c Release
 
 dotnet pack source\DefaultEcs\DefaultEcs.Package.csproj -c Release -o ..\..\package\
 
-DEL /q docs\coverage
-
-rem dotnet tool install -g coverlet.console
-coverlet source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll -t "dotnet" -a "vstest source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll" -o package\coverage.xml -f opencover
-
 :end

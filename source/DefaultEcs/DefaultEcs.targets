@@ -16,10 +16,6 @@
     <None Remove="DefaultEcs.targets" />
   </ItemGroup>
 
-  <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="DefaultDocumentation" Version="0.4.3" PrivateAssets="all" />
-  </ItemGroup>
-
   <ItemGroup Label="Reference">
     <PackageReference Include="System.Memory" Version="4.5.3" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />

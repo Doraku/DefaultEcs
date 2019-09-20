@@ -6,6 +6,10 @@
     <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
+  <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
+    <PackageReference Include="DefaultDocumentation" Version="0.4.3" PrivateAssets="all" />
+  </ItemGroup>
+  
   <PropertyGroup Label="Package">
     <Authors>Paillat Laszlo</Authors>
     <AssemblyName>DefaultEcs</AssemblyName>
