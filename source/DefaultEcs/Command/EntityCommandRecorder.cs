@@ -221,7 +221,7 @@ namespace DefaultEcs.Command
             }
         }
 
-        internal EntityCommandPlayer ToPlayer() => new EntityCommandPlayer(_memory.AsSpan(0, _nextCommandOffset).ToArray(), _objects.ToArray());
+        //internal EntityCommandPlayer ToPlayer() => new EntityCommandPlayer(_memory.AsSpan(0, _nextCommandOffset).ToArray(), _objects.ToArray());
 
         #endregion
 
