@@ -81,207 +81,206 @@ namespace DefaultEcs.Serialization
 
             try
             {
-                using (StreamReader reader = new StreamReader(stream))
+                using StreamReader reader = new StreamReader(stream);
+
+                Entity currentEntity = default;
+                Dictionary<string, IOperation> operations = new Dictionary<string, IOperation>();
+
+                while (!reader.EndOfStream)
                 {
-                    Entity currentEntity = default;
-                    Dictionary<string, IOperation> operations = new Dictionary<string, IOperation>();
+                    string[] lineParts = reader.ReadLine()?.Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
 
-                    while (!reader.EndOfStream)
+                    if (lineParts?.Length > 0)
                     {
-                        string[] lineParts = reader.ReadLine()?.Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
-
-                        if (lineParts?.Length > 0)
+                        string entry = lineParts[0];
+                        if (nameof(EntryType.Entity).Equals(entry))
                         {
-                            string entry = lineParts[0];
-                            if (nameof(EntryType.Entity).Equals(entry))
+                            if (world == null)
                             {
-                                if (world == null)
-                                {
-                                    world = new World();
-                                }
-
-                                currentEntity = world.CreateEntity();
-                                if (lineParts.Length > 1)
-                                {
-                                    entities.Add(lineParts[1], currentEntity);
-                                }
+                                world = new World();
                             }
-                            else if (nameof(EntryType.DisabledEntity).Equals(entry))
-                            {
-                                if (world == null)
-                                {
-                                    world = new World();
-                                }
 
-                                currentEntity = world.CreateDisabledEntity();
-                                if (lineParts.Length > 1)
-                                {
-                                    entities.Add(lineParts[1], currentEntity);
-                                }
+                            currentEntity = world.CreateEntity();
+                            if (lineParts.Length > 1)
+                            {
+                                entities.Add(lineParts[1], currentEntity);
                             }
-                            else if (lineParts.Length > 1)
+                        }
+                        else if (nameof(EntryType.DisabledEntity).Equals(entry))
+                        {
+                            if (world == null)
                             {
-                                switch (entry)
-                                {
-                                    case nameof(EntryType.MaxEntityCount):
-                                        if (!isNewWorld)
-                                        {
-                                            throw new ArgumentException("Encoutered MaxEntityCount line");
-                                        }
-                                        if (world != null)
-                                        {
-                                            throw new ArgumentException("Encoutered MaxEntityCount, MaxComponentCount or Entity line before current MaxEntityCount");
-                                        }
-                                        if (!int.TryParse(lineParts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out int maxEntityCount))
-                                        {
-                                            throw new ArgumentException($"Unable to convert '{lineParts[1]}' to a number");
-                                        }
+                                world = new World();
+                            }
 
-                                        world = new World(maxEntityCount);
-                                        break;
+                            currentEntity = world.CreateDisabledEntity();
+                            if (lineParts.Length > 1)
+                            {
+                                entities.Add(lineParts[1], currentEntity);
+                            }
+                        }
+                        else if (lineParts.Length > 1)
+                        {
+                            switch (entry)
+                            {
+                                case nameof(EntryType.MaxEntityCount):
+                                    if (!isNewWorld)
+                                    {
+                                        throw new ArgumentException("Encoutered MaxEntityCount line");
+                                    }
+                                    if (world != null)
+                                    {
+                                        throw new ArgumentException("Encoutered MaxEntityCount, MaxComponentCount or Entity line before current MaxEntityCount");
+                                    }
+                                    if (!int.TryParse(lineParts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out int maxEntityCount))
+                                    {
+                                        throw new ArgumentException($"Unable to convert '{lineParts[1]}' to a number");
+                                    }
 
-                                    case nameof(EntryType.ComponentType):
-                                        string[] componentTypeEntry = lineParts[1].Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
-                                        Type type = Type.GetType(componentTypeEntry[1], false) ?? throw new ArgumentException($"Unable to get type from '{componentTypeEntry[1]}'");
+                                    world = new World(maxEntityCount);
+                                    break;
 
-                                        operations.Add(
-                                            componentTypeEntry[0],
-                                            _operations.GetOrAdd(
-                                                type,
-                                                t => (IOperation)Activator.CreateInstance(typeof(Operation<>).MakeGenericType(t))));
-                                        break;
+                                case nameof(EntryType.ComponentType):
+                                    string[] componentTypeEntry = lineParts[1].Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
+                                    Type type = Type.GetType(componentTypeEntry[1], false) ?? throw new ArgumentException($"Unable to get type from '{componentTypeEntry[1]}'");
 
-                                    case nameof(EntryType.MaxComponentCount):
-                                        if (!isNewWorld)
-                                        {
-                                            throw new ArgumentException("Encoutered MaxComponentCount line");
-                                        }
-                                        string[] maxComponentCountEntry = lineParts[1].Split(_split, StringSplitOptions.RemoveEmptyEntries);
-                                        if (maxComponentCountEntry.Length < 2)
-                                        {
-                                            throw new ArgumentException($"Unable to get {nameof(EntryType.MaxComponentCount)} informations from '{lineParts[1]}'");
-                                        }
-                                        if (!operations.TryGetValue(maxComponentCountEntry[0], out IOperation operation))
-                                        {
-                                            throw new ArgumentException($"Unknown component type used '{maxComponentCountEntry[0]}'");
-                                        }
-                                        if (!int.TryParse(maxComponentCountEntry[1], NumberStyles.Any, CultureInfo.InvariantCulture, out int maxComponentCount))
-                                        {
-                                            throw new ArgumentException($"Unable to convert '{maxComponentCountEntry[1]}' to a number");
-                                        }
+                                    operations.Add(
+                                        componentTypeEntry[0],
+                                        _operations.GetOrAdd(
+                                            type,
+                                            t => (IOperation)Activator.CreateInstance(typeof(Operation<>).MakeGenericType(t))));
+                                    break;
 
-                                        if (world == null)
-                                        {
-                                            world = new World();
-                                        }
+                                case nameof(EntryType.MaxComponentCount):
+                                    if (!isNewWorld)
+                                    {
+                                        throw new ArgumentException("Encoutered MaxComponentCount line");
+                                    }
+                                    string[] maxComponentCountEntry = lineParts[1].Split(_split, StringSplitOptions.RemoveEmptyEntries);
+                                    if (maxComponentCountEntry.Length < 2)
+                                    {
+                                        throw new ArgumentException($"Unable to get {nameof(EntryType.MaxComponentCount)} informations from '{lineParts[1]}'");
+                                    }
+                                    if (!operations.TryGetValue(maxComponentCountEntry[0], out IOperation operation))
+                                    {
+                                        throw new ArgumentException($"Unknown component type used '{maxComponentCountEntry[0]}'");
+                                    }
+                                    if (!int.TryParse(maxComponentCountEntry[1], NumberStyles.Any, CultureInfo.InvariantCulture, out int maxComponentCount))
+                                    {
+                                        throw new ArgumentException($"Unable to convert '{maxComponentCountEntry[1]}' to a number");
+                                    }
 
-                                        operation.SetMaximumComponentCount(world, maxComponentCount);
-                                        break;
+                                    if (world == null)
+                                    {
+                                        world = new World();
+                                    }
 
-                                    case nameof(EntryType.Component):
-                                        if (currentEntity.Equals(default))
-                                        {
-                                            throw new ArgumentException("Encountered a component before creation of an Entity");
-                                        }
-                                        string[] componentEntry = lineParts[1].Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
-                                        if (componentEntry.Length < 1)
-                                        {
-                                            throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
-                                        }
-                                        if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
-                                        {
-                                            throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
-                                        }
+                                    operation.SetMaximumComponentCount(world, maxComponentCount);
+                                    break;
 
-                                        operation.SetComponent(currentEntity, componentEntry.Length > 1 ? componentEntry[1] : null, reader);
-                                        break;
+                                case nameof(EntryType.Component):
+                                    if (currentEntity.Equals(default))
+                                    {
+                                        throw new ArgumentException("Encountered a component before creation of an Entity");
+                                    }
+                                    string[] componentEntry = lineParts[1].Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
+                                    if (componentEntry.Length < 1)
+                                    {
+                                        throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
+                                    }
+                                    if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
+                                    {
+                                        throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
+                                    }
 
-                                    case nameof(EntryType.ComponentSameAs):
-                                        if (currentEntity.Equals(default))
-                                        {
-                                            throw new ArgumentException("Encountered a component before creation of an Entity");
-                                        }
-                                        componentEntry = lineParts[1].Split(_split, StringSplitOptions.RemoveEmptyEntries);
-                                        if (componentEntry.Length < 2)
-                                        {
-                                            throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
-                                        }
-                                        if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
-                                        {
-                                            throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
-                                        }
-                                        if (!entities.TryGetValue(componentEntry[1], out Entity reference))
-                                        {
-                                            throw new ArgumentException($"Unknown reference Entity '{componentEntry[1]}'");
-                                        }
+                                    operation.SetComponent(currentEntity, componentEntry.Length > 1 ? componentEntry[1] : null, reader);
+                                    break;
 
-                                        operation.SetSameAsComponent(currentEntity, reference);
-                                        break;
+                                case nameof(EntryType.ComponentSameAs):
+                                    if (currentEntity.Equals(default))
+                                    {
+                                        throw new ArgumentException("Encountered a component before creation of an Entity");
+                                    }
+                                    componentEntry = lineParts[1].Split(_split, StringSplitOptions.RemoveEmptyEntries);
+                                    if (componentEntry.Length < 2)
+                                    {
+                                        throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
+                                    }
+                                    if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
+                                    {
+                                        throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
+                                    }
+                                    if (!entities.TryGetValue(componentEntry[1], out Entity reference))
+                                    {
+                                        throw new ArgumentException($"Unknown reference Entity '{componentEntry[1]}'");
+                                    }
 
-                                    case nameof(EntryType.ParentChild):
-                                        componentEntry = lineParts[1].Split(_split, StringSplitOptions.RemoveEmptyEntries);
-                                        if (componentEntry.Length < 2)
-                                        {
-                                            throw new ArgumentException($"Unable to get Entity ids from '{lineParts[1]}'");
-                                        }
-                                        if (!entities.TryGetValue(componentEntry[0], out Entity parent))
-                                        {
-                                            throw new ArgumentException($"Unknown parent Entity '{componentEntry[0]}'");
-                                        }
-                                        if (!entities.TryGetValue(componentEntry[1], out Entity child))
-                                        {
-                                            throw new ArgumentException($"Unknown child Entity '{componentEntry[1]}'");
-                                        }
+                                    operation.SetSameAsComponent(currentEntity, reference);
+                                    break;
 
-                                        parent.SetAsParentOf(child);
-                                        break;
+                                case nameof(EntryType.ParentChild):
+                                    componentEntry = lineParts[1].Split(_split, StringSplitOptions.RemoveEmptyEntries);
+                                    if (componentEntry.Length < 2)
+                                    {
+                                        throw new ArgumentException($"Unable to get Entity ids from '{lineParts[1]}'");
+                                    }
+                                    if (!entities.TryGetValue(componentEntry[0], out Entity parent))
+                                    {
+                                        throw new ArgumentException($"Unknown parent Entity '{componentEntry[0]}'");
+                                    }
+                                    if (!entities.TryGetValue(componentEntry[1], out Entity child))
+                                    {
+                                        throw new ArgumentException($"Unknown child Entity '{componentEntry[1]}'");
+                                    }
 
-                                    case nameof(EntryType.DisabledComponent):
-                                        if (currentEntity.Equals(default))
-                                        {
-                                            throw new ArgumentException("Encountered a component before creation of an Entity");
-                                        }
-                                        componentEntry = lineParts[1].Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
-                                        if (componentEntry.Length < 1)
-                                        {
-                                            throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
-                                        }
-                                        if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
-                                        {
-                                            throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
-                                        }
+                                    parent.SetAsParentOf(child);
+                                    break;
 
-                                        operation.SetDisabledComponent(currentEntity, componentEntry.Length > 1 ? componentEntry[1] : null, reader);
-                                        break;
+                                case nameof(EntryType.DisabledComponent):
+                                    if (currentEntity.Equals(default))
+                                    {
+                                        throw new ArgumentException("Encountered a component before creation of an Entity");
+                                    }
+                                    componentEntry = lineParts[1].Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
+                                    if (componentEntry.Length < 1)
+                                    {
+                                        throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
+                                    }
+                                    if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
+                                    {
+                                        throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
+                                    }
 
-                                    case nameof(EntryType.DisabledComponentSameAs):
-                                        if (currentEntity.Equals(default))
-                                        {
-                                            throw new ArgumentException("Encountered a component before creation of an Entity");
-                                        }
-                                        componentEntry = lineParts[1].Split(_split, StringSplitOptions.RemoveEmptyEntries);
-                                        if (componentEntry.Length < 2)
-                                        {
-                                            throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
-                                        }
-                                        if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
-                                        {
-                                            throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
-                                        }
-                                        if (!entities.TryGetValue(componentEntry[1], out reference))
-                                        {
-                                            throw new ArgumentException($"Unknown reference Entity '{componentEntry[1]}'");
-                                        }
+                                    operation.SetDisabledComponent(currentEntity, componentEntry.Length > 1 ? componentEntry[1] : null, reader);
+                                    break;
 
-                                        operation.SetDisabledSameAsComponent(currentEntity, reference);
-                                        break;
-                                }
+                                case nameof(EntryType.DisabledComponentSameAs):
+                                    if (currentEntity.Equals(default))
+                                    {
+                                        throw new ArgumentException("Encountered a component before creation of an Entity");
+                                    }
+                                    componentEntry = lineParts[1].Split(_split, StringSplitOptions.RemoveEmptyEntries);
+                                    if (componentEntry.Length < 2)
+                                    {
+                                        throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
+                                    }
+                                    if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
+                                    {
+                                        throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
+                                    }
+                                    if (!entities.TryGetValue(componentEntry[1], out reference))
+                                    {
+                                        throw new ArgumentException($"Unknown reference Entity '{componentEntry[1]}'");
+                                    }
+
+                                    operation.SetDisabledSameAsComponent(currentEntity, reference);
+                                    break;
                             }
                         }
                     }
-
-                    return isNewWorld ? null : entities.Values.ToArray();
                 }
+
+                return isNewWorld ? null : entities.Values.ToArray();
             }
             catch
             {
@@ -310,10 +309,9 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         public static void Write<T>(Stream stream, in T obj)
         {
-            using (StreamWriter writer = new StreamWriter(stream ?? throw new ArgumentNullException(nameof(stream)), new UTF8Encoding(false, true), 1024, true))
-            {
-                Converter<T>.Write(obj, writer, 0);
-            }
+            using StreamWriter writer = new StreamWriter(stream ?? throw new ArgumentNullException(nameof(stream)), new UTF8Encoding(false, true), 1024, true);
+
+            Converter<T>.Write(obj, writer, 0);
         }
 
         /// <summary>
@@ -325,10 +323,9 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         public static T Read<T>(Stream stream)
         {
-            using (StreamReader reader = new StreamReader(stream ?? throw new ArgumentNullException(nameof(stream)), Encoding.UTF8, true, 1024, true))
-            {
-                return Converter<T>.Read(null, reader);
-            }
+            using StreamReader reader = new StreamReader(stream ?? throw new ArgumentNullException(nameof(stream)), Encoding.UTF8, true, 1024, true);
+
+            return Converter<T>.Read(null, reader);
         }
 
         //public static Func<Entity> GetFactory(Stream stream)
@@ -352,19 +349,18 @@ namespace DefaultEcs.Serialization
             stream = stream ?? throw new ArgumentNullException(nameof(stream));
             world = world ?? throw new ArgumentNullException(nameof(world));
 
-            using (StreamWriter writer = new StreamWriter(stream))
+            using StreamWriter writer = new StreamWriter(stream);
+
+            Dictionary<Type, string> types = new Dictionary<Type, string>();
+
+            if (world.MaxEntityCount != int.MaxValue)
             {
-                Dictionary<Type, string> types = new Dictionary<Type, string>();
-
-                if (world.MaxEntityCount != int.MaxValue)
-                {
-                    writer.WriteLine($"{nameof(EntryType.MaxEntityCount)} {world.MaxEntityCount}");
-                }
-
-                world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxEntityCount));
-
-                new EntityWriter(writer, types).Write(world.GetAllEntities());
+                writer.WriteLine($"{nameof(EntryType.MaxEntityCount)} {world.MaxEntityCount}");
             }
+
+            world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxEntityCount));
+
+            new EntityWriter(writer, types).Write(world.GetAllEntities());
         }
 
         /// <summary>
@@ -393,10 +389,9 @@ namespace DefaultEcs.Serialization
             stream = stream ?? throw new ArgumentNullException(nameof(stream));
             entities = entities ?? throw new ArgumentNullException(nameof(entities));
 
-            using (StreamWriter writer = new StreamWriter(stream))
-            {
-                new EntityWriter(writer, new Dictionary<Type, string>()).Write(entities);
-            }
+            using StreamWriter writer = new StreamWriter(stream);
+
+            new EntityWriter(writer, new Dictionary<Type, string>()).Write(entities);
         }
 
         /// <summary>

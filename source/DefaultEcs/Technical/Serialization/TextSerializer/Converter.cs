@@ -54,7 +54,6 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         public delegate void WriteAction<T>(in T value, StreamWriter writer, int indentation);
         public delegate T ReadAction<out T>(string line, StreamReader reader);
 
-
         #endregion
 
         #region Fields
@@ -238,7 +237,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             {
                 #region Filters
 
-                bool Parameters_string(MethodInfo methodInfo)
+                static bool Parameters_string(MethodInfo methodInfo)
                 {
                     ParameterInfo[] parameters = methodInfo.GetParameters();
 
@@ -246,7 +245,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                         && parameters[0].ParameterType == typeof(string);
                 }
 
-                bool Parameters_string_string(MethodInfo methodInfo)
+                static bool Parameters_string_string(MethodInfo methodInfo)
                 {
                     ParameterInfo[] parameters = methodInfo.GetParameters();
 

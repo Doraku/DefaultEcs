@@ -25,526 +25,493 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void CreateEntity_Should_create_an_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            {
-                recorder.CreateEntity();
-                recorder.CreateEntity();
-                recorder.CreateEntity();
-                recorder.CreateEntity();
-                recorder.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
 
-                using (World world = new World())
-                {
-                    recorder.Execute(world);
+            recorder.CreateEntity();
+            recorder.CreateEntity();
+            recorder.CreateEntity();
+            recorder.CreateEntity();
+            recorder.CreateEntity();
 
-                    Check.That(world.GetAllEntities().Count()).IsEqualTo(5);
-                }
-            }
+            using World world = new World();
+
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Count()).IsEqualTo(5);
         }
 
         [Fact]
         public void Disable_Should_disable_recorded_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity entity = world.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.Disable();
+            Entity entity = world.CreateEntity();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.Disable();
 
-                Check.That(entity.IsEnabled()).IsFalse();
-            }
+            recorder.Execute(world);
+
+            Check.That(entity.IsEnabled()).IsFalse();
         }
 
         [Fact]
         public void Disable_Should_disable_created_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                EntityRecord record = recorder.CreateEntity();
-                record.Disable();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.CreateEntity();
+            record.Disable();
 
-                Check.That(world.GetAllEntities().Single().IsEnabled()).IsFalse();
-            }
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Single().IsEnabled()).IsFalse();
         }
 
         [Fact]
         public void Enable_Should_enable_recorded_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity entity = world.CreateEntity();
-                entity.Disable();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.Enable();
+            Entity entity = world.CreateEntity();
+            entity.Disable();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.Enable();
 
-                Check.That(entity.IsEnabled()).IsTrue();
-            }
+            recorder.Execute(world);
+
+            Check.That(entity.IsEnabled()).IsTrue();
         }
 
         [Fact]
         public void Enable_Should_enable_created_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                EntityRecord record = recorder.CreateEntity();
-                record.Disable();
-                record.Enable();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.CreateEntity();
+            record.Disable();
+            record.Enable();
 
-                Check.That(world.GetAllEntities().Single().IsEnabled()).IsTrue();
-            }
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Single().IsEnabled()).IsTrue();
         }
 
         [Fact]
         public void Set_Should_set__blittable_component_on_recorded_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity entity = world.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.Set(true);
+            Entity entity = world.CreateEntity();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.Set(true);
 
-                Check.That(entity.Get<bool>()).IsTrue();
-            }
+            recorder.Execute(world);
+
+            Check.That(entity.Get<bool>()).IsTrue();
         }
 
         [Fact]
         public void Set_Should_set__blittable_component_on_created_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            {
-                using (World world = new World())
-                {
-                    EntityRecord record = recorder.CreateEntity();
-                    record.Set(true);
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                    recorder.Execute(world);
+            EntityRecord record = recorder.CreateEntity();
+            record.Set(true);
 
-                    Check.That(world.GetAllEntities().Single().Get<bool>()).IsTrue();
-                }
-            }
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Single().Get<bool>()).IsTrue();
         }
 
         [Fact]
         public void Set_Should_set__reference_component_on_recorded_entity()
         {
             object o = new object();
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity entity = world.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.Set(o);
+            Entity entity = world.CreateEntity();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.Set(o);
 
-                Check.That(entity.Get<object>()).IsEqualTo(o);
-            }
+            recorder.Execute(world);
+
+            Check.That(entity.Get<object>()).IsEqualTo(o);
         }
 
         [Fact]
         public void Set_Should_set__reference_component_on_created_entity()
         {
             object o = new object();
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                EntityRecord record = recorder.CreateEntity();
-                record.Set(o);
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.CreateEntity();
+            record.Set(o);
 
-                Check.That(world.GetAllEntities().Single().Get<object>()).IsEqualTo(o);
-            }
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Single().Get<object>()).IsEqualTo(o);
         }
 
         [Fact]
         public void Set_Should_set__non_blittable_component_on_recorded_entity()
         {
             object o = new object();
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity entity = world.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.Set(new NonBlittable(42, o));
+            Entity entity = world.CreateEntity();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.Set(new NonBlittable(42, o));
 
-                Check.That(entity.Get<NonBlittable>().Id).IsEqualTo(42);
-                Check.That(entity.Get<NonBlittable>().Item).IsEqualTo(o);
-            }
+            recorder.Execute(world);
+
+            Check.That(entity.Get<NonBlittable>().Id).IsEqualTo(42);
+            Check.That(entity.Get<NonBlittable>().Item).IsEqualTo(o);
         }
 
         [Fact]
         public void Set_Should_set__non_blittable_component_on_created_entity()
         {
             object o = new object();
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                EntityRecord record = recorder.CreateEntity();
-                record.Set(new NonBlittable(42, o));
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.CreateEntity();
+            record.Set(new NonBlittable(42, o));
 
-                Check.That(world.GetAllEntities().Single().Get<NonBlittable>().Id).IsEqualTo(42);
-                Check.That(world.GetAllEntities().Single().Get<NonBlittable>().Item).IsEqualTo(o);
-            }
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Single().Get<NonBlittable>().Id).IsEqualTo(42);
+            Check.That(world.GetAllEntities().Single().Get<NonBlittable>().Item).IsEqualTo(o);
         }
 
         [Fact]
         public void DisableT_Should_disable_component_of_type_T_on_recorded_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity entity = world.CreateEntity();
-                entity.Set(true);
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.Disable<bool>();
+            Entity entity = world.CreateEntity();
+            entity.Set(true);
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.Disable<bool>();
 
-                Check.That(entity.IsEnabled<bool>()).IsFalse();
-            }
+            recorder.Execute(world);
+
+            Check.That(entity.IsEnabled<bool>()).IsFalse();
         }
 
         [Fact]
         public void DisableT_Should_disable_component_of_type_T_on_created_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                EntityRecord record = recorder.CreateEntity();
-                record.Set(true);
-                record.Disable<bool>();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.CreateEntity();
+            record.Set(true);
+            record.Disable<bool>();
 
-                Check.That(world.GetAllEntities().Single().IsEnabled<bool>()).IsFalse();
-            }
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Single().IsEnabled<bool>()).IsFalse();
         }
 
         [Fact]
         public void EnableT_Should_enable_component_of_type_T_on_recorded_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity entity = world.CreateEntity();
-                entity.Set(true);
-                entity.Disable<bool>();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.Enable<bool>();
+            Entity entity = world.CreateEntity();
+            entity.Set(true);
+            entity.Disable<bool>();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.Enable<bool>();
 
-                Check.That(entity.IsEnabled()).IsTrue();
-            }
+            recorder.Execute(world);
+
+            Check.That(entity.IsEnabled()).IsTrue();
         }
 
         [Fact]
         public void EnableT_Should_enable_component_of_type_T_on_created_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                EntityRecord record = recorder.CreateEntity();
-                record.Set(true);
-                record.Disable<bool>();
-                record.Enable<bool>();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.CreateEntity();
+            record.Set(true);
+            record.Disable<bool>();
+            record.Enable<bool>();
 
-                Check.That(world.GetAllEntities().Single().IsEnabled()).IsTrue();
-            }
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Single().IsEnabled()).IsTrue();
         }
 
         [Fact]
         public void Remove_Should_remove_component_on_recorded_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity entity = world.CreateEntity();
-                entity.Set(true);
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.Remove<bool>();
+            Entity entity = world.CreateEntity();
+            entity.Set(true);
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.Remove<bool>();
 
-                Check.That(entity.Has<bool>()).IsFalse();
-            }
+            recorder.Execute(world);
+
+            Check.That(entity.Has<bool>()).IsFalse();
         }
 
         [Fact]
         public void Remove_Should_remove_component_on_created_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                EntityRecord record = recorder.CreateEntity();
-                record.Set(true);
-                record.Remove<bool>();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.CreateEntity();
+            record.Set(true);
+            record.Remove<bool>();
 
-                Check.That(world.GetAllEntities().Single().Has<bool>()).IsFalse();
-            }
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Single().Has<bool>()).IsFalse();
         }
 
         [Fact]
         public void Dispose_Should_dispose_recorded_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity entity = world.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.Dispose();
+            Entity entity = world.CreateEntity();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.Dispose();
 
-                Check.That(entity.IsAlive).IsFalse();
-            }
+            recorder.Execute(world);
+
+            Check.That(entity.IsAlive).IsFalse();
         }
 
         [Fact]
         public void Dispose_Should_dispose_created_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                EntityRecord record = recorder.CreateEntity();
-                record.Dispose();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.CreateEntity();
+            record.Dispose();
 
-                Check.That(world.GetAllEntities().Count()).IsEqualTo(0);
-            }
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Count()).IsEqualTo(0);
         }
 
         [Fact]
         public void SetSameAs_Should_set_same_as_on_recorded_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity reference = world.CreateEntity();
-                reference.Set(true);
-                Entity entity = world.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.SetSameAs<bool>(recorder.Record(reference));
+            Entity reference = world.CreateEntity();
+            reference.Set(true);
+            Entity entity = world.CreateEntity();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.SetSameAs<bool>(recorder.Record(reference));
 
-                Check.That(entity.Get<bool>()).IsTrue();
-            }
+            recorder.Execute(world);
+
+            Check.That(entity.Get<bool>()).IsTrue();
         }
 
         [Fact]
         public void SetSameAs_Should_set_same_as_on_created_entity()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity reference = world.CreateEntity();
-                reference.Set(true);
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.CreateEntity();
-                record.SetSameAs<bool>(recorder.Record(reference));
+            Entity reference = world.CreateEntity();
+            reference.Set(true);
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.CreateEntity();
+            record.SetSameAs<bool>(recorder.Record(reference));
 
-                reference.Dispose();
+            recorder.Execute(world);
 
-                Check.That(world.GetAllEntities().Single().Get<bool>()).IsTrue();
-            }
+            reference.Dispose();
+
+            Check.That(world.GetAllEntities().Single().Get<bool>()).IsTrue();
         }
 
         [Fact]
         public void SetAsChildOf_Should_set_recorded_entity_as_child()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity parent = world.CreateEntity();
-                Entity entity = world.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.SetAsChildOf(recorder.Record(parent));
+            Entity parent = world.CreateEntity();
+            Entity entity = world.CreateEntity();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.SetAsChildOf(recorder.Record(parent));
 
-                Check.That(parent.GetChildren()).Contains(entity);
-            }
+            recorder.Execute(world);
+
+            Check.That(parent.GetChildren()).Contains(entity);
         }
 
         [Fact]
         public void SetAsParentOf_Should_set_recorded_entity_as_parent()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity child = world.CreateEntity();
-                Entity entity = world.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.SetAsParentOf(recorder.Record(child));
+            Entity child = world.CreateEntity();
+            Entity entity = world.CreateEntity();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.SetAsParentOf(recorder.Record(child));
 
-                Check.That(entity.GetChildren()).Contains(child);
-            }
+            recorder.Execute(world);
+
+            Check.That(entity.GetChildren()).Contains(child);
         }
 
         [Fact]
         public void SetAsChildOf_Should_set_created_entity_as_child()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity parent = world.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.CreateEntity();
-                record.SetAsChildOf(recorder.Record(parent));
+            Entity parent = world.CreateEntity();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.CreateEntity();
+            record.SetAsChildOf(recorder.Record(parent));
 
-                Check.That(parent.GetChildren()).Contains(world.GetAllEntities().Skip(1).Single());
-            }
+            recorder.Execute(world);
+
+            Check.That(parent.GetChildren()).Contains(world.GetAllEntities().Skip(1).Single());
         }
 
         [Fact]
         public void SetAsParentOf_Should_set_created_entity_as_child()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity child = world.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.CreateEntity();
-                record.SetAsParentOf(recorder.Record(child));
+            Entity child = world.CreateEntity();
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.CreateEntity();
+            record.SetAsParentOf(recorder.Record(child));
 
-                Check.That(world.GetAllEntities().Skip(1).Single().GetChildren()).Contains(child);
-            }
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Skip(1).Single().GetChildren()).Contains(child);
         }
 
         [Fact]
         public void RemoveFromChildrenOf_Should_set_recorded_entity_as_child()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity parent = world.CreateEntity();
-                Entity entity = world.CreateEntity();
-                entity.SetAsChildOf(parent);
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.RemoveFromChildrenOf(recorder.Record(parent));
+            Entity parent = world.CreateEntity();
+            Entity entity = world.CreateEntity();
+            entity.SetAsChildOf(parent);
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.RemoveFromChildrenOf(recorder.Record(parent));
 
-                Check.That(parent.GetChildren()).IsEmpty();
-            }
+            recorder.Execute(world);
+
+            Check.That(parent.GetChildren()).IsEmpty();
         }
 
         [Fact]
         public void RemoveFromParentsOf_Should_set_recorded_entity_as_parent()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity child = world.CreateEntity();
-                Entity entity = world.CreateEntity();
-                entity.SetAsParentOf(child);
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord record = recorder.Record(entity);
-                record.RemoveFromParentsOf(recorder.Record(child));
+            Entity child = world.CreateEntity();
+            Entity entity = world.CreateEntity();
+            entity.SetAsParentOf(child);
 
-                recorder.Execute(world);
+            EntityRecord record = recorder.Record(entity);
+            record.RemoveFromParentsOf(recorder.Record(child));
 
-                Check.That(entity.GetChildren()).IsEmpty();
-            }
+            recorder.Execute(world);
+
+            Check.That(entity.GetChildren()).IsEmpty();
         }
 
         [Fact]
         public void RemoveFromChildrenOf_Should_set_created_entity_as_child()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity parent = world.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord parentRecord = recorder.Record(parent);
-                EntityRecord record = recorder.CreateEntity();
-                record.SetAsChildOf(parentRecord);
-                record.RemoveFromChildrenOf(parentRecord);
+            Entity parent = world.CreateEntity();
 
-                recorder.Execute(world);
+            EntityRecord parentRecord = recorder.Record(parent);
+            EntityRecord record = recorder.CreateEntity();
+            record.SetAsChildOf(parentRecord);
+            record.RemoveFromChildrenOf(parentRecord);
 
-                Check.That(parent.GetChildren()).IsEmpty();
-            }
+            recorder.Execute(world);
+
+            Check.That(parent.GetChildren()).IsEmpty();
         }
 
         [Fact]
         public void RemoveFromParentsOf_Should_set_created_entity_as_child()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(1024))
-            using (World world = new World())
-            {
-                Entity child = world.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
 
-                EntityRecord childRecord = recorder.Record(child);
-                EntityRecord record = recorder.CreateEntity();
-                record.SetAsParentOf(childRecord);
-                record.RemoveFromParentsOf(childRecord);
+            Entity child = world.CreateEntity();
 
-                recorder.Execute(world);
+            EntityRecord childRecord = recorder.Record(child);
+            EntityRecord record = recorder.CreateEntity();
+            record.SetAsParentOf(childRecord);
+            record.RemoveFromParentsOf(childRecord);
 
-                Check.That(world.GetAllEntities().Skip(1).Single().GetChildren()).IsEmpty();
-            }
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Skip(1).Single().GetChildren()).IsEmpty();
         }
 
         [Fact]
         public void Should_work_in_multithread()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(8, int.MaxValue))
-            using (World world = new World())
-            {
-                Enumerable.Range(0, 100000).AsParallel().ForAll(_ => recorder.CreateEntity());
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(8, int.MaxValue);
+            using World world = new World();
 
-                recorder.Execute(world);
+            Enumerable.Range(0, 100000).AsParallel().ForAll(_ => recorder.CreateEntity());
 
-                Check.That(world.GetAllEntities().Count()).IsEqualTo(100000);
-            }
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Count()).IsEqualTo(100000);
         }
 
         [Fact]
@@ -568,43 +535,40 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void Shoud_throw_When_no_more_space()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder(16))
-            {
-                recorder.CreateEntity();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(16);
 
-                Check.ThatCode(() => recorder.CreateEntity()).Throws<InvalidOperationException>();
-            }
+            recorder.CreateEntity();
+
+            Check.ThatCode(() => recorder.CreateEntity()).Throws<InvalidOperationException>();
         }
 
         [Fact]
         public void Execute_Should_clear_recorded_command_after_executing()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder())
-            using (World world = new World())
-            {
-                recorder.CreateEntity();
-                recorder.Execute(world);
+            using EntityCommandRecorder recorder = new EntityCommandRecorder();
+            using World world = new World();
 
-                Check.That(world.GetAllEntities().Count()).IsEqualTo(1);
+            recorder.CreateEntity();
+            recorder.Execute(world);
 
-                recorder.Execute(world);
+            Check.That(world.GetAllEntities().Count()).IsEqualTo(1);
 
-                Check.That(world.GetAllEntities().Count()).IsEqualTo(1);
-            }
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Count()).IsEqualTo(1);
         }
 
         [Fact]
         public void Clear_Should_clear_recorded_command()
         {
-            using (EntityCommandRecorder recorder = new EntityCommandRecorder())
-            using (World world = new World())
-            {
-                recorder.CreateEntity();
-                recorder.Clear();
-                recorder.Execute(world);
+            using EntityCommandRecorder recorder = new EntityCommandRecorder();
+            using World world = new World();
 
-                Check.That(world.GetAllEntities().Count()).IsZero();
-            }
+            recorder.CreateEntity();
+            recorder.Clear();
+            recorder.Execute(world);
+
+            Check.That(world.GetAllEntities().Count()).IsZero();
         }
 
         #endregion

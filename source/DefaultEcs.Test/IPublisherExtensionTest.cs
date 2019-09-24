@@ -111,45 +111,41 @@ namespace DefaultEcs.Test
         [Fact]
         public void Subscribe_Should_thow_NotSupportedException_When_method_has_invalid_numbers_of_parameter()
         {
-            using (IPublisher publisher = new Publisher())
-            {
-                Check
-                    .ThatCode(() => publisher.Subscribe<InvalidNumberOfParameter>())
-                    .Throws<NotSupportedException>();
-            }
+            using IPublisher publisher = new Publisher();
+
+            Check
+                .ThatCode(() => publisher.Subscribe<InvalidNumberOfParameter>())
+                .Throws<NotSupportedException>();
         }
 
         [Fact]
         public void Subscribe_Should_thow_NotSupportedException_When_method_has_invalid_ByRef_parameter()
         {
-            using (IPublisher publisher = new Publisher())
-            {
-                Check
-                    .ThatCode(() => publisher.Subscribe<InvalidByRefParameterType>())
-                    .Throws<NotSupportedException>();
-            }
+            using IPublisher publisher = new Publisher();
+
+            Check
+                .ThatCode(() => publisher.Subscribe<InvalidByRefParameterType>())
+                .Throws<NotSupportedException>();
         }
 
         [Fact]
         public void Subscribe_Should_thow_NotSupportedException_When_method_has_a_non_void_return_type()
         {
-            using (IPublisher publisher = new Publisher())
-            {
-                Check
-                    .ThatCode(() => publisher.Subscribe<InvalidReturnType>())
-                    .Throws<NotSupportedException>();
-            }
+            using IPublisher publisher = new Publisher();
+
+            Check
+                .ThatCode(() => publisher.Subscribe<InvalidReturnType>())
+                .Throws<NotSupportedException>();
         }
 
         [Fact]
         public void Subscribe_Should_call_publisher_Subscribe_on_decorated_static_method()
         {
-            using (Publisher publisher = new Publisher())
-            {
-                publisher.Subscribe<StaticMethod>();
+            using Publisher publisher = new Publisher();
 
-                Check.That(publisher.Action).IsEqualTo(new ActionIn<object>(StaticMethod.Method));
-            }
+            publisher.Subscribe<StaticMethod>();
+
+            Check.That(publisher.Action).IsEqualTo(new ActionIn<object>(StaticMethod.Method));
         }
 
         [Fact]
@@ -166,14 +162,12 @@ namespace DefaultEcs.Test
         [Fact]
         public void Subscribe_target_Should_thow_ArgumentNullException_When_target_is_null()
         {
-            using (IPublisher publisher = new Publisher())
-            {
-                object target = null;
+            using IPublisher publisher = new Publisher();
+            object target = null;
 
-                Check
-                    .ThatCode(() => publisher.Subscribe(target))
-                    .Throws<ArgumentNullException>();
-            }
+            Check
+                .ThatCode(() => publisher.Subscribe(target))
+                .Throws<ArgumentNullException>();
         }
 
         [Fact]

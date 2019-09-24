@@ -5,7 +5,7 @@
       net452;
       net48;
       netcoreapp1.0;
-      netcoreapp2.2;
+      netcoreapp3.0;
     </TargetFrameworks>
     <DefineConstants></DefineConstants>
     <Optimize>true</Optimize>

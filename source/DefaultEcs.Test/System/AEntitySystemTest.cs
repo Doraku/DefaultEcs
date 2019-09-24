@@ -53,202 +53,193 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void Update_Should_call_update()
         {
-            using (World world = new World(4))
+            using World world = new World(4);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set<bool>();
+
+            Entity entity2 = world.CreateEntity();
+            entity2.Set<bool>();
+
+            Entity entity3 = world.CreateEntity();
+            entity3.Set<bool>();
+
+            Entity entity4 = world.CreateEntity();
+            entity4.Set<bool>();
+
+            using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build()))
             {
-                Entity entity1 = world.CreateEntity();
-                entity1.Set<bool>();
-
-                Entity entity2 = world.CreateEntity();
-                entity2.Set<bool>();
-
-                Entity entity3 = world.CreateEntity();
-                entity3.Set<bool>();
-
-                Entity entity4 = world.CreateEntity();
-                entity4.Set<bool>();
-
-                using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build()))
-                {
-                    system.Update(0);
-                }
-
-                Check.That(entity1.Get<bool>()).IsTrue();
-                Check.That(entity2.Get<bool>()).IsTrue();
-                Check.That(entity3.Get<bool>()).IsTrue();
-                Check.That(entity4.Get<bool>()).IsTrue();
-
-                entity1.Set<bool>();
-                entity1.Set<double>();
-                entity2.Set<bool>();
-                entity2.Set<uint>();
-                entity3.Set<bool>();
-                entity3.Set<int>();
-                entity4.Set<bool>();
-
-                using (ISystem<int> system = new System(world))
-                {
-                    system.Update(0);
-                }
-
-                Check.That(entity1.Get<bool>()).IsTrue();
-                Check.That(entity2.Get<bool>()).IsTrue();
-                Check.That(entity3.Get<bool>()).IsFalse();
-                Check.That(entity4.Get<bool>()).IsFalse();
+                system.Update(0);
             }
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+            Check.That(entity4.Get<bool>()).IsTrue();
+
+            entity1.Set<bool>();
+            entity1.Set<double>();
+            entity2.Set<bool>();
+            entity2.Set<uint>();
+            entity3.Set<bool>();
+            entity3.Set<int>();
+            entity4.Set<bool>();
+
+            using (ISystem<int> system = new System(world))
+            {
+                system.Update(0);
+            }
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsFalse();
+            Check.That(entity4.Get<bool>()).IsFalse();
         }
 
         [Fact]
         public void Update_Should_not_call_update_When_disabled()
         {
-            using (World world = new World(4))
+            using World world = new World(4);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set<bool>();
+
+            Entity entity2 = world.CreateEntity();
+            entity2.Set<bool>();
+
+            Entity entity3 = world.CreateEntity();
+            entity3.Set<bool>();
+
+            Entity entity4 = world.CreateEntity();
+            entity4.Set<bool>();
+
+            using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build())
             {
-                Entity entity1 = world.CreateEntity();
-                entity1.Set<bool>();
-
-                Entity entity2 = world.CreateEntity();
-                entity2.Set<bool>();
-
-                Entity entity3 = world.CreateEntity();
-                entity3.Set<bool>();
-
-                Entity entity4 = world.CreateEntity();
-                entity4.Set<bool>();
-
-                using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build())
-                {
-                    IsEnabled = false
-                })
-                {
-                    system.Update(0);
-                }
-
-                Check.That(entity1.Get<bool>()).IsFalse();
-                Check.That(entity2.Get<bool>()).IsFalse();
-                Check.That(entity3.Get<bool>()).IsFalse();
-                Check.That(entity4.Get<bool>()).IsFalse();
+                IsEnabled = false
+            })
+            {
+                system.Update(0);
             }
+
+            Check.That(entity1.Get<bool>()).IsFalse();
+            Check.That(entity2.Get<bool>()).IsFalse();
+            Check.That(entity3.Get<bool>()).IsFalse();
+            Check.That(entity4.Get<bool>()).IsFalse();
         }
 
         [Fact]
         public void Update_with_runner_Should_call_update()
         {
-            using (SystemRunner<int> runner = new SystemRunner<int>(2))
+            using SystemRunner<int> runner = new SystemRunner<int>(2);
+            using World world = new World(4);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set<bool>();
+
+            Entity entity2 = world.CreateEntity();
+            entity2.Set<bool>();
+
+            Entity entity3 = world.CreateEntity();
+            entity3.Set<bool>();
+
+            Entity entity4 = world.CreateEntity();
+            entity4.Set<bool>();
+
+            using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build(), runner))
             {
-                using (World world = new World(4))
-                {
-                    Entity entity1 = world.CreateEntity();
-                    entity1.Set<bool>();
-
-                    Entity entity2 = world.CreateEntity();
-                    entity2.Set<bool>();
-
-                    Entity entity3 = world.CreateEntity();
-                    entity3.Set<bool>();
-
-                    Entity entity4 = world.CreateEntity();
-                    entity4.Set<bool>();
-
-                    using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build(), runner))
-                    {
-                        system.Update(0);
-                    }
-
-                    Check.That(entity1.Get<bool>()).IsTrue();
-                    Check.That(entity2.Get<bool>()).IsTrue();
-                    Check.That(entity3.Get<bool>()).IsTrue();
-                    Check.That(entity4.Get<bool>()).IsTrue();
-
-                    entity1.Set<bool>();
-                    entity1.Set<double>();
-                    entity2.Set<bool>();
-                    entity2.Set<uint>();
-                    entity3.Set<bool>();
-                    entity3.Set<int>();
-                    entity4.Set<bool>();
-
-                    using (ISystem<int> system = new System(world))
-                    {
-                        system.Update(0);
-                    }
-
-                    Check.That(entity1.Get<bool>()).IsTrue();
-                    Check.That(entity2.Get<bool>()).IsTrue();
-                    Check.That(entity3.Get<bool>()).IsFalse();
-                    Check.That(entity4.Get<bool>()).IsFalse();
-                }
+                system.Update(0);
             }
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+            Check.That(entity4.Get<bool>()).IsTrue();
+
+            entity1.Set<bool>();
+            entity1.Set<double>();
+            entity2.Set<bool>();
+            entity2.Set<uint>();
+            entity3.Set<bool>();
+            entity3.Set<int>();
+            entity4.Set<bool>();
+
+            using (ISystem<int> system = new System(world))
+            {
+                system.Update(0);
+            }
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsFalse();
+            Check.That(entity4.Get<bool>()).IsFalse();
         }
 
         [Fact]
         public void Should_call_EntityAdded_When_entity_added()
         {
-            using (World world = new World(4))
-            using (System system = new System(world.GetEntities().With<bool>().Build()))
-            {
-                Entity addedEntity = default;
+            using World world = new World(4);
+            using System system = new System(world.GetEntities().With<bool>().Build());
 
-                ActionIn<Entity> callback = (in Entity e) => addedEntity = e;
+            Entity addedEntity = default;
 
-                system.EntityAdded += callback;
+            void callback(in Entity e) => addedEntity = e;
 
-                Entity entity = world.CreateEntity();
-                entity.Set<bool>();
+            system.EntityAdded += callback;
 
-                Check.That(addedEntity).IsEqualTo(entity);
+            Entity entity = world.CreateEntity();
+            entity.Set<bool>();
 
-                system.EntityAdded -= callback;
-                addedEntity = default;
-                entity.Remove<bool>();
-                entity.Set<bool>();
+            Check.That(addedEntity).IsEqualTo(entity);
 
-                Check.That(addedEntity).IsEqualTo(default(Entity));
-            }
+            system.EntityAdded -= callback;
+            addedEntity = default;
+            entity.Remove<bool>();
+            entity.Set<bool>();
+
+            Check.That(addedEntity).IsEqualTo(default(Entity));
         }
 
         [Fact]
         public void Should_call_EntityAdded_When_entity_already_present()
         {
-            using (World world = new World(4))
-            {
-                Entity entity = world.CreateEntity();
-                entity.Set<bool>();
+            using World world = new World(4);
 
-                using (System system = new System(world.GetEntities().With<bool>().Build()))
-                {
-                    Entity addedEntity = default;
+            Entity entity = world.CreateEntity();
+            entity.Set<bool>();
 
-                    system.EntityAdded += (in Entity e) => addedEntity = e;
+            using System system = new System(world.GetEntities().With<bool>().Build());
 
-                    Check.That(addedEntity).IsEqualTo(entity);
-                }
-            }
+            Entity addedEntity = default;
+
+            system.EntityAdded += (in Entity e) => addedEntity = e;
+
+            Check.That(addedEntity).IsEqualTo(entity);
         }
 
         [Fact]
         public void Should_call_EntityRemoved_When_entity_removed()
         {
-            using (World world = new World(4))
-            using (System system = new System(world.GetEntities().With<bool>().Build()))
-            {
-                Entity removedEntity = default;
+            using World world = new World(4);
+            using System system = new System(world.GetEntities().With<bool>().Build());
 
-                ActionIn<Entity> callback = (in Entity e) => removedEntity = e;
+            Entity removedEntity = default;
 
-                system.EntityRemoved += callback;
+            void callback(in Entity e) => removedEntity = e;
 
-                Entity entity = world.CreateEntity();
-                entity.Set<bool>();
-                entity.Remove<bool>();
+            system.EntityRemoved += callback;
 
-                Check.That(removedEntity).IsEqualTo(entity);
+            Entity entity = world.CreateEntity();
+            entity.Set<bool>();
+            entity.Remove<bool>();
 
-                system.EntityRemoved -= callback;
-                removedEntity = default;
-                entity.Set<bool>();
-                entity.Remove<bool>();
+            Check.That(removedEntity).IsEqualTo(entity);
 
-                Check.That(removedEntity).IsEqualTo(default(Entity));
-            }
+            system.EntityRemoved -= callback;
+            removedEntity = default;
+            entity.Set<bool>();
+            entity.Remove<bool>();
+
+            Check.That(removedEntity).IsEqualTo(default(Entity));
         }
 
         #endregion

@@ -43,135 +43,124 @@ namespace DefaultEcs.Test
         [Fact]
         public void IsAlive_Should_return_true()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
-                Check.That(entity.IsAlive).IsTrue();
-            }
+            using World world = new World(1);
+
+            Entity entity = world.CreateEntity();
+            Check.That(entity.IsAlive).IsTrue();
         }
 
         [Fact]
         public void IsAlive_Should_return_false_When_disposed()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
-                entity.Dispose();
-                Check.That(entity.IsAlive).IsFalse();
-            }
+            using World world = new World(1);
+
+            Entity entity = world.CreateEntity();
+            entity.Dispose();
+            Check.That(entity.IsAlive).IsFalse();
         }
 
         [Fact]
         public void IsEnabled_Should_return_true_by_default()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
-                Check.That(entity.IsEnabled()).IsTrue();
-            }
+            using World world = new World(1);
+
+            Entity entity = world.CreateEntity();
+            Check.That(entity.IsEnabled()).IsTrue();
         }
 
         [Fact]
         public void Disable_Should_disable_Entity()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
-                entity.Disable();
+            using World world = new World(1);
 
-                Check.That(entity.IsEnabled()).IsFalse();
-            }
+            Entity entity = world.CreateEntity();
+            entity.Disable();
+
+            Check.That(entity.IsEnabled()).IsFalse();
         }
 
         [Fact]
         public void Enable_Should_enable_Entity()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
-                entity.Disable();
-                entity.Enable();
+            using World world = new World(1);
 
-                Check.That(entity.IsEnabled()).IsTrue();
-            }
+            Entity entity = world.CreateEntity();
+            entity.Disable();
+            entity.Enable();
+
+            Check.That(entity.IsEnabled()).IsTrue();
         }
 
         [Fact]
         public void IsEnabled_T_Should_return_true_by_default()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
+            using World world = new World(1);
 
-                entity.Set<bool>();
+            Entity entity = world.CreateEntity();
 
-                Check.That(entity.IsEnabled<bool>()).IsTrue();
-            }
+            entity.Set<bool>();
+
+            Check.That(entity.IsEnabled<bool>()).IsTrue();
         }
 
         [Fact]
         public void Disable_T_Should_disable_component()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
-                entity.Set<bool>();
-                entity.Disable<bool>();
+            using World world = new World(1);
 
-                Check.That(entity.IsEnabled<bool>()).IsFalse();
-            }
+            Entity entity = world.CreateEntity();
+            entity.Set<bool>();
+            entity.Disable<bool>();
+
+            Check.That(entity.IsEnabled<bool>()).IsFalse();
         }
 
         [Fact]
         public void Enable_T_Should_enable_component()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
-                entity.Set<bool>();
-                entity.Disable<bool>();
-                entity.Enable<bool>();
+            using World world = new World(1);
 
-                Check.That(entity.IsEnabled<bool>()).IsTrue();
-            }
+            Entity entity = world.CreateEntity();
+            entity.Set<bool>();
+            entity.Disable<bool>();
+            entity.Enable<bool>();
+
+            Check.That(entity.IsEnabled<bool>()).IsTrue();
         }
 
         [Fact]
         public void Has_Should_return_false_When_World_does_not_have_component()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
+            using World world = new World(1);
 
-                Check.That(entity.Has<bool>()).IsFalse();
-            }
+            Entity entity = world.CreateEntity();
+
+            Check.That(entity.Has<bool>()).IsFalse();
         }
 
         [Fact]
         public void Has_Should_return_false_When_Entity_does_not_have_component()
         {
-            using (World world = new World(1))
-            {
-                world.SetMaximumComponentCount<bool>(0);
+            using World world = new World(1);
 
-                Entity entity = world.CreateEntity();
+            world.SetMaximumComponentCount<bool>(0);
 
-                Check.That(entity.Has<bool>()).IsFalse();
-            }
+            Entity entity = world.CreateEntity();
+
+            Check.That(entity.Has<bool>()).IsFalse();
         }
 
         [Fact]
         public void Has_Should_return_true_When_Entity_has_component()
         {
-            using (World world = new World(1))
-            {
-                world.SetMaximumComponentCount<bool>(1);
+            using World world = new World(1);
 
-                Entity entity = world.CreateEntity();
-                entity.Set(true);
+            world.SetMaximumComponentCount<bool>(1);
 
-                Check.That(entity.Has<bool>()).IsTrue();
-            }
+            Entity entity = world.CreateEntity();
+            entity.Set(true);
+
+            Check.That(entity.Has<bool>()).IsTrue();
         }
 
         [Fact]
@@ -185,88 +174,84 @@ namespace DefaultEcs.Test
         [Fact]
         public void Set_Should_throw_When_max_number_of_component_reached()
         {
-            using (World world = new World(1))
-            {
-                world.SetMaximumComponentCount<bool>(0);
-                Entity entity = world.CreateEntity();
+            using World world = new World(1);
 
-                Check.ThatCode(() => entity.Set(true)).Throws<InvalidOperationException>();
-            }
+            world.SetMaximumComponentCount<bool>(0);
+            Entity entity = world.CreateEntity();
+
+            Check.ThatCode(() => entity.Set(true)).Throws<InvalidOperationException>();
         }
 
         [Fact]
         public void Set_Should_set_component_value()
         {
-            using (World world = new World(1))
-            {
-                world.SetMaximumComponentCount<bool>(1);
-                Entity entity = world.CreateEntity();
+            using World world = new World(1);
 
-                entity.Set(true);
+            world.SetMaximumComponentCount<bool>(1);
+            Entity entity = world.CreateEntity();
 
-                Check.That(entity.Get<bool>()).IsTrue();
-            }
+            entity.Set(true);
+
+            Check.That(entity.Get<bool>()).IsTrue();
         }
 
         [Fact]
         public void Set_Should_not_thow_When_more_than_32_components()
         {
-            using (World world = new World(1))
-            {
-                world.SetMaximumComponentCount<bool>(1);
-                Entity entity = world.CreateEntity();
+            using World world = new World(1);
 
-                entity.Set<bool>();
-                entity.Set<short>();
-                entity.Set<ushort>();
-                entity.Set<long>();
-                entity.Set<ulong>();
-                entity.Set<int>();
-                entity.Set<uint>();
-                entity.Set<double>();
-                entity.Set<float>();
-                entity.Set<decimal>();
-                entity.Set<object>();
-                entity.Set<string>();
-                entity.Set<char>();
-                entity.Set<byte>();
-                entity.Set<World>();
-                entity.Set<Entity>();
-                entity.Set<Delegate>();
-                entity.Set<Action>();
-                entity.Set<Action<bool>>();
-                entity.Set<Action<short>>();
-                entity.Set<Action<ushort>>();
-                entity.Set<Action<long>>();
-                entity.Set<Action<ulong>>();
-                entity.Set<Action<int>>();
-                entity.Set<Action<uint>>();
-                entity.Set<Action<double>>();
-                entity.Set<Action<float>>();
-                entity.Set<Action<decimal>>();
-                entity.Set<Action<object>>();
-                entity.Set<Action<string>>();
-                entity.Set<Action<char>>();
-                entity.Set<Action<byte>>();
-            }
+            world.SetMaximumComponentCount<bool>(1);
+            Entity entity = world.CreateEntity();
+
+            entity.Set<bool>();
+            entity.Set<short>();
+            entity.Set<ushort>();
+            entity.Set<long>();
+            entity.Set<ulong>();
+            entity.Set<int>();
+            entity.Set<uint>();
+            entity.Set<double>();
+            entity.Set<float>();
+            entity.Set<decimal>();
+            entity.Set<object>();
+            entity.Set<string>();
+            entity.Set<char>();
+            entity.Set<byte>();
+            entity.Set<World>();
+            entity.Set<Entity>();
+            entity.Set<Delegate>();
+            entity.Set<Action>();
+            entity.Set<Action<bool>>();
+            entity.Set<Action<short>>();
+            entity.Set<Action<ushort>>();
+            entity.Set<Action<long>>();
+            entity.Set<Action<ulong>>();
+            entity.Set<Action<int>>();
+            entity.Set<Action<uint>>();
+            entity.Set<Action<double>>();
+            entity.Set<Action<float>>();
+            entity.Set<Action<decimal>>();
+            entity.Set<Action<object>>();
+            entity.Set<Action<string>>();
+            entity.Set<Action<char>>();
+            entity.Set<Action<byte>>();
         }
 
         [Fact]
         public void Set_Should_only_produce_one_component_for_flag_type()
         {
-            using (World world = new World(2))
-            {
-                Entity entity = world.CreateEntity();
-                Entity entity2 = world.CreateEntity();
+            using World world = new World(2);
 
-                entity.Set<FlagType>();
-                entity2.Set<FlagType>();
+            Entity entity = world.CreateEntity();
+            Entity entity2 = world.CreateEntity();
 
-                Check.That(entity.Has<FlagType>()).IsTrue();
-                Check.That(entity2.Has<FlagType>()).IsTrue();
+            entity.Set<FlagType>();
+            entity2.Set<FlagType>();
 
-                Check.That(world.GetAllComponents<FlagType>().Length).IsEqualTo(1);
-            }
+            Check.That(entity.Has<FlagType>()).IsTrue();
+            Check.That(entity2.Has<FlagType>()).IsTrue();
+
+            Check.That(world.GetAllComponents<FlagType>().Length).IsEqualTo(1);
         }
 
         [Fact]
@@ -280,171 +265,161 @@ namespace DefaultEcs.Test
         [Fact]
         public void SetSameAs_Should_throw_When_reference_not_created_from_World()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
+            using World world = new World(1);
 
-                Check.ThatCode(() => entity.SetSameAs<bool>(default)).Throws<InvalidOperationException>();
-            }
+            Entity entity = world.CreateEntity();
+
+            Check.ThatCode(() => entity.SetSameAs<bool>(default)).Throws<InvalidOperationException>();
         }
 
         [Fact]
         public void SetSameAs_Should_throw_When_component_type_not_added_to_World()
         {
-            using (World world = new World(2))
-            {
-                Entity entity = world.CreateEntity();
-                Entity reference = world.CreateEntity();
+            using World world = new World(2);
 
-                Check.ThatCode(() => entity.SetSameAs<bool>(reference)).Throws<InvalidOperationException>();
-            }
+            Entity entity = world.CreateEntity();
+            Entity reference = world.CreateEntity();
+
+            Check.ThatCode(() => entity.SetSameAs<bool>(reference)).Throws<InvalidOperationException>();
         }
 
         [Fact]
         public void SetSameAs_Should_throw_When_reference_comes_from_a_different_World()
         {
-            using (World world = new World(1))
-            using (World worldRef = new World(1))
-            {
-                Entity entity = world.CreateEntity();
-                Entity reference = worldRef.CreateEntity();
+            using World world = new World(1);
+            using World worldRef = new World(1);
 
-                Check.ThatCode(() => entity.SetSameAs<bool>(reference)).Throws<InvalidOperationException>();
-            }
+            Entity entity = world.CreateEntity();
+            Entity reference = worldRef.CreateEntity();
+
+            Check.ThatCode(() => entity.SetSameAs<bool>(reference)).Throws<InvalidOperationException>();
         }
 
         [Fact]
         public void SetSameAs_Should_throw_When_reference_does_not_have_a_component()
         {
-            using (World world = new World(2))
-            {
-                world.SetMaximumComponentCount<bool>(1);
+            using World world = new World(2);
 
-                Entity entity = world.CreateEntity();
-                Entity reference = world.CreateEntity();
+            world.SetMaximumComponentCount<bool>(1);
 
-                Check.ThatCode(() => entity.SetSameAs<bool>(reference)).Throws<InvalidOperationException>();
-            }
+            Entity entity = world.CreateEntity();
+            Entity reference = world.CreateEntity();
+
+            Check.ThatCode(() => entity.SetSameAs<bool>(reference)).Throws<InvalidOperationException>();
         }
 
         [Fact]
         public void SetSameAs_Should_set_component_to_reference()
         {
-            using (World world = new World(2))
-            {
-                world.SetMaximumComponentCount<bool>(1);
+            using World world = new World(2);
 
-                Entity entity = world.CreateEntity();
-                Entity reference = world.CreateEntity();
+            world.SetMaximumComponentCount<bool>(1);
 
-                reference.Set(false);
-                entity.SetSameAs<bool>(reference);
+            Entity entity = world.CreateEntity();
+            Entity reference = world.CreateEntity();
 
-                Check.That(entity.Get<bool>()).IsEqualTo(reference.Get<bool>());
+            reference.Set(false);
+            entity.SetSameAs<bool>(reference);
 
-                reference.Set(true);
+            Check.That(entity.Get<bool>()).IsEqualTo(reference.Get<bool>());
 
-                Check.That(entity.Get<bool>()).IsEqualTo(reference.Get<bool>());
+            reference.Set(true);
 
-                entity.Set(false);
+            Check.That(entity.Get<bool>()).IsEqualTo(reference.Get<bool>());
 
-                Check.That(reference.Get<bool>()).IsEqualTo(entity.Get<bool>());
-            }
+            entity.Set(false);
+
+            Check.That(reference.Get<bool>()).IsEqualTo(entity.Get<bool>());
         }
 
         [Fact]
         public void Remove_Should_not_throw_When_no_component()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
+            using World world = new World(1);
 
-                entity.Remove<bool>();
-            }
+            Entity entity = world.CreateEntity();
+
+            entity.Remove<bool>();
         }
 
         [Fact]
         public void Remove_Should_remove_component()
         {
-            using (World world = new World(1))
-            {
-                world.SetMaximumComponentCount<bool>(1);
+            using World world = new World(1);
 
-                Entity entity = world.CreateEntity();
+            world.SetMaximumComponentCount<bool>(1);
 
-                entity.Set(true);
+            Entity entity = world.CreateEntity();
 
-                Check.That(entity.Has<bool>()).IsTrue();
+            entity.Set(true);
 
-                entity.Remove<bool>();
+            Check.That(entity.Has<bool>()).IsTrue();
 
-                Check.That(entity.Has<bool>()).IsFalse();
-            }
+            entity.Remove<bool>();
+
+            Check.That(entity.Has<bool>()).IsFalse();
         }
 
         [Fact]
         public void Remove_Should_remove_component_without_removing_reference()
         {
-            using (World world = new World(2))
-            {
-                world.SetMaximumComponentCount<bool>(1);
+            using World world = new World(2);
 
-                Entity entity = world.CreateEntity();
-                Entity reference = world.CreateEntity();
+            world.SetMaximumComponentCount<bool>(1);
 
-                reference.Set(true);
-                entity.SetSameAs<bool>(reference);
+            Entity entity = world.CreateEntity();
+            Entity reference = world.CreateEntity();
 
-                entity.Remove<bool>();
+            reference.Set(true);
+            entity.SetSameAs<bool>(reference);
 
-                Check.That(entity.Has<bool>()).IsFalse();
-                Check.That(reference.Has<bool>()).IsTrue();
-            }
+            entity.Remove<bool>();
+
+            Check.That(entity.Has<bool>()).IsFalse();
+            Check.That(reference.Has<bool>()).IsTrue();
         }
 
         [Fact]
         public void Remove_Should_remove_component_and_pass_reference()
         {
-            using (World world = new World(3))
-            {
-                world.SetMaximumComponentCount<bool>(2);
+            using World world = new World(3);
 
-                Entity entity = world.CreateEntity();
-                Entity reference = world.CreateEntity();
-                Entity other = world.CreateEntity();
+            world.SetMaximumComponentCount<bool>(2);
 
-                reference.Set(true);
-                entity.SetSameAs<bool>(reference);
+            Entity entity = world.CreateEntity();
+            Entity reference = world.CreateEntity();
+            Entity other = world.CreateEntity();
 
-                reference.Remove<bool>();
-                other.Set(false);
+            reference.Set(true);
+            entity.SetSameAs<bool>(reference);
 
-                Check.That(entity.Has<bool>()).IsTrue();
-                Check.That(reference.Has<bool>()).IsFalse();
+            reference.Remove<bool>();
+            other.Set(false);
 
-                Check.That(entity.Get<bool>()).IsTrue();
-            }
+            Check.That(entity.Has<bool>()).IsTrue();
+            Check.That(reference.Has<bool>()).IsFalse();
+
+            Check.That(entity.Get<bool>()).IsTrue();
         }
 
         [Fact]
         public void Remove_Should_not_remove_component_of_all_referenced_Entity()
         {
-            using (World world = new World(3))
-            {
-                world.SetMaximumComponentCount<bool>(1);
+            using World world = new World(3);
 
-                Entity entity = world.CreateEntity();
-                world.CreateEntity();
-                Entity reference = world.CreateEntity();
+            world.SetMaximumComponentCount<bool>(1);
 
-                reference.Set(true);
-                entity.SetSameAs<bool>(reference);
+            Entity entity = world.CreateEntity();
+            world.CreateEntity();
+            Entity reference = world.CreateEntity();
 
-                reference.Remove<bool>();
+            reference.Set(true);
+            entity.SetSameAs<bool>(reference);
 
-                Check.That(entity.Has<bool>()).IsTrue();
-                Check.That(reference.Has<bool>()).IsFalse();
-            }
+            reference.Remove<bool>();
+
+            Check.That(entity.Has<bool>()).IsTrue();
+            Check.That(reference.Has<bool>()).IsFalse();
         }
 
         [Fact]
@@ -458,183 +433,174 @@ namespace DefaultEcs.Test
         [Fact]
         public void Get_Should_throw_When_Entity_does_not_have_component()
         {
-            using (World world = new World(2))
-            {
-                Entity entity = world.CreateEntity();
+            using World world = new World(2);
 
-                Check.ThatCode(() => entity.Get<bool>()).Throws<Exception>();
+            Entity entity = world.CreateEntity();
 
-                entity.Set(true);
-                entity.Remove<bool>();
+            Check.ThatCode(() => entity.Get<bool>()).Throws<Exception>();
 
-                Check.ThatCode(() => entity.Get<bool>()).Throws<Exception>();
-            }
+            entity.Set(true);
+            entity.Remove<bool>();
+
+            Check.ThatCode(() => entity.Get<bool>()).Throws<Exception>();
         }
 
         [Fact]
         public void Get_Should_get_component()
         {
-            using (World world = new World(2))
-            {
-                Entity entity = world.CreateEntity();
+            using World world = new World(2);
 
-                entity.Set(true);
+            Entity entity = world.CreateEntity();
 
-                Check.That(entity.Get<bool>()).IsTrue();
+            entity.Set(true);
 
-                entity.Set(false);
+            Check.That(entity.Get<bool>()).IsTrue();
 
-                Check.That(entity.Get<bool>()).IsFalse();
-            }
+            entity.Set(false);
+
+            Check.That(entity.Get<bool>()).IsFalse();
         }
 
         [Fact]
         public void Get_Should_get_component_of_reference_When_is_same_as()
         {
-            using (World world = new World(2))
-            {
-                Entity entity = world.CreateEntity();
-                Entity reference = world.CreateEntity();
+            using World world = new World(2);
 
-                reference.Set(true);
-                entity.SetSameAs<bool>(reference);
+            Entity entity = world.CreateEntity();
+            Entity reference = world.CreateEntity();
 
-                Check.That(entity.Get<bool>()).IsTrue();
+            reference.Set(true);
+            entity.SetSameAs<bool>(reference);
 
-                reference.Set(false);
+            Check.That(entity.Get<bool>()).IsTrue();
 
-                Check.That(entity.Get<bool>()).IsFalse();
-            }
+            reference.Set(false);
+
+            Check.That(entity.Get<bool>()).IsFalse();
         }
 
         [Fact]
         public void Dispose_Should_release_Entity()
         {
-            using (World world = new World(2))
-            {
-                Entity deletedEntity = world.CreateEntity();
+            using World world = new World(2);
 
-                deletedEntity.Dispose();
+            Entity deletedEntity = world.CreateEntity();
 
-                Entity entity = world.CreateEntity();
+            deletedEntity.Dispose();
 
-                Check.That(entity).IsEqualTo(deletedEntity);
-            }
+            Entity entity = world.CreateEntity();
+
+            Check.That(entity).IsEqualTo(deletedEntity);
         }
 
         [Fact]
         public void Dispose_Should_remove_all_component()
         {
-            using (World world = new World(2))
-            {
-                world.SetMaximumComponentCount<bool>(1);
-                world.CreateEntity();
-                Entity deletedEntity = world.CreateEntity();
-                deletedEntity.Set(true);
+            using World world = new World(2);
 
-                Check.That(deletedEntity.Has<bool>()).IsTrue();
+            world.SetMaximumComponentCount<bool>(1);
+            world.CreateEntity();
+            Entity deletedEntity = world.CreateEntity();
+            deletedEntity.Set(true);
 
-                deletedEntity.Dispose();
-                Check.That(deletedEntity.Has<bool>()).IsFalse();
+            Check.That(deletedEntity.Has<bool>()).IsTrue();
 
-                Entity entity = world.CreateEntity();
+            deletedEntity.Dispose();
+            Check.That(deletedEntity.Has<bool>()).IsFalse();
 
-                Check.That(entity.Has<bool>()).IsFalse();
-            }
+            Entity entity = world.CreateEntity();
+
+            Check.That(entity.Has<bool>()).IsFalse();
         }
 
         [Fact]
         public void Dispose_Should_dispose_children_When_SetAsChildOf()
         {
-            using (World world = new World(4))
-            using (EntitySet set = world.GetEntities().Build())
-            {
-                Entity parent = world.CreateEntity();
-                Entity other = world.CreateEntity();
-                Entity child1 = world.CreateEntity();
-                Entity child2 = world.CreateEntity();
+            using World world = new World(4);
+            using EntitySet set = world.GetEntities().Build();
 
-                child1.SetAsChildOf(parent);
-                child2.SetAsChildOf(parent);
+            Entity parent = world.CreateEntity();
+            Entity other = world.CreateEntity();
+            Entity child1 = world.CreateEntity();
+            Entity child2 = world.CreateEntity();
 
-                Check.That(set.GetEntities().Length).IsEqualTo(4);
+            child1.SetAsChildOf(parent);
+            child2.SetAsChildOf(parent);
 
-                parent.Dispose();
+            Check.That(set.GetEntities().Length).IsEqualTo(4);
 
-                Check.That(set.GetEntities().Length).IsEqualTo(1);
-                Check.That(set.GetEntities()[0]).IsEqualTo(other);
-            }
+            parent.Dispose();
+
+            Check.That(set.GetEntities().Length).IsEqualTo(1);
+            Check.That(set.GetEntities()[0]).IsEqualTo(other);
         }
 
         [Fact]
         public void Dispose_Should_dispose_children_When_SetAsParentOf()
         {
-            using (World world = new World(4))
-            using (EntitySet set = world.GetEntities().Build())
-            {
-                Entity parent = world.CreateEntity();
-                Entity other = world.CreateEntity();
-                Entity child1 = world.CreateEntity();
-                Entity child2 = world.CreateEntity();
+            using World world = new World(4);
+            using EntitySet set = world.GetEntities().Build();
 
-                parent.SetAsParentOf(child1);
-                parent.SetAsParentOf(child2);
+            Entity parent = world.CreateEntity();
+            Entity other = world.CreateEntity();
+            Entity child1 = world.CreateEntity();
+            Entity child2 = world.CreateEntity();
 
-                Check.That(set.GetEntities().Length).IsEqualTo(4);
+            parent.SetAsParentOf(child1);
+            parent.SetAsParentOf(child2);
 
-                parent.Dispose();
+            Check.That(set.GetEntities().Length).IsEqualTo(4);
 
-                Check.That(set.GetEntities().Length).IsEqualTo(1);
-                Check.That(set.GetEntities()[0]).IsEqualTo(other);
-            }
+            parent.Dispose();
+
+            Check.That(set.GetEntities().Length).IsEqualTo(1);
+            Check.That(set.GetEntities()[0]).IsEqualTo(other);
         }
 
         [Fact]
         public void Dispose_Should_not_throw_When_dependency_graph_is_circular()
         {
-            using (World world = new World(4))
-            using (EntitySet set = world.GetEntities().Build())
-            {
-                Entity entity1 = world.CreateEntity();
-                Entity other = world.CreateEntity();
-                Entity entity2 = world.CreateEntity();
-                Entity entity3 = world.CreateEntity();
+            using World world = new World(4);
+            using EntitySet set = world.GetEntities().Build();
 
-                entity1.SetAsParentOf(entity2);
-                entity2.SetAsParentOf(entity3);
-                entity3.SetAsParentOf(entity1);
+            Entity entity1 = world.CreateEntity();
+            Entity other = world.CreateEntity();
+            Entity entity2 = world.CreateEntity();
+            Entity entity3 = world.CreateEntity();
 
-                Check.That(set.GetEntities().Length).IsEqualTo(4);
+            entity1.SetAsParentOf(entity2);
+            entity2.SetAsParentOf(entity3);
+            entity3.SetAsParentOf(entity1);
 
-                Check.ThatCode(entity1.Dispose).Not.ThrowsAny();
+            Check.That(set.GetEntities().Length).IsEqualTo(4);
 
-                Check.That(set.GetEntities().Length).IsEqualTo(1);
-                Check.That(set.GetEntities()[0]).IsEqualTo(other);
-            }
+            Check.ThatCode(entity1.Dispose).Not.ThrowsAny();
+
+            Check.That(set.GetEntities().Length).IsEqualTo(1);
+            Check.That(set.GetEntities()[0]).IsEqualTo(other);
         }
 
         [Fact]
         public void Dispose_Should_not_dispose_children_When_RemoveFromParentsOf()
         {
-            using (World world = new World(4))
-            using (EntitySet set = world.GetEntities().Build())
-            {
-                Entity parent = world.CreateEntity();
-                Entity other = world.CreateEntity();
-                Entity child1 = world.CreateEntity();
-                Entity child2 = world.CreateEntity();
+            using World world = new World(4);
+            using EntitySet set = world.GetEntities().Build();
 
-                child1.SetAsChildOf(parent);
-                child2.SetAsChildOf(parent);
+            Entity parent = world.CreateEntity();
+            Entity other = world.CreateEntity();
+            Entity child1 = world.CreateEntity();
+            Entity child2 = world.CreateEntity();
 
-                Check.That(set.GetEntities().Length).IsEqualTo(4);
+            child1.SetAsChildOf(parent);
+            child2.SetAsChildOf(parent);
 
-                parent.RemoveFromParentsOf(child1);
-                parent.Dispose();
+            Check.That(set.GetEntities().Length).IsEqualTo(4);
 
-                Check.That(set.GetEntities().Length).IsEqualTo(2);
-                Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(new[] { other, child1 });
-            }
+            parent.RemoveFromParentsOf(child1);
+            parent.Dispose();
+
+            Check.That(set.GetEntities().Length).IsEqualTo(2);
+            Check.That(set.GetEntities().ToArray()).IsOnlyMadeOf(new[] { other, child1 });
         }
 
         [Fact]
@@ -649,14 +615,13 @@ namespace DefaultEcs.Test
         [Fact]
         public void SetAsParentOf_Should_throw_When_parent_and_child_not_created_from_same_World()
         {
-            using (World world1 = new World(1))
-            using (World world2 = new World(1))
-            {
-                Entity parent = world1.CreateEntity();
-                Entity child = world2.CreateEntity();
+            using World world1 = new World(1);
+            using World world2 = new World(1);
 
-                Check.ThatCode(() => parent.SetAsParentOf(child)).Throws<InvalidOperationException>();
-            }
+            Entity parent = world1.CreateEntity();
+            Entity child = world2.CreateEntity();
+
+            Check.ThatCode(() => parent.SetAsParentOf(child)).Throws<InvalidOperationException>();
         }
 
         [Fact]
@@ -671,111 +636,104 @@ namespace DefaultEcs.Test
         [Fact]
         public void RemoveFromParentsOf_Should_throw_When_parent_and_child_not_created_from_same_World()
         {
-            using (World world1 = new World(1))
-            using (World world2 = new World(1))
-            {
-                Entity parent = world1.CreateEntity();
-                Entity child = world2.CreateEntity();
+            using World world1 = new World(1);
+            using World world2 = new World(1);
 
-                Check.ThatCode(() => parent.RemoveFromParentsOf(child)).Throws<InvalidOperationException>();
-            }
+            Entity parent = world1.CreateEntity();
+            Entity child = world2.CreateEntity();
+
+            Check.ThatCode(() => parent.RemoveFromParentsOf(child)).Throws<InvalidOperationException>();
         }
 
         [Fact]
         public void CopyTo_Should_copy_entity_with_its_components()
         {
-            using (World world1 = new World(1))
-            using (World world2 = new World(1))
-            {
-                Entity main = world1.CreateEntity();
+            using World world1 = new World(1);
+            using World world2 = new World(1);
 
-                main.Set(42);
-                main.Set("kikoo");
+            Entity main = world1.CreateEntity();
 
-                Entity copy = main.CopyTo(world2);
+            main.Set(42);
+            main.Set("kikoo");
 
-                Check.That(copy.Get<int>()).IsEqualTo(main.Get<int>());
-                Check.That(copy.Get<string>()).IsEqualTo(main.Get<string>());
-            }
+            Entity copy = main.CopyTo(world2);
+
+            Check.That(copy.Get<int>()).IsEqualTo(main.Get<int>());
+            Check.That(copy.Get<string>()).IsEqualTo(main.Get<string>());
         }
 
         [Fact]
         public void CopyTo_Should_copy_entity_with_its_components_and_its_state()
         {
-            using (World world1 = new World(1))
-            using (World world2 = new World(1))
-            {
-                Entity main = world1.CreateEntity();
+            using World world1 = new World(1);
+            using World world2 = new World(1);
 
-                main.Set(42);
-                main.Disable<int>();
-                main.Set("kikoo");
-                main.Disable();
+            Entity main = world1.CreateEntity();
 
-                Entity copy = main.CopyTo(world2);
+            main.Set(42);
+            main.Disable<int>();
+            main.Set("kikoo");
+            main.Disable();
 
-                Check.That(main.IsEnabled()).IsEqualTo(copy.IsEnabled());
-                Check.That(main.IsEnabled<int>()).IsEqualTo(copy.IsEnabled<int>());
-                Check.That(main.IsEnabled<string>()).IsEqualTo(copy.IsEnabled<string>());
-            }
+            Entity copy = main.CopyTo(world2);
+
+            Check.That(main.IsEnabled()).IsEqualTo(copy.IsEnabled());
+            Check.That(main.IsEnabled<int>()).IsEqualTo(copy.IsEnabled<int>());
+            Check.That(main.IsEnabled<string>()).IsEqualTo(copy.IsEnabled<string>());
         }
 
         [Fact]
         public void CopyTo_Should_left_no_trace_When_there_is_an_exception()
         {
-            using (World world1 = new World(1))
-            using (World world2 = new World(1))
-            {
-                Entity main = world1.CreateEntity();
+            using World world1 = new World(1);
+            using World world2 = new World(1);
 
-                main.Set(42);
-                main.Set("kikoo");
+            Entity main = world1.CreateEntity();
 
-                world2.SetMaximumComponentCount<string>(0);
+            main.Set(42);
+            main.Set("kikoo");
 
-                Check.ThatCode(() => main.CopyTo(world2)).ThrowsAny();
-                Check.That(world2.GetAllComponents<int>().Length).IsEqualTo(0);
-                Check.That(world2.GetEntities().Build().Count).IsEqualTo(0);
-            }
+            world2.SetMaximumComponentCount<string>(0);
+
+            Check.ThatCode(() => main.CopyTo(world2)).ThrowsAny();
+            Check.That(world2.GetAllComponents<int>().Length).IsEqualTo(0);
+            Check.That(world2.GetEntities().Build().Count).IsEqualTo(0);
         }
 
         [Fact]
         public void CopyTo_Should_throw_When_not_created_from_same_World()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = default;
-                Check.ThatCode(() => entity.CopyTo(world)).Throws<InvalidOperationException>();
-            }
+            using World world = new World(1);
+
+            Entity entity = default;
+            Check.ThatCode(() => entity.CopyTo(world)).Throws<InvalidOperationException>();
         }
 
         [Fact]
         public void ReadAllComponents_Should_throw_ArgumentNullException_When_reader_is_null()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
-                Check.ThatCode(() => entity.ReadAllComponents(null)).Throws<ArgumentNullException>();
-            }
+            using World world = new World(1);
+
+            Entity entity = world.CreateEntity();
+            Check.ThatCode(() => entity.ReadAllComponents(null)).Throws<ArgumentNullException>();
         }
 
         [Fact]
         public void ReadAllComponents_Should_callback_reader()
         {
-            using (World world = new World(42))
-            {
-                Entity entity = world.CreateEntity();
-                entity.Set(42);
-                entity.Set(1337L);
+            using World world = new World(42);
 
-                ComponentReader reader = new ComponentReader();
+            Entity entity = world.CreateEntity();
+            entity.Set(42);
+            entity.Set(1337L);
 
-                entity.ReadAllComponents(reader);
+            ComponentReader reader = new ComponentReader();
 
-                Check.That(reader.IntValue).IsEqualTo(42);
-                Check.That(reader.LongValue).IsEqualTo(1337L);
-                Check.That(reader.FloatValue.HasValue).IsFalse();
-            }
+            entity.ReadAllComponents(reader);
+
+            Check.That(reader.IntValue).IsEqualTo(42);
+            Check.That(reader.LongValue).IsEqualTo(1337L);
+            Check.That(reader.FloatValue.HasValue).IsFalse();
         }
 
         #endregion

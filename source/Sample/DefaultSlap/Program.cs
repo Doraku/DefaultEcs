@@ -4,10 +4,9 @@
     {
         private static void Main()
         {
-            using (DefaultGame game = new DefaultGame())
-            {
-                game.Run();
-            }
+            using DefaultGame game = new DefaultGame();
+
+            game.Run();
         }
     }
 }

@@ -24,16 +24,16 @@ jobs:
     - name: Set up dotnet
       uses: actions/setup-dotnet@master
       with:
-        dotnet-version: '2.2.401'
+        dotnet-version: '3.0.100'
       
     - name: Run tests
       run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release
 
     - name: Install coverlet tool
-      run: dotnet tool install --tool-path . --version 1.5.3 coverlet.console
+      run: dotnet tool install --tool-path . --version 1.6.0 coverlet.console
 
     - name: Create coverage file
-      run: dotnet .store\coverlet.console\1.5.3\coverlet.console\1.5.3\tools\netcoreapp2.2\any\coverlet.console.dll source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll -t "dotnet" -a "vstest source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll" -o coverage\lcov.info -f lcov
+      run: dotnet .store\coverlet.console\1.6.0\coverlet.console\1.6.0\tools\netcoreapp2.2\any\coverlet.console.dll source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll -t "dotnet" -a "vstest source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll" -o coverage\lcov.info -f lcov
 
     - name: Upload to coverall
       uses: coverallsapp/github-action@master

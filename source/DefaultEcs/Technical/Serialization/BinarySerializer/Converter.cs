@@ -286,17 +286,12 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         public static T Read(Stream stream, byte[] buffer, byte* bufferP)
         {
-            switch (stream.ReadByte())
+            return (stream.ReadByte()) switch
             {
-                case 0:
-                    return default;
-
-                case 1:
-                    return _readAction(stream, buffer, bufferP);
-
-                default:
-                    return Converter.GetReadAction<T>(StringConverter.Read(stream, buffer, bufferP))(stream, buffer, bufferP);
-            }
+                0 => default,
+                1 => _readAction(stream, buffer, bufferP),
+                _ => Converter.GetReadAction<T>(StringConverter.Read(stream, buffer, bufferP))(stream, buffer, bufferP),
+            };
         }
 
         public static void WrapperWrite(in object value, Stream stream, byte[] buffer, byte* bufferP) => Write((T)value, stream, buffer, bufferP);

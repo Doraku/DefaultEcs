@@ -111,7 +111,7 @@ namespace DefaultEcs.Command
 
         private int ReserveNextCommand(int commandSize)
         {
-            void Throw() => throw new InvalidOperationException("CommandBuffer is full.");
+            static void Throw() => throw new InvalidOperationException("CommandBuffer is full.");
 
             int commandOffset;
             int nextCommandOffset;

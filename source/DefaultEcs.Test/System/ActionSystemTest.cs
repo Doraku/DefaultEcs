@@ -20,7 +20,7 @@ namespace DefaultEcs.Test.System
         {
             bool done = false;
 
-            ISystem<int> system = new ActionSystem<int>(_ => done = true);
+            using ISystem<int> system = new ActionSystem<int>(_ => done = true);
 
             system.Update(0);
 
@@ -32,7 +32,7 @@ namespace DefaultEcs.Test.System
         {
             bool done = false;
 
-            ISystem<int> system = new ActionSystem<int>(_ => done = true)
+            using ISystem<int> system = new ActionSystem<int>(_ => done = true)
             {
                 IsEnabled = false
             };

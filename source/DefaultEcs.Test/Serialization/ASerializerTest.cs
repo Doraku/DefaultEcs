@@ -124,30 +124,28 @@ namespace DefaultEcs.Test.Serialization
 
         private void Test<T>(T obj)
         {
-            using (Stream stream = new MemoryStream())
-            {
-                Write(stream, obj);
+            using Stream stream = new MemoryStream();
 
-                stream.Position = 0;
+            Write(stream, obj);
 
-                T copy = Read<T>(stream);
+            stream.Position = 0;
 
-                Check.That(copy).IsEqualTo(obj);
-            }
+            T copy = Read<T>(stream);
+
+            Check.That(copy).IsEqualTo(obj);
         }
 
         private void TestArray<T>(T[] array)
         {
-            using (Stream stream = new MemoryStream())
-            {
-                Write(stream, array);
+            using Stream stream = new MemoryStream();
 
-                stream.Position = 0;
+            Write(stream, array);
 
-                T[] copy = Read<T[]>(stream);
+            stream.Position = 0;
 
-                Check.That(copy).ContainsExactly(array);
-            }
+            T[] copy = Read<T[]>(stream);
+
+            Check.That(copy).ContainsExactly(array);
         }
 
         protected abstract void Write<T>(Stream stream, T obj);

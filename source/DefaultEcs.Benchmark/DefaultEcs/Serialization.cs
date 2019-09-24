@@ -80,37 +80,33 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         [Benchmark]
         public void Struct_Serialize()
         {
-            using (Stream stream = File.Create(_filePathS))
-            {
-                _serializer.Serialize(stream, _worldS);
-            }
+            using Stream stream = File.Create(_filePathS);
+
+            _serializer.Serialize(stream, _worldS);
         }
 
         [Benchmark]
         public void Struct_Deserialize()
         {
-            using (Stream stream = File.OpenRead(_filePathS))
-            {
-                _worldSCopy = _serializer.Deserialize(stream);
-            }
+            using Stream stream = File.OpenRead(_filePathS);
+
+            _worldSCopy = _serializer.Deserialize(stream);
         }
 
         [Benchmark]
         public void Class_Serialize()
         {
-            using (Stream stream = File.Create(_filePathC))
-            {
-                _serializer.Serialize(stream, _worldC);
-            }
+            using Stream stream = File.Create(_filePathC);
+
+            _serializer.Serialize(stream, _worldC);
         }
 
         [Benchmark]
         public void Class_Deserialize()
         {
-            using (Stream stream = File.OpenRead(_filePathC))
-            {
-                _worldCCopy = _serializer.Deserialize(stream);
-            }
+            using Stream stream = File.OpenRead(_filePathC);
+
+            _worldCCopy = _serializer.Deserialize(stream);
         }
     }
 }

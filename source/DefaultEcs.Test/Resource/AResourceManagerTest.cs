@@ -36,24 +36,22 @@ namespace DefaultEcs.Test.Resource
         [Fact]
         public void Should_load_resource()
         {
-            using (World world = new World(1))
-            {
-                Entity entity = world.CreateEntity();
-                entity.Set(new ManagedResource<string, IDisposable>("dummy"));
+            using World world = new World(1);
 
-                using (ResourceManagerTest manager = new ResourceManagerTest(null))
-                {
-                    manager.Manage(world);
+            Entity entity = world.CreateEntity();
+            entity.Set(new ManagedResource<string, IDisposable>("dummy"));
 
-                    Check.That(entity.Get<string>()).IsEqualTo("dummy");
-                    Check.That(entity.Get<int>()).IsEqualTo(1);
+            using ResourceManagerTest manager = new ResourceManagerTest(null);
 
-                    entity.Set(new ManagedResource<string, IDisposable>("dummy2"));
+            manager.Manage(world);
 
-                    Check.That(entity.Get<string>()).IsEqualTo("dummy2");
-                    Check.That(entity.Get<int>()).IsEqualTo(2);
-                }
-            }
+            Check.That(entity.Get<string>()).IsEqualTo("dummy");
+            Check.That(entity.Get<int>()).IsEqualTo(1);
+
+            entity.Set(new ManagedResource<string, IDisposable>("dummy2"));
+
+            Check.That(entity.Get<string>()).IsEqualTo("dummy2");
+            Check.That(entity.Get<int>()).IsEqualTo(2);
         }
 
         [Fact]
@@ -61,15 +59,14 @@ namespace DefaultEcs.Test.Resource
         {
             IDisposable value = Substitute.For<IDisposable>();
 
-            using (World world = new World(1))
-            using (ResourceManagerTest manager = new ResourceManagerTest(value))
-            {
-                manager.Manage(world);
-                Entity entity = world.CreateEntity();
-                entity.Set(new ManagedResource<string[], IDisposable>(new[] { "dummy", "dummy2" }));
+            using World world = new World(1);
+            using ResourceManagerTest manager = new ResourceManagerTest(value);
 
-                Check.That(entity.Get<int>()).IsEqualTo(2);
-            }
+            manager.Manage(world);
+            Entity entity = world.CreateEntity();
+            entity.Set(new ManagedResource<string[], IDisposable>(new[] { "dummy", "dummy2" }));
+
+            Check.That(entity.Get<int>()).IsEqualTo(2);
         }
 
         [Fact]
@@ -79,24 +76,23 @@ namespace DefaultEcs.Test.Resource
             IDisposable value = Substitute.For<IDisposable>();
             value.When(d => d.Dispose()).Do(_ => ++disposedCount);
 
-            using (ResourceManagerTest manager = new ResourceManagerTest(value))
-            using (World world = new World())
-            {
-                manager.Manage(world);
-                Entity entity = world.CreateEntity();
-                entity.Set(new ManagedResource<string, IDisposable>("dummy"));
+            using ResourceManagerTest manager = new ResourceManagerTest(value);
+            using World world = new World();
 
-                Entity entity2 = world.CreateEntity();
-                entity2.Set(new ManagedResource<string, IDisposable>("dummy"));
+            manager.Manage(world);
+            Entity entity = world.CreateEntity();
+            entity.Set(new ManagedResource<string, IDisposable>("dummy"));
 
-                entity.Dispose();
+            Entity entity2 = world.CreateEntity();
+            entity2.Set(new ManagedResource<string, IDisposable>("dummy"));
 
-                Check.That(disposedCount).IsEqualTo(0);
+            entity.Dispose();
 
-                entity2.Dispose();
+            Check.That(disposedCount).IsEqualTo(0);
 
-                Check.That(disposedCount).IsEqualTo(1);
-            }
+            entity2.Dispose();
+
+            Check.That(disposedCount).IsEqualTo(1);
         }
 
         [Fact]
@@ -106,20 +102,19 @@ namespace DefaultEcs.Test.Resource
             IDisposable value = Substitute.For<IDisposable>();
             value.When(d => d.Dispose()).Do(_ => ++disposedCount);
 
-            using (ResourceManagerTest manager = new ResourceManagerTest(value))
+            using ResourceManagerTest manager = new ResourceManagerTest(value);
+
+            using (World world = new World())
             {
-                using (World world = new World())
-                {
-                    manager.Manage(world);
-                    Entity entity = world.CreateEntity();
-                    entity.Set(new ManagedResource<string, IDisposable>("dummy"));
+                manager.Manage(world);
+                Entity entity = world.CreateEntity();
+                entity.Set(new ManagedResource<string, IDisposable>("dummy"));
 
-                    Entity entity2 = world.CreateEntity();
-                    entity2.SetSameAs<ManagedResource<string, IDisposable>>(entity);
-                }
-
-                Check.That(disposedCount).IsEqualTo(1);
+                Entity entity2 = world.CreateEntity();
+                entity2.SetSameAs<ManagedResource<string, IDisposable>>(entity);
             }
+
+            Check.That(disposedCount).IsEqualTo(1);
         }
 
         #endregion
