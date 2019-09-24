@@ -11,11 +11,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
 		..\.github\workflows\ContinuousIntegration.yml = ..\.github\workflows\ContinuousIntegration.yml
-		DefaultEcs\DefaultEcs.Package.csproj = DefaultEcs\DefaultEcs.Package.csproj
+		DefaultEcs\DefaultEcs.Release.csproj = DefaultEcs\DefaultEcs.Release.csproj
 		DefaultEcs\DefaultEcs.targets = DefaultEcs\DefaultEcs.targets
 		..\LICENSE.md = ..\LICENSE.md
-		..\Package.bat = ..\Package.bat
 		..\README.md = ..\README.md
+		..\Release.bat = ..\Release.bat
 		..\documentation\RELEASENOTE.md = ..\documentation\RELEASENOTE.md
 	EndProjectSection
 EndProject

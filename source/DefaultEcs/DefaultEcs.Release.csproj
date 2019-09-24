@@ -9,6 +9,10 @@
   <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
     <PackageReference Include="DefaultDocumentation" Version="0.4.3" PrivateAssets="all" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\image\logo.png" Pack="true" PackagePath="\"/>
+  </ItemGroup>
   
   <PropertyGroup Label="Package">
     <Authors>Paillat Laszlo</Authors>
@@ -16,7 +20,7 @@
     <AssemblyTitle>DefaultEcs</AssemblyTitle>
     <PackageId>DefaultEcs</PackageId>
     <Description>Entity Component System framework aiming for syntax and usage simplicity with maximum performance for game development.</Description>
-    <PackageIconUrl>https://github.com/Doraku/DefaultEcs/raw/master/image/logo.png</PackageIconUrl>
+    <PackageIcon>logo.png</PackageIcon>
     <PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/Doraku/DefaultEcs.git</RepositoryUrl>
