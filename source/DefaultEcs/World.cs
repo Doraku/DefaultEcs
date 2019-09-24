@@ -87,7 +87,9 @@ namespace DefaultEcs
                 Infos[WorldId] = Info;
             }
 
+#pragma warning disable IDE0067 // Dispose objects before losing scope
             this.Subscribe(this);
+#pragma warning restore IDE0067 // Dispose objects before losing scope
         }
 
         /// <summary>

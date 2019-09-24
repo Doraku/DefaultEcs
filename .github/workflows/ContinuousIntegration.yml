@@ -33,9 +33,15 @@ jobs:
       run: dotnet tool install --tool-path . --version 1.6.0 coverlet.console
 
     - name: Create coverage file
-      run: dotnet .store\coverlet.console\1.6.0\coverlet.console\1.6.0\tools\netcoreapp2.2\any\coverlet.console.dll source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll -t "dotnet" -a "vstest source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll" -o coverage\lcov.info -f lcov
+      run: dotnet .store\coverlet.console\1.6.0\coverlet.console\1.6.0\tools\netcoreapp2.2\any\coverlet.console.dll source\DefaultEcs.Test\bin\Release\netcoreapp2.2\DefaultEcs.Test.dll -t "dotnet" -a "vstest source\DefaultEcs.Test\bin\Release\netcoreapp3.0\DefaultEcs.Test.dll" -o coverage\lcov.info -f lcov
 
     - name: Upload to coverall
       uses: coverallsapp/github-action@master
       with:
-        github-token: ${{ secrets.github_token }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create package
+      run: dotnet pack source\DefaultEcs\DefaultEcs.csproj -c Release -o package -p:PackageVersion=0-alpha
+
+    - name: Publish package
+      run: dotnet nuget push -s https://nuget.pkg.github.com/Doraku/index.json -k ${{ secrets.GITHUB_TOKEN }} package\*.nupkg
