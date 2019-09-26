@@ -40,8 +40,14 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-#    - name: Create package
-#      run: dotnet pack source\DefaultEcs\DefaultEcs.csproj -c Release -o package -p:PackageVersion=0-alpha -p:PackageReleaseNotes="${{ github.sha }}"
-# 
-#    - name: Publish package
-#      run: dotnet nuget push -s https://nuget.pkg.github.com/Doraku/index.json -k ${{ secrets.GITHUB_TOKEN }} package\*.nupkg
+    - name: Create package
+      run: dotnet pack source\DefaultEcs\DefaultEcs.csproj -c Release -o package -p:PackageReleaseNotes="${{ github.sha }}"
+
+    - name: Setup Nuget
+      uses: warrenbuckley/Setup-Nuget@master
+
+    - name: Register GPR
+      run: nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/Doraku/index.json" -UserName Doraku -Password ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Publish package
+      run: nuget push package\*.nupkg -Source "GitHub"

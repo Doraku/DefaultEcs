@@ -5,4 +5,8 @@
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <Version>0-ci$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Version>
+  </PropertyGroup>
 </Project>
