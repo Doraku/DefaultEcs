@@ -1,31 +1,31 @@
-﻿using System.Collections.Generic;
-using DefaultEcs.Technical.Command;
+﻿//using System.Collections.Generic;
+//using DefaultEcs.Technical.Command;
 
-namespace DefaultEcs.Command
-{
-    //internal sealed class EntityCommandPlayer
-    //{
-    //    #region Fields
+//namespace DefaultEcs.Command
+//{
+//    internal sealed class EntityCommandPlayer
+//    {
+//        #region Fields
 
-    //    private readonly byte[] _memory;
-    //    private readonly List<object> _objects;
+//        private readonly byte[] _memory;
+//        private readonly List<object> _objects;
 
-    //    #endregion
+//        #endregion
 
-    //    #region Initialisation
+//        #region Initialisation
 
-    //    internal EntityCommandPlayer(byte[] memory, object[] objects)
-    //    {
-    //        _memory = memory;
-    //        _objects = new List<object>(objects);
-    //    }
+//        internal EntityCommandPlayer(byte[] memory, object[] objects)
+//        {
+//            _memory = memory;
+//            _objects = new List<object>(objects);
+//        }
 
-    //    #endregion
+//        #endregion
 
-    //    #region Methods
+//        #region Methods
 
-    //    public void Execute(World world) => Executer.Execute(_memory, _memory.Length, _objects, world);
+//        public void Execute(World world) => Executer.Execute(_memory, _memory.Length, _objects, world);
 
-    //    #endregion
-    //}
-}
+//        #endregion
+//    }
+//}
