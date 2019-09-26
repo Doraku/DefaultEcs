@@ -43,8 +43,8 @@ jobs:
     - name: Create package
       run: dotnet pack source\DefaultEcs\DefaultEcs.csproj -c Release -o package -p:PackageReleaseNotes="${{ github.sha }}"
 
-    - name: Setup Nuget
-      uses: warrenbuckley/Setup-Nuget@master
+    - name: Set up nuget
+      uses: olegtarasov/download-nuget@master
 
     - name: Register GPR
       run: nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/Doraku/index.json" -UserName Doraku -Password ${{ secrets.GITHUB_TOKEN }}

@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <None Remove="DefaultEcs.targets" />
-    <None Include="..\..\image\logo.png" Pack="true" PackagePath="\"/>
+    <None Include="..\..\image\logo.png" Pack="true" PackagePath="\" Visible="false"/>
   </ItemGroup>
 
   <ItemGroup Label="Reference" Condition="'$(TargetFramework)'=='netstandard1.1' Or '$(TargetFramework)'=='netstandard2.0'">
