@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using DefaultEcs.Serialization;
 
 namespace DefaultEcs.Technical.Serialization.BinarySerializer
 {
-    internal sealed unsafe class EntityWriter : IComponentReader
+    internal sealed class EntityWriter : IComponentReader
     {
         #region Fields
 
-        private readonly Stream _stream;
-        private readonly byte[] _buffer;
-        private readonly byte* _bufferP;
+        private readonly StreamWriterWrapper _writer;
         private readonly Dictionary<Type, ushort> _types;
         private readonly Dictionary<Entity, int> _entities;
         private readonly Dictionary<Tuple<Entity, Type>, int> _components;
@@ -24,11 +21,9 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region Initialisation
 
-        public EntityWriter(Stream stream, byte[] buffer, byte* bufferP, Dictionary<Type, ushort> types)
+        public EntityWriter(in StreamWriterWrapper writer, Dictionary<Type, ushort> types)
         {
-            _stream = stream;
-            _buffer = buffer;
-            _bufferP = bufferP;
+            _writer = writer;
             _types = types;
             _entities = new Dictionary<Entity, int>();
             _components = new Dictionary<Tuple<Entity, Type>, int>();
@@ -45,10 +40,8 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         {
             foreach (Entity entity in entities)
             {
-                *_bufferP = (byte)(entity.IsEnabled() ? EntryType.Entity : EntryType.DisabledEntity);
+                _writer.WriteByte((byte)(entity.IsEnabled() ? EntryType.Entity : EntryType.DisabledEntity));
                 ++_entityCount;
-
-                _stream.Write(_buffer, 0, sizeof(byte));
 
                 _entities.Add(entity, _entityCount);
                 _currentEntity = entity;
@@ -58,15 +51,11 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
             foreach (KeyValuePair<Entity, int> pair in _entities)
             {
-                *_bufferP = (byte)EntryType.ParentChild;
-                int* ids = (int*)(_bufferP + 1);
-                *ids++ = pair.Value;
-
                 foreach (Entity child in pair.Key.GetChildren())
                 {
-                    *ids = _entities[child];
-
-                    _stream.Write(_buffer, 0, sizeof(byte) + (sizeof(int) * 2));
+                    _writer.WriteByte((byte)EntryType.ParentChild);
+                    _writer.Write(pair.Value);
+                    _writer.Write(_entities[child]);
                 }
             }
         }
@@ -77,38 +66,31 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         void IComponentReader.OnRead<T>(ref T component, in Entity componentOwner)
         {
-            if (!_types.TryGetValue(typeof(T), out ushort _))
+            if (!_types.TryGetValue(typeof(T), out ushort typeId))
             {
-                _types.Add(typeof(T), _currentType);
+                typeId = _currentType++;
+                _types.Add(typeof(T), typeId);
 
-                *_bufferP = (byte)EntryType.ComponentType;
-                ushort* entryType = (ushort*)(_bufferP + 1);
-                *(entryType++) = _currentType;
-                _stream.Write(_buffer, 0, sizeof(byte) + sizeof(ushort));
-                Converter<string>.Write(typeof(T).AssemblyQualifiedName, _stream, _buffer, _bufferP);
-
-                ++_currentType;
+                _writer.WriteByte((byte)EntryType.ComponentType);
+                _writer.Write(typeId);
+                _writer.WriteString(typeof(T).AssemblyQualifiedName);
             }
 
             Tuple<Entity, Type> componentKey = Tuple.Create(componentOwner, typeof(T));
             if (_components.TryGetValue(componentKey, out int key))
             {
-                *_bufferP = (byte)(_currentEntity.IsEnabled<T>() ? EntryType.ComponentSameAs : EntryType.DisabledComponentSameAs);
-                ushort* typeId = (ushort*)(_bufferP + 1);
-                *typeId++ = _types[typeof(T)];
-                *(int*)typeId = key;
-
-                _stream.Write(_buffer, 0, sizeof(byte) + sizeof(ushort) + sizeof(int));
+                _writer.WriteByte((byte)(_currentEntity.IsEnabled<T>() ? EntryType.ComponentSameAs : EntryType.DisabledComponentSameAs));
+                _writer.Write(typeId);
+                _writer.Write(key);
             }
             else
             {
                 _components.Add(componentKey, _entityCount);
-                *_bufferP = (byte)(_currentEntity.IsEnabled<T>() ? EntryType.Component : EntryType.DisabledComponent);
-                *(ushort*)(_bufferP + 1) = _types[typeof(T)];
 
-                _stream.Write(_buffer, 0, sizeof(byte) + sizeof(ushort));
+                _writer.WriteByte((byte)(_currentEntity.IsEnabled<T>() ? EntryType.Component : EntryType.DisabledComponent));
+                _writer.Write(typeId);
 
-                Converter<T>.Write(component, _stream, _buffer, _bufferP);
+                Converter<T>.Write(component, _writer);
             }
         }
 

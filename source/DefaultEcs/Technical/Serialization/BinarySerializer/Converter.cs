@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -8,7 +7,7 @@ using DefaultEcs.Technical.Helper;
 
 namespace DefaultEcs.Technical.Serialization.BinarySerializer
 {
-    internal static unsafe class Converter
+    internal static class Converter
     {
         #region Types
 
@@ -45,12 +44,12 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                     return (ReadAction<T>)(Delegate)_readAction;
                 }
 
-                return (s, b, p) => (T)(object)_readAction(s, b, p);
+                return (in StreamReaderWrapper r) => (T)(object)_readAction(r);
             }
         }
 
-        public delegate void WriteAction<T>(in T value, Stream stream, byte[] buffer, byte* bufferP);
-        public delegate T ReadAction<out T>(Stream stream, byte[] buffer, byte* bufferP);
+        public delegate void WriteAction<T>(in T value, in StreamWriterWrapper writer);
+        public delegate T ReadAction<out T>(in StreamReaderWrapper reader);
 
         #endregion
 
@@ -118,7 +117,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         #endregion
     }
 
-    internal static unsafe class Converter<T>
+    internal static class Converter<T>
     {
         #region Fields
 
@@ -160,10 +159,10 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                     }
                     else
                     {
-                        DynamicMethod writeMethod = new DynamicMethod($"Write_{nameof(T)}", typeof(void), new[] { _type.MakeByRefType(), typeof(Stream), typeof(byte[]), typeof(byte*) }, typeof(Converter<T>), true);
+                        DynamicMethod writeMethod = new DynamicMethod($"Write_{nameof(T)}", typeof(void), new[] { _type.MakeByRefType(), typeof(StreamWriterWrapper).MakeByRefType() }, typeof(Converter<T>), true);
                         ILGenerator writeGenerator = writeMethod.GetILGenerator();
 
-                        DynamicMethod readMethod = new DynamicMethod($"Read_{nameof(T)}", _type, new[] { typeof(Stream), typeof(byte[]), typeof(byte*) }, typeof(Converter<T>), true);
+                        DynamicMethod readMethod = new DynamicMethod($"Read_{nameof(T)}", _type, new[] { typeof(StreamReaderWrapper).MakeByRefType() }, typeof(Converter<T>), true);
                         ILGenerator readGenerator = readMethod.GetILGenerator();
                         LocalBuilder readValue = readGenerator.DeclareLocal(_type);
 
@@ -190,14 +189,10 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                                 }
                                 writeGenerator.Emit(OpCodes.Ldflda, fieldInfo);
                                 writeGenerator.Emit(OpCodes.Ldarg_1);
-                                writeGenerator.Emit(OpCodes.Ldarg_2);
-                                writeGenerator.Emit(OpCodes.Ldarg_3);
                                 writeGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Converter<T>.Write)));
 
                                 readGenerator.Emit(typeInfo.IsClass ? OpCodes.Ldloc : OpCodes.Ldloca_S, readValue);
                                 readGenerator.Emit(OpCodes.Ldarg_0);
-                                readGenerator.Emit(OpCodes.Ldarg_1);
-                                readGenerator.Emit(OpCodes.Ldarg_2);
                                 readGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Converter<T>.Read)));
                                 readGenerator.Emit(OpCodes.Stfld, fieldInfo);
                             }
@@ -215,8 +210,8 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 }
                 catch
                 {
-                    _writeAction = (in T _, Stream __, byte[] ___, byte* ____) => throw new InvalidOperationException($"Unable to handle type {_type.FullName}");
-                    _readAction = (_, __, ___) => throw new InvalidOperationException($"Unable to handle type {_type.FullName}");
+                    _writeAction = (in T _, in StreamWriterWrapper __) => throw new InvalidOperationException($"Unable to handle type {_type.FullName}");
+                    _readAction = (in StreamReaderWrapper _) => throw new InvalidOperationException($"Unable to handle type {_type.FullName}");
                 }
             }
         }
@@ -225,76 +220,59 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region Methods
 
-        private static void WriteArray(in T[] values, Stream stream, byte[] buffer, byte* bufferP)
+        private static void WriteArray(in T[] values, in StreamWriterWrapper writer)
         {
-            *(int*)bufferP = values?.Length ?? -1;
-            stream.Write(buffer, 0, sizeof(int));
+            writer.Write(values.Length);
 
-            if (values != null)
+            for (int i = 0; i < values.Length; ++i)
             {
-                for (int i = 0; i < values.Length; ++i)
-                {
-                    Write(values[i], stream, buffer, bufferP);
-                }
+                Write(values[i], writer);
             }
         }
 
-        private static T[] ReadArray(Stream stream, byte[] buffer, byte* bufferP)
+        private static T[] ReadArray(in StreamReaderWrapper reader)
         {
-            T[] values = default;
+            T[] values = new T[reader.Read<int>()];
 
-            if (stream.Read(buffer, 0, sizeof(int)) == sizeof(int))
+            for (int i = 0; i < values.Length; ++i)
             {
-                int length = *(int*)bufferP;
-                if (length >= 0)
-                {
-                    values = new T[length];
-
-                    for (int i = 0; i < values.Length; ++i)
-                    {
-                        values[i] = Read(stream, buffer, bufferP);
-                    }
-                }
-            }
-            else
-            {
-                throw new EndOfStreamException($"Could not deserialize type {typeof(T[]).FullName}");
+                values[i] = Read(reader);
             }
 
             return values;
         }
 
-        public static void Write(in T value, Stream stream, byte[] buffer, byte* bufferP)
+        public static void Write(in T value, in StreamWriterWrapper writer)
         {
             if (value == default)
             {
-                stream.WriteByte(0);
+                writer.WriteByte(0);
             }
             else if (_type == value.GetType())
             {
-                stream.WriteByte(1);
-                _writeAction(value, stream, buffer, bufferP);
+                writer.WriteByte(1);
+                _writeAction(value, writer);
             }
             else
             {
-                stream.WriteByte(2);
+                writer.WriteByte(2);
                 string typeName = value.GetType().AssemblyQualifiedName;
-                StringConverter.Write(typeName, stream, buffer, bufferP);
-                Converter.GetWriteAction(typeName)(value, stream, buffer, bufferP);
+                writer.WriteString(typeName);
+                Converter.GetWriteAction(typeName)(value, writer);
             }
         }
 
-        public static T Read(Stream stream, byte[] buffer, byte* bufferP)
+        public static T Read(in StreamReaderWrapper reader)
         {
-            return (stream.ReadByte()) switch
+            return (reader.ReadByte()) switch
             {
                 0 => default,
-                1 => _readAction(stream, buffer, bufferP),
-                _ => Converter.GetReadAction<T>(StringConverter.Read(stream, buffer, bufferP))(stream, buffer, bufferP),
+                1 => _readAction(reader),
+                _ => Converter.GetReadAction<T>(reader.ReadString())(reader),
             };
         }
 
-        public static void WrapperWrite(in object value, Stream stream, byte[] buffer, byte* bufferP) => Write((T)value, stream, buffer, bufferP);
+        public static void WrapperWrite(in object value, in StreamWriterWrapper writer) => Write((T)value, writer);
 
         #endregion
     }

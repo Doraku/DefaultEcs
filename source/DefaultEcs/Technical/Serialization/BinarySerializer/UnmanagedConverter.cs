@@ -1,84 +1,13 @@
-﻿using System;
-using System.IO;
-
-namespace DefaultEcs.Technical.Serialization.BinarySerializer
+﻿namespace DefaultEcs.Technical.Serialization.BinarySerializer
 {
-    internal static unsafe class UnmanagedConverter<T>
+    internal static class UnmanagedConverter<T>
         where T : unmanaged
     {
         #region Methods
 
-        public static void Write(in T value, Stream stream, byte[] buffer, byte* bufferP)
-        {
-            if (sizeof(T) <= buffer.Length)
-            {
-                *(T*)bufferP = value;
+        public static void Write(in T value, in StreamWriterWrapper writer) => writer.Write(value);
 
-                stream.Write(buffer, 0, sizeof(T));
-            }
-            else
-            {
-                int count = 0;
-                T valueCopy = value;
-                byte* valueP = (byte*)&valueCopy;
-                byte* destination = bufferP;
-
-                for (int i = 0; i < sizeof(T); ++i)
-                {
-                    *destination++ = *valueP++;
-                    if (++count >= buffer.Length)
-                    {
-                        stream.Write(buffer, 0, count);
-                        count = 0;
-                        destination = bufferP;
-                    }
-                }
-
-                stream.Write(buffer, 0, count);
-            }
-        }
-
-        public static T Read(Stream stream, byte[] buffer, byte* bufferP)
-        {
-            if (sizeof(T) <= buffer.Length)
-            {
-                if (stream.Read(buffer, 0, sizeof(T)) == sizeof(T))
-                {
-                    return *(T*)bufferP;
-                }
-                else
-                {
-                    throw new EndOfStreamException($"Could not deserialize type {typeof(T).FullName}");
-                }
-            }
-            else
-            {
-                T value = default;
-                byte* valueP = (byte*)&value;
-
-                int totalLength = sizeof(T);
-
-                while (totalLength > 0)
-                {
-                    int length = stream.Read(buffer, 0, Math.Min(buffer.Length, totalLength));
-
-                    if (length <= 0)
-                    {
-                        throw new EndOfStreamException($"Could not deserialize type {typeof(T).FullName}");
-                    }
-
-                    totalLength -= length;
-
-                    byte* destination = bufferP;
-                    for (int i = 0; i < length; ++i)
-                    {
-                        *valueP++ = *destination++;
-                    }
-                }
-
-                return value;
-            }
-        }
+        public static T Read(in StreamReaderWrapper reader) => reader.Read<T>();
 
         #endregion
     }

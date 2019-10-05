@@ -10,16 +10,16 @@ namespace DefaultEcs.Serialization
     /// <summary>
     /// Provides a basic implementation of the <see cref="ISerializer"/> interface using a binary format.
     /// </summary>
-    public sealed unsafe class BinarySerializer : ISerializer
+    public sealed class BinarySerializer : ISerializer
     {
         #region Types
 
         private interface IOperation
         {
             void SetMaximumComponentCount(World world, int maxComponentCount);
-            void SetComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP);
+            void SetComponent(in Entity entity, in StreamReaderWrapper reader);
             void SetSameAsComponent(in Entity entity, in Entity reference);
-            void SetDisabledComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP);
+            void SetDisabledComponent(in Entity entity, in StreamReaderWrapper reader);
             void SetDisabledSameAsComponent(in Entity entity, in Entity reference);
         }
 
@@ -29,11 +29,11 @@ namespace DefaultEcs.Serialization
 
             public void SetMaximumComponentCount(World world, int maxComponentCount) => world.SetMaximumComponentCount<T>(maxComponentCount);
 
-            public void SetComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP) => entity.Set(Converter<T>.Read(stream, buffer, bufferP));
+            public void SetComponent(in Entity entity, in StreamReaderWrapper reader) => entity.Set(Converter<T>.Read(reader));
 
             public void SetSameAsComponent(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
 
-            public void SetDisabledComponent(in Entity entity, Stream stream, byte[] buffer, byte* bufferP) => entity.SetDisabled(Converter<T>.Read(stream, buffer, bufferP));
+            public void SetDisabledComponent(in Entity entity, in StreamReaderWrapper reader) => entity.SetDisabled(Converter<T>.Read(reader));
 
             public void SetDisabledSameAsComponent(in Entity entity, in Entity reference) => entity.SetSameAsDisabled<T>(reference);
 
@@ -59,77 +59,61 @@ namespace DefaultEcs.Serialization
             {
                 using (stream)
                 {
-                    byte[] buffer = new byte[1024];
-                    fixed (byte* bufferP = buffer)
+                    using StreamReaderWrapper reader = new StreamReaderWrapper(stream);
+
+                    world ??= new World(reader.Read<int>());
+
+                    Entity currentEntity = default;
+                    Dictionary<ushort, IOperation> operations = new Dictionary<ushort, IOperation>();
+
+                    int entryType;
+                    while ((entryType = stream.ReadByte()) >= 0)
                     {
-                        if (world == null)
+                        switch ((EntryType)entryType)
                         {
-                            world = stream.Read(buffer, 0, sizeof(int)) == sizeof(int)
-                                ? new World(*(int*)bufferP)
-                                : throw new ArgumentException("Could not create a World instance from the provided Stream");
+                            case EntryType.ComponentType:
+                                operations.Add(
+                                    reader.Read<ushort>(),
+                                    _operations.GetOrAdd(
+                                        Type.GetType(reader.ReadString(), true),
+                                        t => (IOperation)Activator.CreateInstance(typeof(Operation<>).MakeGenericType(t))));
+                                break;
+
+                            case EntryType.MaxComponentCount:
+                                operations[reader.Read<ushort>()].SetMaximumComponentCount(world, reader.Read<int>());
+                                break;
+
+                            case EntryType.Entity:
+                                entities.Add(currentEntity = world.CreateEntity());
+                                break;
+
+                            case EntryType.Component:
+                                operations[reader.Read<ushort>()].SetComponent(currentEntity, reader);
+                                break;
+
+                            case EntryType.ComponentSameAs:
+                                operations[reader.Read<ushort>()].SetSameAsComponent(currentEntity, entities[reader.Read<int>()]);
+                                break;
+
+                            case EntryType.ParentChild:
+                                entities[reader.Read<int>()].SetAsParentOf(entities[reader.Read<int>()]);
+                                break;
+
+                            case EntryType.DisabledEntity:
+                                entities.Add(currentEntity = world.CreateDisabledEntity());
+                                break;
+
+                            case EntryType.DisabledComponent:
+                                operations[reader.Read<ushort>()].SetDisabledComponent(currentEntity, reader);
+                                break;
+
+                            case EntryType.DisabledComponentSameAs:
+                                operations[reader.Read<ushort>()].SetDisabledSameAsComponent(currentEntity, entities[reader.Read<int>()]);
+                                break;
                         }
-
-                        Entity currentEntity = default;
-                        Dictionary<ushort, IOperation> operations = new Dictionary<ushort, IOperation>();
-
-                        int entryType;
-                        while ((entryType = stream.ReadByte()) >= 0)
-                        {
-                            switch ((EntryType)entryType)
-                            {
-                                case EntryType.ComponentType:
-                                    stream.Read(buffer, 0, sizeof(ushort));
-                                    operations.Add(
-                                        *(ushort*)bufferP,
-                                        _operations.GetOrAdd(
-                                            Type.GetType(Converter<string>.Read(stream, buffer, bufferP), true),
-                                            t => (IOperation)Activator.CreateInstance(typeof(Operation<>).MakeGenericType(t))));
-                                    break;
-
-                                case EntryType.MaxComponentCount:
-                                    stream.Read(buffer, 0, sizeof(ushort) + sizeof(int));
-                                    operations[*(ushort*)bufferP].SetMaximumComponentCount(world, *(int*)((ushort*)bufferP + 1));
-                                    break;
-
-                                case EntryType.Entity:
-                                    currentEntity = world.CreateEntity();
-                                    entities.Add(currentEntity);
-                                    break;
-
-                                case EntryType.Component:
-                                    stream.Read(buffer, 0, sizeof(ushort));
-                                    operations[*(ushort*)bufferP].SetComponent(currentEntity, stream, buffer, bufferP);
-                                    break;
-
-                                case EntryType.ComponentSameAs:
-                                    stream.Read(buffer, 0, sizeof(ushort) + sizeof(int));
-                                    operations[*(ushort*)bufferP].SetSameAsComponent(currentEntity, entities[*(int*)((ushort*)bufferP + 1)]);
-                                    break;
-
-                                case EntryType.ParentChild:
-                                    stream.Read(buffer, 0, sizeof(int) * 2);
-                                    entities[*(int*)bufferP].SetAsParentOf(entities[*((int*)bufferP + 1)]);
-                                    break;
-
-                                case EntryType.DisabledEntity:
-                                    currentEntity = world.CreateDisabledEntity();
-                                    entities.Add(currentEntity);
-                                    break;
-
-                                case EntryType.DisabledComponent:
-                                    stream.Read(buffer, 0, sizeof(ushort));
-                                    operations[*(ushort*)bufferP].SetDisabledComponent(currentEntity, stream, buffer, bufferP);
-                                    break;
-
-                                case EntryType.DisabledComponentSameAs:
-                                    stream.Read(buffer, 0, sizeof(ushort) + sizeof(int));
-                                    operations[*(ushort*)bufferP].SetDisabledSameAsComponent(currentEntity, entities[*(int*)((ushort*)bufferP + 1)]);
-                                    break;
-                            }
-                        }
-
-                        return entities;
                     }
+
+                    return entities;
                 }
             }
             catch
@@ -160,11 +144,10 @@ namespace DefaultEcs.Serialization
         public static void Write<T>(Stream stream, in T obj)
         {
             stream = stream ?? throw new ArgumentNullException(nameof(stream));
-            byte[] buffer = new byte[1024];
-            fixed (byte* bufferP = buffer)
-            {
-                Converter<T>.Write(obj, stream, buffer, bufferP);
-            }
+
+            using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
+
+            Converter<T>.Write(obj, writer);
         }
 
         /// <summary>
@@ -177,11 +160,10 @@ namespace DefaultEcs.Serialization
         public static T Read<T>(Stream stream)
         {
             stream = stream ?? throw new ArgumentNullException(nameof(stream));
-            byte[] buffer = new byte[1024];
-            fixed (byte* bufferP = buffer)
-            {
-                return Converter<T>.Read(stream, buffer, bufferP);
-            }
+
+            using StreamReaderWrapper reader = new StreamReaderWrapper(stream);
+
+            return Converter<T>.Read(reader);
         }
 
         #endregion
@@ -202,18 +184,15 @@ namespace DefaultEcs.Serialization
 
             using (stream)
             {
-                byte[] buffer = new byte[1024];
-                fixed (byte* bufferP = buffer)
-                {
-                    *(int*)bufferP = world.MaxEntityCount;
-                    stream.Write(buffer, 0, sizeof(int));
+                using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
 
-                    Dictionary<Type, ushort> types = new Dictionary<Type, ushort>();
+                writer.Write(world.MaxEntityCount);
 
-                    world.ReadAllComponentTypes(new ComponentTypeWriter(stream, buffer, bufferP, types, world.MaxEntityCount));
+                Dictionary<Type, ushort> types = new Dictionary<Type, ushort>();
 
-                    new EntityWriter(stream, buffer, bufferP, types).Write(world.GetAllEntities());
-                }
+                world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxEntityCount));
+
+                new EntityWriter(writer, types).Write(world.GetAllEntities());
             }
         }
 
@@ -245,11 +224,9 @@ namespace DefaultEcs.Serialization
 
             using (stream)
             {
-                byte[] buffer = new byte[1024];
-                fixed (byte* bufferP = buffer)
-                {
-                    new EntityWriter(stream, buffer, bufferP, new Dictionary<Type, ushort>()).Write(entities);
-                }
+                using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
+
+                new EntityWriter(writer, new Dictionary<Type, ushort>()).Write(entities);
             }
         }
 

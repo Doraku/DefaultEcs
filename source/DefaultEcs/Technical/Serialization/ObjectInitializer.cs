@@ -1,8 +1,7 @@
 ﻿using System;
-#if NETSTANDARD1_1
 using System.Reflection;
 using System.Runtime.CompilerServices;
-#else
+#if !NETSTANDARD1_1
 using System.Runtime.Serialization;
 #endif
 
