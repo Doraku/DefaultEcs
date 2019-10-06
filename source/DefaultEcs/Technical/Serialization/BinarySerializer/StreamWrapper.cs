@@ -6,7 +6,9 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 {
     internal unsafe readonly struct StreamWriterWrapper : IDisposable
     {
+#pragma warning disable IDE0069 // Disposable fields should be disposed
         private readonly Stream _stream;
+#pragma warning restore IDE0069 // Disposable fields should be disposed
 #if NETSTANDARD1_1 || NETSTANDARD2_0
         private readonly byte[] _buffer;
         private readonly GCHandle _handle;
