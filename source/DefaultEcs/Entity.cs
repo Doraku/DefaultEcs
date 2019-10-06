@@ -19,17 +19,19 @@ namespace DefaultEcs
     {
         #region Fields
 
-        internal readonly int WorldId;
+        internal readonly short WorldId;
         internal readonly int EntityId;
+        internal readonly short Version;
 
         #endregion
 
         #region Initialisation
 
-        internal Entity(int worldId, int entityId)
+        internal Entity(short worldId, int entityId)
         {
             WorldId = worldId;
             EntityId = entityId;
+            Version = World.Infos[WorldId].EntityInfos[EntityId].Version;
         }
 
         #endregion
@@ -47,7 +49,7 @@ namespace DefaultEcs
         public bool IsAlive
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => WorldId == 0 ? false : Components[World.IsAliveFlag];
+            get => WorldId == 0 ? false : World.Infos[WorldId].EntityInfos[EntityId].IsAlive(Version);
         }
 
         #endregion
@@ -408,7 +410,7 @@ namespace DefaultEcs
         /// Returns a string representation of this instance.
         /// </summary>
         /// <returns>A string representing this instance.</returns>
-        public override string ToString() => $"Entity {WorldId}:{EntityId}";
+        public override string ToString() => $"Entity {WorldId}:{EntityId}:{Version}";
 
         #endregion
     }
