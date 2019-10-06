@@ -1,6 +1,4 @@
-﻿#if !NETSTANDARD1_1
-using System;
-#endif
+﻿using System;
 
 namespace DefaultEcs.Technical.Helper
 {

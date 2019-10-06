@@ -208,10 +208,10 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                         _readAction = (Converter.ReadAction<T>)readMethod.CreateDelegate(typeof(Converter.ReadAction<T>));
                     }
                 }
-                catch
+                catch (Exception exception)
                 {
-                    _writeAction = (in T _, in StreamWriterWrapper __) => throw new InvalidOperationException($"Unable to handle type {_type.FullName}");
-                    _readAction = (in StreamReaderWrapper _) => throw new InvalidOperationException($"Unable to handle type {_type.FullName}");
+                    _writeAction = (in T _, in StreamWriterWrapper __) => throw new InvalidOperationException($"Unable to handle type {_type.FullName}", exception);
+                    _readAction = (in StreamReaderWrapper _) => throw new InvalidOperationException($"Unable to handle type {_type.FullName}", exception);
                 }
             }
         }
