@@ -1,4 +1,5 @@
-﻿using DefaultEcs.Technical.Helper;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace DefaultEcs.System
 {
@@ -16,15 +17,24 @@ namespace DefaultEcs.System
 
         #region Initialisation
 
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SequentialSystem{T}"/> class.
+        /// </summary>
+        /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
+        public SequentialSystem(IEnumerable<ISystem<T>> systems)
+        {
+            _systems = (systems ?? Enumerable.Empty<ISystem<T>>()).Where(s => s != null).ToArray();
+            IsEnabled = true;
+        }
+
         /// <summary>
         /// Initialises a new instance of the <see cref="SequentialSystem{T}"/> class.
         /// </summary>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
         public SequentialSystem(params ISystem<T>[] systems)
-        {
-            _systems = systems ?? EmptyArray<ISystem<T>>.Value;
-            IsEnabled = true;
-        }
+            : this(systems as IEnumerable<ISystem<T>>)
+        { }
 
         #endregion
 
@@ -45,7 +55,7 @@ namespace DefaultEcs.System
             {
                 foreach (ISystem<T> system in _systems)
                 {
-                    system?.Update(state);
+                    system.Update(state);
                 }
             }
         }
@@ -61,7 +71,7 @@ namespace DefaultEcs.System
         {
             for (int i = _systems.Length - 1; i >= 0; --i)
             {
-                _systems[i]?.Dispose();
+                _systems[i].Dispose();
             }
         }
 

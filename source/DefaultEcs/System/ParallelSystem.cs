@@ -1,5 +1,6 @@
-﻿using System.Threading;
-using DefaultEcs.Technical.Helper;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace DefaultEcs.System
 {
@@ -26,12 +27,31 @@ namespace DefaultEcs.System
         /// <param name="mainSystem">The <see cref="ISystem{T}"/> instance to be updated on the calling thread.</param>
         /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
-        public ParallelSystem(ISystem<T> mainSystem, SystemRunner<T> runner, params ISystem<T>[] systems)
+        public ParallelSystem(ISystem<T> mainSystem, SystemRunner<T> runner, IEnumerable<ISystem<T>> systems)
             : base(runner)
         {
             _mainSystem = mainSystem;
-            _systems = systems ?? EmptyArray<ISystem<T>>.Value;
+            _systems = (systems ?? Enumerable.Empty<ISystem<T>>()).Where(s => s != null).ToArray();
         }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="ParallelSystem{T}"/> class.
+        /// </summary>
+        /// <param name="mainSystem">The <see cref="ISystem{T}"/> instance to be updated on the calling thread.</param>
+        /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
+        /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
+        public ParallelSystem(ISystem<T> mainSystem, SystemRunner<T> runner, params ISystem<T>[] systems)
+            : this(mainSystem, runner, systems as IEnumerable<ISystem<T>>)
+        { }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="ParallelSystem{T}"/> class.
+        /// </summary>
+        /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
+        /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
+        public ParallelSystem(SystemRunner<T> runner, IEnumerable<ISystem<T>> systems)
+            : this(null, runner, systems)
+        { }
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ParallelSystem{T}"/> class.
@@ -39,7 +59,7 @@ namespace DefaultEcs.System
         /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
         public ParallelSystem(SystemRunner<T> runner, params ISystem<T>[] systems)
-            : this(null, runner, systems)
+            : this(null, runner, systems as IEnumerable<ISystem<T>>)
         { }
 
         #endregion
@@ -55,7 +75,7 @@ namespace DefaultEcs.System
 
             while ((index = Interlocked.Increment(ref _lastIndex)) < _systems.Length)
             {
-                _systems[index]?.Update(CurrentState);
+                _systems[index].Update(CurrentState);
             }
         }
 
@@ -78,7 +98,7 @@ namespace DefaultEcs.System
 
             foreach (ISystem<T> system in _systems)
             {
-                system?.Dispose();
+                system.Dispose();
             }
         }
 
