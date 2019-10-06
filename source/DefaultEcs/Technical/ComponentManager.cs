@@ -49,7 +49,7 @@ namespace DefaultEcs.Technical
         #region Methods
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static ComponentPool<T> Add(int worldId, int maxEntityCount, int maxComponentCount)
+        private static ComponentPool<T> Add(short worldId, int maxEntityCount, int maxComponentCount)
         {
             lock (_lockObject)
             {
@@ -66,13 +66,13 @@ namespace DefaultEcs.Technical
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComponentPool<T> Get(int worldId) => worldId < Pools.Length ? Pools[worldId] : null;
+        public static ComponentPool<T> Get(short worldId) => worldId < Pools.Length ? Pools[worldId] : null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComponentPool<T> GetOrCreate(int worldId, int maxComponentCount) => Get(worldId) ?? Add(worldId, World.Infos[worldId].MaxEntityCount, maxComponentCount);
+        public static ComponentPool<T> GetOrCreate(short worldId, int maxComponentCount) => Get(worldId) ?? Add(worldId, World.Infos[worldId].MaxEntityCount, maxComponentCount);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComponentPool<T> GetOrCreate(int worldId) => Get(worldId) ?? Add(worldId, World.Infos[worldId].MaxEntityCount, World.Infos[worldId].MaxEntityCount);
+        public static ComponentPool<T> GetOrCreate(short worldId) => Get(worldId) ?? Add(worldId, World.Infos[worldId].MaxEntityCount, World.Infos[worldId].MaxEntityCount);
 
         #endregion
     }

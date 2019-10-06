@@ -28,7 +28,7 @@ namespace DefaultEcs
 
         private readonly IntDispenser _entityIdDispenser;
 
-        internal readonly int WorldId;
+        internal readonly short WorldId;
         internal readonly WorldInfo Info;
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace DefaultEcs
             }
 
             _entityIdDispenser = new IntDispenser(-1);
-            WorldId = _worldIdDispenser.GetFreeInt();
+            WorldId = (short)_worldIdDispenser.GetFreeInt();
 
             Info = new WorldInfo(maxEntityCount);
 
@@ -117,6 +117,7 @@ namespace DefaultEcs
             ref EntityInfo entityInfo = ref Info.EntityInfos[message.EntityId];
 
             _entityIdDispenser.ReleaseInt(message.EntityId);
+            ++entityInfo.Version;
 
             Func<int, bool> cleanParent = entityInfo.Parents;
             entityInfo.Parents = null;
