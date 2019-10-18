@@ -501,7 +501,7 @@ namespace DefaultEcs.Test
 
             Entity entity = world.CreateEntity();
 
-            Check.That(entity).IsEqualTo(deletedEntity);
+            Check.That(entity.GetHashCode()).IsEqualTo(deletedEntity.GetHashCode());
         }
 
         [Fact]

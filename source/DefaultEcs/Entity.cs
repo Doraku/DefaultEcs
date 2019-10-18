@@ -384,7 +384,10 @@ namespace DefaultEcs
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the other parameter; otherwise, false.</returns>
-        public bool Equals(Entity other) => EntityId == other.EntityId && WorldId == other.WorldId;
+        public bool Equals(Entity other) 
+            => EntityId == other.EntityId
+            && WorldId == other.WorldId
+            && Version == other.Version;
 
         #endregion
 
