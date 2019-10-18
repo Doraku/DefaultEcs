@@ -736,6 +736,50 @@ namespace DefaultEcs.Test
             Check.That(reader.FloatValue.HasValue).IsFalse();
         }
 
+        [Fact]
+        public void OperatorEqual_Should_return_true_When_entities_are_equal()
+        {
+            using World world = new World();
+
+            Entity entity = world.CreateEntity();
+            Entity copy = entity;
+
+            Check.That(entity == copy).IsTrue();
+        }
+
+        [Fact]
+        public void OperatorEqual_Should_return_false_When_entities_are_not_equal()
+        {
+            using World world = new World();
+
+            Entity entity = world.CreateEntity();
+            Entity otherEntity = world.CreateEntity();
+
+            Check.That(entity == otherEntity).IsFalse();
+        }
+
+        [Fact]
+        public void OperatorNotEqual_Should_return_false_When_entities_are_equal()
+        {
+            using World world = new World();
+
+            Entity entity = world.CreateEntity();
+            Entity copy = entity;
+
+            Check.That(entity != copy).IsFalse();
+        }
+
+        [Fact]
+        public void OperatorNotEqual_Should_return_true_When_entities_are_not_equal()
+        {
+            using World world = new World();
+
+            Entity entity = world.CreateEntity();
+            Entity otherEntity = world.CreateEntity();
+
+            Check.That(entity != otherEntity).IsTrue();
+        }
+
         #endregion
     }
 }

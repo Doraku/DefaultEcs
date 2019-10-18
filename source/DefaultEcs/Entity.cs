@@ -386,6 +386,28 @@ namespace DefaultEcs
 
         #endregion
 
+        #region Operator
+
+        /// <summary>Determines whether two specified entities are the same.</summary>
+        /// <param name="a">The first <see cref="Entity"/> to compare.</param>
+        /// <param name="b">The second <see cref="Entity"/> to compare.</param>
+        /// <returns>
+        /// true if the value of <paramref name="a" /> is the same as the value of <paramref name="b" />;
+        /// otherwise, false.
+        /// </returns>
+        public static bool operator ==(Entity a, Entity b) => a.Equals(b);
+
+        /// <summary>Determines whether two specified entities are not the same.</summary>
+        /// <param name="a">The first <see cref="Entity"/> to compare.</param>
+        /// <param name="b">The second <see cref="Entity"/> to compare.</param>
+        /// <returns>
+        /// true if the value of <paramref name="a" /> is not the same as the value of <paramref name="b" />;
+        /// otherwise, false.
+        /// </returns>
+        public static bool operator !=(Entity a, Entity b) => !a.Equals(b);
+
+        #endregion
+
         #region Object
 
         /// <summary>
