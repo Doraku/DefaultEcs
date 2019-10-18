@@ -17,7 +17,6 @@ namespace DefaultEcs.System
 
         #region Initialisation
 
-
         /// <summary>
         /// Initialises a new instance of the <see cref="SequentialSystem{T}"/> class.
         /// </summary>
