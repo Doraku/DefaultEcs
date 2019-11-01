@@ -1,4 +1,9 @@
-#### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
-### [DefaultEcs.System](./DefaultEcs.md#DefaultEcs-System 'DefaultEcs.System').[ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute')
-## FilterType `field`
-Whether the component type should be included or excluded.
+#### [DefaultEcs](./index.md 'index')
+### [DefaultEcs](./index.md 'index').[DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute')
+## ComponentAttribute.FilterType Field
+Whether the component type should be included or excluded.  
+```C#
+public readonly FilterType;
+```
+#### Field Value
+[ComponentFilterType](./DefaultEcs-System-ComponentFilterType.md 'DefaultEcs.System.ComponentFilterType')  

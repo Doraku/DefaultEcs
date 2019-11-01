@@ -1,4 +1,7 @@
-#### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
-### [DefaultEcs.System](./DefaultEcs.md#DefaultEcs-System 'DefaultEcs.System').[ActionSystem&lt;T&gt;](./DefaultEcs-System-ActionSystem-T-.md 'DefaultEcs.System.ActionSystem&lt;T&gt;')
-## Dispose() `method`
-Does nothing.
+#### [DefaultEcs](./index.md 'index')
+### [DefaultEcs](./index.md 'index').[DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[ActionSystem&lt;T&gt;](./DefaultEcs-System-ActionSystem-T-.md 'DefaultEcs.System.ActionSystem&lt;T&gt;')
+## ActionSystem&lt;T&gt;.Dispose() Method
+Does nothing.  
+```C#
+public void Dispose();
+```

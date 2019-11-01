@@ -1,6 +1,9 @@
-#### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
-### [DefaultEcs.System](./DefaultEcs.md#DefaultEcs-System 'DefaultEcs.System')
-## WithAttribute `type`
-Represents a component type to include when building the inner [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') of [AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;') when giving a [World](./DefaultEcs-World.md 'DefaultEcs.World') instance.
+#### [DefaultEcs](./index.md 'index')
+### [DefaultEcs](./index.md 'index').[DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
+## WithAttribute Class
+Represents a component type to include when building the inner [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') of [AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;') when giving a [World](./DefaultEcs-World.md 'DefaultEcs.World') instance.  
+```C#
+public sealed class WithAttribute
+```
 ### Constructors
-- [#ctor(System.Type[])](./DefaultEcs-System-WithAttribute--ctor(System-Type--).md 'DefaultEcs.System.WithAttribute.#ctor(System.Type[])')
+- [WithAttribute(System.Type[])](./DefaultEcs-System-WithAttribute-WithAttribute(System-Type--).md 'DefaultEcs.System.WithAttribute.WithAttribute(System.Type[])')

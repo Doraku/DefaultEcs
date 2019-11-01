@@ -1,6 +1,10 @@
-#### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
-### [DefaultEcs](./DefaultEcs.md#DefaultEcs 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
-## ToString() `method`
-Returns a string representation of this instance.
-### Returns
-A string representing this instance.
+#### [DefaultEcs](./index.md 'index')
+### [DefaultEcs](./index.md 'index').[DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
+## Entity.ToString() Method
+Returns a string representation of this instance.  
+```C#
+public override string ToString();
+```
+#### Returns
+[System.String](https://docs.microsoft.com/en-us/dotnet/api/System.String 'System.String')  
+A string representing this instance.  

@@ -1,4 +1,7 @@
-#### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
-### [DefaultEcs.Command](./DefaultEcs.md#DefaultEcs-Command 'DefaultEcs.Command').[EntityCommandRecorder](./DefaultEcs-Command-EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder')
-## Dispose() `method`
-Releases inner unmanged resources.
+#### [DefaultEcs](./index.md 'index')
+### [DefaultEcs](./index.md 'index').[DefaultEcs.Command](./DefaultEcs-Command.md 'DefaultEcs.Command').[EntityCommandRecorder](./DefaultEcs-Command-EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder')
+## EntityCommandRecorder.Dispose() Method
+Releases inner unmanged resources.  
+```C#
+public void Dispose();
+```

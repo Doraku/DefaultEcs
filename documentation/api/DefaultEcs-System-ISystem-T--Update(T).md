@@ -1,10 +1,11 @@
-#### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
-### [DefaultEcs.System](./DefaultEcs.md#DefaultEcs-System 'DefaultEcs.System').[ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;')
-## Update(T) `method`
-Updates the system once.
-### Parameters
-
+#### [DefaultEcs](./index.md 'index')
+### [DefaultEcs](./index.md 'index').[DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;')
+## ISystem&lt;T&gt;.Update(T) Method
+Updates the system once.  
+```C#
+void Update(T state);
+```
+#### Parameters
 <a name='DefaultEcs-System-ISystem-T--Update(T)-state'></a>
-`state`
-
-The state to use.
+state [T](./DefaultEcs-System-ISystem-T-.md#DefaultEcs-System-ISystem-T--T 'DefaultEcs.System.ISystem&lt;T&gt;.T')  
+The state to use.  
