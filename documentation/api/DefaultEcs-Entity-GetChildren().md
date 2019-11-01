@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Entity.GetChildren() Method
 Gets all the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') setted as children of the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').  
 ```C#

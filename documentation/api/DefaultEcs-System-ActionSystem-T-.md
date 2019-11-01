@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
+### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
 ## ActionSystem&lt;T&gt; Class
 Represents a class to set up easily a custom action as a system update.  
 ```C#
@@ -9,6 +9,7 @@ public sealed class ActionSystem<T>
 <a name='DefaultEcs-System-ActionSystem-T--T'></a>
 `T`  
 The type of the object used as state to update the system.  
+  
 ### Constructors
 - [ActionSystem(System.Action&lt;T&gt;)](./DefaultEcs-System-ActionSystem-T--ActionSystem(System-Action-T-).md 'DefaultEcs.System.ActionSystem&lt;T&gt;.ActionSystem(System.Action&lt;T&gt;)')
 ### Properties

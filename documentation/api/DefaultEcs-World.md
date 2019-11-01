@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## World Class
 Represents a item used to create and manage [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') objects.  
 ```C#

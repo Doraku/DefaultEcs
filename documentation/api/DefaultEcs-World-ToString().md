@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs](./DefaultEcs.md 'DefaultEcs').[World](./DefaultEcs-World.md 'DefaultEcs.World')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## World.ToString() Method
 Returns a string representation of this instance.  
 ```C#

@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## EntitySet Class
 Represents a sub-selection of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances from a [World](./DefaultEcs-World.md 'DefaultEcs.World').  
 ```C#

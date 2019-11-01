@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
+### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
 ## ISystem&lt;T&gt; Interface
 Exposes a method to update a system.  
 ```C#
@@ -9,6 +9,7 @@ public interface ISystem<in T>
 <a name='DefaultEcs-System-ISystem-T--T'></a>
 `T`  
 The type of the object used as state to update the system.  
+  
 ### Properties
 - [IsEnabled](./DefaultEcs-System-ISystem-T--IsEnabled.md 'DefaultEcs.System.ISystem&lt;T&gt;.IsEnabled')
 ### Methods

@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet')
 ## EntitySet.GetEntities() Method
 Gets the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') contained in the current [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet').  
 ```C#

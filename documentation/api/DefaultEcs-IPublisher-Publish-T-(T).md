@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs](./DefaultEcs.md 'DefaultEcs').[IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher')
 ## IPublisher.Publish&lt;T&gt;(T) Method
 Publishes a [T](#DefaultEcs-IPublisher-Publish-T-(T)-T 'DefaultEcs.IPublisher.Publish&lt;T&gt;(T).T') object.  
 ```C#
@@ -9,7 +9,9 @@ void Publish<T>(in T message);
 <a name='DefaultEcs-IPublisher-Publish-T-(T)-T'></a>
 `T`  
 The type of the object to publish.  
+  
 #### Parameters
 <a name='DefaultEcs-IPublisher-Publish-T-(T)-message'></a>
-message [T](#DefaultEcs-IPublisher-Publish-T-(T)-T 'DefaultEcs.IPublisher.Publish&lt;T&gt;(T).T')  
+`message` [T](#DefaultEcs-IPublisher-Publish-T-(T)-T 'DefaultEcs.IPublisher.Publish&lt;T&gt;(T).T')  
 The object to publish.  
+  

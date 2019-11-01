@@ -1,5 +1,4 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index')
 ## DefaultEcs Namespace
 ### Classes
 - [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet')

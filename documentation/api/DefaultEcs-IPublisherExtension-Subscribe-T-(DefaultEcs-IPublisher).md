@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs](./DefaultEcs.md 'DefaultEcs').[IPublisherExtension](./DefaultEcs-IPublisherExtension.md 'DefaultEcs.IPublisherExtension')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[IPublisherExtension](./DefaultEcs-IPublisherExtension.md 'DefaultEcs.IPublisherExtension')
 ## IPublisherExtension.Subscribe&lt;T&gt;(DefaultEcs.IPublisher) Method
 Subscribes automatically methods of a Type marked with the [SubscribeAttribute](./DefaultEcs-SubscribeAttribute.md 'DefaultEcs.SubscribeAttribute') on an [IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher') instance.  
 ```C#
@@ -9,10 +9,12 @@ public static System.IDisposable Subscribe<T>(this DefaultEcs.IPublisher publish
 <a name='DefaultEcs-IPublisherExtension-Subscribe-T-(DefaultEcs-IPublisher)-T'></a>
 `T`  
 The Type.  
+  
 #### Parameters
 <a name='DefaultEcs-IPublisherExtension-Subscribe-T-(DefaultEcs-IPublisher)-publisher'></a>
-publisher [IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher')  
+`publisher` [IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher')  
 The [IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher') instance.  
+  
 #### Returns
 [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 A [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable') to unregister.  

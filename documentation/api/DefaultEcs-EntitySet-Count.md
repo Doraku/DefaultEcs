@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet')
 ## EntitySet.Count Property
 Gets the numbers of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') in the current [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet').  
 ```C#

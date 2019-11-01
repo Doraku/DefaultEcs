@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
+### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
 ## ASystem&lt;T&gt; Class
 Represents a base class to process updates, supporting a [SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;'). Do not inherit from this class directly.  
 ```C#
@@ -9,6 +9,7 @@ public abstract class ASystem<T>
 <a name='DefaultEcs-System-ASystem-T--T'></a>
 `T`  
 The type of the object used as state to update the system.  
+  
 ### Constructors
 - [ASystem(DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-ASystem-T--ASystem(DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.ASystem&lt;T&gt;.ASystem(DefaultEcs.System.SystemRunner&lt;T&gt;)')
 ### Properties

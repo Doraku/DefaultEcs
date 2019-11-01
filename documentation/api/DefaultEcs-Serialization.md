@@ -1,5 +1,4 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index')
 ## DefaultEcs.Serialization Namespace
 ### Classes
 - [BinarySerializer](./DefaultEcs-Serialization-BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer')

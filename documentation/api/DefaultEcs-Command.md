@@ -1,5 +1,4 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index')
 ## DefaultEcs.Command Namespace
 ### Classes
 - [EntityCommandRecorder](./DefaultEcs-Command-EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder')

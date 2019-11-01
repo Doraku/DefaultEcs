@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs](./DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## IPublisherExtension Class
 Provides set of static methods to automatically subscribe [ActionIn&lt;T&gt;(T)](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)') methods marked with the [SubscribeAttribute](./DefaultEcs-SubscribeAttribute.md 'DefaultEcs.SubscribeAttribute') on a [IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher') instance.  
 ```C#

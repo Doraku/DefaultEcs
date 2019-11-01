@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs.Serialization](./DefaultEcs-Serialization.md 'DefaultEcs.Serialization')
+### [DefaultEcs.Serialization](./DefaultEcs-Serialization.md 'DefaultEcs.Serialization')
 ## IComponentTypeReader Interface
 Exposes a method to be called back when getting the maximum number of component of a [World](./DefaultEcs-World.md 'DefaultEcs.World'), primarly used for serialization purpose.  
 ```C#

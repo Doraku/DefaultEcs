@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs.Resource](./DefaultEcs-Resource.md 'DefaultEcs.Resource')
+### [DefaultEcs.Resource](./DefaultEcs-Resource.md 'DefaultEcs.Resource')
 ## AResourceManager&lt;TInfo,TResource&gt; Class
 Base type used to load resources of type [TResource](#DefaultEcs-Resource-AResourceManager-TInfo_TResource--TResource 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.TResource') using info of type [TInfo](#DefaultEcs-Resource-AResourceManager-TInfo_TResource--TInfo 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.TInfo').  
 [TInfo](#DefaultEcs-Resource-AResourceManager-TInfo_TResource--TInfo 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.TInfo') is used as key if the same resource is requested on multiple [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') to only load the [TResource](#DefaultEcs-Resource-AResourceManager-TInfo_TResource--TResource 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.TResource') resource once.  
@@ -11,9 +11,11 @@ public abstract class AResourceManager<TInfo,TResource>
 <a name='DefaultEcs-Resource-AResourceManager-TInfo_TResource--TInfo'></a>
 `TInfo`  
 The type used to identify a resource.  
+  
 <a name='DefaultEcs-Resource-AResourceManager-TInfo_TResource--TResource'></a>
 `TResource`  
 The type of the resource.  
+  
 ### Constructors
 - [AResourceManager()](./DefaultEcs-Resource-AResourceManager-TInfo_TResource--AResourceManager().md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.AResourceManager()')
 ### Methods

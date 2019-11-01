@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs](./DefaultEcs.md 'DefaultEcs').[World](./DefaultEcs-World.md 'DefaultEcs.World')
+### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## World.GetAllEntities() Method
 Get all the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') of the current [World](./DefaultEcs-World.md 'DefaultEcs.World').  
 This method is primiraly used for serialization purpose and should not be called in game logic.  

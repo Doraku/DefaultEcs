@@ -1,5 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
-### [DefaultEcs](./index.md 'index').[DefaultEcs.Serialization](./DefaultEcs-Serialization.md 'DefaultEcs.Serialization')
+### [DefaultEcs.Serialization](./DefaultEcs-Serialization.md 'DefaultEcs.Serialization')
 ## IComponentReader Interface
 Exposes a method to be called back when getting an [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') components, primarly used for serialization purpose.  
 ```C#
