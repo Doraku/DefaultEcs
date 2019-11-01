@@ -435,7 +435,7 @@ namespace DefaultEcs
         /// Returns a string representation of this instance.
         /// </summary>
         /// <returns>A string representing this instance.</returns>
-        public override string ToString() => $"Entity {WorldId}:{EntityId}:{Version}";
+        public override string ToString() => $"Entity {WorldId}:{EntityId}.{Version}";
 
         #endregion
     }
