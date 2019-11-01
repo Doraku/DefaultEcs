@@ -7,7 +7,7 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
 
 - [Requirement](#Requirement)
 - [Release note](./documentation/RELEASENOTE.md 'Release note')
-- [Api documentation](./documentation/api/DefaultEcs.md 'Api documentation')
+- [Api documentation](./documentation/api/index.md 'Api documentation')
 - [Overview](#Overview)
   - [World](#Overview_World)
   - [Entity](#Overview_Entity)

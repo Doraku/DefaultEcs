@@ -24,6 +24,11 @@ jobs:
     - name: Set up dotnet
       uses: actions/setup-dotnet@master
       with:
+        dotnet-version: '1.1.14'
+        
+    - name: Set up dotnet
+      uses: actions/setup-dotnet@master
+      with:
         dotnet-version: '3.0.100'
       
     - name: Run tests
