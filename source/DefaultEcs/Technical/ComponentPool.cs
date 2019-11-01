@@ -15,7 +15,7 @@ namespace DefaultEcs.Technical
         private static readonly bool _isFlagType;
         private static readonly bool _isManagedResourceType;
 
-        private readonly int _worldId;
+        private readonly short _worldId;
         private readonly int _maxEntityCount;
 
         private int[] _mapping;
@@ -44,7 +44,7 @@ namespace DefaultEcs.Technical
             _isManagedResourceType = typeInfo.GenericTypeArguments.Length > 0 && typeInfo.GetGenericTypeDefinition() == typeof(ManagedResource<,>);
         }
 
-        public ComponentPool(int worldId, int maxEntityCount, int maxComponentCount)
+        public ComponentPool(short worldId, int maxEntityCount, int maxComponentCount)
         {
             _worldId = worldId;
             _maxEntityCount = maxEntityCount;

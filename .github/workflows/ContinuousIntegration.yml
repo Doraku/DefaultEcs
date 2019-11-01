@@ -21,18 +21,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
       
-    - name: Set up min dotnet
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '1.0.16'
-
-    - name: Set up max dotnet
+    - name: Set up dotnet
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.0.100'
 
-    - name: Run tests
-      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release
+    - name: Run tests net452
+      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net452
+      
+    - name: Run tests net48
+      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net48
+      
+    - name: Run tests netcoreapp3.0
+      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f netcoreapp3.0
 
     - name: Install coverlet tool
       run: dotnet tool install --tool-path . --version 1.6.0 coverlet.console

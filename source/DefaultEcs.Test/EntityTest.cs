@@ -60,6 +60,18 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void IsAlive_Should_return_false_When_disposed_even_if_recreated()
+        {
+            using World world = new World(1);
+
+            Entity entity = world.CreateEntity();
+            entity.Dispose();
+            Entity newEntity = world.CreateEntity();
+            Check.That(entity.IsAlive).IsFalse();
+            Check.That(entity.GetHashCode()).IsEqualTo(newEntity.GetHashCode());
+        }
+
+        [Fact]
         public void IsEnabled_Should_return_true_by_default()
         {
             using World world = new World(1);
@@ -490,7 +502,7 @@ namespace DefaultEcs.Test
 
             Entity entity = world.CreateEntity();
 
-            Check.That(entity).IsEqualTo(deletedEntity);
+            Check.That(entity.GetHashCode()).IsEqualTo(deletedEntity.GetHashCode());
         }
 
         [Fact]

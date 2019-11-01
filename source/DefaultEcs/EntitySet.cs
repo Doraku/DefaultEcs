@@ -20,7 +20,7 @@ namespace DefaultEcs
         #region Fields
 
         private readonly bool _needClearing;
-        private readonly int _worldId;
+        private readonly short _worldId;
         private readonly int _maxEntityCount;
         private readonly Predicate<ComponentEnum> _filter;
         private readonly IDisposable _subscriptions;
