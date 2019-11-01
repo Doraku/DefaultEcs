@@ -17,6 +17,7 @@ fixed serialization of struct as an object
 
 added netstandard2.1 target
 added == and != operators on Entity
+added internal version on Entity, Entity.IsAlive will return false if a stored disposed entity is reused
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

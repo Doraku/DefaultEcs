@@ -66,8 +66,9 @@ namespace DefaultEcs.Test
 
             Entity entity = world.CreateEntity();
             entity.Dispose();
-            world.CreateEntity();
+            Entity newEntity = world.CreateEntity();
             Check.That(entity.IsAlive).IsFalse();
+            Check.That(entity.GetHashCode()).IsEqualTo(newEntity.GetHashCode());
         }
 
         [Fact]

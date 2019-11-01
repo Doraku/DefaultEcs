@@ -49,7 +49,7 @@ namespace DefaultEcs
         public bool IsAlive
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => WorldId == 0 ? false : World.Infos[WorldId].EntityInfos[EntityId].IsAlive(Version);
+            get => WorldId != 0 && World.Infos[WorldId].EntityInfos[EntityId].IsAlive(Version);
         }
 
         #endregion
