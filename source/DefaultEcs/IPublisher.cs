@@ -6,6 +6,7 @@ namespace DefaultEcs
     /// Encapsulates a method that has a single in parameter and does not return a value used for <see cref="World.Subscribe{T}(ActionIn{T})"/> method.
     /// </summary>
     /// <typeparam name="T">The type of message to subscribe to.</typeparam>
+    /// <param name="message">The recieved message.</param>
     public delegate void ActionIn<T>(in T message);
 
     /// <summary>
