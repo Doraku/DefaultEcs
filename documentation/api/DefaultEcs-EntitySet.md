@@ -3,8 +3,12 @@
 ## EntitySet Class
 Represents a sub-selection of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances from a [World](./DefaultEcs-World.md 'DefaultEcs.World').  
 ```C#
-public sealed class EntitySet
+public sealed class EntitySet :
+IDisposable
 ```
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet')  
+
+Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 ### Properties
 - [Count](./DefaultEcs-EntitySet-Count.md 'DefaultEcs.EntitySet.Count')
 ### Methods

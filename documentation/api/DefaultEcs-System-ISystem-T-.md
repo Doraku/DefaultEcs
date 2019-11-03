@@ -3,8 +3,10 @@
 ## ISystem&lt;T&gt; Interface
 Exposes a method to update a system.  
 ```C#
-public interface ISystem<in T>
+public interface ISystem<in T> :
+IDisposable
 ```
+Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 #### Type parameters
 <a name='DefaultEcs-System-ISystem-T--T'></a>
 `T`  

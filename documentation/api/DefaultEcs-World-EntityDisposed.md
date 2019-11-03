@@ -7,4 +7,4 @@ The Entity still contains all its components.
 public event EntityDisposed;
 ```
 #### Event type
-[ActionIn&lt;T&gt;(T)](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)')
+[DefaultEcs.ActionIn&lt;](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)')[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')[&gt;](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)')

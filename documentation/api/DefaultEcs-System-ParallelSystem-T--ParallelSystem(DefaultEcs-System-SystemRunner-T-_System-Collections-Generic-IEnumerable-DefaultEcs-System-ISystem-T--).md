@@ -7,10 +7,10 @@ public ParallelSystem(DefaultEcs.System.SystemRunner<T> runner, System.Collectio
 ```
 #### Parameters
 <a name='DefaultEcs-System-ParallelSystem-T--ParallelSystem(DefaultEcs-System-SystemRunner-T-_System-Collections-Generic-IEnumerable-DefaultEcs-System-ISystem-T--)-runner'></a>
-`runner` [SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;')  
+`runner` [DefaultEcs.System.SystemRunner&lt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;')[T](./DefaultEcs-System-ParallelSystem-T-.md#DefaultEcs-System-ParallelSystem-T--T 'DefaultEcs.System.ParallelSystem&lt;T&gt;.T')[&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;')  
 The [SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;') used to process the update in parallel if not null.  
   
 <a name='DefaultEcs-System-ParallelSystem-T--ParallelSystem(DefaultEcs-System-SystemRunner-T-_System-Collections-Generic-IEnumerable-DefaultEcs-System-ISystem-T--)-systems'></a>
-`systems` [System.Collections.Generic.IEnumerable](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable')  
+`systems` [System.Collections.Generic.IEnumerable&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerable-1 'System.Collections.Generic.IEnumerable`1')[DefaultEcs.System.ISystem&lt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;')[T](./DefaultEcs-System-ParallelSystem-T-.md#DefaultEcs-System-ParallelSystem-T--T 'DefaultEcs.System.ParallelSystem&lt;T&gt;.T')[&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerable-1 'System.Collections.Generic.IEnumerable`1')  
 The [ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;') instances.  
   

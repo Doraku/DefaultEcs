@@ -3,8 +3,12 @@
 ## TextSerializer Class
 Provides a basic implementation of the [ISerializer](./DefaultEcs-Serialization-ISerializer.md 'DefaultEcs.Serialization.ISerializer') interface using a text readable format.  
 ```C#
-public sealed class TextSerializer
+public sealed class TextSerializer :
+ISerializer
 ```
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [TextSerializer](./DefaultEcs-Serialization-TextSerializer.md 'DefaultEcs.Serialization.TextSerializer')  
+
+Implements [ISerializer](./DefaultEcs-Serialization-ISerializer.md 'DefaultEcs.Serialization.ISerializer')  
 ### Methods
 - [Deserialize(System.IO.Stream)](./DefaultEcs-Serialization-TextSerializer-Deserialize(System-IO-Stream).md 'DefaultEcs.Serialization.TextSerializer.Deserialize(System.IO.Stream)')
 - [Deserialize(System.IO.Stream, DefaultEcs.World)](./DefaultEcs-Serialization-TextSerializer-Deserialize(System-IO-Stream_DefaultEcs-World).md 'DefaultEcs.Serialization.TextSerializer.Deserialize(System.IO.Stream, DefaultEcs.World)')

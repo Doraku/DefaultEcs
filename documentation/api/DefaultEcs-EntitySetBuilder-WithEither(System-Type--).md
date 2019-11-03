@@ -7,7 +7,7 @@ public DefaultEcs.EntitySetBuilder WithEither(params System.Type[] componentType
 ```
 #### Parameters
 <a name='DefaultEcs-EntitySetBuilder-WithEither(System-Type--)-componentTypes'></a>
-`componentTypes` [System.Type](https://docs.microsoft.com/en-us/dotnet/api/System.Type 'System.Type')  
+`componentTypes` [System.Type](https://docs.microsoft.com/en-us/dotnet/api/System.Type 'System.Type')[[]](https://docs.microsoft.com/en-us/dotnet/api/System.Array 'System.Array')  
 The types of component.  
   
 #### Returns

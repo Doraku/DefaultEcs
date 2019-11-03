@@ -3,8 +3,12 @@
 ## EntityCommandRecorder Class
 Represents a buffer of structural modifications to apply on [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') to record as postoned commands.  
 ```C#
-public sealed class EntityCommandRecorder
+public sealed class EntityCommandRecorder :
+IDisposable
 ```
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [EntityCommandRecorder](./DefaultEcs-Command-EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder')  
+
+Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 ### Constructors
 - [EntityCommandRecorder()](./DefaultEcs-Command-EntityCommandRecorder-EntityCommandRecorder().md 'DefaultEcs.Command.EntityCommandRecorder.EntityCommandRecorder()')
 - [EntityCommandRecorder(int)](./DefaultEcs-Command-EntityCommandRecorder-EntityCommandRecorder(int).md 'DefaultEcs.Command.EntityCommandRecorder.EntityCommandRecorder(int)')

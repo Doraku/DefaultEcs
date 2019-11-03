@@ -3,8 +3,9 @@
 ## AEntitySystem&lt;T&gt; Class
 Represents a base class to process updates on a given [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') instance.  
 ```C#
-public abstract class AEntitySystem<T>
+public abstract class AEntitySystem<T> : ASystem<T>
 ```
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [DefaultEcs.System.ASystem&lt;](./DefaultEcs-System-ASystem-T-.md 'DefaultEcs.System.ASystem&lt;T&gt;')[T](#DefaultEcs-System-AEntitySystem-T--T 'DefaultEcs.System.AEntitySystem&lt;T&gt;.T')[&gt;](./DefaultEcs-System-ASystem-T-.md 'DefaultEcs.System.ASystem&lt;T&gt;') &gt; [AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;')  
 #### Type parameters
 <a name='DefaultEcs-System-AEntitySystem-T--T'></a>
 `T`  

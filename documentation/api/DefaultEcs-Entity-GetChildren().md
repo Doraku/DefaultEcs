@@ -6,5 +6,5 @@ Gets all the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') setted as chil
 public System.Collections.Generic.IEnumerable<DefaultEcs.Entity> GetChildren();
 ```
 #### Returns
-[System.Collections.Generic.IEnumerable](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable')  
-An [System.Collections.Generic.IEnumerable&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerable-1 'System.Collections.Generic.IEnumerable&lt;&gt;') of all the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') children.  
+[System.Collections.Generic.IEnumerable&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerable-1 'System.Collections.Generic.IEnumerable`1')[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerable-1 'System.Collections.Generic.IEnumerable`1')  
+An [System.Collections.Generic.IEnumerable&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerable-1 'System.Collections.Generic.IEnumerable`1') of all the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') children.  

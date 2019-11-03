@@ -11,6 +11,6 @@ protected virtual void Update(T state, System.ReadOnlySpan<DefaultEcs.Entity> en
 The state to use.  
   
 <a name='DefaultEcs-System-AEntitySystem-T--Update(T_System-ReadOnlySpan-DefaultEcs-Entity-)-entities'></a>
-`entities` [System.ReadOnlySpan](https://docs.microsoft.com/en-us/dotnet/api/System.ReadOnlySpan 'System.ReadOnlySpan')  
+`entities` [System.ReadOnlySpan&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.ReadOnlySpan-1 'System.ReadOnlySpan`1')[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.ReadOnlySpan-1 'System.ReadOnlySpan`1')  
 The [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances to update.  
   

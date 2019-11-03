@@ -3,8 +3,9 @@
 ## AComponentSystem&lt;TState,TComponent&gt; Class
 Represents a base class to process updates on a given [World](./DefaultEcs-World.md 'DefaultEcs.World') instance to all its components of type [TComponent](#DefaultEcs-System-AComponentSystem-TState_TComponent--TComponent 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.TComponent').  
 ```C#
-public abstract class AComponentSystem<TState,TComponent>
+public abstract class AComponentSystem<TState,TComponent> : ASystem<TState>
 ```
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [DefaultEcs.System.ASystem&lt;](./DefaultEcs-System-ASystem-T-.md 'DefaultEcs.System.ASystem&lt;T&gt;')[TState](#DefaultEcs-System-AComponentSystem-TState_TComponent--TState 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.TState')[&gt;](./DefaultEcs-System-ASystem-T-.md 'DefaultEcs.System.ASystem&lt;T&gt;') &gt; [AComponentSystem&lt;TState,TComponent&gt;](./DefaultEcs-System-AComponentSystem-TState_TComponent-.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;')  
 #### Type parameters
 <a name='DefaultEcs-System-AComponentSystem-TState_TComponent--TState'></a>
 `TState`  

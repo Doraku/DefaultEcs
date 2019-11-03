@@ -5,6 +5,7 @@ Provides set of static methods to automatically subscribe [ActionIn&lt;T&gt;(T)]
 ```C#
 public static class IPublisherExtension
 ```
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [IPublisherExtension](./DefaultEcs-IPublisherExtension.md 'DefaultEcs.IPublisherExtension')  
 ### Methods
 - [Subscribe(DefaultEcs.IPublisher, System.Type)](./DefaultEcs-IPublisherExtension-Subscribe(DefaultEcs-IPublisher_System-Type).md 'DefaultEcs.IPublisherExtension.Subscribe(DefaultEcs.IPublisher, System.Type)')
 - [Subscribe&lt;T&gt;(DefaultEcs.IPublisher)](./DefaultEcs-IPublisherExtension-Subscribe-T-(DefaultEcs-IPublisher).md 'DefaultEcs.IPublisherExtension.Subscribe&lt;T&gt;(DefaultEcs.IPublisher)')

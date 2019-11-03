@@ -7,5 +7,5 @@ This method is primiraly used for serialization purpose and should not be called
 public System.Collections.Generic.IEnumerable<DefaultEcs.Entity> GetAllEntities();
 ```
 #### Returns
-[System.Collections.Generic.IEnumerable](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable')  
+[System.Collections.Generic.IEnumerable&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerable-1 'System.Collections.Generic.IEnumerable`1')[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerable-1 'System.Collections.Generic.IEnumerable`1')  
 All the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') of the current [World](./DefaultEcs-World.md 'DefaultEcs.World').  

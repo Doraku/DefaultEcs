@@ -1,5 +1,6 @@
 #### [DefaultEcs](./index.md 'index')
 ## DefaultEcs Namespace
+The [DefaultEcs](./DefaultEcs.md 'DefaultEcs') namespace contains types to put in place the Entity Component System pattern.  
 ### Classes
 - [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet')
 - [EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder')

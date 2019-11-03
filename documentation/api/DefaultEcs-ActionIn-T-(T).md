@@ -13,4 +13,5 @@ The type of message to subscribe to.
 #### Parameters
 <a name='DefaultEcs-ActionIn-T-(T)-message'></a>
 `message` [T](#DefaultEcs-ActionIn-T-(T)-T 'DefaultEcs.ActionIn&lt;T&gt;(T).T')  
+The recieved message.  
   

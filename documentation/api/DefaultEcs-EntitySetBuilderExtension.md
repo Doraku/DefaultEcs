@@ -5,6 +5,7 @@ Provides set of static methods to create more easily rules on a [EntitySetBuilde
 ```C#
 public static class EntitySetBuilderExtension
 ```
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [EntitySetBuilderExtension](./DefaultEcs-EntitySetBuilderExtension.md 'DefaultEcs.EntitySetBuilderExtension')  
 ### Methods
 - [WhenAddedEither&lt;T1,T2&gt;(DefaultEcs.EntitySetBuilder)](./DefaultEcs-EntitySetBuilderExtension-WhenAddedEither-T1_T2-(DefaultEcs-EntitySetBuilder).md 'DefaultEcs.EntitySetBuilderExtension.WhenAddedEither&lt;T1,T2&gt;(DefaultEcs.EntitySetBuilder)')
 - [WhenAddedEither&lt;T1,T2,T3&gt;(DefaultEcs.EntitySetBuilder)](./DefaultEcs-EntitySetBuilderExtension-WhenAddedEither-T1_T2_T3-(DefaultEcs-EntitySetBuilder).md 'DefaultEcs.EntitySetBuilderExtension.WhenAddedEither&lt;T1,T2,T3&gt;(DefaultEcs.EntitySetBuilder)')

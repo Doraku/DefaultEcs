@@ -6,4 +6,4 @@ Event called when an [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') is rem
 public event EntityRemoved;
 ```
 #### Event type
-[ActionIn&lt;T&gt;(T)](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)')
+[DefaultEcs.ActionIn&lt;](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)')[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')[&gt;](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)')

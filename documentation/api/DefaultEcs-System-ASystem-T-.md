@@ -3,8 +3,13 @@
 ## ASystem&lt;T&gt; Class
 Represents a base class to process updates, supporting a [SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;'). Do not inherit from this class directly.  
 ```C#
-public abstract class ASystem<T>
+public abstract class ASystem<T> :
+ISystem<T>,
+IDisposable
 ```
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [ASystem&lt;T&gt;](./DefaultEcs-System-ASystem-T-.md 'DefaultEcs.System.ASystem&lt;T&gt;')  
+
+Implements [DefaultEcs.System.ISystem&lt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;')[T](#DefaultEcs-System-ASystem-T--T 'DefaultEcs.System.ASystem&lt;T&gt;.T')[&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;'), [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 #### Type parameters
 <a name='DefaultEcs-System-ASystem-T--T'></a>
 `T`  

@@ -6,5 +6,5 @@ Gets the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') contained in the c
 public System.ReadOnlySpan<DefaultEcs.Entity> GetEntities();
 ```
 #### Returns
-[System.ReadOnlySpan](https://docs.microsoft.com/en-us/dotnet/api/System.ReadOnlySpan 'System.ReadOnlySpan')  
-A [System.ReadOnlySpan&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.ReadOnlySpan-1 'System.ReadOnlySpan&lt;&gt;') of the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') contained in the current [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet').  
+[System.ReadOnlySpan&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.ReadOnlySpan-1 'System.ReadOnlySpan`1')[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.ReadOnlySpan-1 'System.ReadOnlySpan`1')  
+A [System.ReadOnlySpan&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.ReadOnlySpan-1 'System.ReadOnlySpan`1') of the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') contained in the current [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet').  

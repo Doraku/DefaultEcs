@@ -7,6 +7,6 @@ public SequentialSystem(params DefaultEcs.System.ISystem<T>[] systems);
 ```
 #### Parameters
 <a name='DefaultEcs-System-SequentialSystem-T--SequentialSystem(DefaultEcs-System-ISystem-T---)-systems'></a>
-`systems` [ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;')  
+`systems` [DefaultEcs.System.ISystem&lt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;')[T](./DefaultEcs-System-SequentialSystem-T-.md#DefaultEcs-System-SequentialSystem-T--T 'DefaultEcs.System.SequentialSystem&lt;T&gt;.T')[&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;')[[]](https://docs.microsoft.com/en-us/dotnet/api/System.Array 'System.Array')  
 The [ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;') instances.  
   

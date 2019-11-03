@@ -11,5 +11,5 @@ public System.Span<T> GetAllComponents<T>();
 The type of component.  
   
 #### Returns
-[System.Span](https://docs.microsoft.com/en-us/dotnet/api/System.Span 'System.Span')  
-A [System.Span&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Span-1 'System.Span&lt;&gt;') pointing directly to the component values to edit them.  
+[System.Span&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Span-1 'System.Span`1')[T](#DefaultEcs-World-GetAllComponents-T-()-T 'DefaultEcs.World.GetAllComponents&lt;T&gt;().T')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Span-1 'System.Span`1')  
+A [System.Span&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Span-1 'System.Span`1') pointing directly to the component values to edit them.  

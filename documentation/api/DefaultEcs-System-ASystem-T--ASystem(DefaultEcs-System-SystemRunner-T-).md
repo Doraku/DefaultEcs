@@ -7,6 +7,6 @@ protected ASystem(DefaultEcs.System.SystemRunner<T> runner);
 ```
 #### Parameters
 <a name='DefaultEcs-System-ASystem-T--ASystem(DefaultEcs-System-SystemRunner-T-)-runner'></a>
-`runner` [SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;')  
+`runner` [DefaultEcs.System.SystemRunner&lt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;')[T](./DefaultEcs-System-ASystem-T-.md#DefaultEcs-System-ASystem-T--T 'DefaultEcs.System.ASystem&lt;T&gt;.T')[&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;')  
 The [SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;') used to process the update in parallel if not null.  
   

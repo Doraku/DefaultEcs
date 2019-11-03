@@ -3,7 +3,7 @@
 ## Entity.Set&lt;T&gt;(T) Method
 Sets the value of the component of type [T](#DefaultEcs-Entity-Set-T-(T)-T 'DefaultEcs.Entity.Set&lt;T&gt;(T).T') on the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').  
 ```C#
-public void Set<T>(in T component);
+public void Set<T>(in T component=default(ref T));
 ```
 #### Type parameters
 <a name='DefaultEcs-Entity-Set-T-(T)-T'></a>

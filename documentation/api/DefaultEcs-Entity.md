@@ -4,8 +4,11 @@
 Represents an item in the [World](./DefaultEcs-World.md 'DefaultEcs.World').  
 Only use [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') generated from the [CreateEntity()](./DefaultEcs-World-CreateEntity().md 'DefaultEcs.World.CreateEntity()') method.  
 ```C#
-public readonly struct Entity
+public readonly struct Entity :
+IDisposable,
+IEquatable<Entity>
 ```
+Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable'), [System.IEquatable&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.IEquatable-1 'System.IEquatable`1')[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.IEquatable-1 'System.IEquatable`1')  
 ### Properties
 - [IsAlive](./DefaultEcs-Entity-IsAlive.md 'DefaultEcs.Entity.IsAlive')
 ### Methods

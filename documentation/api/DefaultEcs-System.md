@@ -1,5 +1,6 @@
 #### [DefaultEcs](./index.md 'index')
 ## DefaultEcs.System Namespace
+The [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System') namespace contains types to define workflows of modification on entities and components.  
 ### Classes
 - [AComponentSystem&lt;TState,TComponent&gt;](./DefaultEcs-System-AComponentSystem-TState_TComponent-.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;')
 - [ActionSystem&lt;T&gt;](./DefaultEcs-System-ActionSystem-T-.md 'DefaultEcs.System.ActionSystem&lt;T&gt;')

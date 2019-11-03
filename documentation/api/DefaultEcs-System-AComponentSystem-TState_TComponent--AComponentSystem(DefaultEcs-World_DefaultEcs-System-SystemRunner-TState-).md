@@ -11,7 +11,7 @@ protected AComponentSystem(DefaultEcs.World world, DefaultEcs.System.SystemRunne
 The [World](./DefaultEcs-World.md 'DefaultEcs.World') on which to process the update.  
   
 <a name='DefaultEcs-System-AComponentSystem-TState_TComponent--AComponentSystem(DefaultEcs-World_DefaultEcs-System-SystemRunner-TState-)-runner'></a>
-`runner` [SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;')  
+`runner` [DefaultEcs.System.SystemRunner&lt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;')[TState](./DefaultEcs-System-AComponentSystem-TState_TComponent-.md#DefaultEcs-System-AComponentSystem-TState_TComponent--TState 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.TState')[&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;')  
 The [SystemRunner&lt;T&gt;](./DefaultEcs-System-SystemRunner-T-.md 'DefaultEcs.System.SystemRunner&lt;T&gt;') used to process the update in parallel if not null.  
   
 #### Exceptions

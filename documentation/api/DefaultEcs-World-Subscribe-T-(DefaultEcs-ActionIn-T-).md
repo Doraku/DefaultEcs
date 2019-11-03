@@ -12,7 +12,7 @@ The type of the object to be called back with.
   
 #### Parameters
 <a name='DefaultEcs-World-Subscribe-T-(DefaultEcs-ActionIn-T-)-action'></a>
-`action` [ActionIn&lt;T&gt;(T)](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)')  
+`action` [DefaultEcs.ActionIn&lt;](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)')[T](#DefaultEcs-World-Subscribe-T-(DefaultEcs-ActionIn-T-)-T 'DefaultEcs.World.Subscribe&lt;T&gt;(DefaultEcs.ActionIn&lt;T&gt;).T')[&gt;](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)')  
 The delegate to be called back.  
   
 #### Returns

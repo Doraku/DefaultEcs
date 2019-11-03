@@ -5,8 +5,12 @@ Base type used to load resources of type [TResource](#DefaultEcs-Resource-AResou
 [TInfo](#DefaultEcs-Resource-AResourceManager-TInfo_TResource--TInfo 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.TInfo') is used as key if the same resource is requested on multiple [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') to only load the [TResource](#DefaultEcs-Resource-AResourceManager-TInfo_TResource--TResource 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.TResource') resource once.  
 If no [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') contains the [ManagedResource&lt;TInfo,TResource&gt;](./DefaultEcs-Resource-ManagedResource-TInfo_TResource-.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') component identifying the resource anymore, the [TResource](#DefaultEcs-Resource-AResourceManager-TInfo_TResource--TResource 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.TResource') instance is then disposed automatically.  
 ```C#
-public abstract class AResourceManager<TInfo,TResource>
+public abstract class AResourceManager<TInfo,TResource> :
+IDisposable
 ```
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [AResourceManager&lt;TInfo,TResource&gt;](./DefaultEcs-Resource-AResourceManager-TInfo_TResource-.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;')  
+
+Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 #### Type parameters
 <a name='DefaultEcs-Resource-AResourceManager-TInfo_TResource--TInfo'></a>
 `TInfo`  

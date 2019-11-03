@@ -15,6 +15,6 @@ The [ISerializer](./DefaultEcs-Serialization-ISerializer.md 'DefaultEcs.Serializ
 The [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream') in which the data will be saved.  
   
 <a name='DefaultEcs-Serialization-ISerializerExtension-Serialize(DefaultEcs-Serialization-ISerializer_System-IO-Stream_DefaultEcs-Entity--)-entities'></a>
-`entities` [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')  
+`entities` [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')[[]](https://docs.microsoft.com/en-us/dotnet/api/System.Array 'System.Array')  
 The [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances to save.  
   

@@ -1,5 +1,6 @@
 #### [DefaultEcs](./index.md 'index')
 ## DefaultEcs.Serialization Namespace
+The [DefaultEcs.Serialization](./DefaultEcs-Serialization.md 'DefaultEcs.Serialization') namespace contains types used to save and load DefaultEcs objects.  
 ### Classes
 - [BinarySerializer](./DefaultEcs-Serialization-BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer')
 - [ISerializerExtension](./DefaultEcs-Serialization-ISerializerExtension.md 'DefaultEcs.Serialization.ISerializerExtension')

@@ -15,5 +15,5 @@ The [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Str
 The [World](./DefaultEcs-World.md 'DefaultEcs.World') instance on which the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') will be created.  
   
 #### Returns
-[System.Collections.Generic.ICollection](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.ICollection 'System.Collections.Generic.ICollection')  
+[System.Collections.Generic.ICollection&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.ICollection-1 'System.Collections.Generic.ICollection`1')[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.ICollection-1 'System.Collections.Generic.ICollection`1')  
 The [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances loaded.  

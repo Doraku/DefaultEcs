@@ -6,4 +6,4 @@ The types of the component.
 public readonly ComponentTypes;
 ```
 #### Field Value
-[System.Type](https://docs.microsoft.com/en-us/dotnet/api/System.Type 'System.Type')  
+[System.Type](https://docs.microsoft.com/en-us/dotnet/api/System.Type 'System.Type')[[]](https://docs.microsoft.com/en-us/dotnet/api/System.Array 'System.Array')  

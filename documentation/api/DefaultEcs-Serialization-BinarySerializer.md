@@ -3,8 +3,12 @@
 ## BinarySerializer Class
 Provides a basic implementation of the [ISerializer](./DefaultEcs-Serialization-ISerializer.md 'DefaultEcs.Serialization.ISerializer') interface using a binary format.  
 ```C#
-public sealed class BinarySerializer
+public sealed class BinarySerializer :
+ISerializer
 ```
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [BinarySerializer](./DefaultEcs-Serialization-BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer')  
+
+Implements [ISerializer](./DefaultEcs-Serialization-ISerializer.md 'DefaultEcs.Serialization.ISerializer')  
 ### Methods
 - [Deserialize(System.IO.Stream)](./DefaultEcs-Serialization-BinarySerializer-Deserialize(System-IO-Stream).md 'DefaultEcs.Serialization.BinarySerializer.Deserialize(System.IO.Stream)')
 - [Deserialize(System.IO.Stream, DefaultEcs.World)](./DefaultEcs-Serialization-BinarySerializer-Deserialize(System-IO-Stream_DefaultEcs-World).md 'DefaultEcs.Serialization.BinarySerializer.Deserialize(System.IO.Stream, DefaultEcs.World)')

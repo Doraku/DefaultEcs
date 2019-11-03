@@ -7,4 +7,3 @@ public bool IsAlive { get; }
 ```
 #### Returns
 [System.Boolean](https://docs.microsoft.com/en-us/dotnet/api/System.Boolean 'System.Boolean')  
-true if the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') is alive; otherwise, false.  
