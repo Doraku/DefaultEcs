@@ -147,7 +147,7 @@ namespace DefaultEcs.Serialization
 
             using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
 
-            Converter<T>.Write(obj, writer);
+            Converter<T>.Write(writer, obj);
         }
 
         /// <summary>

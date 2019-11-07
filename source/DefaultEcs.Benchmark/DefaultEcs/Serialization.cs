@@ -7,7 +7,6 @@ using DefaultEcs.Serialization;
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
     [MemoryDiagnoser]
-    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 1, invocationCount: 1)]
     public class Serialization
     {
         private struct BigStruct

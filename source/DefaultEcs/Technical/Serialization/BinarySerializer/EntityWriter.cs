@@ -90,7 +90,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 _writer.WriteByte((byte)(_currentEntity.IsEnabled<T>() ? EntryType.Component : EntryType.DisabledComponent));
                 _writer.Write(typeId);
 
-                Converter<T>.Write(component, _writer);
+                Converter<T>.Write(_writer, component);
             }
         }
 

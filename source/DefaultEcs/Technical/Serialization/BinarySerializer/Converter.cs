@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Linq;
+using System.IO;
 using System.Reflection;
-using System.Reflection.Emit;
 using DefaultEcs.Technical.Helper;
+using DefaultEcs.Technical.Serialization.BinarySerializer.ConverterAction;
 
 namespace DefaultEcs.Technical.Serialization.BinarySerializer
 {
@@ -47,9 +47,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 return (in StreamReaderWrapper r) => (T)(object)_readAction(r);
             }
         }
-
-        public delegate void WriteAction<T>(in T value, in StreamWriterWrapper writer);
-        public delegate T ReadAction<out T>(in StreamReaderWrapper reader);
 
         #endregion
 
@@ -121,9 +118,8 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
     {
         #region Fields
 
-        private static readonly Type _type;
-        private static readonly Converter.WriteAction<T> _writeAction;
-        private static readonly Converter.ReadAction<T> _readAction;
+        private static readonly WriteAction<T> _writeAction;
+        private static readonly ReadAction<T> _readAction;
 
         #endregion
 
@@ -131,134 +127,37 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         static Converter()
         {
-            _type = typeof(T);
-            TypeInfo typeInfo = _type.GetTypeInfo();
-
-            if (_type == typeof(string))
+            (_writeAction, _readAction) = typeof(T) switch
             {
-                _writeAction = (Converter.WriteAction<T>)(Delegate)new Converter.WriteAction<string>(StringConverter.Write);
-                _readAction = (Converter.ReadAction<T>)(Delegate)new Converter.ReadAction<string>(StringConverter.Read);
-            }
-            else if (typeInfo.IsArray)
-            {
-                Type elementType = typeInfo.GetElementType();
-
-                _writeAction = (Converter.WriteAction<T>)typeof(Converter<>).MakeGenericType(elementType).GetTypeInfo().GetDeclaredMethod(nameof(WriteArray)).CreateDelegate(typeof(Converter.WriteAction<T>));
-                _readAction = (Converter.ReadAction<T>)typeof(Converter<>).MakeGenericType(elementType).GetTypeInfo().GetDeclaredMethod(nameof(ReadArray)).CreateDelegate(typeof(Converter.ReadAction<T>));
-            }
-            else
-            {
-                try
-                {
-                    if (typeInfo.IsUnmanaged())
-                    {
-                        TypeInfo unmanagedType = typeof(UnmanagedConverter<>).MakeGenericType(_type).GetTypeInfo();
-
-                        _writeAction = (Converter.WriteAction<T>)unmanagedType.GetDeclaredMethod(nameof(UnmanagedConverter<bool>.Write)).CreateDelegate(typeof(Converter.WriteAction<T>));
-                        _readAction = (Converter.ReadAction<T>)unmanagedType.GetDeclaredMethod(nameof(UnmanagedConverter<bool>.Read)).CreateDelegate(typeof(Converter.ReadAction<T>));
-                    }
-                    else
-                    {
-                        DynamicMethod writeMethod = new DynamicMethod($"Write_{nameof(T)}", typeof(void), new[] { _type.MakeByRefType(), typeof(StreamWriterWrapper).MakeByRefType() }, typeof(Converter<T>), true);
-                        ILGenerator writeGenerator = writeMethod.GetILGenerator();
-
-                        DynamicMethod readMethod = new DynamicMethod($"Read_{nameof(T)}", _type, new[] { typeof(StreamReaderWrapper).MakeByRefType() }, typeof(Converter<T>), true);
-                        ILGenerator readGenerator = readMethod.GetILGenerator();
-                        LocalBuilder readValue = readGenerator.DeclareLocal(_type);
-
-                        if (typeInfo.IsClass)
-                        {
-                            readGenerator.Emit(OpCodes.Ldsfld, typeof(Converter<T>).GetTypeInfo().GetDeclaredField(nameof(_type)));
-                            readGenerator.Emit(OpCodes.Call, typeof(ObjectInitializer).GetTypeInfo().GetDeclaredMethod(nameof(ObjectInitializer.Create)));
-                            readGenerator.Emit(OpCodes.Stloc, readValue);
-                        }
-                        else
-                        {
-                            readGenerator.Emit(OpCodes.Ldloca_S, readValue);
-                            readGenerator.Emit(OpCodes.Initobj, _type);
-                        }
-
-                        while (typeInfo != null)
-                        {
-                            foreach (FieldInfo fieldInfo in typeInfo.DeclaredFields.Where(f => !f.IsStatic))
-                            {
-                                writeGenerator.Emit(OpCodes.Ldarg_0);
-                                if (typeInfo.IsClass)
-                                {
-                                    writeGenerator.Emit(OpCodes.Ldind_Ref);
-                                }
-                                writeGenerator.Emit(OpCodes.Ldflda, fieldInfo);
-                                writeGenerator.Emit(OpCodes.Ldarg_1);
-                                writeGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Converter<T>.Write)));
-
-                                readGenerator.Emit(typeInfo.IsClass ? OpCodes.Ldloc : OpCodes.Ldloca_S, readValue);
-                                readGenerator.Emit(OpCodes.Ldarg_0);
-                                readGenerator.Emit(OpCodes.Call, typeof(Converter<>).MakeGenericType(fieldInfo.FieldType).GetTypeInfo().GetDeclaredMethod(nameof(Converter<T>.Read)));
-                                readGenerator.Emit(OpCodes.Stfld, fieldInfo);
-                            }
-
-                            typeInfo = typeInfo.BaseType?.GetTypeInfo();
-                        }
-
-                        writeGenerator.Emit(OpCodes.Ret);
-                        _writeAction = (Converter.WriteAction<T>)writeMethod.CreateDelegate(typeof(Converter.WriteAction<T>));
-
-                        readGenerator.Emit(OpCodes.Ldloc, readValue);
-                        readGenerator.Emit(OpCodes.Ret);
-                        _readAction = (Converter.ReadAction<T>)readMethod.CreateDelegate(typeof(Converter.ReadAction<T>));
-                    }
-                }
-                catch (Exception exception)
-                {
-                    _writeAction = (in T _, in StreamWriterWrapper __) => throw new InvalidOperationException($"Unable to handle type {_type.FullName}", exception);
-                    _readAction = (in StreamReaderWrapper _) => throw new InvalidOperationException($"Unable to handle type {_type.FullName}", exception);
-                }
-            }
+                Type type when type == typeof(string) => StringConverter.GetActions<T>(),
+                Type type when type.IsUnmanaged() => UnmanagedConverter.GetActions<T>(),
+                Type type when type.IsArray && type.GetElementType().IsUnmanaged() => UnmanagedConverter.GetArrayActions<T>(),
+                Type type when type.IsArray => ArrayConverter.GetActions<T>(),
+                _ => ManagedConverter.GetActions<T>()
+            };
         }
 
         #endregion
 
         #region Methods
 
-        private static void WriteArray(in T[] values, in StreamWriterWrapper writer)
-        {
-            writer.Write(values.Length);
-
-            for (int i = 0; i < values.Length; ++i)
-            {
-                Write(values[i], writer);
-            }
-        }
-
-        private static T[] ReadArray(in StreamReaderWrapper reader)
-        {
-            T[] values = new T[reader.Read<int>()];
-
-            for (int i = 0; i < values.Length; ++i)
-            {
-                values[i] = Read(reader);
-            }
-
-            return values;
-        }
-
-        public static void Write(in T value, in StreamWriterWrapper writer)
+        public static void Write(in StreamWriterWrapper writer, in T value)
         {
             if (value == default)
             {
                 writer.WriteByte(0);
             }
-            else if (_type == value.GetType())
+            else if (value.GetType() == typeof(T))
             {
                 writer.WriteByte(1);
-                _writeAction(value, writer);
+                _writeAction(writer, value);
             }
             else
             {
                 writer.WriteByte(2);
                 string typeName = value.GetType().AssemblyQualifiedName;
                 writer.WriteString(typeName);
-                Converter.GetWriteAction(typeName)(value, writer);
+                Converter.GetWriteAction(typeName)(writer, value);
             }
         }
 
@@ -266,13 +165,14 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         {
             return (reader.ReadByte()) switch
             {
+                -1 => throw new EndOfStreamException($"Could not deserialize type {typeof(T).FullName}"),
                 0 => default,
                 1 => _readAction(reader),
                 _ => Converter.GetReadAction<T>(reader.ReadString())(reader),
             };
         }
 
-        public static void WrapperWrite(in object value, in StreamWriterWrapper writer) => Write((T)value, writer);
+        public static void WrapperWrite(in StreamWriterWrapper writer, in object value) => Write(writer, (T)value);
 
         #endregion
     }
