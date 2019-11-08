@@ -133,6 +133,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 Type type when type.IsUnmanaged() => UnmanagedConverter.GetActions<T>(),
                 Type type when type.IsArray && type.GetElementType().IsUnmanaged() => UnmanagedConverter.GetArrayActions<T>(),
                 Type type when type.IsArray => ArrayConverter.GetActions<T>(),
+                Type type when type.GetTypeInfo().IsAbstract => (null, null),
                 _ => ManagedConverter.GetActions<T>()
             };
         }

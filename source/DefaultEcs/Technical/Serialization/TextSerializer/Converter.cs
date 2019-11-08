@@ -352,7 +352,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 line = reader.ReadLine();
             }
 
-            T value = _isValueType ? default : (T)ObjectInitializer.Create(typeof(T));
+            T value = _isValueType ? default : ObjectInitializer<T>.Create();
 
             while (!reader.EndOfStream)
             {

@@ -12,23 +12,17 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer.ConverterAction
             Type type = typeof(T);
             TypeInfo typeInfo = type.GetTypeInfo();
 
-            DynamicMethod writeMethod = new DynamicMethod($"Write_{nameof(T)}", typeof(void), new[] { typeof(StreamWriterWrapper).MakeByRefType(), type.MakeByRefType() }, typeof(ManagedConverter), true);
+            DynamicMethod writeMethod = new DynamicMethod($"Write", typeof(void), new[] { typeof(StreamWriterWrapper).MakeByRefType(), type.MakeByRefType() }, typeof(ManagedConverter), true);
             ILGenerator writeGenerator = writeMethod.GetILGenerator();
 
-            DynamicMethod readMethod = new DynamicMethod($"Read_{nameof(T)}", type, new[] { typeof(StreamReaderWrapper).MakeByRefType() }, typeof(ManagedConverter), true);
+            DynamicMethod readMethod = new DynamicMethod($"Read", type, new[] { typeof(StreamReaderWrapper).MakeByRefType() }, typeof(ManagedConverter), true);
             ILGenerator readGenerator = readMethod.GetILGenerator();
             LocalBuilder readValue = readGenerator.DeclareLocal(type);
 
             if (typeInfo.IsClass)
             {
-                readGenerator.Emit(OpCodes.Ldtoken, type);
-                readGenerator.Emit(OpCodes.Call, typeof(ObjectInitializer).GetTypeInfo().GetDeclaredMethod(nameof(ObjectInitializer.Create)));
+                readGenerator.Emit(OpCodes.Call, typeof(ObjectInitializer<T>).GetTypeInfo().GetDeclaredMethod(nameof(ObjectInitializer<T>.Create)));
                 readGenerator.Emit(OpCodes.Stloc, readValue);
-            }
-            else
-            {
-                readGenerator.Emit(OpCodes.Ldloca_S, readValue);
-                readGenerator.Emit(OpCodes.Initobj, type);
             }
 
             while (typeInfo != null)

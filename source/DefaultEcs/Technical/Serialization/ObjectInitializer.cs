@@ -7,25 +7,25 @@ using System.Runtime.Serialization;
 
 namespace DefaultEcs.Technical.Serialization
 {
-    internal static class ObjectInitializer
+    internal static class ObjectInitializer<T>
     {
 #if NETSTANDARD1_1
         private static readonly Func<Type, object> _initializer;
 
         static ObjectInitializer()
         {
-            MethodInfo method = typeof(RuntimeHelpers).GetRuntimeMethod("GetUninitializedObject", new[] { typeof(Type) })
-                    ?? typeof(Activator).GetRuntimeMethod(nameof(Activator.CreateInstance), new[] { typeof(Type) });
-            _initializer = (Func<Type, object>)method.CreateDelegate(typeof(Func<Type, object>));
+            MethodInfo method = typeof(RuntimeHelpers).GetRuntimeMethod("GetUninitializedObject", new[] { typeof(Type) });
+
+            _initializer = method != null ? (Func<Type, object>)method.CreateDelegate(typeof(Func<Type, object>)) : Activator.CreateInstance;
         }
 #endif
 
-        public static object Create(Type type)
+        public static T Create()
         {
 #if NETSTANDARD1_1
-            return _initializer(type);
+            return (T)_initializer(typeof(T));
 #else
-            return FormatterServices.GetUninitializedObject(type);
+            return (T)FormatterServices.GetUninitializedObject(typeof(T));
 #endif
         }
     }
