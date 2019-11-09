@@ -118,8 +118,11 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 #endif
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Exception GetException<T>() => new EndOfStreamException($"Could not deserialize type {typeof(T).FullName}");
+
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void Throw<T>() => throw new EndOfStreamException($"Could not deserialize type {typeof(T).FullName}");
+        public static bool Throw<T>() => throw GetException<T>();
 
         public int ReadByte() => _stream.ReadByte();
 
@@ -186,7 +189,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             }
 
             byte[] value = new byte[sizeof(T)];
-            if (_stream.Read(value, 0, value.Length) < value.Length)
+            if (_stream.Read(value, 0, value.Length) != value.Length)
             {
                 Throw<T>();
             }
@@ -197,7 +200,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             }
 #else
             T value = default;
-
             if (_stream.Read(new Span<byte>(&value, sizeof(T))) != sizeof(T))
             {
                 Throw<T>();
@@ -224,7 +226,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             }
 #else
             length *= sizeof(T);
-
             fixed (T* valueP = values)
             {
                 if (_stream.Read(new Span<byte>(valueP, length)) != length)

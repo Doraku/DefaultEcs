@@ -11,7 +11,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer.ConverterAction
         private static void Write<T>(in StreamWriterWrapper writer, in T[] value)
         {
             writer.Write(value.Length);
-
             for (int i = 0; i < value.Length; ++i)
             {
                 Converter<T>.Write(writer, value[i]);
@@ -21,14 +20,12 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer.ConverterAction
         private static T[] Read<T>(in StreamReaderWrapper reader)
         {
             int length = reader.Read<int>();
-
             if (length == 0)
             {
                 return EmptyArray<T>.Value;
             }
 
             T[] value = new T[length];
-
             for (int i = 0; i < value.Length; ++i)
             {
                 value[i] = Converter<T>.Read(reader);
