@@ -136,7 +136,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         private const string _arrayBegin = "[";
         private const string _arrayEnd = "]";
 
-        private static readonly bool _isValueType;
+        private static readonly bool _isValue;
+        private static readonly bool _isSealed;
         private static readonly char[] _split = new[] { ' ', '\t' };
         private static readonly Dictionary<string, ReadFieldAction> _readFieldActions;
         private static readonly Converter.WriteAction<T> _writeAction;
@@ -150,7 +151,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         {
             TypeInfo typeInfo = typeof(T).GetTypeInfo();
 
-            _isValueType = typeInfo.IsValueType;
+            _isValue = typeInfo.IsValueType;
+            _isSealed = typeInfo.IsSealed || typeof(T) == typeof(Type);
 
             _readFieldActions = new Dictionary<string, ReadFieldAction>();
 
@@ -212,6 +214,11 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             else if (typeof(T) == typeof(string))
             {
                 _readAction = Converter.ConvertRead<T>(Converter<string>.GetReadAction(s => s));
+            }
+            else if (typeof(T) == typeof(Type))
+            {
+                _writeAction = (Converter.WriteAction<T>)(Delegate)Converter<Type>.GetWriteAction(t => t.AssemblyQualifiedName);
+                _readAction = Converter.ConvertRead<T>(Converter<Type>.GetReadAction(s => Type.GetType(s, true)));
             }
             else if (typeInfo.IsEnum)
             {
@@ -335,6 +342,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         private static Converter.ReadAction<T> GetReadAction(Func<string, T> parser) => new Converter.ReadAction<T>((l, r) => parser(l ?? r.ReadLine()));
 
+        private static Converter.WriteAction<T> GetWriteAction(Func<T, string> formatter) => new Converter.WriteAction<T>((in T v, StreamWriter w, int _) => w.WriteLine(formatter(v)));
+
         private static char CharParse(string entry)
         {
             if (!char.TryParse(entry, out char result))
@@ -352,7 +361,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 line = reader.ReadLine();
             }
 
-            T value = _isValueType ? default : ObjectInitializer<T>.Create();
+            T value = _isValue ? default : ObjectInitializer<T>.Create();
 
             while (!reader.EndOfStream)
             {
@@ -430,7 +439,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             {
                 writer.WriteLine("null");
             }
-            else if (typeof(T) == value.GetType())
+            else if (_isSealed || typeof(T) == value.GetType())
             {
                 _writeAction(value, writer, indentation);
             }

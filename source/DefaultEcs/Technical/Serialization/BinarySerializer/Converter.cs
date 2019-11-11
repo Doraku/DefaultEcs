@@ -118,10 +118,11 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         static Converter()
         {
             _isValue = typeof(T).GetTypeInfo().IsValueType;
-            _isSealed = typeof(T).GetTypeInfo().IsSealed;
+            _isSealed = typeof(T).GetTypeInfo().IsSealed || typeof(T) == typeof(Type);
 
             (WriteAction, ReadAction) = typeof(T) switch
             {
+                Type type when type == typeof(Type) => TypeConverter.GetActions<T>(),
                 Type type when type.GetTypeInfo().IsAbstract => (null, null),
                 Type type when type == typeof(string) => StringConverter.GetActions<T>(),
                 Type type when type.IsUnmanaged() => UnmanagedConverter.GetActions<T>(),
