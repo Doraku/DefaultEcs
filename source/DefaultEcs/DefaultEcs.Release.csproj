@@ -14,6 +14,7 @@
     <Version>0.12.1-alpha1</Version>
     <PackageReleaseNotes>
 fixed serialization of struct as an object
+fixed serialization of Type
 
 added netstandard2.1 target
 added == and != operators on Entity
