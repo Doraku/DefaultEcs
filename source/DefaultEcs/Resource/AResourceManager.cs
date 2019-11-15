@@ -141,12 +141,21 @@ namespace DefaultEcs.Resource
                 yield return w.Subscribe<ManagedResourceReleaseMessage<ManagedResource<TInfo[], TResource>>>(On);
             }
 
-            ComponentPool<ManagedResource<TInfo, TResource>> components = ComponentManager<ManagedResource<TInfo, TResource>>.Get(world.WorldId);
-            if (components != null)
+            ComponentPool<ManagedResource<TInfo, TResource>> singleComponents = ComponentManager<ManagedResource<TInfo, TResource>>.Get(world.WorldId);
+            if (singleComponents != null)
             {
-                foreach (Entity entity in world.GetAllEntities().Where(e => components.Has(e.EntityId)))
+                foreach (Entity entity in world.GetAllEntities().Where(e => singleComponents.Has(e.EntityId)))
                 {
-                    On(new ManagedResourceRequestMessage<ManagedResource<TInfo, TResource>>(entity, components.Get(entity.EntityId)));
+                    On(new ManagedResourceRequestMessage<ManagedResource<TInfo, TResource>>(entity, singleComponents.Get(entity.EntityId)));
+                }
+            }
+            
+            ComponentPool<ManagedResource<TInfo[], TResource>> multipleComponents = ComponentManager<ManagedResource<TInfo[], TResource>>.Get(world.WorldId);
+            if (multipleComponents != null)
+            {
+                foreach (Entity entity in world.GetAllEntities().Where(e => multipleComponents.Has(e.EntityId)))
+                {
+                    On(new ManagedResourceRequestMessage<ManagedResource<TInfo[], TResource>>(entity, multipleComponents.Get(entity.EntityId)));
                 }
             }
 
