@@ -55,7 +55,7 @@ namespace DefaultEcs.Test.Resource
         }
 
         [Fact]
-        public void Should_load_multiple_resource()
+        public void Should_load_multiple_resource_manage_before_entity()
         {
             IDisposable value = Substitute.For<IDisposable>();
 
@@ -65,6 +65,22 @@ namespace DefaultEcs.Test.Resource
             manager.Manage(world);
             Entity entity = world.CreateEntity();
             entity.Set(new ManagedResource<string[], IDisposable>(new[] { "dummy", "dummy2" }));
+
+            Check.That(entity.Get<int>()).IsEqualTo(2);
+        }
+        
+        [Fact]
+        public void Should_load_multiple_resource_entity_before_manage()
+        {
+            IDisposable value = Substitute.For<IDisposable>();
+
+            using World world = new World(1);
+            using ResourceManagerTest manager = new ResourceManagerTest(value);
+            
+            Entity entity = world.CreateEntity();
+            entity.Set(new ManagedResource<string[], IDisposable>(new[] { "dummy", "dummy2" }));
+            
+            manager.Manage(world);
 
             Check.That(entity.Get<int>()).IsEqualTo(2);
         }
