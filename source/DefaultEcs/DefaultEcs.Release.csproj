@@ -19,6 +19,7 @@ fixed serialization of Type
 added netstandard2.1 target
 added == and != operators on Entity
 added internal version on Entity, Entity.IsAlive will return false if a stored disposed entity is reused
+fixed AResourceManager.Manage for existing entities
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
