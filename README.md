@@ -430,7 +430,9 @@ DefaultEcs support serialization to save and load a World state. Two implementat
 
 The provided implementation TextSerializer and BinarySerializer are highly permissive and will serialize every fields and properties even if the are private or readonly and do not require any attribute decoration to work.  
 This was a target from the get go as graphic and framework libraries do not always have well decorated type which would be used as component.  
-Although the lowest target is netstandard1.1, please be aware that the capability of both implementation to handle type with no default constructor maybe not work if the version of your .NET plateform is too low.
+Although the lowest target is netstandard1.1, please be aware that the capability of both implementation to handle type with no default constructor maybe not work if the version of your .NET plateform is too low. Other known limitations are:
+- do not handle multidimensional arrays
+- do not handle cyclic object graph (all objects are copied, thus creating an infinit loop)
 
 
 ```csharp
