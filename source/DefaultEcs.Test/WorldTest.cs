@@ -178,7 +178,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void GetAllEntities_Should_all_entities()
+        public void GetAllEntities_Should_return_all_entities()
         {
             using World world = new World(4);
 

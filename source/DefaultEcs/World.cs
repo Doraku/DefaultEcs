@@ -152,7 +152,9 @@ namespace DefaultEcs
 
             ArrayExtension.EnsureLength(ref Info.EntityInfos, entityId, MaxEntityCount);
 
-            Info.EntityInfos[entityId].Components[IsAliveFlag] = true;
+            ref ComponentEnum components = ref Info.EntityInfos[entityId].Components;
+            components[IsAliveFlag] = true;
+            Publish(new EntityDisabledMessage(entityId, components));
 
             return new Entity(WorldId, entityId);
         }
@@ -218,7 +220,13 @@ namespace DefaultEcs
         /// Gets an <see cref="EntitySetBuilder"/> to create a subset of <see cref="Entity"/> of the current <see cref="World"/>.
         /// </summary>
         /// <returns>An <see cref="EntitySetBuilder"/>.</returns>
-        public EntitySetBuilder GetEntities() => new EntitySetBuilder(this);
+        public EntitySetBuilder GetEntities() => new EntitySetBuilder(this, true);
+
+        /// <summary>
+        /// Gets an <see cref="EntitySetBuilder"/> to create a subset of disabled <see cref="Entity"/> of the current <see cref="World"/>.
+        /// </summary>
+        /// <returns>An <see cref="EntitySetBuilder"/>.</returns>
+        public EntitySetBuilder GetDisabledEntities() => new EntitySetBuilder(this, false);
 
         /// <summary>
         /// Get all the <see cref="Entity"/> of the current <see cref="World"/>.

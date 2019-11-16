@@ -54,6 +54,35 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void GetEntities_Should_return_only_disabled_Entity()
+        {
+            using World world = new World(4);
+
+            List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+            using EntitySet set = world.GetDisabledEntities().Build();
+
+            Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+            foreach (Entity entity in entities)
+            {
+                entity.Disable();
+            }
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+            entities[3].Enable();
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(entities.Take(3));
+        }
+
+        [Fact]
         public void GetEntities_Should_not_return_Entity_with_disabled_component()
         {
             using World world = new World(4);

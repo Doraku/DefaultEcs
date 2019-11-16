@@ -30,6 +30,7 @@ namespace DefaultEcs
         private readonly List<Func<EntitySet, World, IDisposable>> _subscriptions;
         private readonly List<Func<EntitySet, World, IDisposable>> _nonReactSubscriptions;
 
+        private bool _addCreated;
         private ComponentEnum _withFilter;
         private ComponentEnum _withEitherFilter;
         private ComponentEnum _withoutFilter;
@@ -58,18 +59,28 @@ namespace DefaultEcs
             _whenRemovedEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethods(nameof(WhenRemovedEither)).Single(m => m.ContainsGenericParameters);
         }
 
-        internal EntitySetBuilder(World world)
+        internal EntitySetBuilder(World world, bool withEnabledEntities)
         {
             _world = world;
-            _subscriptions = new List<Func<EntitySet, World, IDisposable>>
+
+            _subscriptions = new List<Func<EntitySet, World, IDisposable>>();
+            _nonReactSubscriptions = new List<Func<EntitySet, World, IDisposable>>();
+
+            _addCreated = withEnabledEntities;
+            _subscriptions.Add((s, w) => w.Subscribe<EntityDisposingMessage>(s.Remove));
+            _withFilter[World.IsAliveFlag] = true;
+            if (withEnabledEntities)
             {
-                (s, w) => w.Subscribe<EntityDisposingMessage>(s.Remove),
-                (s, w) => w.Subscribe<EntityDisabledMessage>(s.Remove)
-            };
-            _nonReactSubscriptions = new List<Func<EntitySet, World, IDisposable>>
+                _withFilter[World.IsEnabledFlag] = true;
+                _subscriptions.Add((s, w) => w.Subscribe<EntityDisabledMessage>(s.Remove));
+                _nonReactSubscriptions.Add((s, w) => w.Subscribe<EntityEnabledMessage>(s.CheckedAdd));
+            }
+            else
             {
-                (s, w) => w.Subscribe<EntityEnabledMessage>(s.CheckedAdd)
-            };
+                _withoutFilter[World.IsEnabledFlag] = true;
+                _subscriptions.Add((s, w) => w.Subscribe<EntityEnabledMessage>(s.Remove));
+                _nonReactSubscriptions.Add((s, w) => w.Subscribe<EntityDisabledMessage>(s.CheckedAdd));
+            }
         }
 
         #endregion
@@ -78,6 +89,8 @@ namespace DefaultEcs
 
         private void WithEither<T>(StrongBox<ComponentEnum> components)
         {
+            _addCreated = false;
+
             ComponentFlag flag = ComponentManager<T>.Flag;
             if (!components.Value[flag])
             {
@@ -146,6 +159,8 @@ namespace DefaultEcs
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
         public EntitySetBuilder With<T>()
         {
+            _addCreated = false;
+
             if (!_withFilter[ComponentManager<T>.Flag])
             {
                 _withFilter[ComponentManager<T>.Flag] = true;
@@ -482,12 +497,12 @@ namespace DefaultEcs
                 subscriptions.AddRange(_nonReactSubscriptions);
             }
 
-            if (subscriptions.Count == 3 || (_withFilter.IsNull && _withEitherFilters == null && !hasWhenFilter))
+            if (_addCreated && !hasWhenFilter)
             {
                 subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Add));
             }
 
-            return new EntitySet(hasWhenFilter, _world, _withFilter.Copy(), _withoutFilter.Copy(), _withEitherFilters?.ToList(), _withoutEitherFilters?.ToList(), subscriptions);
+            return new EntitySet(hasWhenFilter, _world, _withFilter, _withoutFilter, _withEitherFilters, _withoutEitherFilters, subscriptions);
         }
 
         #endregion

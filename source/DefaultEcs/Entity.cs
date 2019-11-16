@@ -111,7 +111,7 @@ namespace DefaultEcs
             if (components[World.IsEnabledFlag])
             {
                 components[World.IsEnabledFlag] = false;
-                Publisher.Publish(WorldId, new EntityDisabledMessage(EntityId));
+                Publisher.Publish(WorldId, new EntityDisabledMessage(EntityId, components));
             }
         }
 
@@ -177,12 +177,9 @@ namespace DefaultEcs
             if (ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component))
             {
                 components[ComponentManager<T>.Flag] = true;
-                if (components[World.IsEnabledFlag])
-                {
-                    Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
-                }
+                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
             }
-            else if (components[World.IsEnabledFlag] && components[ComponentManager<T>.Flag])
+            else if (components[ComponentManager<T>.Flag])
             {
                 Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
             }
@@ -207,12 +204,9 @@ namespace DefaultEcs
             if (pool.SetSameAs(EntityId, reference.EntityId))
             {
                 components[ComponentManager<T>.Flag] = true;
-                if (components[World.IsEnabledFlag])
-                {
-                    Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
-                }
+                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
             }
-            else if (components[World.IsEnabledFlag] && components[ComponentManager<T>.Flag])
+            else if (components[ComponentManager<T>.Flag])
             {
                 Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
             }
@@ -228,10 +222,7 @@ namespace DefaultEcs
             {
                 ref ComponentEnum components = ref Components;
                 components[ComponentManager<T>.Flag] = false;
-                if (components[World.IsEnabledFlag])
-                {
-                    Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
-                }
+                Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
             }
         }
 
@@ -333,7 +324,7 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            Entity copy = world.CreateDisabledEntity();
+            Entity copy = IsEnabled() ? world.CreateEntity() : world.CreateDisabledEntity();
             try
             {
                 Publisher.Publish(WorldId, new EntityCopyMessage(EntityId, copy));
@@ -341,6 +332,10 @@ namespace DefaultEcs
                 if (IsEnabled())
                 {
                     Publisher.Publish(WorldId, new EntityEnabledMessage(copy.EntityId, copy.Components));
+                }
+                else
+                {
+                    Publisher.Publish(WorldId, new EntityDisabledMessage(copy.EntityId, copy.Components));
                 }
             }
             catch

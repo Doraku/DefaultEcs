@@ -83,10 +83,7 @@ namespace DefaultEcs
             _worldId = world.WorldId;
             _maxEntityCount = world.MaxEntityCount;
 
-            withFilter[World.IsAliveFlag] = true;
-            withFilter[World.IsEnabledFlag] = true;
-
-            _filter = EntitySetFilterFactory.GetFilter(withFilter, withoutFilter, withEitherFilters, withoutEitherFilters);
+            _filter = EntitySetFilterFactory.GetFilter(withFilter.Copy(), withoutFilter.Copy(), withEitherFilters?.ToList(), withoutEitherFilters?.ToList());
 
             _subscriptions = subscriptions.Select(s => s(this, world)).Merge();
 
@@ -161,6 +158,14 @@ namespace DefaultEcs
             }
         }
 
+        internal void CheckedAdd(in EntityDisabledMessage message)
+        {
+            if (_filter(message.Components))
+            {
+                Add(message.EntityId);
+            }
+        }
+
         internal void CheckedAdd<T>(in ComponentAddedMessage<T> message)
         {
             if (_filter(message.Components))
@@ -188,6 +193,8 @@ namespace DefaultEcs
         internal void Remove(in EntityDisposingMessage message) => Remove(message.EntityId);
 
         internal void Remove(in EntityDisabledMessage message) => Remove(message.EntityId);
+
+        internal void Remove(in EntityEnabledMessage message) => Remove(message.EntityId);
 
         internal void Remove<T>(in ComponentRemovedMessage<T> message) => Remove(message.EntityId);
 

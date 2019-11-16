@@ -149,7 +149,7 @@ namespace DefaultEcs.Resource
                     On(new ManagedResourceRequestMessage<ManagedResource<TInfo, TResource>>(entity, singleComponents.Get(entity.EntityId)));
                 }
             }
-            
+
             ComponentPool<ManagedResource<TInfo[], TResource>> multipleComponents = ComponentManager<ManagedResource<TInfo[], TResource>>.Get(world.WorldId);
             if (multipleComponents != null)
             {
