@@ -3,6 +3,30 @@
 namespace DefaultEcs.Resource
 {
     /// <summary>
+    /// Provides static methods for creating <see cref="ManagedResource{TInfo, TResource}"/> object.
+    /// </summary>
+    /// <typeparam name="TResource">The type of the resource.</typeparam>
+    public static class ManagedResource<TResource>
+        where TResource : IDisposable
+    {
+        /// <summary>
+        /// Create a <see cref="ManagedResource{TInfo, TResource}"/> object
+        /// </summary>
+        /// <typeparam name="TInfo">The infos used to identify the resources.</typeparam>
+        /// <param name="info">The info used to identify the resource.</param>
+        /// <returns>The <see cref="ManagedResource{TInfo, TResource}"/> object.</returns>
+        public static ManagedResource<TInfo, TResource> Create<TInfo>(TInfo info) => new ManagedResource<TInfo, TResource>(info);
+
+        /// <summary>
+        /// Create a <see cref="ManagedResource{TInfo, TResource}"/> object with multiple infos.
+        /// </summary>
+        /// <typeparam name="TInfo">The infos used to identify the resources.</typeparam>
+        /// <param name="infos">The type used to identify a resource.</param>
+        /// <returns>The <see cref="ManagedResource{TInfo, TResource}"/> object.</returns>
+        public static ManagedResource<TInfo[], TResource> Create<TInfo>(params TInfo[] infos) => new ManagedResource<TInfo[], TResource>(infos);
+    }
+
+    /// <summary>
     /// Component type used to load managed resource with a <see cref="AResourceManager{TInfo, TResource}"/>.
     /// </summary>
     /// <typeparam name="TInfo">The type used to identify a resource.</typeparam>

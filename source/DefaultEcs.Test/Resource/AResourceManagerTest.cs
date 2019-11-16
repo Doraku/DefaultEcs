@@ -39,7 +39,7 @@ namespace DefaultEcs.Test.Resource
             using World world = new World(1);
 
             Entity entity = world.CreateEntity();
-            entity.Set(new ManagedResource<string, IDisposable>("dummy"));
+            entity.Set(ManagedResource<IDisposable>.Create("dummy"));
 
             using ResourceManagerTest manager = new ResourceManagerTest(null);
 
@@ -64,11 +64,11 @@ namespace DefaultEcs.Test.Resource
 
             manager.Manage(world);
             Entity entity = world.CreateEntity();
-            entity.Set(new ManagedResource<string[], IDisposable>(new[] { "dummy", "dummy2" }));
+            entity.Set(ManagedResource<IDisposable>.Create("dummy", "dummy2"));
 
             Check.That(entity.Get<int>()).IsEqualTo(2);
         }
-        
+
         [Fact]
         public void Should_load_multiple_resource_entity_before_manage()
         {
@@ -76,10 +76,10 @@ namespace DefaultEcs.Test.Resource
 
             using World world = new World(1);
             using ResourceManagerTest manager = new ResourceManagerTest(value);
-            
+
             Entity entity = world.CreateEntity();
-            entity.Set(new ManagedResource<string[], IDisposable>(new[] { "dummy", "dummy2" }));
-            
+            entity.Set(ManagedResource<IDisposable>.Create("dummy", "dummy2"));
+
             manager.Manage(world);
 
             Check.That(entity.Get<int>()).IsEqualTo(2);
@@ -97,10 +97,10 @@ namespace DefaultEcs.Test.Resource
 
             manager.Manage(world);
             Entity entity = world.CreateEntity();
-            entity.Set(new ManagedResource<string, IDisposable>("dummy"));
+            entity.Set(ManagedResource<IDisposable>.Create("dummy"));
 
             Entity entity2 = world.CreateEntity();
-            entity2.Set(new ManagedResource<string, IDisposable>("dummy"));
+            entity2.Set(ManagedResource<IDisposable>.Create("dummy"));
 
             entity.Dispose();
 
@@ -124,7 +124,7 @@ namespace DefaultEcs.Test.Resource
             {
                 manager.Manage(world);
                 Entity entity = world.CreateEntity();
-                entity.Set(new ManagedResource<string, IDisposable>("dummy"));
+                entity.Set(ManagedResource<IDisposable>.Create("dummy"));
 
                 Entity entity2 = world.CreateEntity();
                 entity2.SetSameAs<ManagedResource<string, IDisposable>>(entity);

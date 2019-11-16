@@ -6,6 +6,7 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
 ![continuous integration status](https://github.com/doraku/defaultecs/workflows/continuous%20integration/badge.svg)
 
 - [Requirement](#Requirement)
+- [Versioning](#Versioning)
 - [Release note](./documentation/RELEASENOTE.md 'Release note')
 - [Api documentation](./documentation/api/index.md 'Api documentation')
 - [Overview](#Overview)
@@ -30,7 +31,15 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
 
 <a name='Requirement'></a>
 # Requirement
-DefaultEcs heavily uses features from C#7.0 and Span from the System.Memory package, compatible from .NETStandard 1.1.
+DefaultEcs heavily uses features from C#7.0 and Span from the System.Memory package, compatible from .NETStandard 1.1.  
+For development, a C#8.0 compatible environment, net framework 4.8, net core 1.0 and netcore 3.0 are required to build and run all tests (it is possible to disable some target in the test project if needed).
+
+<a name='Versioning'></a>
+# Versioning
+This is the current strategy used to version DefaultEcs: v0.major.minor
+- 0: DefaultEcs is still in heavy development and although a lot of care is given to not break the current api, it can still happen
+- major: incremented when there is a breaking change (reset minor number)
+- minor: incremented when there is a new feature or a bug fix
 
 <a name='Overview'></a>
 # Overview
@@ -40,7 +49,7 @@ The World class act as a manager to create entity, get a selection of specific e
 Multiple World objects can be used in parallel, each instance being thread-safe from one an other but operations performed on a single instance and all of its created items should be thought as non thread-safe but depending on what is done, it is still possible to process operations concurrently to optimise performance.
 
 Worlds are created as such
-```C#
+```csharp
 World world = new World();
 ```
 
@@ -90,18 +99,18 @@ world.SetMaximumComponentCount<Example>(maxComponentCount);
 ```
 
 It is then possible to add the component to the entity
-```C#
+```csharp
 entity.Set(new Example { Value = 42 });
 ```
 
 It is also possible to share a component between entities without creating a new object
-```C#
+```csharp
 entity.SetSameAs<Example>(referenceEntity);
 ```
 If the component is removed from the entity used as reference, it will not remove the component from the other entities using the same component.
 
 To get a component from an entity, simply do the following
-```C#
+```csharp
 entity.Get<Example>();
 ```
 Note that the Get method return the component as a ref so you can directly update its value without using the Set method again (but it still need to be set at least once).
@@ -113,7 +122,7 @@ To setup a managed resource on an entity, the type `ManagedResource<TInfo, TReso
 Should multiple resource of the same type be needed on a single entity, it is also possible to set the type `ManagedResource<TInfo[], TResource>` as component.  
 If the `ManagedResource` component is removed from the entity or the entity holding it disposed, the internal reference count on the resource will decrease and it will be disposed if zero is reached.  
 To actually load the resource, an implementation of the class `AResourceManager<TInfo, TResource>` is need as shown in the next exemple:
-```C#
+```csharp
 // TInfo is string, the name of the texture and TResource is Texture2D
 public sealed class TextureResourceManager : AResourceManager<string, Texture2D>
 {
@@ -141,6 +150,13 @@ public sealed class TextureResourceManager : AResourceManager<string, Texture2D>
 // we simply set the special component like any other one
 entity.Set(new ManagedResource<string, Texture2D>("square.png"));
 
+// or we could set multiple resources like this
+entity.Set(new ManagedResource<string[], Texture2D>(new [] { "square.png", "circle.png" }));
+
+// you can also use the helper class
+entity.Set(ManagedResource<Texture2D>.Create("square.png")); // set up a ManagedResource<string, Texture2D>
+entity.Set(ManagedResource<Texture2D>.Create("square.png", "circle.png")); // set up a ManagedResource<string[], Texture2D>
+
 // this is how to set up a resource manager on a world, it will process all curently existing entities with the special component type, and react to all futur entities also
 textureResourceManager.Manage(_world);
 ```
@@ -149,7 +165,7 @@ textureResourceManager.Manage(_world);
 ## System
 To perform operation, systems should get EntitySet from the World instance. EntitySet are updated as components are added/removed from entities and are used to get a subset of entities with the required component.  
 EntitySet are created from EntitySetBuilder and it is possible to apply rules for required components or excluded components
-```C#
+```csharp
 // this set when enumerated will give all the entities with an Example component
 EntitySet set = world.GetEntities().With<Example>().Build();
 
@@ -167,7 +183,7 @@ Span<Example> components = world.GetAllComponents<Example>();
 ```
 
 There is also some special rules which will make the EntitySet react to some events
-```C#
+```csharp
 // this set when enumerated will give all the entities on which an Example component has been added for the first time
 EntitySet set = world.GetEntities().WhenAdded<Example>().Build();
 
@@ -195,7 +211,7 @@ This is a base interface for all the systems. it exposes an `Update` method and 
 <a name='Overview_System_ActionSystem'></a>
 ### ActionSystem<T>
 This class is used to quickly make a system with a given custom action to be called on every update.
-```C#
+```csharp
 private void Exit(float elaspedTime)
 {
     if (EscapedIsPressed)
@@ -217,7 +233,7 @@ system.Update(elapsedTime);
 <a name='Overview_System_SequentialSystem'></a>
 ### SequentialSystem
 This class is used to easily create a list of system to be updated in a sequential order.
-```C#
+```csharp
 ISystem<float> system = new SequentialSystem<float>(
         new InputSystem(),
         new AISystem(),
@@ -233,7 +249,7 @@ system.Update(elaspedTime);
 <a name='Overview_System_AEntitySystem'></a>
 ### AEntitySystem<T>
 This is a base class to create system to update a given EntitySet.
-```C#
+```csharp
 public sealed class VelocitySystem : AEntitySystem<float>
 {
     public VelocitySystem(World world, SystemRunner<float> runner)
@@ -255,7 +271,7 @@ public sealed class VelocitySystem : AEntitySystem<float>
 ```
 
 It is also possible to declare the needed component by using the WithAttribute and WithoutAttribute on the system type.
-```C#
+```csharp
 [With(typeof(Velocity)]
 [With(typeof(Position)]
 public sealed class VelocitySystem : AEntitySystem<float>
@@ -281,7 +297,7 @@ public sealed class VelocitySystem : AEntitySystem<float>
 <a name='Overview_System_AComponentSystem'></a>
 ### AComponentSystem<TState, TComponent>
 This is a base class to create system to update a specific component type from a given World.
-```C#
+```csharp
 public class DrawSystem : AComponentSystem<float, DrawInfo>
 {
     private readonly SpriteBatch _batch;
@@ -314,7 +330,7 @@ public class DrawSystem : AComponentSystem<float, DrawInfo>
 <a name='Overview_System_SystemRunner'></a>
 ### SystemRunner
 While not directly a system, an instance of this class can be given to base constructor of AEntitySystem and AComponentSystem to provide multithreading processing of system.
-```C#
+```csharp
 SystemRunner runner = new SystemRunner(Environment.ProcessorCount);
 
 ISystem<float> system = new VelocitySystem(world, runner);
@@ -334,7 +350,7 @@ It is safe to run a system with multithreading when:
 ## Command
 Since it is not possible to make structural modification on an Entity in a multithreading  context, the EntityCommandRecorder type is provided to adress this short-coming.  
 It is possible de record command on entities in a thread-safe way to later execute them when those structural modifications are safe to do.
-```C#
+```csharp
 // This creates an expandable recorder with a default capacity of 1Ko
 EntityCommandRecorder recorder = new EntityCommandRecorder();
 
@@ -348,7 +364,7 @@ EntityCommandRecorder recorder = new EntityCommandRecorder(512, 2048);
 Note that a fixed capacity EntityCommandRecorder (or one which has expanded to its max capacity) has better performance.  
 When needed, an expandable EntityCommandRecorder will double its capacity so it is prefered to use a power of 2 as default capacity.
 
-```C#
+```csharp
 // Create a new Entity defered and give an EntityRecord to record commands on it
 EntityRecord newRecord = recorder.CreateEntity();
 
@@ -366,7 +382,7 @@ recorder.Execute(world);
 <a name='Overview_Message'></a>
 ## Message
 It is possible to send and receive message transiting in a World.
-```C#
+```csharp
 void On(in bool message) { }
 
 // the method On will be called back every time a bool object is published
@@ -377,7 +393,7 @@ world.Publish(true);
 ```
 
 It is also possible to subscribe to multiple method of an instance by using the SubscribeAttribute:
-```C#
+```csharp
 public class Dummy
 {
     [Subscribe]
@@ -416,7 +432,7 @@ This was a target from the get go as graphic and framework libraries do not alwa
 Although the lowest target is netstandard1.1, please be aware that the capability of both implementation to handle type with no default constructor maybe not work if the version of your .NET plateform is too low.
 
 
-```C#
+```csharp
 ISerializer serializer = new TextSerializer();
 
 using (Stream stream = File.Create(filePath))
