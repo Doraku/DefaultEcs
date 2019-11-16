@@ -3,5 +3,6 @@
 The [DefaultEcs.Resource](./DefaultEcs-Resource.md 'DefaultEcs.Resource') namespace contains types used in the loading of unmanaged resources needed as components.  
 ### Classes
 - [AResourceManager&lt;TInfo,TResource&gt;](./DefaultEcs-Resource-AResourceManager-TInfo_TResource-.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;')
+- [ManagedResource&lt;TResource&gt;](./DefaultEcs-Resource-ManagedResource-TResource-.md 'DefaultEcs.Resource.ManagedResource&lt;TResource&gt;')
 ### Structs
 - [ManagedResource&lt;TInfo,TResource&gt;](./DefaultEcs-Resource-ManagedResource-TInfo_TResource-.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;')

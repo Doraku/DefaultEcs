@@ -1,3 +1,15 @@
+## DefaultEcs 0.12.1
+fixed serialization of struct as an object  
+fixed serialization of Type  
+fixed AResourceManager.Manage for existing entities  
+
+added netstandard2.1 target  
+added == and != operators on Entity  
+added internal version on Entity, Entity.IsAlive will return false if a stored disposed entity is reused  
+added a helper ManagedResource static class to create ManagedResource  
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.12.1)
+
 ## DefaultEcs 0.12.0
 breaking change:  
 renamed EntitySetBuilder.WithAny and WithAny attribute to WithEither  

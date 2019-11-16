@@ -4,6 +4,7 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
 [![NuGet](https://buildstats.info/nuget/DefaultEcs)](https://www.nuget.org/packages/DefaultEcs)
 [![Coverage Status](https://coveralls.io/repos/github/Doraku/DefaultEcs/badge.svg?branch=master)](https://coveralls.io/github/Doraku/DefaultEcs?branch=master)
 ![continuous integration status](https://github.com/doraku/defaultecs/workflows/continuous%20integration/badge.svg)
+[![preview package](https://img.shields.io/badge/preview-package-blue?style=flat&logo=github)](https://github.com/Doraku/DefaultEcs/packages/26448)
 
 - [Requirement](#Requirement)
 - [Versioning](#Versioning)

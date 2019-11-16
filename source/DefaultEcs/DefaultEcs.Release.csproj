@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <PropertyGroup Label="Package">
-    <Version>0.12.1-alpha1</Version>
+    <Version>0.12.1</Version>
     <PackageReleaseNotes>
 fixed serialization of struct as an object
 fixed serialization of Type
