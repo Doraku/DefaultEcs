@@ -14,6 +14,7 @@
     <Version>0.12.1</Version>
     <PackageReleaseNotes>
 added World.GetDisabledEntities to create EntitySet for disabled entities
+added DisabledAttribute to auto construct EntitySet of disabled entities for AEntitySystem
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

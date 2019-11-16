@@ -3,6 +3,13 @@
 namespace DefaultEcs.System
 {
     /// <summary>
+    /// Makes so when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance, it will only contain disabled entities.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public sealed class DisabledAttribute : Attribute
+    { }
+
+    /// <summary>
     /// Specifies which filter rule should be applied when using a <see cref="ComponentAttribute"/>.
     /// </summary>
     public enum ComponentFilterType

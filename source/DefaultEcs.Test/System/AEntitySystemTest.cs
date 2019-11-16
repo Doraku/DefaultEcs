@@ -36,6 +36,21 @@ namespace DefaultEcs.Test.System
             }
         }
 
+        [Disabled, With(typeof(bool))]
+        private sealed class DisabledSystem : AEntitySystem<int>
+        {
+            public DisabledSystem(World world)
+                : base(world)
+            { }
+
+            protected override void Update(int state, in Entity entity)
+            {
+                base.Update(state, entity);
+
+                entity.Get<bool>() = true;
+            }
+        }
+
         #region Tests
 
         [Fact]
@@ -87,6 +102,44 @@ namespace DefaultEcs.Test.System
 
             using (ISystem<int> system = new System(world))
             {
+                system.Update(0);
+            }
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsFalse();
+            Check.That(entity4.Get<bool>()).IsFalse();
+        }
+
+        [Fact]
+        public void Update_Should_call_update_When_using_DisabledAttribute()
+        {
+            using World world = new World(4);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set<bool>();
+
+            Entity entity2 = world.CreateEntity();
+            entity2.Set<bool>();
+
+            Entity entity3 = world.CreateEntity();
+            entity3.Set<bool>();
+
+            Entity entity4 = world.CreateEntity();
+            entity4.Set<bool>();
+
+            using (ISystem<int> system = new DisabledSystem(world))
+            {
+                system.Update(0);
+
+                Check.That(entity1.Get<bool>()).IsFalse();
+                Check.That(entity2.Get<bool>()).IsFalse();
+                Check.That(entity3.Get<bool>()).IsFalse();
+                Check.That(entity4.Get<bool>()).IsFalse();
+
+                entity1.Disable();
+                entity2.Disable();
+
                 system.Update(0);
             }
 

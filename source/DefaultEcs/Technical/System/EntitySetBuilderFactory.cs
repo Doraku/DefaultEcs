@@ -46,10 +46,12 @@ namespace DefaultEcs.Technical.System
 
         private static Func<World, EntitySetBuilder> GetEntitySetBuilderFactory(Type type)
         {
-            ParameterExpression world = Expression.Parameter(typeof(World));
-            Expression expression = Expression.Call(world, typeof(World).GetTypeInfo().GetDeclaredMethod(nameof(World.GetEntities)));
+            TypeInfo typeInfo = type.GetTypeInfo();
 
-            foreach (ComponentAttribute attribute in type.GetTypeInfo().GetCustomAttributes<ComponentAttribute>(true))
+            ParameterExpression world = Expression.Parameter(typeof(World));
+            Expression expression = Expression.Call(world, typeof(World).GetTypeInfo().GetDeclaredMethod(typeInfo.GetCustomAttribute<DisabledAttribute>() == null ? nameof(World.GetEntities) : nameof(World.GetDisabledEntities)));
+
+            foreach (ComponentAttribute attribute in typeInfo.GetCustomAttributes<ComponentAttribute>(true))
             {
                 expression = Expression.Call(expression, _filters[attribute.FilterType], Expression.Constant(attribute.ComponentTypes));
             }
