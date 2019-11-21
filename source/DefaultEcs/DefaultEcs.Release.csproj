@@ -6,6 +6,9 @@
     <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
+  <PropertyGroup Label="DefaultDocumentation">
+    <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
+  </PropertyGroup>
   <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
     <PackageReference Include="DefaultDocumentation" Version="0.5.1" PrivateAssets="all" />
   </ItemGroup>
@@ -15,6 +18,7 @@
     <PackageReleaseNotes>
 added World.GetDisabledEntities to create EntitySet for disabled entities
 added DisabledAttribute to auto construct EntitySet of disabled entities for AEntitySystem
+added EntitySet.Contains to check for an Entity inclusion
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

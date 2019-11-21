@@ -10,7 +10,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release</Configurations>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
   </PropertyGroup>
 
   <ItemGroup>

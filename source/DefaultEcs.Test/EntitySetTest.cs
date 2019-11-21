@@ -28,6 +28,33 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void Contains_Should_return_true_When_containing_entity()
+        {
+            using World world = new World(4);
+
+            Entity entity = world.CreateEntity();
+
+            using EntitySet set = world.GetEntities().Build();
+
+            Check.That(set.Contains(entity)).IsTrue();
+        }
+
+        [Fact]
+        public void Contains_Should_return_false_When_not_containing_entity()
+        {
+            using World world = new World(4);
+
+            world.CreateEntity();
+            world.CreateEntity();
+            world.CreateEntity();
+            Entity entity = world.CreateEntity();
+
+            using EntitySet set = world.GetDisabledEntities().Build();
+
+            Check.That(set.Contains(entity)).IsFalse();
+        }
+
+        [Fact]
         public void GetEntities_Should_not_return_disabled_Entity()
         {
             using World world = new World(4);

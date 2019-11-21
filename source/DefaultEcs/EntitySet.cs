@@ -240,6 +240,13 @@ namespace DefaultEcs
             }
         }
 
+        /// <summary>
+        /// Determines whether an <see cref="Entity"/> is in the <see cref="EntitySet"/>.
+        /// </summary>
+        /// <param name="entity">The <see cref="Entity"/> to locate in the <see cref="EntitySet"/>.</param>
+        /// <returns>true if <paramref name="entity" /> is found in the <see cref="EntitySet" />; otherwise, false.</returns>
+        public bool Contains(in Entity entity) => entity.WorldId == _worldId && entity.EntityId < _mapping.Length && _mapping[entity.EntityId] != -1;
+
         #endregion
 
         #region IDisposable
