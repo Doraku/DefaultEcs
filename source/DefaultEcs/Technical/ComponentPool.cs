@@ -31,6 +31,8 @@ namespace DefaultEcs.Technical
 
         public bool IsNotEmpty => _lastComponentIndex > -1;
 
+        public int Count => _lastComponentIndex + 1;
+
         #endregion
 
         #region Initialisation
@@ -139,7 +141,7 @@ namespace DefaultEcs.Technical
             {
                 if (_isFlagType)
                 {
-                    return SetSameAs(entityId, _links[_lastComponentIndex].EntityId);
+                    return SetSameAs(entityId, _links[0].EntityId);
                 }
 
                 ThrowMaxNumberOfComponentReached();

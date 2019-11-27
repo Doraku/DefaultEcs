@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 using Entitas;
 using DefaultEntity = DefaultEcs.Entity;
 using DefaultEntitySet = DefaultEcs.EntitySet;
@@ -31,7 +32,7 @@ namespace DefaultEcs.Benchmark.Performance
 
         private sealed class DefaultEcsSystem : AEntitySystem<float>
         {
-            public DefaultEcsSystem(DefaultWorld world, SystemRunner<float> runner)
+            public DefaultEcsSystem(DefaultWorld world, IRunner runner)
                 : base(world.GetEntities().With<DefaultSpeed>().With<DefaultPosition>().Build(), runner)
             { }
 
@@ -85,7 +86,7 @@ namespace DefaultEcs.Benchmark.Performance
         private DefaultWorld _defaultWorld;
         private DefaultEntitySet _defaultEntitySet;
         private DefaultEcsSystem _defaultSystem;
-        private SystemRunner<float> _defaultRunner;
+        private DefaultRunner _defaultRunner;
         private DefaultEcsSystem _defaultMultiSystem;
 
         private EntitiasWorld _entitasWorld;
@@ -101,7 +102,7 @@ namespace DefaultEcs.Benchmark.Performance
             _defaultWorld = new DefaultWorld(EntityCount);
             _defaultEntitySet = _defaultWorld.GetEntities().With<DefaultSpeed>().With<DefaultPosition>().Build();
             _defaultSystem = new DefaultEcsSystem(_defaultWorld);
-            _defaultRunner = new SystemRunner<float>(Environment.ProcessorCount);
+            _defaultRunner = new DefaultRunner(Environment.ProcessorCount);
             _defaultMultiSystem = new DefaultEcsSystem(_defaultWorld, _defaultRunner);
 
             _entitasWorld = new Context<EntitasEntity>(2, () => new EntitasEntity());

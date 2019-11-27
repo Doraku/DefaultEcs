@@ -1,5 +1,6 @@
 ﻿using DefaultEcs;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 using DefaultSlap.Component;
 using Microsoft.Xna.Framework;
 
@@ -8,7 +9,7 @@ namespace DefaultSlap.System
     [With(typeof(Position), typeof(PositionFloat))]
     public sealed class PositionSystem : AEntitySystem<float>
     {
-        public PositionSystem(World world, SystemRunner<float> runner)
+        public PositionSystem(World world, IRunner runner)
             : base(world, runner)
         { }
 

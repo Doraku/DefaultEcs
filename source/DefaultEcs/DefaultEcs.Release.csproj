@@ -14,11 +14,16 @@
   </ItemGroup>
 
   <PropertyGroup Label="Package">
-    <Version>0.12.1</Version>
+    <Version>0.13.0</Version>
     <PackageReleaseNotes>
+breaking change:
+removed SystemRunner type, use DefaultEcs.Threading.DefaultRunner instead
+removed ASystem type
+      
 added World.GetDisabledEntities to create EntitySet for disabled entities
 added DisabledAttribute to auto construct EntitySet of disabled entities for AEntitySystem
 added EntitySet.Contains to check for an Entity inclusion
+added IRunner to allow custom implementation to process AEntitySystem, AComponentSystem and ParallelSystem in parallel
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

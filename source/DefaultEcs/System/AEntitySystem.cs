@@ -1,4 +1,5 @@
 ﻿using System;
+using DefaultEcs.Threading;
 using DefaultEcs.Technical.System;
 
 namespace DefaultEcs.System
@@ -7,10 +8,36 @@ namespace DefaultEcs.System
     /// Represents a base class to process updates on a given <see cref="EntitySet"/> instance.
     /// </summary>
     /// <typeparam name="T">The type of the object used as state to update the system.</typeparam>
-    public abstract class AEntitySystem<T> : ASystem<T>
+    public abstract class AEntitySystem<T> : ISystem<T>
     {
+        #region Types
+
+        private class Runnable : IRunnable
+        {
+            private readonly AEntitySystem<T> _system;
+
+            public T CurrentState;
+            public int EntitiesPerIndex;
+
+            public Runnable(AEntitySystem<T> system)
+            {
+                _system = system;
+            }
+
+            public void Run(int index, int maxIndex)
+            {
+                int start = index * EntitiesPerIndex;
+
+                _system.Update(CurrentState, _system._set.GetEntities(start, index == maxIndex ? _system._set.Count - start : EntitiesPerIndex));
+            }
+        }
+
+        #endregion
+
         #region Fields
 
+        private readonly IRunner _runner;
+        private readonly Runnable _runnable;
         private readonly EntitySet _set;
 
         /// <summary>
@@ -35,14 +62,20 @@ namespace DefaultEcs.System
 
         #region Initialisation
 
+        private AEntitySystem(IRunner runner)
+        {
+            _runner = runner ?? DefaultRunner.Default;
+            _runnable = new Runnable(this);
+        }
+
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="EntitySet"/> and <see cref="SystemRunner{T}"/>.
+        /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="EntitySet"/> and <see cref="IRunner"/>.
         /// </summary>
         /// <param name="set">The <see cref="EntitySet"/> on which to process the update.</param>
-        /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
+        /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
-        protected AEntitySystem(EntitySet set, SystemRunner<T> runner)
-            : base(runner)
+        protected AEntitySystem(EntitySet set, IRunner runner)
+            : this(runner)
         {
             _set = set ?? throw new ArgumentNullException(nameof(set));
         }
@@ -61,10 +94,10 @@ namespace DefaultEcs.System
         /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
-        /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
+        /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AEntitySystem(World world, SystemRunner<T> runner)
-            : base(runner)
+        protected AEntitySystem(World world, IRunner runner)
+            : this(runner)
         {
             _set = EntitySetBuilderFactory.Create(GetType())(world ?? throw new ArgumentNullException(nameof(world))).Build();
         }
@@ -82,6 +115,18 @@ namespace DefaultEcs.System
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Performs a pre-update treatment.
+        /// </summary>
+        /// <param name="state">The state to use.</param>
+        protected virtual void PreUpdate(T state) { }
+
+        /// <summary>
+        /// Performs a post-update treatment.
+        /// </summary>
+        /// <param name="state">The state to use.</param>
+        protected virtual void PostUpdate(T state) { }
 
         /// <summary>
         /// Update the given <see cref="Entity"/> instance once.
@@ -107,45 +152,41 @@ namespace DefaultEcs.System
 
         #endregion
 
-        #region ASystem
+        #region ISystem
 
         /// <summary>
         /// Gets or sets whether the current <see cref="AEntitySystem{T}"/> instance should update or not.
-        /// Will return false is there is no <see cref="Entity"/> to update.
         /// </summary>
-        public sealed override bool IsEnabled
-        {
-            get => base.IsEnabled && _set.Count > 0;
-            set => base.IsEnabled = value;
-        }
-
-        internal sealed override void Update(int index, int maxIndex)
-        {
-            int entitiesToUpdate = _set.Count / (maxIndex + 1);
-            int start = index * entitiesToUpdate;
-            if (index == maxIndex)
-            {
-                entitiesToUpdate = _set.Count - start;
-            }
-
-            Update(CurrentState, _set.GetEntities(start, entitiesToUpdate));
-        }
+        public bool IsEnabled { get; set; } = true;
 
         /// <summary>
-        /// Performs a post-update treatment.
+        /// Updates the system once.
         /// </summary>
         /// <param name="state">The state to use.</param>
-        protected override void PostUpdate(T state)
+        public void Update(T state)
         {
-            _set.Complete();
+            if (IsEnabled && _set.Count > 0)
+            {
+                PreUpdate(state);
 
-            base.PostUpdate(state);
+                _runnable.EntitiesPerIndex = _set.Count / _runner.DegreeOfParallelism;
+                _runnable.CurrentState = state;
+                _runner.Run(_runnable);
+
+                _set.Complete();
+
+                PostUpdate(state);
+            }
         }
+
+        #endregion
+
+        #region IDisposable
 
         /// <summary>
         /// Disposes of the inner <see cref="EntitySet"/> instance.
         /// </summary>
-        public override void Dispose()
+        public virtual void Dispose()
         {
             _set.Dispose();
         }

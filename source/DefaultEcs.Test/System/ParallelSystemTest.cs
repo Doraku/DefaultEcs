@@ -1,4 +1,5 @@
 ﻿using DefaultEcs.System;
+using DefaultEcs.Threading;
 using NFluent;
 using NSubstitute;
 using Xunit;
@@ -38,7 +39,7 @@ namespace DefaultEcs.Test.System
             bool done3 = false;
             bool done4 = false;
 
-            using (SystemRunner<int> runner = new SystemRunner<int>(2))
+            using (DefaultRunner runner = new DefaultRunner(2))
             using (ISystem<int> system = new ParallelSystem<int>(
                 runner,
                 new ActionSystem<int>(_ => done1 = true),
@@ -63,7 +64,7 @@ namespace DefaultEcs.Test.System
             bool done3 = false;
             bool done4 = false;
 
-            using (SystemRunner<int> runner = new SystemRunner<int>(2))
+            using (DefaultRunner runner = new DefaultRunner(2))
             using (ISystem<int> system = new ParallelSystem<int>(
                 runner,
                 new ActionSystem<int>(_ => done1 = true),

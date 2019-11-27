@@ -1,5 +1,6 @@
 ﻿using System;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 using NFluent;
 using Xunit;
 
@@ -13,7 +14,7 @@ namespace DefaultEcs.Test.System
                 : base(world)
             { }
 
-            public System(World world, SystemRunner<int> runner)
+            public System(World world, IRunner runner)
                 : base(world, runner)
             { }
 
@@ -85,7 +86,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void Update_with_runner_Should_call_update()
         {
-            using SystemRunner<int> runner = new SystemRunner<int>(2);
+            using DefaultRunner runner = new DefaultRunner(2);
             using World world = new World(3);
 
             Entity entity1 = world.CreateEntity();

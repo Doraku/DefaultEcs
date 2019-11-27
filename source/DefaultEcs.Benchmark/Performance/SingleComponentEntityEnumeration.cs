@@ -1,7 +1,7 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Engines;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 using Entitas;
 using DefaultEntity = DefaultEcs.Entity;
 using DefaultEntitySet = DefaultEcs.EntitySet;
@@ -12,7 +12,6 @@ using EntitasWorld = Entitas.IContext<Entitas.Entity>;
 namespace DefaultEcs.Benchmark.Performance
 {
     [MemoryDiagnoser]
-    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 10, invocationCount: 10)]
     public class SingleComponentEntityEnumeration
     {
         private struct DefaultComponent
@@ -22,7 +21,7 @@ namespace DefaultEcs.Benchmark.Performance
 
         private sealed class DefaultEcsSystem : AEntitySystem<int>
         {
-            public DefaultEcsSystem(DefaultWorld world, SystemRunner<int> runner)
+            public DefaultEcsSystem(DefaultWorld world, IRunner runner)
                 : base(world.GetEntities().With<DefaultComponent>().Build(), runner)
             { }
 
@@ -41,7 +40,7 @@ namespace DefaultEcs.Benchmark.Performance
 
         private sealed class DefaultEcsComponentSystem : AComponentSystem<int, DefaultComponent>
         {
-            public DefaultEcsComponentSystem(DefaultWorld world, SystemRunner<int> runner)
+            public DefaultEcsComponentSystem(DefaultWorld world, IRunner runner)
                 : base(world, runner)
             { }
 
@@ -81,7 +80,7 @@ namespace DefaultEcs.Benchmark.Performance
         private DefaultWorld _defaultWorld;
         private DefaultEntitySet _defaultEntitySet;
         private DefaultEcsSystem _defaultSystem;
-        private SystemRunner<int> _defaultRunner;
+        private DefaultRunner _defaultRunner;
         private DefaultEcsSystem _defaultMultiSystem;
         private DefaultEcsComponentSystem _defaultComponentSystem;
         private DefaultEcsComponentSystem _defaultComponentMultiSystem;
@@ -99,7 +98,7 @@ namespace DefaultEcs.Benchmark.Performance
             _defaultWorld = new DefaultWorld(EntityCount);
             _defaultEntitySet = _defaultWorld.GetEntities().With<DefaultComponent>().Build();
             _defaultSystem = new DefaultEcsSystem(_defaultWorld);
-            _defaultRunner = new SystemRunner<int>(Environment.ProcessorCount);
+            _defaultRunner = new DefaultRunner(Environment.ProcessorCount);
             _defaultMultiSystem = new DefaultEcsSystem(_defaultWorld, _defaultRunner);
             _defaultComponentSystem = new DefaultEcsComponentSystem(_defaultWorld);
             _defaultComponentMultiSystem = new DefaultEcsComponentSystem(_defaultWorld, _defaultRunner);

@@ -2,6 +2,7 @@
 using System.IO;
 using DefaultEcs;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 using DefaultSlap.Component;
 using DefaultSlap.Message;
 using DefaultSlap.System;
@@ -22,7 +23,7 @@ namespace DefaultSlap
         private readonly SoundEffect _bounceSound;
         private readonly World _world;
         private readonly ISystem<float> _system;
-        private readonly SystemRunner<float> _runner;
+        private readonly DefaultRunner _runner;
 
         #endregion
 
@@ -53,7 +54,7 @@ namespace DefaultSlap
 
             _world.SetMaximumComponentCount<PlayerState>(1);
 
-            _runner = new SystemRunner<float>(Environment.ProcessorCount);
+            _runner = new DefaultRunner(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(
                 new PlayerSystem(Window, _world),
                 new HitSystem(_world),

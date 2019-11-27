@@ -1,13 +1,14 @@
 ﻿using DefaultBrick.Component;
 using DefaultEcs;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
     public sealed class PositionSystem : AEntitySystem<float>
     {
-        public PositionSystem(World world, SystemRunner<float> runner)
+        public PositionSystem(World world, IRunner runner)
             : base(world.GetEntities().WhenAdded<Position>().WhenChanged<Position>().With<DrawInfo>().Build(), runner)
         {
         }

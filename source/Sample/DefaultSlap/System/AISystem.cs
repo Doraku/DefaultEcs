@@ -2,6 +2,7 @@
 using System.Threading;
 using DefaultEcs;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 using DefaultSlap.Component;
 using Microsoft.Xna.Framework;
 
@@ -11,7 +12,7 @@ namespace DefaultSlap.System
     {
         private readonly ThreadLocal<Random> _random;
 
-        public AISystem(World world, SystemRunner<float> runner)
+        public AISystem(World world, IRunner runner)
             : base(world.GetEntities().With<PositionFloat>().With<TargetPosition>().With<Speed>().Build(), runner)
         {
             _random = new ThreadLocal<Random>(() => new Random());

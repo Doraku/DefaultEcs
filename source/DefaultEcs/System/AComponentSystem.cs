@@ -1,5 +1,6 @@
 ﻿using System;
 using DefaultEcs.Technical;
+using DefaultEcs.Threading;
 
 namespace DefaultEcs.System
 {
@@ -8,24 +9,57 @@ namespace DefaultEcs.System
     /// </summary>
     /// <typeparam name="TState">The type of the object used as state to update the system.</typeparam>
     /// <typeparam name="TComponent">The type of component to update.</typeparam>
-    public abstract class AComponentSystem<TState, TComponent> : ASystem<TState>
+    public abstract class AComponentSystem<TState, TComponent> : ISystem<TState>
     {
+        #region Types
+
+        private class Runnable : IRunnable
+        {
+            private readonly AComponentSystem<TState, TComponent> _system;
+
+            public TState CurrentState;
+            public int ComponentsPerIndex;
+
+            public Runnable(AComponentSystem<TState, TComponent> system)
+            {
+                _system = system;
+            }
+
+            public void Run(int index, int maxIndex)
+            {
+                Span<TComponent> components = _system._component.GetAll();
+                int start = index * ComponentsPerIndex;
+
+                _system.Update(CurrentState, index == maxIndex ? components.Slice(start) : components.Slice(start, ComponentsPerIndex));
+            }
+        }
+
+        #endregion
+
         #region Fields
 
+        private readonly IRunner _runner;
+        private readonly Runnable _runnable;
         private readonly ComponentPool<TComponent> _component;
 
         #endregion
 
         #region Initialisation
 
+        private AComponentSystem(IRunner runner)
+        {
+            _runner = runner ?? DefaultRunner.Default;
+            _runnable = new Runnable(this);
+        }
+
         /// <summary>
-        /// Initialise a new instance of the <see cref="AComponentSystem{TState, TComponent}"/> class with the given <see cref="World"/> and <see cref="SystemRunner{TState}"/>.
+        /// Initialise a new instance of the <see cref="AComponentSystem{TState, TComponent}"/> class with the given <see cref="World"/> and <see cref="IRunner"/>.
         /// </summary>
         /// <param name="world">The <see cref="World"/> on which to process the update.</param>
-        /// <param name="runner">The <see cref="SystemRunner{T}"/> used to process the update in parallel if not null.</param>
+        /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AComponentSystem(World world, SystemRunner<TState> runner)
-            : base(runner)
+        protected AComponentSystem(World world, IRunner runner)
+            : this(runner)
         {
             _component = ComponentManager<TComponent>.GetOrCreate(world?.WorldId ?? throw new ArgumentNullException(nameof(world)));
         }
@@ -42,6 +76,18 @@ namespace DefaultEcs.System
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Performs a pre-update treatment.
+        /// </summary>
+        /// <param name="state">The state to use.</param>
+        protected virtual void PreUpdate(TState state) { }
+
+        /// <summary>
+        /// Performs a post-update treatment.
+        /// </summary>
+        /// <param name="state">The state to use.</param>
+        protected virtual void PostUpdate(TState state) { }
 
         /// <summary>
         /// Update the given <typeparamref name="TComponent"/> once.
@@ -67,30 +113,35 @@ namespace DefaultEcs.System
 
         #endregion
 
-        #region ASystem
+        #region ISystem
 
         /// <summary>
         /// Gets or sets whether the current <see cref="AComponentSystem{TState, TComponent}"/> instance should update or not.
-        /// Will return false if there is no component to update.
         /// </summary>
-        public sealed override bool IsEnabled
-        {
-            get => base.IsEnabled && _component.IsNotEmpty;
-            set => base.IsEnabled = value;
-        }
+        public bool IsEnabled { get; set; } = true;
 
-        internal sealed override void Update(int index, int maxIndex)
+        /// <summary>
+        /// Updates the system once.
+        /// </summary>
+        /// <param name="state">The state to use.</param>
+        public void Update(TState state)
         {
-            Span<TComponent> components = _component.GetAll();
-            int componentsToUpdate = components.Length / (maxIndex + 1);
+            if (IsEnabled && _component.IsNotEmpty)
+            {
+                PreUpdate(state);
 
-            Update(CurrentState, index == maxIndex ? components.Slice(index * componentsToUpdate) : components.Slice(index * componentsToUpdate, componentsToUpdate));
+                _runnable.ComponentsPerIndex = _component.Count / _runner.DegreeOfParallelism;
+                _runnable.CurrentState = state;
+                _runner.Run(_runnable);
+
+                PostUpdate(state);
+            }
         }
 
         /// <summary>
         /// Does nothing.
         /// </summary>
-        public override void Dispose()
+        public virtual void Dispose()
         { }
 
         #endregion

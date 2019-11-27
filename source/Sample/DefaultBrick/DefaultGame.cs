@@ -5,6 +5,7 @@ using DefaultBrick.Message;
 using DefaultBrick.System;
 using DefaultEcs;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,7 +22,7 @@ namespace DefaultBrick
         private readonly SoundEffect _breakSound;
         private readonly SoundEffect _bounceSound;
         private readonly World _world;
-        private readonly SystemRunner<float> _runner;
+        private readonly DefaultRunner _runner;
         private readonly ISystem<float> _system;
 
         #endregion
@@ -51,7 +52,7 @@ namespace DefaultBrick
 
             _world = new World(1000);
 
-            _runner = new SystemRunner<float>(Environment.ProcessorCount);
+            _runner = new DefaultRunner(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(
                 new GameSystem(_world),
                 new PlayerSystem(Window, _world),

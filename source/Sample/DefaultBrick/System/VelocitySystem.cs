@@ -1,13 +1,14 @@
 ﻿using DefaultBrick.Component;
 using DefaultEcs;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
     public sealed class VelocitySystem : AEntitySystem<float>
     {
-        public VelocitySystem(World world, SystemRunner<float> runner)
+        public VelocitySystem(World world, IRunner runner)
             : base(world.GetEntities().With<Velocity>().With<Position>().Build(), runner)
         {
         }
