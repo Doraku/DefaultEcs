@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.github\workflows\ContinuousIntegration.yml = ..\.github\workflows\ContinuousIntegration.yml
 		DefaultEcs\DefaultEcs.Release.csproj = DefaultEcs\DefaultEcs.Release.csproj
 		DefaultEcs\DefaultEcs.targets = DefaultEcs\DefaultEcs.targets
+		..\documentation\FAQ.md = ..\documentation\FAQ.md
 		..\LICENSE.md = ..\LICENSE.md
 		..\README.md = ..\README.md
 		..\Release.bat = ..\Release.bat

@@ -6,10 +6,12 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
 ![continuous integration status](https://github.com/doraku/defaultecs/workflows/continuous%20integration/badge.svg)
 [![preview package](https://img.shields.io/badge/preview-package-blue?style=flat&logo=github)](https://github.com/Doraku/DefaultEcs/packages/26448)
 
-- [Requirement](#Requirement)
-- [Versioning](#Versioning)
 - [Release note](./documentation/RELEASENOTE.md 'Release note')
 - [Api documentation](./documentation/api/index.md 'Api documentation')
+- [FAQ](./documentation/FAQ.md 'Frequently Asked Questions')
+
+- [Requirement](#Requirement)
+- [Versioning](#Versioning)
 - [Overview](#Overview)
   - [World](#Overview_World)
   - [Entity](#Overview_Entity)
