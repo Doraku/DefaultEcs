@@ -116,8 +116,8 @@ namespace DefaultEcs.System
         {
             if (IsEnabled)
             {
+                _runnable.CurrentState = state;
                 Interlocked.Exchange(ref _runnable.LastIndex, -1);
-
                 _runner.Run(_runnable);
             }
         }

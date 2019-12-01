@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace DefaultEcs.Technical.System
+namespace DefaultEcs.Technical.Threading
 {
     internal sealed class WorkerBarrier : IDisposable
     {

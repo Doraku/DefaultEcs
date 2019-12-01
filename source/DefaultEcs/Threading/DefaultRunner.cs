@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DefaultEcs.Technical.System;
+using DefaultEcs.Technical.Threading;
 
 namespace DefaultEcs.Threading
 {
