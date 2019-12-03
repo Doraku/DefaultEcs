@@ -1,6 +1,6 @@
 ﻿using System;
-using DefaultEcs.Threading;
 using DefaultEcs.Technical.System;
+using DefaultEcs.Threading;
 
 namespace DefaultEcs.System
 {
@@ -169,8 +169,8 @@ namespace DefaultEcs.System
             {
                 PreUpdate(state);
 
-                _runnable.EntitiesPerIndex = _set.Count / _runner.DegreeOfParallelism;
                 _runnable.CurrentState = state;
+                _runnable.EntitiesPerIndex = _set.Count / _runner.DegreeOfParallelism;
                 _runner.Run(_runnable);
 
                 _set.Complete();
