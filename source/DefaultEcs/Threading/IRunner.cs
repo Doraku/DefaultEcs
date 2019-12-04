@@ -10,7 +10,7 @@ namespace DefaultEcs.Threading
         /// <summary>
         /// Gets the degree of parallelism used to run an <see cref="IRunnable"/>.
         /// </summary>
-        public int DegreeOfParallelism { get; }
+        int DegreeOfParallelism { get; }
 
         /// <summary>
         /// Runs the provided <see cref="IRunnable"/>.

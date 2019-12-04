@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using DefaultEcs.Threading;
@@ -54,7 +55,7 @@ namespace DefaultEcs.System
 
         private ParallelSystem(IRunner runner)
         {
-            _runner = runner ?? DefaultRunner.Default;
+            _runner = runner ?? throw new ArgumentNullException(nameof(runner));
             _runnable = new Runnable(this);
         }
 
@@ -64,11 +65,13 @@ namespace DefaultEcs.System
         /// <param name="mainSystem">The <see cref="ISystem{T}"/> instance to be updated on the calling thread.</param>
         /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="runner"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="systems"/> is null.</exception>
         public ParallelSystem(ISystem<T> mainSystem, IRunner runner, IEnumerable<ISystem<T>> systems)
             : this(runner)
         {
             _mainSystem = mainSystem;
-            _systems = (systems ?? Enumerable.Empty<ISystem<T>>()).Where(s => s != null).ToArray();
+            _systems = (systems ?? throw new ArgumentNullException(nameof(systems))).Where(s => s != null).ToArray();
         }
 
         /// <summary>
@@ -77,6 +80,8 @@ namespace DefaultEcs.System
         /// <param name="mainSystem">The <see cref="ISystem{T}"/> instance to be updated on the calling thread.</param>
         /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="runner"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="systems"/> is null.</exception>
         public ParallelSystem(ISystem<T> mainSystem, IRunner runner, params ISystem<T>[] systems)
             : this(mainSystem, runner, systems as IEnumerable<ISystem<T>>)
         { }
@@ -86,6 +91,8 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="runner"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="systems"/> is null.</exception>
         public ParallelSystem(IRunner runner, IEnumerable<ISystem<T>> systems)
             : this(null, runner, systems)
         { }
@@ -95,8 +102,10 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="runner"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="systems"/> is null.</exception>
         public ParallelSystem(IRunner runner, params ISystem<T>[] systems)
-            : this(null, runner, systems as IEnumerable<ISystem<T>>)
+            : this(runner, systems as IEnumerable<ISystem<T>>)
         { }
 
         #endregion

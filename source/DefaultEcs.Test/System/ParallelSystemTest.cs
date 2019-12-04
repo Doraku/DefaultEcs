@@ -1,4 +1,5 @@
-﻿using DefaultEcs.System;
+﻿using System;
+using DefaultEcs.System;
 using DefaultEcs.Threading;
 using NFluent;
 using NSubstitute;
@@ -11,6 +12,21 @@ namespace DefaultEcs.Test.System
         #region Tests
 
         [Fact]
+        public void New_Should_throw_When_systems_is_null()
+        {
+            ISystem<float>[] systems = null;
+
+            Check.ThatCode(() => new ParallelSystem<float>(Substitute.For<IRunner>(), systems)).Throws<ArgumentNullException>();
+        }
+
+
+        [Fact]
+        public void New_Should_throw_When_runner_is_null()
+        {
+            Check.ThatCode(() => new ParallelSystem<float>(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
         public void Update_Should_call_update_on_all_systems()
         {
             bool mainDone = false;
@@ -19,7 +35,7 @@ namespace DefaultEcs.Test.System
 
             using (ISystem<int> system = new ParallelSystem<int>(
                 new ActionSystem<int>(_ => mainDone = true),
-                null,
+                new DefaultRunner(1),
                 new ActionSystem<int>(_ => done1 = true),
                 new ActionSystem<int>(_ => done2 = true)))
             {
@@ -94,7 +110,7 @@ namespace DefaultEcs.Test.System
             s1.When(s => s.Dispose()).Do(_ => done1 = true);
             s2.When(s => s.Dispose()).Do(_ => done2 = true);
 
-            ISystem<int> system = new ParallelSystem<int>(s1, null, s2);
+            ISystem<int> system = new ParallelSystem<int>(s1, Substitute.For<IRunner>(), s2);
 
             system.Dispose();
 
