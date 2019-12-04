@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DefaultEcs.System
@@ -21,9 +22,10 @@ namespace DefaultEcs.System
         /// Initialises a new instance of the <see cref="SequentialSystem{T}"/> class.
         /// </summary>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="systems"/> is null.</exception>
         public SequentialSystem(IEnumerable<ISystem<T>> systems)
         {
-            _systems = (systems ?? Enumerable.Empty<ISystem<T>>()).Where(s => s != null).ToArray();
+            _systems = (systems ?? throw new ArgumentNullException(nameof(systems))).Where(s => s != null).ToArray();
             IsEnabled = true;
         }
 
@@ -31,6 +33,7 @@ namespace DefaultEcs.System
         /// Initialises a new instance of the <see cref="SequentialSystem{T}"/> class.
         /// </summary>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="systems"/> is null.</exception>
         public SequentialSystem(params ISystem<T>[] systems)
             : this(systems as IEnumerable<ISystem<T>>)
         { }

@@ -1,4 +1,5 @@
-﻿using DefaultEcs.System;
+﻿using System;
+using DefaultEcs.System;
 using NFluent;
 using NSubstitute;
 using Xunit;
@@ -8,6 +9,14 @@ namespace DefaultEcs.Test.System
     public sealed class SequentialSystemTest
     {
         #region Tests
+
+        [Fact]
+        public void New_Should_throw_When_systems_is_null()
+        {
+            ISystem<float>[] systems = null;
+
+            Check.ThatCode(() => new SequentialSystem<float>(systems)).Throws<ArgumentNullException>();
+        }
 
         [Fact]
         public void Update_Should_call_update_on_all_systems()

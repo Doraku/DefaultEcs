@@ -19,7 +19,6 @@ namespace DefaultEcs.Test.System
             Check.ThatCode(() => new ParallelSystem<float>(Substitute.For<IRunner>(), systems)).Throws<ArgumentNullException>();
         }
 
-
         [Fact]
         public void New_Should_throw_When_runner_is_null()
         {
