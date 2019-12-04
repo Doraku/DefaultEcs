@@ -53,7 +53,7 @@ namespace DefaultEcs.Technical.Helper
             {
                 for (int i = _disposables.Length - 1; i >= 0; --i)
                 {
-                    _disposables[i]?.Dispose();
+                    _disposables[i].Dispose();
                 }
 
                 GC.SuppressFinalize(this);
@@ -66,7 +66,7 @@ namespace DefaultEcs.Technical.Helper
 
         #region Methods
 
-        public static IDisposable Merge(this IEnumerable<IDisposable> disposables) => new DisposableGroup(disposables ?? Enumerable.Empty<IDisposable>());
+        public static IDisposable Merge(this IEnumerable<IDisposable> disposables) => new DisposableGroup(disposables);
 
         #endregion
     }

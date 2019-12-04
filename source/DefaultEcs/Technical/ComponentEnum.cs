@@ -53,7 +53,7 @@ namespace DefaultEcs.Technical
                 for (int i = 0; i < filter._bitArray.Length; ++i)
                 {
                     uint part = filter._bitArray[i];
-                    if (part != 0u && (i >= (_bitArray?.Length ?? 0) || (_bitArray[i] & part) != part))
+                    if (part != 0u && (i >= _bitArray.Length || (_bitArray[i] & part) != part))
                     {
                         return false;
                     }
@@ -71,7 +71,7 @@ namespace DefaultEcs.Technical
                 for (int i = 0; i < filter._bitArray.Length; ++i)
                 {
                     uint part = filter._bitArray[i];
-                    if (part != 0u && i < _bitArray?.Length && (_bitArray[i] & part) != 0u)
+                    if (part != 0u && i < _bitArray.Length && (_bitArray[i] & part) != 0u)
                     {
                         return false;
                     }
@@ -91,7 +91,7 @@ namespace DefaultEcs.Technical
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear() => _bitArray?.Fill(0u);
+        public void Clear() => _bitArray.Fill(0u);
 
         public override unsafe string ToString()
         {
