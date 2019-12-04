@@ -15,6 +15,7 @@ namespace DefaultEcs.System
 
         /// <summary>
         /// Updates the system once.
+        /// Does nothing if <see cref="IsEnabled"/> is false.
         /// </summary>
         /// <param name="state">The state to use.</param>
         void Update(T state);

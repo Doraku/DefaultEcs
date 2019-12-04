@@ -122,6 +122,7 @@ namespace DefaultEcs.System
 
         /// <summary>
         /// Updates the system once.
+        /// Does nothing if <see cref="IsEnabled"/> is false or if there is no component of type <typeparamref name="TComponent"/> in the <see cref="World"/>.
         /// </summary>
         /// <param name="state">The state to use.</param>
         public void Update(TState state)

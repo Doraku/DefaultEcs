@@ -161,6 +161,7 @@ namespace DefaultEcs.System
 
         /// <summary>
         /// Updates the system once.
+        /// Does nothing if <see cref="IsEnabled"/> is false or if the inner <see cref="EntitySet"/> is empty.
         /// </summary>
         /// <param name="state">The state to use.</param>
         public void Update(T state)
