@@ -535,9 +535,16 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void Shoud_throw_When_no_more_space()
         {
-            using EntityCommandRecorder recorder = new EntityCommandRecorder(16);
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(8, 16);
+
+            Check.That(recorder.Size).IsZero();
+            Check.That(recorder.Capacity).IsEqualTo(8);
+            Check.That(recorder.MaxCapacity).IsEqualTo(16);
 
             recorder.CreateEntity();
+
+            Check.That(recorder.Size).IsEqualTo(9);
+            Check.That(recorder.Capacity).IsEqualTo(recorder.MaxCapacity);
 
             Check.ThatCode(() => recorder.CreateEntity()).Throws<InvalidOperationException>();
         }
@@ -549,9 +556,14 @@ namespace DefaultEcs.Test.Command
             using World world = new World();
 
             recorder.CreateEntity();
+
+            Check.That(recorder.Size).IsNotZero();
+            
             recorder.Execute(world);
 
             Check.That(world.GetAllEntities().Count()).IsEqualTo(1);
+
+            Check.That(recorder.Size).IsZero();
 
             recorder.Execute(world);
 
@@ -561,11 +573,17 @@ namespace DefaultEcs.Test.Command
         [Fact]
         public void Clear_Should_clear_recorded_command()
         {
-            using EntityCommandRecorder recorder = new EntityCommandRecorder();
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(5, 10);
             using World world = new World();
 
             recorder.CreateEntity();
+
+            Check.That(recorder.Size).IsNotZero();
+
             recorder.Clear();
+
+            Check.That(recorder.Size).IsZero();
+
             recorder.Execute(world);
 
             Check.That(world.GetAllEntities().Count()).IsZero();

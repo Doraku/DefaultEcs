@@ -56,13 +56,9 @@ namespace DefaultEcs.Command
             {
                 throw new ArgumentException("Argument cannot be negative.", nameof(defaultCapacity));
             }
-            if (maxCapacity < 0)
-            {
-                throw new ArgumentException("Argument cannot be negative.", nameof(maxCapacity));
-            }
             if (maxCapacity < defaultCapacity)
             {
-                throw new ArgumentException($"{nameof(maxCapacity)} is inferior to {nameof(defaultCapacity)}.");
+                throw new ArgumentException($"{nameof(maxCapacity)} is inferior to {nameof(defaultCapacity)}.", nameof(maxCapacity));
             }
 
             MaxCapacity = maxCapacity;

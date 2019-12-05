@@ -12,7 +12,7 @@ namespace DefaultEcs.Test.System
         #region Tests
 
         [Fact]
-        public void New_Should_throw_When_systems_is_null()
+        public void ParallelSystem_Should_throw_When_systems_is_null()
         {
             ISystem<float>[] systems = null;
 
@@ -20,7 +20,7 @@ namespace DefaultEcs.Test.System
         }
 
         [Fact]
-        public void New_Should_throw_When_runner_is_null()
+        public void ParallelSystem_Should_throw_When_runner_is_null()
         {
             Check.ThatCode(() => new ParallelSystem<float>(null)).Throws<ArgumentNullException>();
         }

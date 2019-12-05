@@ -2,7 +2,7 @@
 
 namespace DefaultEcs.Technical.Command
 {
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Explicit, Pack = 1)]
     internal struct EntityCommand
     {
         [FieldOffset(0)]
@@ -18,7 +18,7 @@ namespace DefaultEcs.Technical.Command
         }
     }
 
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Explicit, Pack = 1)]
     internal readonly struct EntityOffsetCommand
     {
         [FieldOffset(0)]
@@ -34,7 +34,7 @@ namespace DefaultEcs.Technical.Command
         }
     }
 
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Explicit, Pack = 1)]
     internal readonly struct ChildParentOffsetCommand
     {
         [FieldOffset(0)]
@@ -54,7 +54,7 @@ namespace DefaultEcs.Technical.Command
         }
     }
 
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Explicit, Pack = 1)]
     internal readonly struct EntityOffsetComponentCommand
     {
         [FieldOffset(0)]
@@ -74,7 +74,7 @@ namespace DefaultEcs.Technical.Command
         }
     }
 
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Explicit, Pack = 1)]
     internal readonly struct EntityReferenceOffsetComponentCommand
     {
         [FieldOffset(0)]

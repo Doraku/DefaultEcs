@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using DefaultEcs.Serialization;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Debug;
@@ -15,13 +16,17 @@ namespace DefaultEcs
     /// Only use <see cref="Entity"/> generated from the <see cref="World.CreateEntity"/> method.
     /// </summary>
     [DebuggerTypeProxy(typeof(EntityDebugView))]
+    [StructLayout(LayoutKind.Explicit)]
     public readonly struct Entity : IDisposable, IEquatable<Entity>
     {
         #region Fields
 
-        internal readonly short WorldId;
-        internal readonly int EntityId;
+        [FieldOffset(0)]
         internal readonly short Version;
+        [FieldOffset(2)]
+        internal readonly short WorldId;
+        [FieldOffset(4)]
+        internal readonly int EntityId;
 
         #endregion
 

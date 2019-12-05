@@ -11,7 +11,7 @@ namespace DefaultEcs.Test.System
         #region Tests
 
         [Fact]
-        public void New_Should_throw_When_systems_is_null()
+        public void SequentialSystem_Should_throw_When_systems_is_null()
         {
             ISystem<float>[] systems = null;
 

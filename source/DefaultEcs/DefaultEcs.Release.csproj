@@ -24,6 +24,10 @@ added World.GetDisabledEntities to create EntitySet for disabled entities
 added DisabledAttribute to auto construct EntitySet of disabled entities for AEntitySystem
 added EntitySet.Contains to check for an Entity inclusion
 added IRunner to allow custom implementation to process AEntitySystem, AComponentSystem and ParallelSystem in parallel
+
+fixed EntityCommandRecorder SetSameAs and Dispose command size
+fixed size of commands in EntityCommandRecorder
+fixed size of Entity
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

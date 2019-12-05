@@ -57,7 +57,7 @@ namespace DefaultEcs.Technical.Command
                             ComponentCommands.GetCommand((*entityReferenceComponentCommand).ComponentIndex).SetSameAs(
                                 *(Entity*)(memoryP + (*entityReferenceComponentCommand).EntityOffset),
                                 *(Entity*)(memoryP + (*entityReferenceComponentCommand).ReferenceOffset));
-                            commandSize = sizeof(EntityOffsetComponentCommand);
+                            commandSize = sizeof(EntityReferenceOffsetComponentCommand);
                             break;
 
                         case CommandType.Remove:
@@ -80,7 +80,7 @@ namespace DefaultEcs.Technical.Command
 
                         case CommandType.Dispose:
                             (*(Entity*)(memoryP + (*(EntityOffsetCommand*)commands).EntityOffset)).Dispose();
-                            commandSize = sizeof(ChildParentOffsetCommand);
+                            commandSize = sizeof(EntityOffsetCommand);
                             break;
                     }
 

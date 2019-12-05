@@ -5,7 +5,6 @@ using DefaultEcs.Command;
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
     [MemoryDiagnoser]
-    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 20, invocationCount: 100000)]
     public class Recorder
     {
         private World _world;

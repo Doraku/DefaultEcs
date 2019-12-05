@@ -13,7 +13,6 @@ using EntitiasWorld = Entitas.IContext<Entitas.Entity>;
 namespace DefaultEcs.Benchmark.Performance
 {
     [MemoryDiagnoser]
-    [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 10, targetCount: 10, invocationCount: 10)]
     public class DoubleComponentEntityEnumeration
     {
         private const float Time = 1f / 60f;
