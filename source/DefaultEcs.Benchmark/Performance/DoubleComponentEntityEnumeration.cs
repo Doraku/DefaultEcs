@@ -1,6 +1,5 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Engines;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
 using Entitas;

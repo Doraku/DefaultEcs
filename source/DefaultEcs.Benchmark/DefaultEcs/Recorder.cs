@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Engines;
 using DefaultEcs.Command;
 
 namespace DefaultEcs.Benchmark.DefaultEcs
