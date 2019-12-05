@@ -5,8 +5,14 @@ on:
     branches:    
       - master
     paths:
-      - 'source/DefaultEcs/**'
-      - 'source/DefaultEcs.Test/**'
+      - 'source/DefaultEcs/*'
+      - 'source/DefaultEcs/*/*'
+      - 'source/DefaultEcs/*/*/*'
+      - 'source/DefaultEcs/*/*/*/*'
+      - 'source/DefaultEcs.Test/*'
+      - 'source/DefaultEcs.Test/*/*'
+      - 'source/DefaultEcs.Test/*/*/*'
+      - 'source/DefaultEcs.Test/*/*/*/*'
 
 jobs:
   continuous_integration:
