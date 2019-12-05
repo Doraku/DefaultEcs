@@ -18,6 +18,7 @@
     <PackageReleaseNotes>
 updated System.Reflection.Emit.Lightweight to 4.7.0
 
+added AEntityDeferredSystem to ease the usage of EntityCommandRecord
 added missing property and methods on EntityRecord to read state of the corresponding Entity (IsAlive, IsEnabled, Has, Get)
     </PackageReleaseNotes>
   </PropertyGroup>
