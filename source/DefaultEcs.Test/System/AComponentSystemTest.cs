@@ -29,7 +29,7 @@ namespace DefaultEcs.Test.System
         #region Tests
 
         [Fact]
-        public void New_Should_throw_ArgumentNullException_When_world_is_null()
+        public void AComponentSystem_Should_throw_ArgumentNullException_When_world_is_null()
         {
             Check.ThatCode(() => new System(null)).Throws<ArgumentNullException>();
         }

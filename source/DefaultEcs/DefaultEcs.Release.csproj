@@ -28,6 +28,7 @@ added IRunner to allow custom implementation to process AEntitySystem, AComponen
 fixed EntityCommandRecorder SetSameAs and Dispose command size
 fixed size of commands in EntityCommandRecorder
 fixed size of Entity
+fixed WithoutEitherAttribute filter generation
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

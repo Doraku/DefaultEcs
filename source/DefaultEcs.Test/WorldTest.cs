@@ -14,7 +14,7 @@ namespace DefaultEcs.Test
         #region Tests
 
         [Fact]
-        public void New_Should_throw_When_maxEntityCount_is_inferior_to_0()
+        public void World_Should_throw_When_maxEntityCount_is_inferior_to_0()
         {
             Check.ThatCode(() => new World(-1)).Throws<ArgumentException>();
         }

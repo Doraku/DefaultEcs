@@ -55,13 +55,13 @@ namespace DefaultEcs.Test.System
         #region Tests
 
         [Fact]
-        public void New_Should_throw_ArgumentNullException_When_EntitySet_is_null()
+        public void AEntitySystem_Should_throw_ArgumentNullException_When_EntitySet_is_null()
         {
             Check.ThatCode(() => new System(default(EntitySet))).Throws<ArgumentNullException>();
         }
 
         [Fact]
-        public void New_Should_throw_ArgumentNullException_When_World_is_null()
+        public void AEntitySystem_Should_throw_ArgumentNullException_When_World_is_null()
         {
             Check.ThatCode(() => new System(default(World))).Throws<ArgumentNullException>();
         }

@@ -146,7 +146,7 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="componentTypes">The types of the component to exclude.</param>
         public WithoutEitherAttribute(params Type[] componentTypes)
-            : base(ComponentFilterType.WithEither, componentTypes)
+            : base(ComponentFilterType.WithoutEither, componentTypes)
         { }
     }
 
