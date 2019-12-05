@@ -1,4 +1,4 @@
-name: continuous integration
+name: pull request
 
 on:
   pull_request:
