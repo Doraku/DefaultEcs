@@ -173,7 +173,7 @@ namespace DefaultEcs.Command
 
             WriteCommand(offset, new EntityCommand(CommandType.Entity, entity));
 
-            return new EntityRecord(this, offset + sizeof(CommandType));
+            return new EntityRecord(this, offset + sizeof(CommandType), entity);
         }
 
         /// <summary>

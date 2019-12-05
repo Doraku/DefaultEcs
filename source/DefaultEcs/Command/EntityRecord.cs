@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using DefaultEcs.Technical.Command;
 
 namespace DefaultEcs.Command
@@ -12,16 +13,36 @@ namespace DefaultEcs.Command
 
         private readonly EntityCommandRecorder _recorder;
         private readonly int _offset;
+        private readonly Entity _entity;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets whether the corresponding <see cref="Entity"/> is alive or not.
+        /// </summary>
+        /// <returns>true if the <see cref="Entity"/> is alive; otherwise, false.</returns>
+        public bool IsAlive
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _entity.IsAlive;
+        }
 
         #endregion
 
         #region Initialisation
 
-        internal EntityRecord(EntityCommandRecorder recorder, int offset)
+        internal EntityRecord(EntityCommandRecorder recorder, int offset, in Entity entity)
         {
             _recorder = recorder;
             _offset = offset;
+            _entity = entity;
         }
+
+        internal EntityRecord(EntityCommandRecorder recorder, int offset)
+            : this(recorder, offset, default)
+        { }
 
         #endregion
 
@@ -87,6 +108,7 @@ namespace DefaultEcs.Command
 
         /// <summary>
         /// Makes it so when given <see cref="EntityRecord"/> corresponding <see cref="Entity"/> is disposed, corresponding <see cref="Entity"/> will also be disposed.
+        /// This command takes 9 bytes.
         /// </summary>
         /// <param name="parent">The <see cref="EntityRecord"/> which acts as parent.</param>
         /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
@@ -94,6 +116,7 @@ namespace DefaultEcs.Command
 
         /// <summary>
         /// Makes it so when corresponding <see cref="Entity"/> is disposed, given <see cref="EntityRecord"/> corresponding <see cref="Entity"/> will also be disposed.
+        /// This command takes 9 bytes.
         /// </summary>
         /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
         /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
@@ -101,6 +124,7 @@ namespace DefaultEcs.Command
 
         /// <summary>
         /// Remove the given <see cref="EntityRecord"/> corresponding <see cref="Entity"/> from corresponding <see cref="Entity"/> parents.
+        /// This command takes 9 bytes.
         /// </summary>
         /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
         /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
@@ -108,6 +132,7 @@ namespace DefaultEcs.Command
 
         /// <summary>
         /// Remove the given <see cref="EntityRecord"/> corresponding <see cref="Entity"/> from corresponding <see cref="Entity"/> children.
+        /// This command takes 9 bytes.
         /// </summary>
         /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
         /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
@@ -120,6 +145,39 @@ namespace DefaultEcs.Command
         /// </summary>
         /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void Dispose() => _recorder.WriteCommand(new EntityOffsetCommand(CommandType.Dispose, _offset));
+
+        /// <summary>
+        /// Gets whether the corresponding <see cref="Entity"/> is enabled or not.
+        /// </summary>
+        /// <returns>true if the <see cref="Entity"/> is enabled; otherwise, false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsEnabled() => _entity.IsEnabled();
+
+        /// <summary>
+        /// Gets whether the corresponding <see cref="Entity"/> component of type <typeparamref name="T"/> is enabled or not.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/> enabled; otherwise, false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsEnabled<T>() => _entity.IsEnabled<T>();
+
+        /// <summary>
+        /// Returns whether the corresponding <see cref="Entity"/> has a component of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Has<T>() => _entity.Has<T>();
+
+        /// <summary>
+        /// Gets the component of type <typeparamref name="T"/> on the corresponding <see cref="Entity"/>.
+        /// Does not create a command if the value is modified.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <returns>A reference to the component.</returns>
+        /// <exception cref="Exception">Corresponding <see cref="Entity"/> was not created from a <see cref="World"/> or does not have a component of type <typeparamref name="T"/>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref T Get<T>() => ref _entity.Get<T>();
 
         #endregion
     }

@@ -17,6 +17,8 @@
     <Version>0.13.0</Version>
     <PackageReleaseNotes>
 updated System.Reflection.Emit.Lightweight to 4.7.0
+
+added missing property and methods on EntityRecord to read state of the corresponding Entity (IsAlive, IsEnabled, Has, Get)
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
