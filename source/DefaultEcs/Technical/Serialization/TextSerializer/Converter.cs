@@ -435,7 +435,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         public static void Write(in T value, StreamWriter writer, int indentation)
         {
-            if (value == default)
+            if (value is null)
             {
                 writer.WriteLine("null");
             }

@@ -48,7 +48,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         [Benchmark]
         public void CopyEnumeration()
         {
-            foreach (Entity entity in _set.GetEntities().ToArray())
+            foreach (Entity _ in _set.GetEntities().ToArray())
             {
                 ++_count;
             }

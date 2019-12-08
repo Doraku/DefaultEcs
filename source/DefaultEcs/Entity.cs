@@ -23,8 +23,10 @@ namespace DefaultEcs
 
         [FieldOffset(0)]
         internal readonly short Version;
+
         [FieldOffset(2)]
         internal readonly short WorldId;
+
         [FieldOffset(4)]
         internal readonly int EntityId;
 

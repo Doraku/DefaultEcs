@@ -558,7 +558,7 @@ namespace DefaultEcs.Test.Command
             recorder.CreateEntity();
 
             Check.That(recorder.Size).IsNotZero();
-            
+
             recorder.Execute(world);
 
             Check.That(world.GetAllEntities().Count()).IsEqualTo(1);

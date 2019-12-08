@@ -142,7 +142,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             {
                 WriteAction(writer, value);
             }
-            else if (value == default)
+            else if (value is null)
             {
                 writer.WriteByte(0);
             }
