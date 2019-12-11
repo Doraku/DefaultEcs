@@ -13,7 +13,7 @@ namespace DefaultBrick.System
         private MouseState _state;
 
         public BallToBarSystem(GameWindow window, World world)
-            : base(world.GetEntities().With<BallStart>().With<DrawInfo>().Build())
+            : base(world.GetEntities().With<BallStart>().With<DrawInfo>().AsSet())
         {
             _window = window;
         }

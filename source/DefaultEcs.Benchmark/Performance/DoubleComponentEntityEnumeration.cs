@@ -31,7 +31,7 @@ namespace DefaultEcs.Benchmark.Performance
         private sealed class DefaultEcsSystem : AEntitySystem<float>
         {
             public DefaultEcsSystem(DefaultWorld world, IRunner runner)
-                : base(world.GetEntities().With<DefaultSpeed>().With<DefaultPosition>().Build(), runner)
+                : base(world.GetEntities().With<DefaultSpeed>().With<DefaultPosition>().AsSet(), runner)
             { }
 
             public DefaultEcsSystem(DefaultWorld world)
@@ -98,7 +98,7 @@ namespace DefaultEcs.Benchmark.Performance
         public void Setup()
         {
             _defaultWorld = new DefaultWorld(EntityCount);
-            _defaultEntitySet = _defaultWorld.GetEntities().With<DefaultSpeed>().With<DefaultPosition>().Build();
+            _defaultEntitySet = _defaultWorld.GetEntities().With<DefaultSpeed>().With<DefaultPosition>().AsSet();
             _defaultSystem = new DefaultEcsSystem(_defaultWorld);
             _defaultRunner = new DefaultRunner(Environment.ProcessorCount);
             _defaultMultiSystem = new DefaultEcsSystem(_defaultWorld, _defaultRunner);

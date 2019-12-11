@@ -13,7 +13,7 @@ namespace DefaultBrick.System
         private MouseState _state;
 
         public PlayerSystem(GameWindow window, World world)
-            : base(world.GetEntities().With<PlayerInput>().With<DrawInfo>().Build())
+            : base(world.GetEntities().With<PlayerInput>().With<DrawInfo>().AsSet())
         {
             _window = window;
         }

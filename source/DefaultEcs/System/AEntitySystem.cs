@@ -99,7 +99,7 @@ namespace DefaultEcs.System
         protected AEntitySystem(World world, IRunner runner)
             : this(runner)
         {
-            _set = EntitySetBuilderFactory.Create(GetType())(world ?? throw new ArgumentNullException(nameof(world))).Build();
+            _set = EntitySetBuilderFactory.Create(GetType())(world ?? throw new ArgumentNullException(nameof(world))).AsSet();
         }
 
         /// <summary>

@@ -21,7 +21,7 @@ namespace DefaultSlap.System
         public GameSystem(World world)
         {
             _world = world;
-            _bugsSet = _world.GetEntities().With<Bug>().Build();
+            _bugsSet = _world.GetEntities().With<Bug>().AsSet();
             _random = new Random();
             _defaultPositions = new Func<Vector2>[]
             {

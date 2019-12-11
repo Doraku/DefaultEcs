@@ -12,7 +12,7 @@ namespace DefaultSlap.System
         private readonly Texture2D _square;
 
         public DrawSystem(SpriteBatch batch, Texture2D square, World world)
-            : base(world.GetEntities().With<Position>().With<DrawInfo>().Build())
+            : base(world.GetEntities().With<Position>().With<DrawInfo>().AsSet())
         {
             _batch = batch;
             _square = square;

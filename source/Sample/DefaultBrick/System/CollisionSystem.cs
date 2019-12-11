@@ -17,7 +17,7 @@ namespace DefaultBrick.System
             : base(world)
         {
             _world = world;
-            _solidSet = _world.GetEntities().With<Solid>().With<DrawInfo>().Build();
+            _solidSet = _world.GetEntities().With<Solid>().With<DrawInfo>().AsSet();
         }
 
         protected override void Update(float state, in Entity entity)

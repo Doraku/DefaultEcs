@@ -19,6 +19,7 @@
 breaking change:
 removed SystemRunner type, use DefaultEcs.Threading.DefaultRunner instead
 removed ASystem type
+refactored EntitySetBuilder to a more fluent syntax, Build changed to AsSet, *Either&lt;T1, T2&gt;() replaced by *Either&lt;T1&gt;().Or&lt;T2&gt;()
       
 added World.GetDisabledEntities to create EntitySet for disabled entities
 added DisabledAttribute to auto construct EntitySet of disabled entities for AEntitySystem

@@ -1,103 +1,196 @@
-﻿namespace DefaultEcs
+﻿using System;
+using System.Reflection;
+
+namespace DefaultEcs
 {
     /// <summary>
     /// Provides set of static methods to create more easily rules on a <see cref="EntitySetBuilder"/> instance.
     /// </summary>
     public static class EntitySetBuilderExtension
     {
-        /// <summary>
-        /// Makes a rule to obsverve <see cref="Entity"/> with at least one component of type <typeparamref name="T1"/> or <typeparamref name="T2"/>.
-        /// </summary>
-        /// <typeparam name="T1">The first type of component.</typeparam>
-        /// <typeparam name="T2">The second type of component.</typeparam>
-        /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
-        /// <returns>The given <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder WithEither<T1, T2>(this EntitySetBuilder builder) => builder.WithEither(typeof(T1), typeof(T2));
+        #region Fields
+
+        private static readonly MethodInfo _with;
+        private static readonly MethodInfo _without;
+        private static readonly MethodInfo _whenAdded;
+        private static readonly MethodInfo _whenChanged;
+        private static readonly MethodInfo _whenRemoved;
+        private static readonly MethodInfo _withEither;
+        private static readonly MethodInfo _withoutEither;
+        private static readonly MethodInfo _whenAddedEither;
+        private static readonly MethodInfo _whenChangedEither;
+        private static readonly MethodInfo _whenRemovedEither;
+        private static readonly MethodInfo _or;
+        private static readonly MethodInfo _commit;
+
+        #endregion
+
+        #region Initialisation
+
+        static EntitySetBuilderExtension()
+        {
+            _with = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntitySetBuilder.With));
+            _without = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntitySetBuilder.Without));
+            _whenAdded = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntitySetBuilder.WhenAdded));
+            _whenChanged = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntitySetBuilder.WhenChanged));
+            _whenRemoved = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntitySetBuilder.WhenRemoved));
+            _withEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntitySetBuilder.WithEither));
+            _withoutEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntitySetBuilder.WithoutEither));
+            _whenAddedEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntitySetBuilder.WhenAddedEither));
+            _whenChangedEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntitySetBuilder.WhenChangedEither));
+            _whenRemovedEither = typeof(EntitySetBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntitySetBuilder.WhenRemovedEither));
+            _or = typeof(EntitySetBuilder.EitherBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntitySetBuilder.EitherBuilder.Or));
+            _commit = typeof(EntitySetBuilder.EitherBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntitySetBuilder.EitherBuilder.Commit));
+        }
+
+        #endregion
+
+        #region Methods
+
+        private static EntitySetBuilder Either(EntitySetBuilder builder, Type[] componentTypes, MethodInfo method)
+        {
+            EntitySetBuilder.EitherBuilder eitherBuilder = null;
+
+            foreach (Type componentType in componentTypes)
+            {
+                if (eitherBuilder is null)
+                {
+                    eitherBuilder = (EntitySetBuilder.EitherBuilder)method.MakeGenericMethod(componentType).Invoke(builder, null);
+                }
+                else
+                {
+                    _or.MakeGenericMethod(componentType).Invoke(eitherBuilder, null);
+                }
+            }
+
+            if (eitherBuilder != null)
+            {
+                _commit.Invoke(eitherBuilder, null);
+            }
+
+            return builder;
+        }
 
         /// <summary>
-        /// Makes a rule to obsverve <see cref="Entity"/> with at least one component of type <typeparamref name="T1"/>, <typeparamref name="T2"/> or <typeparamref name="T3"/>.
+        /// Makes a rule to obsverve <see cref="Entity"/> with all component of the given types.
         /// </summary>
-        /// <typeparam name="T1">The first type of component.</typeparam>
-        /// <typeparam name="T2">The second type of component.</typeparam>
-        /// <typeparam name="T3">The third type of component.</typeparam>
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
-        /// <returns>The given <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder WithEither<T1, T2, T3>(this EntitySetBuilder builder) => builder.WithEither(typeof(T1), typeof(T2), typeof(T3));
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public static EntitySetBuilder With(this EntitySetBuilder builder, params Type[] componentTypes)
+        {
+            foreach (Type componentType in componentTypes)
+            {
+                _with.MakeGenericMethod(componentType).Invoke(builder, null);
+            }
+
+            return builder;
+        }
 
         /// <summary>
-        /// Makes a rule to obsverve <see cref="Entity"/> without at least one component of type <typeparamref name="T1"/> or <typeparamref name="T2"/>.
+        /// Makes a rule to ignore <see cref="Entity"/> with at least one component of the given types.
         /// </summary>
-        /// <typeparam name="T1">The first type of component.</typeparam>
-        /// <typeparam name="T2">The second type of component.</typeparam>
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
-        /// <returns>The given <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder WithoutEither<T1, T2>(this EntitySetBuilder builder) => builder.WithoutEither(typeof(T1), typeof(T2));
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public static EntitySetBuilder Without(this EntitySetBuilder builder, params Type[] componentTypes)
+        {
+            foreach (Type componentType in componentTypes)
+            {
+                _without.MakeGenericMethod(componentType).Invoke(builder, null);
+            }
+
+            return builder;
+        }
 
         /// <summary>
-        /// Makes a rule to obsverve <see cref="Entity"/> without at least one component of type <typeparamref name="T1"/>, <typeparamref name="T2"/> or <typeparamref name="T3"/>.
+        /// Makes a rule to obsverve <see cref="Entity"/> when all component of the given types are added.
         /// </summary>
-        /// <typeparam name="T1">The first type of component.</typeparam>
-        /// <typeparam name="T2">The second type of component.</typeparam>
-        /// <typeparam name="T3">The third type of component.</typeparam>
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
-        /// <returns>The given <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder WithoutEither<T1, T2, T3>(this EntitySetBuilder builder) => builder.WithoutEither(typeof(T1), typeof(T2), typeof(T3));
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public static EntitySetBuilder WhenAdded(this EntitySetBuilder builder, params Type[] componentTypes)
+        {
+            foreach (Type componentType in componentTypes)
+            {
+                _whenAdded.MakeGenericMethod(componentType).Invoke(builder, null);
+            }
+
+            return builder;
+        }
 
         /// <summary>
-        /// Makes a rule to obsverve <see cref="Entity"/> when at least one component of type <typeparamref name="T1"/> or <typeparamref name="T2"/> is added.
+        /// Makes a rule to obsverve <see cref="Entity"/> when all component of the given types are changed.
         /// </summary>
-        /// <typeparam name="T1">The first type of component.</typeparam>
-        /// <typeparam name="T2">The second type of component.</typeparam>
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
-        /// <returns>The given <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder WhenAddedEither<T1, T2>(this EntitySetBuilder builder) => builder.WhenAddedEither(typeof(T1), typeof(T2));
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public static EntitySetBuilder WhenChanged(this EntitySetBuilder builder, params Type[] componentTypes)
+        {
+            foreach (Type componentType in componentTypes)
+            {
+                _whenChanged.MakeGenericMethod(componentType).Invoke(builder, null);
+            }
+
+            return builder;
+        }
 
         /// <summary>
-        /// Makes a rule to obsverve <see cref="Entity"/> when at least one component of type <typeparamref name="T1"/>, <typeparamref name="T2"/> or <typeparamref name="T3"/> is added.
+        /// Makes a rule to obsverve <see cref="Entity"/> when all component of the given types are removed.
         /// </summary>
-        /// <typeparam name="T1">The first type of component.</typeparam>
-        /// <typeparam name="T2">The second type of component.</typeparam>
-        /// <typeparam name="T3">The third type of component.</typeparam>
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
-        /// <returns>The given <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder WhenAddedEither<T1, T2, T3>(this EntitySetBuilder builder) => builder.WhenAddedEither(typeof(T1), typeof(T2), typeof(T3));
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public static EntitySetBuilder WhenRemoved(this EntitySetBuilder builder, params Type[] componentTypes)
+        {
+            foreach (Type componentType in componentTypes)
+            {
+                _whenRemoved.MakeGenericMethod(componentType).Invoke(builder, null);
+            }
+
+            return builder;
+        }
 
         /// <summary>
-        /// Makes a rule to obsverve <see cref="Entity"/> when at least one component of type <typeparamref name="T1"/> or <typeparamref name="T2"/> is changed.
+        /// Makes a rule to obsverve <see cref="Entity"/> with at least one component of the given types.
         /// </summary>
-        /// <typeparam name="T1">The first type of component.</typeparam>
-        /// <typeparam name="T2">The second type of component.</typeparam>
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
-        /// <returns>The given <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder WhenChangedEither<T1, T2>(this EntitySetBuilder builder) => builder.WhenChangedEither(typeof(T1), typeof(T2));
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public static EntitySetBuilder WithEither(this EntitySetBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _withEither);
 
         /// <summary>
-        /// Makes a rule to obsverve <see cref="Entity"/> when at least one component of type <typeparamref name="T1"/>, <typeparamref name="T2"/> or <typeparamref name="T3"/> is changed.
+        /// Makes a rule to obsverve <see cref="Entity"/> without at least one component of the given types.
         /// </summary>
-        /// <typeparam name="T1">The first type of component.</typeparam>
-        /// <typeparam name="T2">The second type of component.</typeparam>
-        /// <typeparam name="T3">The third type of component.</typeparam>
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
-        /// <returns>The given <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder WhenChangedEither<T1, T2, T3>(this EntitySetBuilder builder) => builder.WhenChangedEither(typeof(T1), typeof(T2), typeof(T3));
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public static EntitySetBuilder WithoutEither(this EntitySetBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _withoutEither);
 
         /// <summary>
-        /// Makes a rule to obsverve <see cref="Entity"/> when at least one component of type <typeparamref name="T1"/> or <typeparamref name="T2"/> is removed.
+        /// Makes a rule to observe <see cref="Entity"/> when one component of the given types is added.
         /// </summary>
-        /// <typeparam name="T1">The first type of component.</typeparam>
-        /// <typeparam name="T2">The second type of component.</typeparam>
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
-        /// <returns>The given <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder WhenRemovedEither<T1, T2>(this EntitySetBuilder builder) => builder.WhenRemovedEither(typeof(T1), typeof(T2));
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public static EntitySetBuilder WhenAddedEither(this EntitySetBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _whenAddedEither);
 
         /// <summary>
-        /// Makes a rule to obsverve <see cref="Entity"/> when at least one component of type <typeparamref name="T1"/>, <typeparamref name="T2"/> or <typeparamref name="T3"/> is removed.
+        /// Makes a rule to observe <see cref="Entity"/> when one component of the given types is changed.
         /// </summary>
-        /// <typeparam name="T1">The first type of component.</typeparam>
-        /// <typeparam name="T2">The second type of component.</typeparam>
-        /// <typeparam name="T3">The third type of component.</typeparam>
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
-        /// <returns>The given <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder WhenRemovedEither<T1, T2, T3>(this EntitySetBuilder builder) => builder.WhenRemovedEither(typeof(T1), typeof(T2), typeof(T3));
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public static EntitySetBuilder WhenChangedEither(this EntitySetBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _whenChangedEither);
+
+        /// <summary>
+        /// Makes a rule to observe <see cref="Entity"/> when one component of the given types is removed.
+        /// </summary>
+        /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
+        /// <param name="componentTypes">The types of component.</param>
+        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
+        public static EntitySetBuilder WhenRemovedEither(this EntitySetBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _whenRemovedEither);
+
+        #endregion
     }
 }

@@ -13,7 +13,7 @@ namespace DefaultSlap.System
         private readonly ThreadLocal<Random> _random;
 
         public AISystem(World world, IRunner runner)
-            : base(world.GetEntities().With<PositionFloat>().With<TargetPosition>().With<Speed>().Build(), runner)
+            : base(world.GetEntities().With<PositionFloat>().With<TargetPosition>().With<Speed>().AsSet(), runner)
         {
             _random = new ThreadLocal<Random>(() => new Random());
         }

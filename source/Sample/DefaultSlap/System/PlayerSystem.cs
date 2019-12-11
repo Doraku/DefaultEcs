@@ -16,7 +16,7 @@ namespace DefaultSlap.System
         private bool _isSlaping;
 
         public PlayerSystem(GameWindow window, World world)
-            : base(world.GetEntities().With<PlayerState>().With<DrawInfo>().With<Position>().Build())
+            : base(world.GetEntities().With<PlayerState>().With<DrawInfo>().With<Position>().AsSet())
         {
             _window = window;
             _world = world;

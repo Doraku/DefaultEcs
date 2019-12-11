@@ -16,7 +16,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         {
             _world = new World();
             _entity = _world.CreateEntity();
-            _set = _world.GetEntities().With<bool>().With<int>().Build();
+            _set = _world.GetEntities().With<bool>().With<int>().AsSet();
             _recorder = new EntityCommandRecorder(1024);
         }
 

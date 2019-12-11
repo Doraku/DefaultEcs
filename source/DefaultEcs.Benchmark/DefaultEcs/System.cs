@@ -37,7 +37,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private sealed class TestSystem : AEntitySystem<float>
         {
             public TestSystem(World world, IRunner runner)
-                : base(world.GetEntities().With<Position>().With<Speed>().Build(), runner)
+                : base(world.GetEntities().With<Position>().With<Speed>().AsSet(), runner)
             { }
 
             protected override void Update(float state, in Entity entity)
@@ -53,7 +53,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private sealed class Test2System : AEntitySystem<float>
         {
             public Test2System(World world, IRunner runner)
-                : base(world.GetEntities().With<Position>().With<Speed>().Build(), runner)
+                : base(world.GetEntities().With<Position>().With<Speed>().AsSet(), runner)
             { }
 
             protected override void Update(float state, ReadOnlySpan<Entity> entities)
@@ -75,7 +75,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 
             public TestSystemTPL(World world)
             {
-                _set = world.GetEntities().With<Position>().With<Speed>().Build();
+                _set = world.GetEntities().With<Position>().With<Speed>().AsSet();
             }
 
             public bool IsEnabled { get; set; } = true;

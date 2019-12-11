@@ -97,7 +97,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
                 entity.Set<ComponentZ>();
             }
 
-            _set = _world.GetEntities().With<ComponentA>().Build();
+            _set = _world.GetEntities().With<ComponentA>().AsSet();
             _system = new BasicSystem(_set);
             _set2 = _world.GetEntities()
                 .With<ComponentA>()
@@ -126,7 +126,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
                 .With<ComponentX>()
                 .With<ComponentY>()
                 .With<ComponentZ>()
-                .Build();
+                .AsSet();
             _system2 = new BasicSystem(_set2);
         }
 

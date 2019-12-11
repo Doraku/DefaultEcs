@@ -12,7 +12,7 @@ namespace DefaultBrick.System
         private readonly List<Entity> _toRemove;
 
         public BallBoundSystem(World world)
-            : base(world.GetEntities().With<Velocity>().With<Position>().With<Ball>().Build())
+            : base(world.GetEntities().With<Velocity>().With<Position>().With<Ball>().AsSet())
         {
             _world = world;
             _toRemove = new List<Entity>();

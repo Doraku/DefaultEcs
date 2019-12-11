@@ -22,7 +22,7 @@ namespace DefaultEcs.Test
                     world.CreateEntity()
                 };
 
-            using EntitySet set = world.GetEntities().Build();
+            using EntitySet set = world.GetEntities().AsSet();
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
         }
@@ -34,7 +34,7 @@ namespace DefaultEcs.Test
 
             Entity entity = world.CreateEntity();
 
-            using EntitySet set = world.GetEntities().Build();
+            using EntitySet set = world.GetEntities().AsSet();
 
             Check.That(set.Contains(entity)).IsTrue();
         }
@@ -49,7 +49,7 @@ namespace DefaultEcs.Test
             world.CreateEntity();
             Entity entity = world.CreateEntity();
 
-            using EntitySet set = world.GetDisabledEntities().Build();
+            using EntitySet set = world.GetDisabledEntities().AsSet();
 
             Check.That(set.Contains(entity)).IsFalse();
         }
@@ -67,7 +67,7 @@ namespace DefaultEcs.Test
                     world.CreateEntity()
                 };
 
-            using EntitySet set = world.GetEntities().Build();
+            using EntitySet set = world.GetEntities().AsSet();
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
@@ -93,7 +93,7 @@ namespace DefaultEcs.Test
                     world.CreateEntity()
                 };
 
-            using EntitySet set = world.GetDisabledEntities().Build();
+            using EntitySet set = world.GetDisabledEntities().AsSet();
 
             Check.That(set.GetEntities().ToArray()).IsEmpty();
 
@@ -128,7 +128,7 @@ namespace DefaultEcs.Test
             }
             entities[0].Disable<bool>();
 
-            using EntitySet set = world.GetEntities().With<bool>().Build();
+            using EntitySet set = world.GetEntities().With<bool>().AsSet();
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities.Skip(1));
         }
@@ -137,7 +137,7 @@ namespace DefaultEcs.Test
         public void Should_call_EntityAdded_When_entity_added()
         {
             using World world = new World(4);
-            using EntitySet set = world.GetEntities().With<bool>().Build();
+            using EntitySet set = world.GetEntities().With<bool>().AsSet();
 
             Entity addedEntity = default;
             set.EntityAdded += (in Entity e) => addedEntity = e;
@@ -152,7 +152,7 @@ namespace DefaultEcs.Test
         public void Should_call_EntityAdded_When_entity_already_present()
         {
             using World world = new World(4);
-            using EntitySet set = world.GetEntities().With<bool>().Build();
+            using EntitySet set = world.GetEntities().With<bool>().AsSet();
 
             Entity entity = world.CreateEntity();
             entity.Set<bool>();
@@ -167,7 +167,7 @@ namespace DefaultEcs.Test
         public void Should_call_EntityRemoved_When_entity_removed()
         {
             using World world = new World(4);
-            using EntitySet set = world.GetEntities().With<bool>().Build();
+            using EntitySet set = world.GetEntities().With<bool>().AsSet();
 
             Entity removedEntity = default;
             set.EntityRemoved += (in Entity e) => removedEntity = e;

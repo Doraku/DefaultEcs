@@ -24,7 +24,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public void Setup()
         {
             _world = new World(EntityCount);
-            _set = _world.GetEntities().With<int>().With<uint>().Build();
+            _set = _world.GetEntities().With<int>().With<uint>().AsSet();
 
             for (int i = 0; i < EntityCount; ++i)
             {

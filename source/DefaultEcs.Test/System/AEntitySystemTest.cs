@@ -83,7 +83,7 @@ namespace DefaultEcs.Test.System
             Entity entity4 = world.CreateEntity();
             entity4.Set<bool>();
 
-            using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build()))
+            using (ISystem<int> system = new System(world.GetEntities().With<bool>().AsSet()))
             {
                 system.Update(0);
             }
@@ -167,7 +167,7 @@ namespace DefaultEcs.Test.System
             Entity entity4 = world.CreateEntity();
             entity4.Set<bool>();
 
-            using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build())
+            using (ISystem<int> system = new System(world.GetEntities().With<bool>().AsSet())
             {
                 IsEnabled = false
             })
@@ -199,7 +199,7 @@ namespace DefaultEcs.Test.System
             Entity entity4 = world.CreateEntity();
             entity4.Set<bool>();
 
-            using (ISystem<int> system = new System(world.GetEntities().With<bool>().Build(), runner))
+            using (ISystem<int> system = new System(world.GetEntities().With<bool>().AsSet(), runner))
             {
                 system.Update(0);
             }
@@ -232,7 +232,7 @@ namespace DefaultEcs.Test.System
         public void Should_call_EntityAdded_When_entity_added()
         {
             using World world = new World(4);
-            using System system = new System(world.GetEntities().With<bool>().Build());
+            using System system = new System(world.GetEntities().With<bool>().AsSet());
 
             Entity addedEntity = default;
 
@@ -261,7 +261,7 @@ namespace DefaultEcs.Test.System
             Entity entity = world.CreateEntity();
             entity.Set<bool>();
 
-            using System system = new System(world.GetEntities().With<bool>().Build());
+            using System system = new System(world.GetEntities().With<bool>().AsSet());
 
             Entity addedEntity = default;
 
@@ -274,7 +274,7 @@ namespace DefaultEcs.Test.System
         public void Should_call_EntityRemoved_When_entity_removed()
         {
             using World world = new World(4);
-            using System system = new System(world.GetEntities().With<bool>().Build());
+            using System system = new System(world.GetEntities().With<bool>().AsSet());
 
             Entity removedEntity = default;
 

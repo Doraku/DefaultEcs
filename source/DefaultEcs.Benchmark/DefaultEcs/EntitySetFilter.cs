@@ -21,11 +21,11 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public void Setup()
         {
             _world = new World();
-            _set = _world.GetEntities().Build();
-            _with = _world.GetEntities().With<double>().Build();
-            _without = _world.GetEntities().With<int>().Without<uint>().Build();
-            _withEither = _world.GetEntities().WithEither<string, char>().Build();
-            _withoutEither = _world.GetEntities().With<float>().WithoutEither<long, ulong>().Build();
+            _set = _world.GetEntities().AsSet();
+            _with = _world.GetEntities().With<double>().AsSet();
+            _without = _world.GetEntities().With<int>().Without<uint>().AsSet();
+            _withEither = _world.GetEntities().WithEither<string>().Or<char>().AsSet();
+            _withoutEither = _world.GetEntities().With<float>().WithoutEither<long>().Or<ulong>().AsSet();
 
             for (int i = 0; i < EntityCount; ++i)
             {

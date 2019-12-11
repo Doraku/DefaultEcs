@@ -529,7 +529,7 @@ namespace DefaultEcs.Test
         public void Dispose_Should_dispose_children_When_SetAsChildOf()
         {
             using World world = new World(4);
-            using EntitySet set = world.GetEntities().Build();
+            using EntitySet set = world.GetEntities().AsSet();
 
             Entity parent = world.CreateEntity();
             Entity other = world.CreateEntity();
@@ -551,7 +551,7 @@ namespace DefaultEcs.Test
         public void Dispose_Should_dispose_children_When_SetAsParentOf()
         {
             using World world = new World(4);
-            using EntitySet set = world.GetEntities().Build();
+            using EntitySet set = world.GetEntities().AsSet();
 
             Entity parent = world.CreateEntity();
             Entity other = world.CreateEntity();
@@ -573,7 +573,7 @@ namespace DefaultEcs.Test
         public void Dispose_Should_not_throw_When_dependency_graph_is_circular()
         {
             using World world = new World(4);
-            using EntitySet set = world.GetEntities().Build();
+            using EntitySet set = world.GetEntities().AsSet();
 
             Entity entity1 = world.CreateEntity();
             Entity other = world.CreateEntity();
@@ -596,7 +596,7 @@ namespace DefaultEcs.Test
         public void Dispose_Should_not_dispose_children_When_RemoveFromParentsOf()
         {
             using World world = new World(4);
-            using EntitySet set = world.GetEntities().Build();
+            using EntitySet set = world.GetEntities().AsSet();
 
             Entity parent = world.CreateEntity();
             Entity other = world.CreateEntity();
@@ -709,7 +709,7 @@ namespace DefaultEcs.Test
 
             Check.ThatCode(() => main.CopyTo(world2)).ThrowsAny();
             Check.That(world2.GetAllComponents<int>().Length).IsEqualTo(0);
-            Check.That(world2.GetEntities().Build().Count).IsEqualTo(0);
+            Check.That(world2.GetEntities().AsSet().Count).IsEqualTo(0);
         }
 
         [Fact]
