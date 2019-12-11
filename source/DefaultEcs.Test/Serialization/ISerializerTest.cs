@@ -107,11 +107,88 @@ namespace DefaultEcs.Test.Serialization
 
         #endregion
 
+        public static IEnumerable<object[]> SerializerType
+        {
+            get
+            {
+                yield return new object[] { typeof(BinarySerializer) };
+                yield return new object[] { typeof(TextSerializer) };
+            }
+        }
+
         #region Tests
 
         [Theory]
-        [InlineData(typeof(BinarySerializer))]
-        [InlineData(typeof(TextSerializer))]
+        [MemberData(nameof(SerializerType))]
+        public void Serialize_world_Should_throw_When_stream_is_null(Type serializerType)
+        {
+            ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
+
+            Check.ThatCode(() => serializer.Serialize(null, default(World))).Throws<ArgumentNullException>();
+        }
+
+        [Theory]
+        [MemberData(nameof(SerializerType))]
+        public void Serialize_world_Should_throw_When_world_is_null(Type serializerType)
+        {
+            ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
+
+            using Stream stream = new MemoryStream();
+
+            Check.ThatCode(() => serializer.Serialize(stream, default(World))).Throws<ArgumentNullException>();
+        }
+
+        [Theory]
+        [MemberData(nameof(SerializerType))]
+        public void Serialize_entities_Should_throw_When_stream_is_null(Type serializerType)
+        {
+            ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
+
+            Check.ThatCode(() => serializer.Serialize(null, default(IEnumerable<Entity>))).Throws<ArgumentNullException>();
+        }
+
+        [Theory]
+        [MemberData(nameof(SerializerType))]
+        public void Serialize_entities_Should_throw_When_world_is_null(Type serializerType)
+        {
+            ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
+
+            using Stream stream = new MemoryStream();
+
+            Check.ThatCode(() => serializer.Serialize(stream, default(IEnumerable<Entity>))).Throws<ArgumentNullException>();
+        }
+
+        [Theory]
+        [MemberData(nameof(SerializerType))]
+        public void Deserialize_Should_throw_When_stream_is_null(Type serializerType)
+        {
+            ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
+
+            Check.ThatCode(() => serializer.Deserialize(null)).Throws<ArgumentNullException>();
+        }
+
+        [Theory]
+        [MemberData(nameof(SerializerType))]
+        public void Deserialize_world_Should_throw_When_stream_is_null(Type serializerType)
+        {
+            ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
+
+            Check.ThatCode(() => serializer.Deserialize(null, default)).Throws<ArgumentNullException>();
+        }
+
+        [Theory]
+        [MemberData(nameof(SerializerType))]
+        public void Deserialize_world_Should_throw_When_world_is_null(Type serializerType)
+        {
+            ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
+
+            using Stream stream = new MemoryStream();
+
+            Check.ThatCode(() => serializer.Deserialize(stream, default)).Throws<ArgumentNullException>();
+        }
+
+        [Theory]
+        [MemberData(nameof(SerializerType))]
         public void Serialize_Should_serialize_World(Type serializerType)
         {
             using World world = new World(42);
@@ -227,8 +304,7 @@ namespace DefaultEcs.Test.Serialization
         }
 
         [Theory]
-        [InlineData(typeof(BinarySerializer))]
-        [InlineData(typeof(TextSerializer))]
+        [MemberData(nameof(SerializerType))]
         public void Serialize_Should_serialize_Entities(Type serializerType)
         {
             using World world = new World(42);

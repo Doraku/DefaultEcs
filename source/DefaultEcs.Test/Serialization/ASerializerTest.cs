@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using NFluent;
 using Xunit;
@@ -155,6 +156,12 @@ namespace DefaultEcs.Test.Serialization
         #endregion
 
         #region Tests
+
+        [Fact]
+        public void Write_Should_throw_When_stream_is_null() => Check.ThatCode(() => Write(null, true)).Throws<ArgumentNullException>();
+
+        [Fact]
+        public void Read_Should_throw_When_stream_is_null() => Check.ThatCode(() => Read<bool>(null)).Throws<ArgumentNullException>();
 
         [Fact]
         public void Should_handle_bool() => Test(true);
