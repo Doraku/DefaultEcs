@@ -52,7 +52,7 @@ namespace DefaultEcs.Serialization
 
         private static ICollection<Entity> Deserialize(Stream stream, ref World world)
         {
-            bool isNewWorld = world == null;
+            bool isNewWorld = world is null;
             List<Entity> entities = new List<Entity>(128);
 
             try

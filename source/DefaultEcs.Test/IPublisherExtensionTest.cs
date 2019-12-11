@@ -54,7 +54,7 @@ namespace DefaultEcs.Test
             [Subscribe]
             public static void Method(in object arg)
             {
-                if (arg == null)
+                if (arg is null)
                 {
                     throw new ArgumentNullException(nameof(arg));
                 }

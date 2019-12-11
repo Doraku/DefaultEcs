@@ -14,7 +14,7 @@ namespace DefaultEcs.Technical
 
         #region Properties
 
-        public bool IsNull => _bitArray == null;
+        public bool IsNull => _bitArray is null;
 
         public bool this[ComponentFlag flag]
         {

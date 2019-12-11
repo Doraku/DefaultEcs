@@ -255,10 +255,7 @@ namespace DefaultEcs
             if (WorldId == 0) Throw("Entity was not created from a World");
 
             ref HashSet<int> children = ref World.Infos[WorldId].EntityInfos[parent.EntityId].Children;
-            if (children == null)
-            {
-                children = new HashSet<int>();
-            }
+            children ??= new HashSet<int>();
 
             if (children.Add(EntityId))
             {

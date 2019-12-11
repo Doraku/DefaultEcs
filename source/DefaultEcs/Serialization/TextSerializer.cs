@@ -76,7 +76,7 @@ namespace DefaultEcs.Serialization
 
         private ICollection<Entity> Deserialize(Stream stream, ref World world)
         {
-            bool isNewWorld = world == null;
+            bool isNewWorld = world is null;
             Dictionary<string, Entity> entities = new Dictionary<string, Entity>();
 
             try
@@ -95,10 +95,7 @@ namespace DefaultEcs.Serialization
                         string entry = lineParts[0];
                         if (nameof(EntryType.Entity).Equals(entry))
                         {
-                            if (world == null)
-                            {
-                                world = new World();
-                            }
+                            world ??= new World();
 
                             currentEntity = world.CreateEntity();
                             if (lineParts.Length > 1)
@@ -108,10 +105,7 @@ namespace DefaultEcs.Serialization
                         }
                         else if (nameof(EntryType.DisabledEntity).Equals(entry))
                         {
-                            if (world == null)
-                            {
-                                world = new World();
-                            }
+                            world ??= new World();
 
                             currentEntity = world.CreateDisabledEntity();
                             if (lineParts.Length > 1)
@@ -170,10 +164,7 @@ namespace DefaultEcs.Serialization
                                         throw new ArgumentException($"Unable to convert '{maxComponentCountEntry[1]}' to a number");
                                     }
 
-                                    if (world == null)
-                                    {
-                                        world = new World();
-                                    }
+                                    world ??= new World();
 
                                     operation.SetMaximumComponentCount(world, maxComponentCount);
                                     break;

@@ -56,10 +56,7 @@ namespace DefaultEcs.Technical
                 ArrayExtension.EnsureLength(ref Pools, worldId);
 
                 ref ComponentPool<T> pool = ref Pools[worldId];
-                if (pool == null)
-                {
-                    pool = new ComponentPool<T>(worldId, maxEntityCount, maxComponentCount);
-                }
+                pool ??= new ComponentPool<T>(worldId, maxEntityCount, maxComponentCount);
 
                 return pool;
             }
