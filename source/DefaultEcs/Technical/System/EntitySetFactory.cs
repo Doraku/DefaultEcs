@@ -5,26 +5,26 @@ using DefaultEcs.System;
 
 namespace DefaultEcs.Technical.System
 {
-    internal static class EntitySetBuilderFactory
+    internal static class EntitySetFactory
     {
         #region Fields
 
-        private static readonly ConcurrentDictionary<Type, Func<World, EntitySetBuilder>> _entitySetBuilderFactories;
+        private static readonly ConcurrentDictionary<Type, Func<World, EntitySet>> _entitySetFactories;
 
         #endregion
 
         #region Initialisation
 
-        static EntitySetBuilderFactory()
+        static EntitySetFactory()
         {
-            _entitySetBuilderFactories = new ConcurrentDictionary<Type, Func<World, EntitySetBuilder>>();
+            _entitySetFactories = new ConcurrentDictionary<Type, Func<World, EntitySet>>();
         }
 
         #endregion
 
         #region Methods
 
-        private static Func<World, EntitySetBuilder> GetEntitySetBuilderFactory(Type type)
+        private static Func<World, EntitySet> GetEntitySetFactory(Type type)
         {
             TypeInfo typeInfo = type.GetTypeInfo();
 
@@ -50,10 +50,10 @@ namespace DefaultEcs.Technical.System
 
             bool enabled = typeInfo.GetCustomAttribute<DisabledAttribute>() is null;
 
-            return w => builderAction(enabled ? w.GetEntities() : w.GetDisabledEntities());
+            return w => builderAction(enabled ? w.GetEntities() : w.GetDisabledEntities()).AsSet();
         }
 
-        public static Func<World, EntitySetBuilder> Create(Type type) => _entitySetBuilderFactories.GetOrAdd(type, GetEntitySetBuilderFactory);
+        public static Func<World, EntitySet> Create(Type type) => _entitySetFactories.GetOrAdd(type, GetEntitySetFactory);
 
         #endregion
     }
