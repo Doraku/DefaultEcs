@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Reflection;
 using DefaultEcs.System;
 
@@ -11,7 +10,6 @@ namespace DefaultEcs.Technical.System
         #region Fields
 
         private static readonly ConcurrentDictionary<Type, Func<World, EntitySetBuilder>> _entitySetBuilderFactories;
-        private static readonly Dictionary<ComponentFilterType, Func<EntitySetBuilder, Type[], EntitySetBuilder>> _actions;
 
         #endregion
 
@@ -20,22 +18,6 @@ namespace DefaultEcs.Technical.System
         static EntitySetBuilderFactory()
         {
             _entitySetBuilderFactories = new ConcurrentDictionary<Type, Func<World, EntitySetBuilder>>();
-
-            TypeInfo entitySetBuilder = typeof(EntitySetBuilder).GetTypeInfo();
-
-            _actions = new Dictionary<ComponentFilterType, Func<EntitySetBuilder, Type[], EntitySetBuilder>>
-            {
-                [ComponentFilterType.With] = EntitySetBuilderExtension.With,
-                [ComponentFilterType.WithEither] = EntitySetBuilderExtension.WithEither,
-                [ComponentFilterType.Without] = EntitySetBuilderExtension.Without,
-                [ComponentFilterType.WithoutEither] = EntitySetBuilderExtension.WithoutEither,
-                [ComponentFilterType.WhenAdded] = EntitySetBuilderExtension.WhenAdded,
-                [ComponentFilterType.WhenAddedEither] = EntitySetBuilderExtension.WhenAddedEither,
-                [ComponentFilterType.WhenChanged] = EntitySetBuilderExtension.WhenChanged,
-                [ComponentFilterType.WhenChangedEither] = EntitySetBuilderExtension.WhenChangedEither,
-                [ComponentFilterType.WhenRemoved] = EntitySetBuilderExtension.WhenRemoved,
-                [ComponentFilterType.WhenRemovedEither] = EntitySetBuilderExtension.WhenRemovedEither
-            };
         }
 
         #endregion
@@ -50,7 +32,20 @@ namespace DefaultEcs.Technical.System
 
             foreach (ComponentAttribute attribute in typeInfo.GetCustomAttributes<ComponentAttribute>(true))
             {
-                builderAction += b => _actions[attribute.FilterType](b, attribute.ComponentTypes);
+                builderAction += attribute.FilterType switch
+                {
+                    ComponentFilterType.With => b => b.With(attribute.ComponentTypes),
+                    ComponentFilterType.WithEither => b => b.WithEither(attribute.ComponentTypes),
+                    ComponentFilterType.Without => b => b.Without(attribute.ComponentTypes),
+                    ComponentFilterType.WithoutEither => b => b.WithoutEither(attribute.ComponentTypes),
+                    ComponentFilterType.WhenAdded => b => b.WhenAdded(attribute.ComponentTypes),
+                    ComponentFilterType.WhenAddedEither => b => b.WhenAddedEither(attribute.ComponentTypes),
+                    ComponentFilterType.WhenChanged => b => b.WhenChanged(attribute.ComponentTypes),
+                    ComponentFilterType.WhenChangedEither => b => b.WhenChangedEither(attribute.ComponentTypes),
+                    ComponentFilterType.WhenRemoved => b => b.WhenRemoved(attribute.ComponentTypes),
+                    ComponentFilterType.WhenRemovedEither => b => b.WhenRemovedEither(attribute.ComponentTypes),
+                    _ => null
+                };
             }
 
             bool enabled = typeInfo.GetCustomAttribute<DisabledAttribute>() is null;
