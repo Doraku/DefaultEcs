@@ -118,6 +118,12 @@ namespace DefaultEcs.Test.System
         #region Tests
 
         [Fact]
+        public void ComponentAttribute_Should_throw_When_componentTypes_is_null()
+        {
+            Check.ThatCode(() => new ComponentAttribute(ComponentFilterType.With, default)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
         public void WithAttribute_Should_create_correct_EntitySet()
         {
             using World world = new World();
