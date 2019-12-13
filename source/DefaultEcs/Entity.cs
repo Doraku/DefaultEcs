@@ -12,7 +12,7 @@ using DefaultEcs.Technical.Message;
 namespace DefaultEcs
 {
     /// <summary>
-    /// Represents an item in the <see cref="World"/>.
+    /// Represents an item in the <see cref="DefaultEcs.World"/>.
     /// Only use <see cref="Entity"/> generated from the <see cref="World.CreateEntity"/> method.
     /// </summary>
     [DebuggerTypeProxy(typeof(EntityDebugView))]
@@ -38,7 +38,7 @@ namespace DefaultEcs
         {
             WorldId = worldId;
             EntityId = entityId;
-            Version = World.Infos[WorldId].EntityInfos[EntityId].Version;
+            Version = World.Worlds[WorldId].EntityInfos[EntityId].Version;
         }
 
         #endregion
@@ -46,18 +46,20 @@ namespace DefaultEcs
         #region Properties
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private ref ComponentEnum Components => ref World.Infos[WorldId].EntityInfos[EntityId].Components;
+        private ref ComponentEnum Components => ref World.EntityInfos[EntityId].Components;
+
+        /// <summary>
+        /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="Entity"/> originate. 
+        /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public World World => World.Worlds[WorldId];
 
         /// <summary>
         /// Gets whether the current <see cref="Entity"/> is alive or not.
         /// </summary>
         /// <returns>true if the <see cref="Entity"/> is alive; otherwise, false.</returns>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public bool IsAlive
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => WorldId != 0 && World.Infos[WorldId].EntityInfos[EntityId].IsAlive(Version);
-        }
+        public bool IsAlive => WorldId != 0 && World.EntityInfos[EntityId].IsAlive(Version);
 
         #endregion
 
@@ -86,7 +88,7 @@ namespace DefaultEcs
         /// <summary>
         /// Enables the current <see cref="Entity"/> so it can appear in <see cref="EntitySet"/>.
         /// </summary>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Enable()
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
@@ -102,7 +104,7 @@ namespace DefaultEcs
         /// <summary>
         /// Disables the current <see cref="Entity"/> so it does not appear in <see cref="EntitySet"/>.
         /// </summary>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Disable()
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
@@ -128,7 +130,7 @@ namespace DefaultEcs
         /// Does nothing if current <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Enable<T>()
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
@@ -149,7 +151,7 @@ namespace DefaultEcs
         /// Does nothing if current <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Disable<T>()
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
@@ -167,7 +169,7 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
         public void Set<T>(in T component = default)
         {
@@ -190,8 +192,8 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="reference">The other <see cref="Entity"/> used as reference.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
-        /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> comes from a different <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
+        /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> comes from a different <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
         public void SetSameAs<T>(in Entity reference)
         {
@@ -239,7 +241,7 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>A reference to the component.</returns>
-        /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="World"/> or does not have a component of type <typeparamref name="T"/>.</exception>
+        /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/> or does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
 
@@ -247,19 +249,19 @@ namespace DefaultEcs
         /// Makes it so when given <see cref="Entity"/> is disposed, current <see cref="Entity"/> will also be disposed.
         /// </summary>
         /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
-        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
+        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
         public void SetAsChildOf(in Entity parent)
         {
             if (WorldId != parent.WorldId) Throw("Child and parent Entity come from a different World");
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            ref HashSet<int> children = ref World.Infos[WorldId].EntityInfos[parent.EntityId].Children;
+            ref HashSet<int> children = ref World.EntityInfos[parent.EntityId].Children;
             children ??= new HashSet<int>();
 
             if (children.Add(EntityId))
             {
-                World.Infos[WorldId].EntityInfos[EntityId].Parents += children.Remove;
+                World.EntityInfos[EntityId].Parents += children.Remove;
             }
         }
 
@@ -267,8 +269,8 @@ namespace DefaultEcs
         /// Makes it so when current <see cref="Entity"/> is disposed, given <see cref="Entity"/> will also be disposed.
         /// </summary>
         /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
-        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
+        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetAsParentOf(in Entity child) => child.SetAsChildOf(this);
 
@@ -276,17 +278,17 @@ namespace DefaultEcs
         /// Remove the given <see cref="Entity"/> from current <see cref="Entity"/> parents.
         /// </summary>
         /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
-        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
+        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
         public void RemoveFromChildrenOf(in Entity parent)
         {
             if (WorldId != parent.WorldId) Throw("Child and parent Entity come from a different World");
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            HashSet<int> children = World.Infos[WorldId].EntityInfos[parent.EntityId].Children;
+            HashSet<int> children = World.EntityInfos[parent.EntityId].Children;
             if (children?.Remove(EntityId) ?? false)
             {
-                World.Infos[WorldId].EntityInfos[EntityId].Parents -= children.Remove;
+                World.EntityInfos[EntityId].Parents -= children.Remove;
             }
         }
 
@@ -294,8 +296,8 @@ namespace DefaultEcs
         /// Remove the given <see cref="Entity"/> from current <see cref="Entity"/> children.
         /// </summary>
         /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
-        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="World"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
+        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveFromParentsOf(in Entity child) => child.RemoveFromChildrenOf(this);
 
@@ -305,18 +307,18 @@ namespace DefaultEcs
         /// <returns>An <see cref="IEnumerable{Entity}"/> of all the current <see cref="Entity"/> children.</returns>
         public IEnumerable<Entity> GetChildren()
         {
-            foreach (int childId in World.Infos[WorldId]?.EntityInfos[EntityId].Children ?? Enumerable.Empty<int>())
+            foreach (int childId in World?.EntityInfos[EntityId].Children ?? Enumerable.Empty<int>())
             {
                 yield return new Entity(WorldId, childId);
             }
         }
 
         /// <summary>
-        /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="World"/>.
+        /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="DefaultEcs.World"/>.
         /// </summary>
-        /// <param name="world">The <see cref="World"/> instance to which copy current <see cref="Entity"/> and its components.</param>
-        /// <returns>The created <see cref="Entity"/> in the given <see cref="World"/>.</returns>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="World"/>.</exception>
+        /// <param name="world">The <see cref="DefaultEcs.World"/> instance to which copy current <see cref="Entity"/> and its components.</param>
+        /// <returns>The created <see cref="Entity"/> in the given <see cref="DefaultEcs.World"/>.</returns>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public Entity CopyTo(World world)
         {
             if (WorldId == 0) Throw("Entity was not created from a World");

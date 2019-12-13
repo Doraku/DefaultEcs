@@ -66,10 +66,10 @@ namespace DefaultEcs.Technical
         public static ComponentPool<T> Get(short worldId) => worldId < Pools.Length ? Pools[worldId] : null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComponentPool<T> GetOrCreate(short worldId, int maxComponentCount) => Get(worldId) ?? Add(worldId, World.Infos[worldId].MaxEntityCount, maxComponentCount);
+        public static ComponentPool<T> GetOrCreate(short worldId, int maxComponentCount) => Get(worldId) ?? Add(worldId, World.Worlds[worldId].MaxEntityCount, maxComponentCount);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComponentPool<T> GetOrCreate(short worldId) => Get(worldId) ?? Add(worldId, World.Infos[worldId].MaxEntityCount, World.Infos[worldId].MaxEntityCount);
+        public static ComponentPool<T> GetOrCreate(short worldId) => Get(worldId) ?? Add(worldId, World.Worlds[worldId].MaxEntityCount, World.Worlds[worldId].MaxEntityCount);
 
         #endregion
     }

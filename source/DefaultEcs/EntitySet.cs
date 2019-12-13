@@ -93,9 +93,9 @@ namespace DefaultEcs
 
             if (!_needClearing)
             {
-                for (int i = 0; i <= Math.Min(world.Info.EntityInfos.Length, world.LastEntityId); ++i)
+                for (int i = 0; i <= Math.Min(world.EntityInfos.Length, world.LastEntityId); ++i)
                 {
-                    if (_filter(world.Info.EntityInfos[i].Components))
+                    if (_filter(world.EntityInfos[i].Components))
                     {
                         Add(i);
                     }

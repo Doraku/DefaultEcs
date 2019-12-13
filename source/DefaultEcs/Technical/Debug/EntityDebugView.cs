@@ -40,6 +40,7 @@ namespace DefaultEcs.Technical.Debug
         private readonly Entity _entity;
         private readonly List<IComponent> _components;
 
+        public World World => _entity.World;
         public bool IsAlive => _entity.IsAlive;
         public bool IsEnabled => _entity.IsEnabled();
         public Entity[] Children => _entity.GetChildren().ToArray();

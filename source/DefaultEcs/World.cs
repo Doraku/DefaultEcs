@@ -24,12 +24,13 @@ namespace DefaultEcs
         internal static readonly ComponentFlag IsAliveFlag;
         internal static readonly ComponentFlag IsEnabledFlag;
 
-        internal static WorldInfo[] Infos;
+        internal static World[] Worlds;
 
         private readonly IntDispenser _entityIdDispenser;
 
         internal readonly short WorldId;
-        internal readonly WorldInfo Info;
+
+        internal EntityInfo[] EntityInfos;
 
         /// <summary>
         /// Event called just before an <see cref="Entity"/> from the current <see cref="World"/> instance is disposed.
@@ -46,7 +47,7 @@ namespace DefaultEcs
         /// <summary>
         /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can create.
         /// </summary>
-        public int MaxEntityCount => Info.MaxEntityCount;
+        public int MaxEntityCount { get; }
 
         #endregion
 
@@ -57,7 +58,7 @@ namespace DefaultEcs
             _lockObject = new object();
             _worldIdDispenser = new IntDispenser(0);
 
-            Infos = new WorldInfo[2];
+            Worlds = new World[2];
 
             IsAliveFlag = ComponentFlag.GetNextFlag();
             IsEnabledFlag = ComponentFlag.GetNextFlag();
@@ -78,13 +79,14 @@ namespace DefaultEcs
             _entityIdDispenser = new IntDispenser(-1);
             WorldId = (short)_worldIdDispenser.GetFreeInt();
 
-            Info = new WorldInfo(maxEntityCount);
+            MaxEntityCount = maxEntityCount;
+            EntityInfos = EmptyArray<EntityInfo>.Value;
 
             lock (_lockObject)
             {
-                ArrayExtension.EnsureLength(ref Infos, WorldId);
+                ArrayExtension.EnsureLength(ref Worlds, WorldId);
 
-                Infos[WorldId] = Info;
+                Worlds[WorldId] = this;
             }
 
 #pragma warning disable IDE0067 // Dispose objects before losing scope
@@ -108,13 +110,13 @@ namespace DefaultEcs
         private void On(in EntityDisposingMessage message)
         {
             EntityDisposed?.Invoke(new Entity(WorldId, message.EntityId));
-            Info.EntityInfos[message.EntityId].Components.Clear();
+            EntityInfos[message.EntityId].Components.Clear();
         }
 
         [Subscribe]
         private void On(in EntityDisposedMessage message)
         {
-            ref EntityInfo entityInfo = ref Info.EntityInfos[message.EntityId];
+            ref EntityInfo entityInfo = ref EntityInfos[message.EntityId];
 
             _entityIdDispenser.ReleaseInt(message.EntityId);
             ++entityInfo.Version;
@@ -129,7 +131,7 @@ namespace DefaultEcs
                 entityInfo.Children = null;
                 foreach (int childId in children)
                 {
-                    Info.EntityInfos[childId].Parents -= children.Remove;
+                    EntityInfos[childId].Parents -= children.Remove;
                     Publish(new EntityDisposingMessage(childId));
                     Publish(new EntityDisposedMessage(childId));
                 }
@@ -150,9 +152,9 @@ namespace DefaultEcs
                 throw new InvalidOperationException("Max number of Entity reached");
             }
 
-            ArrayExtension.EnsureLength(ref Info.EntityInfos, entityId, MaxEntityCount);
+            ArrayExtension.EnsureLength(ref EntityInfos, entityId, MaxEntityCount);
 
-            ref ComponentEnum components = ref Info.EntityInfos[entityId].Components;
+            ref ComponentEnum components = ref EntityInfos[entityId].Components;
             components[IsAliveFlag] = true;
             Publish(new EntityDisabledMessage(entityId, components));
 
@@ -173,10 +175,10 @@ namespace DefaultEcs
                 throw new InvalidOperationException("Max number of Entity reached");
             }
 
-            ArrayExtension.EnsureLength(ref Info.EntityInfos, entityId, MaxEntityCount);
+            ArrayExtension.EnsureLength(ref EntityInfos, entityId, MaxEntityCount);
 
-            Info.EntityInfos[entityId].Components[IsAliveFlag] = true;
-            Info.EntityInfos[entityId].Components[IsEnabledFlag] = true;
+            EntityInfos[entityId].Components[IsAliveFlag] = true;
+            EntityInfos[entityId].Components[IsEnabledFlag] = true;
             Publish(new EntityCreatedMessage(entityId));
 
             return new Entity(WorldId, entityId);
@@ -235,9 +237,9 @@ namespace DefaultEcs
         /// <returns>All the <see cref="Entity"/> of the current <see cref="World"/>.</returns>
         public IEnumerable<Entity> GetAllEntities()
         {
-            for (int i = 0; i <= Math.Min(Info.EntityInfos.Length, LastEntityId); ++i)
+            for (int i = 0; i <= Math.Min(EntityInfos.Length, LastEntityId); ++i)
             {
-                if (Info.EntityInfos[i].Components[IsAliveFlag])
+                if (EntityInfos[i].Components[IsAliveFlag])
                 {
                     yield return new Entity(WorldId, i);
                 }
@@ -284,7 +286,7 @@ namespace DefaultEcs
         {
             lock (_lockObject)
             {
-                Infos[WorldId] = null;
+                Worlds[WorldId] = null;
             }
 
             Publish(new ManagedResourceReleaseAllMessage());

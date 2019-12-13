@@ -41,6 +41,33 @@ namespace DefaultEcs.Test
         #region Tests
 
         [Fact]
+        public void World_Should_return_world()
+        {
+            using World world = new World(1);
+
+            Entity entity = world.CreateEntity();
+
+            Check.That(entity.World).IsEqualTo(world);
+        }
+
+        [Fact]
+        public void World_Should_return_null_when_world_is_disposed()
+        {
+            Entity entity = default;
+
+            Check.That(entity.World).IsNull();
+
+            using (World world = new World(1))
+            {
+                entity = world.CreateEntity();
+
+                Check.That(entity.World).IsEqualTo(world);
+            }
+
+            Check.That(entity.World).IsNull();
+        }
+
+        [Fact]
         public void IsAlive_Should_return_true()
         {
             using World world = new World(1);
