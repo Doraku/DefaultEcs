@@ -47,6 +47,16 @@ namespace DefaultEcs
 
         #region Methods
 
+        private static EntitySetBuilder Simple(EntitySetBuilder builder, Type[] componentTypes, MethodInfo method)
+        {
+            foreach (Type componentType in componentTypes)
+            {
+                method.MakeGenericMethod(componentType).Invoke(builder, null);
+            }
+
+            return builder;
+        }
+
         private static EntitySetBuilder Either(EntitySetBuilder builder, Type[] componentTypes, MethodInfo method)
         {
             EntitySetBuilder.EitherBuilder eitherBuilder = null;
@@ -77,15 +87,7 @@ namespace DefaultEcs
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder With(this EntitySetBuilder builder, params Type[] componentTypes)
-        {
-            foreach (Type componentType in componentTypes)
-            {
-                _with.MakeGenericMethod(componentType).Invoke(builder, null);
-            }
-
-            return builder;
-        }
+        public static EntitySetBuilder With(this EntitySetBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _with);
 
         /// <summary>
         /// Makes a rule to ignore <see cref="Entity"/> with at least one component of the given types.
@@ -93,15 +95,7 @@ namespace DefaultEcs
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder Without(this EntitySetBuilder builder, params Type[] componentTypes)
-        {
-            foreach (Type componentType in componentTypes)
-            {
-                _without.MakeGenericMethod(componentType).Invoke(builder, null);
-            }
-
-            return builder;
-        }
+        public static EntitySetBuilder Without(this EntitySetBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _without);
 
         /// <summary>
         /// Makes a rule to obsverve <see cref="Entity"/> when all component of the given types are added.
@@ -109,15 +103,7 @@ namespace DefaultEcs
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder WhenAdded(this EntitySetBuilder builder, params Type[] componentTypes)
-        {
-            foreach (Type componentType in componentTypes)
-            {
-                _whenAdded.MakeGenericMethod(componentType).Invoke(builder, null);
-            }
-
-            return builder;
-        }
+        public static EntitySetBuilder WhenAdded(this EntitySetBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _whenAdded);
 
         /// <summary>
         /// Makes a rule to obsverve <see cref="Entity"/> when all component of the given types are changed.
@@ -125,15 +111,7 @@ namespace DefaultEcs
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder WhenChanged(this EntitySetBuilder builder, params Type[] componentTypes)
-        {
-            foreach (Type componentType in componentTypes)
-            {
-                _whenChanged.MakeGenericMethod(componentType).Invoke(builder, null);
-            }
-
-            return builder;
-        }
+        public static EntitySetBuilder WhenChanged(this EntitySetBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _whenChanged);
 
         /// <summary>
         /// Makes a rule to obsverve <see cref="Entity"/> when all component of the given types are removed.
@@ -141,15 +119,7 @@ namespace DefaultEcs
         /// <param name="builder">The <see cref="EntitySetBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        public static EntitySetBuilder WhenRemoved(this EntitySetBuilder builder, params Type[] componentTypes)
-        {
-            foreach (Type componentType in componentTypes)
-            {
-                _whenRemoved.MakeGenericMethod(componentType).Invoke(builder, null);
-            }
-
-            return builder;
-        }
+        public static EntitySetBuilder WhenRemoved(this EntitySetBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _whenRemoved);
 
         /// <summary>
         /// Makes a rule to obsverve <see cref="Entity"/> with at least one component of the given types.
