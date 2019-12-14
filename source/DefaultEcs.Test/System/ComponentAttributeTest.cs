@@ -22,6 +22,7 @@ namespace DefaultEcs.Test.System
         }
 
         [WithEither(typeof(bool), typeof(int))]
+        [WithEither(typeof(bool), typeof(string))]
         private sealed class WithEitherSystem : AEntitySystem<int>
         {
             public WithEitherSystem(World world)
@@ -44,6 +45,7 @@ namespace DefaultEcs.Test.System
 
         [With(typeof(bool))]
         [WithoutEither(typeof(string), typeof(char))]
+        [WithoutEither(typeof(double), typeof(long))]
         private sealed class WithoutEitherSystem : AEntitySystem<int>
         {
             public WithoutEitherSystem(World world)
