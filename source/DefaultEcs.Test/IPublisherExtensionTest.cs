@@ -94,6 +94,17 @@ namespace DefaultEcs.Test
             { }
         }
 
+        private sealed class ValidAndInvalidDecoratedClass
+        {
+            public object Arg { get; set; }
+
+            [Subscribe]
+            public void Valid(in object arg) => Arg = arg;
+
+            [Subscribe]
+            public object Invalid(in object arg) => Arg = arg;
+        }
+
         #endregion
 
         #region Tests
@@ -105,6 +116,16 @@ namespace DefaultEcs.Test
 
             Check
                 .ThatCode(() => publisher.Subscribe<object>())
+                .Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Subscribe_type_Should_thow_ArgumentNullException_When_type_is_null()
+        {
+            using IPublisher publisher = new Publisher();
+
+            Check
+                .ThatCode(() => publisher.Subscribe(default))
                 .Throws<ArgumentNullException>();
         }
 
@@ -223,6 +244,22 @@ namespace DefaultEcs.Test
             publisher.Subscribe(target);
 
             Check.That(publisher.SubscribeCount).IsEqualTo(1);
+        }
+
+        [Fact]
+        public void Subscribe_Should_dispose_subscription_When_error_encountered()
+        {
+            using IPublisher publisher = new World();
+
+            ValidAndInvalidDecoratedClass item = new ValidAndInvalidDecoratedClass();
+
+            Check
+                .ThatCode(() => publisher.Subscribe(item))
+                .Throws<NotSupportedException>();
+
+            publisher.Publish(new object());
+
+            Check.That(item.Arg).IsNull();
         }
 
         #endregion
