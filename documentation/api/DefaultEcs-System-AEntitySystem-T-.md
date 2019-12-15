@@ -3,9 +3,13 @@
 ## AEntitySystem&lt;T&gt; Class
 Represents a base class to process updates on a given [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') instance.  
 ```C#
-public abstract class AEntitySystem<T> : ASystem<T>
+public abstract class AEntitySystem<T> :
+ISystem<T>,
+IDisposable
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [DefaultEcs.System.ASystem&lt;](./DefaultEcs-System-ASystem-T-.md 'DefaultEcs.System.ASystem&lt;T&gt;')[T](#DefaultEcs-System-AEntitySystem-T--T 'DefaultEcs.System.AEntitySystem&lt;T&gt;.T')[&gt;](./DefaultEcs-System-ASystem-T-.md 'DefaultEcs.System.ASystem&lt;T&gt;') &gt; [AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;')  
+
+Implements [DefaultEcs.System.ISystem&lt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;')[T](#DefaultEcs-System-AEntitySystem-T--T 'DefaultEcs.System.AEntitySystem&lt;T&gt;.T')[&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;'), [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 #### Type parameters
 <a name='DefaultEcs-System-AEntitySystem-T--T'></a>
 `T`  
@@ -13,14 +17,16 @@ The type of the object used as state to update the system.
   
 ### Constructors
 - [AEntitySystem(DefaultEcs.EntitySet)](./DefaultEcs-System-AEntitySystem-T--AEntitySystem(DefaultEcs-EntitySet).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.AEntitySystem(DefaultEcs.EntitySet)')
-- [AEntitySystem(DefaultEcs.EntitySet, DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-AEntitySystem-T--AEntitySystem(DefaultEcs-EntitySet_DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.AEntitySystem(DefaultEcs.EntitySet, DefaultEcs.System.SystemRunner&lt;T&gt;)')
+- [AEntitySystem(DefaultEcs.EntitySet, DefaultEcs.Threading.IParallelRunner)](./DefaultEcs-System-AEntitySystem-T--AEntitySystem(DefaultEcs-EntitySet_DefaultEcs-Threading-IParallelRunner).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.AEntitySystem(DefaultEcs.EntitySet, DefaultEcs.Threading.IParallelRunner)')
 - [AEntitySystem(DefaultEcs.World)](./DefaultEcs-System-AEntitySystem-T--AEntitySystem(DefaultEcs-World).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.AEntitySystem(DefaultEcs.World)')
-- [AEntitySystem(DefaultEcs.World, DefaultEcs.System.SystemRunner&lt;T&gt;)](./DefaultEcs-System-AEntitySystem-T--AEntitySystem(DefaultEcs-World_DefaultEcs-System-SystemRunner-T-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.AEntitySystem(DefaultEcs.World, DefaultEcs.System.SystemRunner&lt;T&gt;)')
+- [AEntitySystem(DefaultEcs.World, DefaultEcs.Threading.IParallelRunner)](./DefaultEcs-System-AEntitySystem-T--AEntitySystem(DefaultEcs-World_DefaultEcs-Threading-IParallelRunner).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.AEntitySystem(DefaultEcs.World, DefaultEcs.Threading.IParallelRunner)')
 ### Properties
 - [IsEnabled](./DefaultEcs-System-AEntitySystem-T--IsEnabled.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.IsEnabled')
 ### Methods
 - [Dispose()](./DefaultEcs-System-AEntitySystem-T--Dispose().md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.Dispose()')
 - [PostUpdate(T)](./DefaultEcs-System-AEntitySystem-T--PostUpdate(T).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.PostUpdate(T)')
+- [PreUpdate(T)](./DefaultEcs-System-AEntitySystem-T--PreUpdate(T).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.PreUpdate(T)')
+- [Update(T)](./DefaultEcs-System-AEntitySystem-T--Update(T).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.Update(T)')
 - [Update(T, DefaultEcs.Entity)](./DefaultEcs-System-AEntitySystem-T--Update(T_DefaultEcs-Entity).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.Update(T, DefaultEcs.Entity)')
 - [Update(T, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;)](./DefaultEcs-System-AEntitySystem-T--Update(T_System-ReadOnlySpan-DefaultEcs-Entity-).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.Update(T, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;)')
 ### Events

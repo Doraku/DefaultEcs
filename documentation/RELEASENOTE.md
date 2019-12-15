@@ -1,3 +1,22 @@
+## DefaultEcs 0.13.0
+breaking change:  
+removed SystemRunner type, use DefaultEcs.Threading.DefaultParallelRunner instead  
+removed ASystem type  
+refactored EntitySetBuilder to a more fluent syntax, Build changed to AsSet, *Either&lt;T1, T2&gt;() replaced by *Either&lt;T1&gt;().Or&lt;T2&gt;()  
+      
+added World.GetDisabledEntities method to create EntitySet for disabled entities  
+added DisabledAttribute to auto construct EntitySet of disabled entities for AEntitySystem  
+added EntitySet.Contains method to check for an Entity inclusion  
+added IParallelRunner to allow custom implementation to process AEntitySystem, AComponentSystem and ParallelSystem in parallel  
+added Entity.World property  
+
+fixed EntityCommandRecorder SetSameAs and Dispose command  
+fixed size of commands in EntityCommandRecorder  
+fixed size of Entity  
+fixed WithoutEitherAttribute filter generation  
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.13.0)
+
 ## DefaultEcs 0.12.1
 fixed serialization of struct as an object  
 fixed serialization of Type  

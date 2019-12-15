@@ -3,5 +3,5 @@
 ## AComponentSystem&lt;TState,TComponent&gt;.Dispose() Method
 Does nothing.  
 ```C#
-public override void Dispose();
+public virtual void Dispose();
 ```

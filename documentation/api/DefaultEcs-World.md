@@ -20,6 +20,7 @@ Implements [IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher'), [Sy
 - [Dispose()](./DefaultEcs-World-Dispose().md 'DefaultEcs.World.Dispose()')
 - [GetAllComponents&lt;T&gt;()](./DefaultEcs-World-GetAllComponents-T-().md 'DefaultEcs.World.GetAllComponents&lt;T&gt;()')
 - [GetAllEntities()](./DefaultEcs-World-GetAllEntities().md 'DefaultEcs.World.GetAllEntities()')
+- [GetDisabledEntities()](./DefaultEcs-World-GetDisabledEntities().md 'DefaultEcs.World.GetDisabledEntities()')
 - [GetEntities()](./DefaultEcs-World-GetEntities().md 'DefaultEcs.World.GetEntities()')
 - [GetMaximumComponentCount&lt;T&gt;()](./DefaultEcs-World-GetMaximumComponentCount-T-().md 'DefaultEcs.World.GetMaximumComponentCount&lt;T&gt;()')
 - [Publish&lt;T&gt;(T)](./DefaultEcs-World-Publish-T-(T).md 'DefaultEcs.World.Publish&lt;T&gt;(T)')

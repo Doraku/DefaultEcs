@@ -3,5 +3,5 @@
 ## ParallelSystem&lt;T&gt;.Dispose() Method
 Disposes all the inner [ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;') instances.  
 ```C#
-public override void Dispose();
+public void Dispose();
 ```

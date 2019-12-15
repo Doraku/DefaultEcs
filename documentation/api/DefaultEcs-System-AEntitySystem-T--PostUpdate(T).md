@@ -3,7 +3,7 @@
 ## AEntitySystem&lt;T&gt;.PostUpdate(T) Method
 Performs a post-update treatment.  
 ```C#
-protected override void PostUpdate(T state);
+protected virtual void PostUpdate(T state);
 ```
 #### Parameters
 <a name='DefaultEcs-System-AEntitySystem-T--PostUpdate(T)-state'></a>

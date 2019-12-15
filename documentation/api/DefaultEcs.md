@@ -4,6 +4,7 @@ The [DefaultEcs](./DefaultEcs.md 'DefaultEcs') namespace contains types to put i
 ### Classes
 - [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet')
 - [EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder')
+- [EitherBuilder](./DefaultEcs-EntitySetBuilder-EitherBuilder.md 'DefaultEcs.EntitySetBuilder.EitherBuilder')
 - [EntitySetBuilderExtension](./DefaultEcs-EntitySetBuilderExtension.md 'DefaultEcs.EntitySetBuilderExtension')
 - [IPublisherExtension](./DefaultEcs-IPublisherExtension.md 'DefaultEcs.IPublisherExtension')
 - [SubscribeAttribute](./DefaultEcs-SubscribeAttribute.md 'DefaultEcs.SubscribeAttribute')

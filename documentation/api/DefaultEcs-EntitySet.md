@@ -13,6 +13,7 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 - [Count](./DefaultEcs-EntitySet-Count.md 'DefaultEcs.EntitySet.Count')
 ### Methods
 - [Complete()](./DefaultEcs-EntitySet-Complete().md 'DefaultEcs.EntitySet.Complete()')
+- [Contains(DefaultEcs.Entity)](./DefaultEcs-EntitySet-Contains(DefaultEcs-Entity).md 'DefaultEcs.EntitySet.Contains(DefaultEcs.Entity)')
 - [Dispose()](./DefaultEcs-EntitySet-Dispose().md 'DefaultEcs.EntitySet.Dispose()')
 - [GetEntities()](./DefaultEcs-EntitySet-GetEntities().md 'DefaultEcs.EntitySet.GetEntities()')
 ### Events

@@ -27,7 +27,7 @@ added EntitySet.Contains method to check for an Entity inclusion
 added IParallelRunner to allow custom implementation to process AEntitySystem, AComponentSystem and ParallelSystem in parallel
 added Entity.World property
 
-fixed EntityCommandRecorder SetSameAs and Dispose command size
+fixed EntityCommandRecorder SetSameAs and Dispose command
 fixed size of commands in EntityCommandRecorder
 fixed size of Entity
 fixed WithoutEitherAttribute filter generation

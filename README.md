@@ -24,7 +24,10 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
     - [SequentialSystem](#Overview_System_SequentialSystem)
     - [AEntitySystem](#Overview_System_AEntitySystem)
     - [AComponentSystem](#Overview_System_AComponentSystem)
-    - [SystemRunner](#Overview_System_SystemRunner)
+  - [Threading](#Overview_Threading)
+    - [IParallelRunnable](#Overview_Threading_IParallelRunnable)
+    - [IParallelRunner](#Overview_Threading_IParallelRunner)
+    - [DefaultParallelRunner](#Overview_Threading_DefaultParallelRunner)
   - [Command](#Overview_Command)
   - [Message](#Overview_Message)
   - [Serialization](#Overview_Serialization)
@@ -171,16 +174,16 @@ To perform operation, systems should get EntitySet from the World instance. Enti
 EntitySet are created from EntitySetBuilder and it is possible to apply rules for required components or excluded components
 ```csharp
 // this set when enumerated will give all the entities with an Example component
-EntitySet set = world.GetEntities().With<Example>().Build();
+EntitySet set = world.GetEntities().With<Example>().AsSet();
 
 // this set when enumerated will give all the entities without an Example component
-EntitySet set = world.GetEntities().Without<Example>().Build();
+EntitySet set = world.GetEntities().Without<Example>().AsSet();
 
 // this set when enumerated will give all the entities with both an Example and an int component
-EntitySet set = world.GetEntities().With<Example>().With<int>().Build();
+EntitySet set = world.GetEntities().With<Example>().With<int>().AsSet();
 
 // this set when enumerated will give all the entities with either an Example or an int component
-EntitySet set = world.GetEntities().WithEither<Example, int>().Build();
+EntitySet set = world.GetEntities().WithEither<Example>().Or<int>().AsSet();
 
 // this gives all the component of type Example currently used in the world
 Span<Example> components = world.GetAllComponents<Example>();
@@ -256,7 +259,7 @@ This is a base class to create system to update a given EntitySet.
 ```csharp
 public sealed class VelocitySystem : AEntitySystem<float>
 {
-    public VelocitySystem(World world, SystemRunner<float> runner)
+    public VelocitySystem(World world, IParallelRunner runner)
         : base(world.GetEntities().With<Velocity>().With<Position>().Build(), runner)
     {
     }
@@ -280,7 +283,7 @@ It is also possible to declare the needed component by using the WithAttribute a
 [With(typeof(Position)]
 public sealed class VelocitySystem : AEntitySystem<float>
 {
-    public VelocitySystem(World world, SystemRunner<float> runner)
+    public VelocitySystem(World world, IParallelRunner runner)
         : base(world, runner)
     {
     }
@@ -331,24 +334,72 @@ public class DrawSystem : AComponentSystem<float, DrawInfo>
 }
 ```
 
-<a name='Overview_System_SystemRunner'></a>
-### SystemRunner
-While not directly a system, an instance of this class can be given to base constructor of AEntitySystem and AComponentSystem to provide multithreading processing of system.
+<a name='Overview_Threading'></a>
+## Threading
+Some systems are compatible with multithreading execution: ParallelSystem, AEntitySystem and AComponentSystem. This is done by passing a IParallelRunner to their respective constructor.
 ```csharp
-SystemRunner runner = new SystemRunner(Environment.ProcessorCount);
+IParallelRunner runner = new DefaultSystemRunner(Environment.ProcessorCount);
 
 ISystem<float> system = new VelocitySystem(world, runner);
 
 // this will process the update on Environment.ProcessorCount threads
 system.Update(elaspedTime);
 ```
-
 It is safe to run a system with multithreading when:
 * for an AEntitySystem
   * each entity can be safely updated separately with no dependency to an other entity
   * there is no new Set, Remove or Dispose action on entity (only read or update)
 * for an AComponentSystem
   * each component can be safely updated separately with no dependency to an other component
+
+<a name='Overview_Threading_IParallelRunnable'></a>
+### IParallelRunnable
+This interface allow the creation of custom parallelisable process by an IParallelRunner.
+```csharp
+IParallelRunner runner = new DefaultSystemRunner(Environment.ProcessorCount);
+
+public class CustomRunnable : IParallelRunnable
+{
+    public void Run(int index, int maxIndex)
+    {
+        // a runnable is separated in maxIndex part to run in parallel, index gives you the part running
+	}
+}
+
+runner.Run(new CustomRunnable());
+```
+
+<a name='Overview_Threading_IParallelRunner'></a>
+### IParallelRunner
+This interface allow the creation of custom parallel execution.
+```csharp
+IParallelRunner runner = new DefaultSystemRunner(Environment.ProcessorCount);
+
+public class TaskRunner : IParallelRunner
+{
+    int DegreeOfParallelism { get; }
+
+    public void Run(IParallelRunnable runnable) Enumerable.Range(0, DegreeOfParallelism).AsParallel().ForAll(i => runnable.Run(i, DegreeOfParallelism));
+}
+```
+
+<a name='Overview_Threading_DefaultParallelRunner'></a>
+### DefaultParallelRunner
+This is the default implementation of IParallelRunner. it uses exclusive Task to run an IParallelRunnable and only return when the full runnable has been processed. When `index == maxIndex` this is the calling thread.  
+It is safe to reuse the same DefaultParallelRunner in multiple system but it should not be used in parallel itself.
+```csharp
+IParallelRunner runner = new DefaultSystemRunner(Environment.ProcessorCount);
+
+// wrong
+ISystem<float> system = new ParallelSystem<float>(runner,
+    new ParallelSystem1(runner),
+    new ParallelSystem2(runner));
+    
+// ok
+ISystem<float> system = new SequentialSystem<float>(
+    new ParallelSystem1(runner),
+    new ParallelSystem2(runner));
+```
 
 <a name='Overview_Command'></a>
 ## Command

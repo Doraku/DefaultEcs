@@ -3,5 +3,5 @@
 ## AEntitySystem&lt;T&gt;.Dispose() Method
 Disposes of the inner [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') instance.  
 ```C#
-public override void Dispose();
+public virtual void Dispose();
 ```
