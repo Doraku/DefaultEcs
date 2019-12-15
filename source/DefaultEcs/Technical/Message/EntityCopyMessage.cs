@@ -1,6 +1,6 @@
 ﻿namespace DefaultEcs.Technical.Message
 {
-    internal readonly struct EntityCopyMessage
+    public readonly struct EntityCopyMessage
     {
         public readonly int EntityId;
         public readonly Entity Copy;

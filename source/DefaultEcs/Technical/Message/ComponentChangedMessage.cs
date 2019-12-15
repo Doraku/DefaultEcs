@@ -1,6 +1,6 @@
 ﻿namespace DefaultEcs.Technical.Message
 {
-    internal readonly struct ComponentChangedMessage<T>
+    public readonly struct ComponentChangedMessage<T>
     {
         public readonly int EntityId;
         public readonly ComponentEnum Components;

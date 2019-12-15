@@ -2,7 +2,7 @@ name: continuous integration
 
 on:
   push:
-    branches:    
+    branches:
       - master
     paths:
       - 'source/DefaultEcs/*'
@@ -20,7 +20,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@master
-      
+
     - name: Set up dotnet
       uses: actions/setup-dotnet@v1
       with:
@@ -28,10 +28,10 @@ jobs:
 
     - name: Run tests net452
       run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net452
-      
+
     - name: Run tests net48
       run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net48
-      
+
     - name: Run tests netcoreapp3.0
       run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f netcoreapp3.0
 
@@ -53,7 +53,7 @@ jobs:
       uses: warrenbuckley/Setup-Nuget@v1
 
     - name: Register GPR
-      run: nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/Doraku/index.json" -UserName Doraku -Password ${{ secrets.GITHUB_TOKEN }}
+      run: nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/neronmoon/index.json" -UserName neronmoon -Password ${{ secrets.GITHUB_TOKEN }}
 
     - name: Publish package
       run: nuget push package\*.nupkg -Source "GitHub"

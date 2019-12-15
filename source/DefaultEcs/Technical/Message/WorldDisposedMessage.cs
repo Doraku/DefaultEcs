@@ -1,6 +1,6 @@
 ﻿namespace DefaultEcs.Technical.Message
 {
-    internal readonly struct WorldDisposedMessage
+    public readonly struct WorldDisposedMessage
     {
         public readonly int WorldId;
 

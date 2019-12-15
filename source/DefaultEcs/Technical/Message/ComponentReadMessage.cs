@@ -2,7 +2,7 @@
 
 namespace DefaultEcs.Technical.Message
 {
-    internal readonly struct ComponentReadMessage
+    public readonly struct ComponentReadMessage
     {
         public readonly int EntityId;
         public readonly IComponentReader Reader;

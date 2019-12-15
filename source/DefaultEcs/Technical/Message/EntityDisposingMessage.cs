@@ -1,6 +1,6 @@
 ﻿namespace DefaultEcs.Technical.Message
 {
-    internal readonly struct EntityDisposingMessage
+    public readonly struct EntityDisposingMessage
     {
         public readonly int EntityId;
 

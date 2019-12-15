@@ -3,7 +3,7 @@ using DefaultEcs.Resource;
 
 namespace DefaultEcs.Technical.Message
 {
-    internal readonly struct ManagedResourceRequestMessage<T>
+    public readonly struct ManagedResourceRequestMessage<T>
     {
         public readonly Entity Entity;
         public readonly T ManagedResource;

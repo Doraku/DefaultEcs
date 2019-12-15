@@ -1,6 +1,6 @@
 ﻿namespace DefaultEcs.Technical.Message
 {
-    internal readonly struct ManagedResourceReleaseMessage<T>
+    public readonly struct ManagedResourceReleaseMessage<T>
     {
         public readonly T ManagedResource;
 
