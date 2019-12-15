@@ -336,15 +336,13 @@ namespace DefaultEcs
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
         public EntitySetBuilder WhenAdded<T>()
         {
-            With<T>();
-
             if (!_whenAddedFilter[ComponentManager<T>.Flag])
             {
                 _whenAddedFilter[ComponentManager<T>.Flag] = true;
                 _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
             }
 
-            return this;
+            return With<T>();
         }
 
         /// <summary>
@@ -354,15 +352,13 @@ namespace DefaultEcs
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
         public EntitySetBuilder WhenChanged<T>()
         {
-            With<T>();
-
             if (!_whenChangedFilter[ComponentManager<T>.Flag])
             {
                 _whenChangedFilter[ComponentManager<T>.Flag] = true;
                 _subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.CheckedAdd));
             }
 
-            return this;
+            return With<T>();
         }
 
         /// <summary>
@@ -372,15 +368,13 @@ namespace DefaultEcs
         /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
         public EntitySetBuilder WhenRemoved<T>()
         {
-            Without<T>();
-
             if (!_whenRemovedFilter[ComponentManager<T>.Flag])
             {
                 _whenRemovedFilter[ComponentManager<T>.Flag] = true;
                 _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
             }
 
-            return this;
+            return Without<T>();
         }
 
         /// <summary>
