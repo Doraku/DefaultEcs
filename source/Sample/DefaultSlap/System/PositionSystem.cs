@@ -9,7 +9,7 @@ namespace DefaultSlap.System
     [With(typeof(Position), typeof(PositionFloat))]
     public sealed class PositionSystem : AEntitySystem<float>
     {
-        public PositionSystem(World world, IRunner runner)
+        public PositionSystem(World world, IParallelRunner runner)
             : base(world, runner)
         { }
 

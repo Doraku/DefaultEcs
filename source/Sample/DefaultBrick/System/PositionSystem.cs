@@ -8,7 +8,7 @@ namespace DefaultBrick.System
 {
     public sealed class PositionSystem : AEntitySystem<float>
     {
-        public PositionSystem(World world, IRunner runner)
+        public PositionSystem(World world, IParallelRunner runner)
             : base(world.GetEntities().WhenAdded<Position>().WhenChanged<Position>().With<DrawInfo>().AsSet(), runner)
         {
         }

@@ -12,7 +12,7 @@ namespace DefaultEcs.System
     {
         #region Types
 
-        private class Runnable : IRunnable
+        private class Runnable : IParallelRunnable
         {
             private readonly AEntitySystem<T> _system;
 
@@ -36,7 +36,7 @@ namespace DefaultEcs.System
 
         #region Fields
 
-        private readonly IRunner _runner;
+        private readonly IParallelRunner _runner;
         private readonly Runnable _runnable;
         private readonly EntitySet _set;
 
@@ -62,19 +62,19 @@ namespace DefaultEcs.System
 
         #region Initialisation
 
-        private AEntitySystem(IRunner runner)
+        private AEntitySystem(IParallelRunner runner)
         {
-            _runner = runner ?? DefaultRunner.Default;
+            _runner = runner ?? DefaultParallelRunner.Default;
             _runnable = new Runnable(this);
         }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="EntitySet"/> and <see cref="IRunner"/>.
+        /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="EntitySet"/> and <see cref="IParallelRunner"/>.
         /// </summary>
         /// <param name="set">The <see cref="EntitySet"/> on which to process the update.</param>
-        /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
+        /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
-        protected AEntitySystem(EntitySet set, IRunner runner)
+        protected AEntitySystem(EntitySet set, IParallelRunner runner)
             : this(runner)
         {
             _set = set ?? throw new ArgumentNullException(nameof(set));
@@ -94,9 +94,9 @@ namespace DefaultEcs.System
         /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
-        /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
+        /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AEntitySystem(World world, IRunner runner)
+        protected AEntitySystem(World world, IParallelRunner runner)
             : this(runner)
         {
             _set = EntitySetFactory.Create(GetType())(world ?? throw new ArgumentNullException(nameof(world)));

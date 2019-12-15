@@ -3,7 +3,7 @@
     /// <summary>
     /// Exposes a method to run a process in parallel.
     /// </summary>
-    public interface IRunnable
+    public interface IParallelRunnable
     {
         /// <summary>
         /// Runs the part <paramref name="index"/> out of <paramref name="maxIndex"/> of the process.

@@ -23,7 +23,7 @@ namespace DefaultSlap
         private readonly SoundEffect _bounceSound;
         private readonly World _world;
         private readonly ISystem<float> _system;
-        private readonly DefaultRunner _runner;
+        private readonly DefaultParallelRunner _runner;
 
         #endregion
 
@@ -54,7 +54,7 @@ namespace DefaultSlap
 
             _world.SetMaximumComponentCount<PlayerState>(1);
 
-            _runner = new DefaultRunner(Environment.ProcessorCount);
+            _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(
                 new PlayerSystem(Window, _world),
                 new HitSystem(_world),

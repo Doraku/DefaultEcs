@@ -13,7 +13,7 @@ namespace DefaultEcs.System
     {
         #region Types
 
-        private class Runnable : IRunnable
+        private class Runnable : IParallelRunnable
         {
             private readonly AComponentSystem<TState, TComponent> _system;
 
@@ -38,7 +38,7 @@ namespace DefaultEcs.System
 
         #region Fields
 
-        private readonly IRunner _runner;
+        private readonly IParallelRunner _runner;
         private readonly Runnable _runnable;
         private readonly ComponentPool<TComponent> _component;
 
@@ -46,19 +46,19 @@ namespace DefaultEcs.System
 
         #region Initialisation
 
-        private AComponentSystem(IRunner runner)
+        private AComponentSystem(IParallelRunner runner)
         {
-            _runner = runner ?? DefaultRunner.Default;
+            _runner = runner ?? DefaultParallelRunner.Default;
             _runnable = new Runnable(this);
         }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AComponentSystem{TState, TComponent}"/> class with the given <see cref="World"/> and <see cref="IRunner"/>.
+        /// Initialise a new instance of the <see cref="AComponentSystem{TState, TComponent}"/> class with the given <see cref="World"/> and <see cref="IParallelRunner"/>.
         /// </summary>
         /// <param name="world">The <see cref="World"/> on which to process the update.</param>
-        /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
+        /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AComponentSystem(World world, IRunner runner)
+        protected AComponentSystem(World world, IParallelRunner runner)
             : this(runner)
         {
             _component = ComponentManager<TComponent>.GetOrCreate(world?.WorldId ?? throw new ArgumentNullException(nameof(world)));

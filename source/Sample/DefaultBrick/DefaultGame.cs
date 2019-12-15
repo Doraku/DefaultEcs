@@ -22,7 +22,7 @@ namespace DefaultBrick
         private readonly SoundEffect _breakSound;
         private readonly SoundEffect _bounceSound;
         private readonly World _world;
-        private readonly DefaultRunner _runner;
+        private readonly DefaultParallelRunner _runner;
         private readonly ISystem<float> _system;
 
         #endregion
@@ -52,7 +52,7 @@ namespace DefaultBrick
 
             _world = new World(1000);
 
-            _runner = new DefaultRunner(Environment.ProcessorCount);
+            _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(
                 new GameSystem(_world),
                 new PlayerSystem(Window, _world),

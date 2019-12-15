@@ -14,7 +14,7 @@ namespace DefaultEcs.System
     {
         #region Types
 
-        private class Runnable : IRunnable
+        private class Runnable : IParallelRunnable
         {
             private readonly ParallelSystem<T> _system;
 
@@ -44,7 +44,7 @@ namespace DefaultEcs.System
 
         #region Fields
 
-        private readonly IRunner _runner;
+        private readonly IParallelRunner _runner;
         private readonly Runnable _runnable;
         private readonly ISystem<T> _mainSystem;
         private readonly ISystem<T>[] _systems;
@@ -53,7 +53,7 @@ namespace DefaultEcs.System
 
         #region Initialisation
 
-        private ParallelSystem(IRunner runner)
+        private ParallelSystem(IParallelRunner runner)
         {
             _runner = runner ?? throw new ArgumentNullException(nameof(runner));
             _runnable = new Runnable(this);
@@ -63,11 +63,11 @@ namespace DefaultEcs.System
         /// Initialises a new instance of the <see cref="ParallelSystem{T}"/> class.
         /// </summary>
         /// <param name="mainSystem">The <see cref="ISystem{T}"/> instance to be updated on the calling thread.</param>
-        /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
+        /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
         /// <exception cref="ArgumentNullException"><paramref name="runner"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="systems"/> is null.</exception>
-        public ParallelSystem(ISystem<T> mainSystem, IRunner runner, IEnumerable<ISystem<T>> systems)
+        public ParallelSystem(ISystem<T> mainSystem, IParallelRunner runner, IEnumerable<ISystem<T>> systems)
             : this(runner)
         {
             _mainSystem = mainSystem;
@@ -78,33 +78,33 @@ namespace DefaultEcs.System
         /// Initialises a new instance of the <see cref="ParallelSystem{T}"/> class.
         /// </summary>
         /// <param name="mainSystem">The <see cref="ISystem{T}"/> instance to be updated on the calling thread.</param>
-        /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
+        /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
         /// <exception cref="ArgumentNullException"><paramref name="runner"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="systems"/> is null.</exception>
-        public ParallelSystem(ISystem<T> mainSystem, IRunner runner, params ISystem<T>[] systems)
+        public ParallelSystem(ISystem<T> mainSystem, IParallelRunner runner, params ISystem<T>[] systems)
             : this(mainSystem, runner, systems as IEnumerable<ISystem<T>>)
         { }
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ParallelSystem{T}"/> class.
         /// </summary>
-        /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
+        /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
         /// <exception cref="ArgumentNullException"><paramref name="runner"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="systems"/> is null.</exception>
-        public ParallelSystem(IRunner runner, IEnumerable<ISystem<T>> systems)
+        public ParallelSystem(IParallelRunner runner, IEnumerable<ISystem<T>> systems)
             : this(null, runner, systems)
         { }
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ParallelSystem{T}"/> class.
         /// </summary>
-        /// <param name="runner">The <see cref="IRunner"/> used to process the update in parallel if not null.</param>
+        /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="systems">The <see cref="ISystem{T}"/> instances.</param>
         /// <exception cref="ArgumentNullException"><paramref name="runner"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="systems"/> is null.</exception>
-        public ParallelSystem(IRunner runner, params ISystem<T>[] systems)
+        public ParallelSystem(IParallelRunner runner, params ISystem<T>[] systems)
             : this(runner, systems as IEnumerable<ISystem<T>>)
         { }
 

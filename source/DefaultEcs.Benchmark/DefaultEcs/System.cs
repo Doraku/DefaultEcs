@@ -36,7 +36,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 
         private sealed class TestSystem : AEntitySystem<float>
         {
-            public TestSystem(World world, IRunner runner)
+            public TestSystem(World world, IParallelRunner runner)
                 : base(world.GetEntities().With<Position>().With<Speed>().AsSet(), runner)
             { }
 
@@ -52,7 +52,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 
         private sealed class Test2System : AEntitySystem<float>
         {
-            public Test2System(World world, IRunner runner)
+            public Test2System(World world, IParallelRunner runner)
                 : base(world.GetEntities().With<Position>().With<Speed>().AsSet(), runner)
             { }
 
@@ -102,7 +102,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         private World _world;
-        private DefaultRunner _runner;
+        private DefaultParallelRunner _runner;
         private ISystem<float> _systemSingle;
         private ISystem<float> _system;
         private ISystem<float> _system2Single;
@@ -116,7 +116,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public void Setup()
         {
             _world = new World(EntityCount);
-            _runner = new DefaultRunner(Environment.ProcessorCount);
+            _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _systemSingle = new TestSystem(_world, null);
             _system = new TestSystem(_world, _runner);
             _system2Single = new Test2System(_world, null);

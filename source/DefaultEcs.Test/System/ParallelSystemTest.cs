@@ -16,7 +16,7 @@ namespace DefaultEcs.Test.System
         {
             ISystem<float>[] systems = null;
 
-            Check.ThatCode(() => new ParallelSystem<float>(Substitute.For<IRunner>(), systems)).Throws<ArgumentNullException>();
+            Check.ThatCode(() => new ParallelSystem<float>(Substitute.For<IParallelRunner>(), systems)).Throws<ArgumentNullException>();
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace DefaultEcs.Test.System
 
             using (ISystem<int> system = new ParallelSystem<int>(
                 new ActionSystem<int>(_ => mainDone = true),
-                new DefaultRunner(1),
+                new DefaultParallelRunner(1),
                 new ActionSystem<int>(_ => done1 = true),
                 new ActionSystem<int>(_ => done2 = true)))
             {
@@ -54,7 +54,7 @@ namespace DefaultEcs.Test.System
             bool done3 = false;
             bool done4 = false;
 
-            using (DefaultRunner runner = new DefaultRunner(2))
+            using (DefaultParallelRunner runner = new DefaultParallelRunner(2))
             using (ISystem<int> system = new ParallelSystem<int>(
                 runner,
                 new ActionSystem<int>(_ => done1 = true),
@@ -79,7 +79,7 @@ namespace DefaultEcs.Test.System
             bool done3 = false;
             bool done4 = false;
 
-            using (DefaultRunner runner = new DefaultRunner(2))
+            using (DefaultParallelRunner runner = new DefaultParallelRunner(2))
             using (ISystem<int> system = new ParallelSystem<int>(
                 runner,
                 new ActionSystem<int>(_ => done1 = true),
@@ -109,7 +109,7 @@ namespace DefaultEcs.Test.System
             s1.When(s => s.Dispose()).Do(_ => done1 = true);
             s2.When(s => s.Dispose()).Do(_ => done2 = true);
 
-            ISystem<int> system = new ParallelSystem<int>(s1, Substitute.For<IRunner>(), s2);
+            ISystem<int> system = new ParallelSystem<int>(s1, Substitute.For<IParallelRunner>(), s2);
 
             system.Dispose();
 

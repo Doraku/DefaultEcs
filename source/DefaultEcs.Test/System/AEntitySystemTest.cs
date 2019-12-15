@@ -21,11 +21,11 @@ namespace DefaultEcs.Test.System
                 : base(world)
             { }
 
-            public System(EntitySet set, IRunner runner)
+            public System(EntitySet set, IParallelRunner runner)
                 : base(set, runner)
             { }
 
-            public System(World world, IRunner runner)
+            public System(World world, IParallelRunner runner)
                 : base(world, runner)
             { }
 
@@ -184,7 +184,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void Update_with_runner_Should_call_update()
         {
-            using DefaultRunner runner = new DefaultRunner(2);
+            using DefaultParallelRunner runner = new DefaultParallelRunner(2);
             using World world = new World(4);
 
             Entity entity1 = world.CreateEntity();
