@@ -363,7 +363,7 @@ public class CustomRunnable : IParallelRunnable
     public void Run(int index, int maxIndex)
     {
         // a runnable is separated in maxIndex part to run in parallel, index gives you the part running
-	}
+    }
 }
 
 runner.Run(new CustomRunnable());

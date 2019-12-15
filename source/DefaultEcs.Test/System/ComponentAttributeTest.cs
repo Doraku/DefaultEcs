@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DefaultEcs.System;
 using NFluent;
 using Xunit;
@@ -343,7 +339,6 @@ namespace DefaultEcs.Test.System
             system.Update(0);
 
             Check.That(entity.Get<bool>()).IsTrue();
-
         }
 
         #endregion
