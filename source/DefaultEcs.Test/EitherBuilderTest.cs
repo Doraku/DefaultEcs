@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NFluent;
+﻿using NFluent;
 using Xunit;
 
 namespace DefaultEcs.Test
@@ -87,7 +82,7 @@ namespace DefaultEcs.Test
 
             EntitySetBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
-            Check.That(builder.WhenAdded<bool>()).IsNotEqualTo(builder);
+            Check.That(builder.WhenAddedEither<bool>()).IsNotEqualTo(builder);
         }
 
         [Fact]
@@ -97,7 +92,7 @@ namespace DefaultEcs.Test
 
             EntitySetBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
-            Check.That(builder.WhenChanged<bool>()).IsNotEqualTo(builder);
+            Check.That(builder.WhenChangedEither<bool>()).IsNotEqualTo(builder);
         }
 
         [Fact]
@@ -107,7 +102,7 @@ namespace DefaultEcs.Test
 
             EntitySetBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
-            Check.That(builder.WhenRemoved<bool>()).IsNotEqualTo(builder);
+            Check.That(builder.WhenRemovedEither<bool>()).IsNotEqualTo(builder);
         }
 
         [Fact]
