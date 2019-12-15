@@ -4,7 +4,7 @@ using DefaultEcs.Technical.Helper;
 
 namespace DefaultEcs.Technical
 {
-    internal struct ComponentEnum
+    public struct ComponentEnum
     {
         #region Fields
 
