@@ -1,6 +1,6 @@
 ﻿namespace DefaultEcs.Technical
 {
-    internal readonly struct ComponentFlag
+    public readonly struct ComponentFlag
     {
         #region Fields
 

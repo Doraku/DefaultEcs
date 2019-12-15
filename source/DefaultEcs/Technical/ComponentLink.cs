@@ -1,6 +1,6 @@
 ﻿namespace DefaultEcs.Technical
 {
-    internal struct ComponentLink
+    public struct ComponentLink
     {
         #region Fields
 
