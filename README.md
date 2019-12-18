@@ -362,7 +362,7 @@ public class CustomRunnable : IParallelRunnable
 {
     public void Run(int index, int maxIndex)
     {
-        // a runnable is separated in maxIndex part to run in parallel, index gives you the part running
+        // a runnable is separated in (maxIndex + 1) part to run in parallel, index gives you the part running
     }
 }
 
@@ -373,8 +373,6 @@ runner.Run(new CustomRunnable());
 ### IParallelRunner
 This interface allow the creation of custom parallel execution.
 ```csharp
-IParallelRunner runner = new DefaultSystemRunner(Environment.ProcessorCount);
-
 public class TaskRunner : IParallelRunner
 {
     int DegreeOfParallelism { get; }
