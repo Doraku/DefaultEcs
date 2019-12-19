@@ -486,6 +486,7 @@ This was a target from the get go as graphic and framework libraries do not alwa
 Although the lowest target is netstandard1.1, please be aware that the capability of both implementation to handle type with no default constructor maybe not work if the version of your .NET plateform is too low. Other known limitations are:
 - do not handle multidimensional arrays
 - do not handle cyclic object graph (all objects are copied, thus creating an infinit loop)
+- not compatible with Xamarin.iOS, AOT platforms (use System.Reflection.Emit namespace)
 
 
 ```csharp
