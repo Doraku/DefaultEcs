@@ -339,7 +339,7 @@ public class DrawSystem : AComponentSystem<float, DrawInfo>
 ## Threading
 Some systems are compatible with multithreading execution: ParallelSystem, AEntitySystem and AComponentSystem. This is done by passing a IParallelRunner to their respective constructor.
 ```csharp
-IParallelRunner runner = new DefaultSystemRunner(Environment.ProcessorCount);
+IParallelRunner runner = new DefaultParallelRunner(Environment.ProcessorCount);
 
 ISystem<float> system = new VelocitySystem(world, runner);
 
@@ -357,7 +357,7 @@ It is safe to run a system with multithreading when:
 ### IParallelRunnable
 This interface allow the creation of custom parallelisable process by an IParallelRunner.
 ```csharp
-IParallelRunner runner = new DefaultSystemRunner(Environment.ProcessorCount);
+IParallelRunner runner = new DefaultParallelRunner(Environment.ProcessorCount);
 
 public class CustomRunnable : IParallelRunnable
 {
@@ -387,7 +387,7 @@ public class TaskRunner : IParallelRunner
 This is the default implementation of IParallelRunner. it uses exclusive Task to run an IParallelRunnable and only return when the full runnable has been processed. When `index == maxIndex` this is the calling thread.  
 It is safe to reuse the same DefaultParallelRunner in multiple system but it should not be used in parallel itself.
 ```csharp
-IParallelRunner runner = new DefaultSystemRunner(Environment.ProcessorCount);
+IParallelRunner runner = new DefaultParallelRunner(Environment.ProcessorCount);
 
 // wrong
 ISystem<float> system = new ParallelSystem<float>(runner,
