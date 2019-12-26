@@ -309,7 +309,7 @@ namespace DefaultEcs
         {
             foreach (int childId in World?.EntityInfos[EntityId].Children ?? Enumerable.Empty<int>())
             {
-                yield return new Entity(WorldId, childId);
+                yield return World.GetEntityFactory().MakeEntity(childId);
             }
         }
 

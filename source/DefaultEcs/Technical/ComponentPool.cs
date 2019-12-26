@@ -68,6 +68,10 @@ namespace DefaultEcs.Technical
             }
         }
 
+        private IEntityFactory GetEntityFactory() {
+            return World.Worlds[_worldId].GetEntityFactory();
+        }
+
         #endregion
 
         #region Callbacks
@@ -87,9 +91,9 @@ namespace DefaultEcs.Technical
         private void On(in ComponentReadMessage message)
         {
             int componentIndex = message.EntityId < _mapping.Length ? _mapping[message.EntityId] : -1;
-            if (componentIndex != -1)
-            {
-                message.Reader.OnRead(ref _components[componentIndex], new Entity(_worldId, _links[componentIndex].EntityId));
+            if (componentIndex != -1) {
+                Entity entity = World.Worlds[_worldId].GetEntityFactory().MakeEntity(_links[componentIndex].EntityId);
+                message.Reader.OnRead(ref _components[componentIndex], entity);
             }
         }
 
@@ -129,9 +133,9 @@ namespace DefaultEcs.Technical
 
                 _components[componentIndex] = component;
 
-                if (_isManagedResourceType)
-                {
-                    Publisher.Publish(_worldId, new ManagedResourceRequestMessage<T>(new Entity(_worldId, entityId), component));
+                if (_isManagedResourceType) {
+                    Entity entity = GetEntityFactory().MakeEntity(entityId);
+                    Publisher.Publish(_worldId, new ManagedResourceRequestMessage<T>(entity, component));
                 }
 
                 return false;
@@ -155,9 +159,9 @@ namespace DefaultEcs.Technical
             _components[_lastComponentIndex] = component;
             _links[_lastComponentIndex] = new ComponentLink(entityId);
 
-            if (_isManagedResourceType)
-            {
-                Publisher.Publish(_worldId, new ManagedResourceRequestMessage<T>(new Entity(_worldId, entityId), component));
+            if (_isManagedResourceType) {
+                Entity entity = GetEntityFactory().MakeEntity(entityId);
+                Publisher.Publish(_worldId, new ManagedResourceRequestMessage<T>(entity, component));
             }
 
             return true;
@@ -186,9 +190,9 @@ namespace DefaultEcs.Technical
             ++_links[referenceComponentIndex].ReferenceCount;
             componentIndex = referenceComponentIndex;
 
-            if (_isManagedResourceType)
-            {
-                Publisher.Publish(_worldId, new ManagedResourceRequestMessage<T>(new Entity(_worldId, entityId), _components[componentIndex]));
+            if (_isManagedResourceType) {
+                Entity entity = GetEntityFactory().MakeEntity(entityId);
+                Publisher.Publish(_worldId, new ManagedResourceRequestMessage<T>(entity, _components[componentIndex]));
             }
 
             return isNew;

@@ -11,7 +11,7 @@ using DefaultEcs.Technical.Message;
 namespace DefaultEcs
 {
     /// <summary>
-    /// Represents a item used to create and manage <see cref="Entity"/> objects.
+    /// Represents a item used to manage <see cref="Entity"/> objects.
     /// </summary>
     [DebuggerTypeProxy(typeof(WorldDebugView))]
     public sealed class World : IPublisher, IDisposable
@@ -31,6 +31,8 @@ namespace DefaultEcs
         internal readonly short WorldId;
 
         internal EntityInfo[] EntityInfos;
+
+        private IEntityFactory _entityFactory;
 
         /// <summary>
         /// Event called just before an <see cref="Entity"/> from the current <see cref="World"/> instance is disposed.
@@ -77,6 +79,7 @@ namespace DefaultEcs
             }
 
             _entityIdDispenser = new IntDispenser(-1);
+            SetEntityFactory(new EntityFactory(this));
             WorldId = (short)_worldIdDispenser.GetFreeInt();
 
             MaxEntityCount = maxEntityCount;
@@ -109,7 +112,7 @@ namespace DefaultEcs
         [Subscribe]
         private void On(in EntityDisposingMessage message)
         {
-            EntityDisposed?.Invoke(new Entity(WorldId, message.EntityId));
+            EntityDisposed?.Invoke(_entityFactory.MakeEntity(message.EntityId));
             EntityInfos[message.EntityId].Components.Clear();
         }
 
@@ -158,7 +161,7 @@ namespace DefaultEcs
             components[IsAliveFlag] = true;
             Publish(new EntityDisabledMessage(entityId, components));
 
-            return new Entity(WorldId, entityId);
+            return _entityFactory.MakeEntity(entityId);
         }
 
         /// <summary>
@@ -181,7 +184,24 @@ namespace DefaultEcs
             EntityInfos[entityId].Components[IsEnabledFlag] = true;
             Publish(new EntityCreatedMessage(entityId));
 
-            return new Entity(WorldId, entityId);
+            return _entityFactory.MakeEntity(entityId);
+        }
+
+        /// <summary>
+        /// Sets entity factory that will be used to create <see cref="Entity"/> instances.
+        /// </summary>
+        /// <param name="factory">EntityFactory instance</param>
+        public void SetEntityFactory(IEntityFactory factory) {
+            _entityFactory = factory;
+        }
+        
+        
+        /// <summary>
+        /// Returns <see cref="EntityFactory"/> instance;
+        /// </summary>
+        /// <returns>A <see cref="EntityFactory"/> instance</returns>
+        public IEntityFactory GetEntityFactory() {
+            return _entityFactory;
         }
 
         /// <summary>
@@ -241,7 +261,7 @@ namespace DefaultEcs
             {
                 if (EntityInfos[i].Components[IsAliveFlag])
                 {
-                    yield return new Entity(WorldId, i);
+                    yield return _entityFactory.MakeEntity(i);
                 }
             }
         }

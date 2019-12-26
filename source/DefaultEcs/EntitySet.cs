@@ -119,7 +119,7 @@ namespace DefaultEcs
 
                 ArrayExtension.EnsureLength(ref _entities, index, _maxEntityCount);
 
-                _entities[index] = new Entity(_worldId, entityId);
+                _entities[index] = World.Worlds[_worldId].GetEntityFactory().MakeEntity(entityId);
                 EntityAddedEvent?.Invoke(_entities[index]);
             }
         }
