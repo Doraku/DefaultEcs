@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using DefaultEcs.Serialization;
@@ -65,25 +64,16 @@ namespace DefaultEcs
 
         #region Methods
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void Throw(string message) => throw new InvalidOperationException(message);
+        internal void SetDisabled<T>(in T component) => World.GetEntityMutator().SetDisabled(this, component);
 
-        internal void SetDisabled<T>(in T component) => ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component);
-
-        internal void SetSameAsDisabled<T>(in Entity reference)
-        {
-            ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
-            if (!(pool?.Has(reference.EntityId) ?? false)) Throw($"Reference Entity does not have a component of type {nameof(T)}");
-
-            pool.SetSameAs(EntityId, reference.EntityId);
-        }
+        internal void SetSameAsDisabled<T>(in Entity reference) => World.GetEntityMutator().SetSameAsDisabled<T>(this, reference);
 
         /// <summary>
         /// Gets whether the current <see cref="Entity"/> is enabled or not.
         /// </summary>
         /// <returns>true if the <see cref="Entity"/> is enabled; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsEnabled() => WorldId == 0 ? false : Components[World.IsEnabledFlag];
+        public bool IsEnabled() => World.GetEntityAccessor().IsEnabled(this);
 
         /// <summary>
         /// Enables the current <see cref="Entity"/> so it can appear in <see cref="EntitySet"/>.
@@ -91,14 +81,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Enable()
         {
-            if (WorldId == 0) Throw("Entity was not created from a World");
-
-            ref ComponentEnum components = ref Components;
-            if (!components[World.IsEnabledFlag])
-            {
-                components[World.IsEnabledFlag] = true;
-                Publisher.Publish(WorldId, new EntityEnabledMessage(EntityId, components));
-            }
+            World.GetEntityMutator().Enable(this);
         }
 
         /// <summary>
@@ -107,14 +90,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Disable()
         {
-            if (WorldId == 0) Throw("Entity was not created from a World");
-
-            ref ComponentEnum components = ref Components;
-            if (components[World.IsEnabledFlag])
-            {
-                components[World.IsEnabledFlag] = false;
-                Publisher.Publish(WorldId, new EntityDisabledMessage(EntityId, components));
-            }
+            World.GetEntityMutator().Disable(this);
         }
 
         /// <summary>
@@ -123,7 +99,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/> enabled; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsEnabled<T>() => WorldId == 0 ? false : Components[ComponentManager<T>.Flag];
+        public bool IsEnabled<T>() => World.GetEntityAccessor().IsEnabled<T>(this);
 
         /// <summary>
         /// Enables the current <see cref="Entity"/> component of type <typeparamref name="T"/> so it can appear in <see cref="EntitySet"/>.
@@ -131,20 +107,7 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
-        public void Enable<T>()
-        {
-            if (WorldId == 0) Throw("Entity was not created from a World");
-
-            if (Has<T>())
-            {
-                ref ComponentEnum components = ref Components;
-                if (!components[ComponentManager<T>.Flag])
-                {
-                    components[ComponentManager<T>.Flag] = true;
-                    Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
-                }
-            }
-        }
+        public void Enable<T>() => World.GetEntityMutator().Enable<T>(this);
 
         /// <summary>
         /// Disables the current <see cref="Entity"/> component of type <typeparamref name="T"/> so it does not appear in <see cref="EntitySet"/>.
@@ -152,17 +115,7 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
-        public void Disable<T>()
-        {
-            if (WorldId == 0) Throw("Entity was not created from a World");
-
-            ref ComponentEnum components = ref Components;
-            if (components[ComponentManager<T>.Flag])
-            {
-                components[ComponentManager<T>.Flag] = false;
-                Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
-            }
-        }
+        public void Disable<T>() =>World.GetEntityMutator().Disable<T>(this);
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
@@ -171,21 +124,7 @@ namespace DefaultEcs
         /// <param name="component">The value of the component.</param>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
-        public void Set<T>(in T component = default)
-        {
-            if (WorldId == 0) Throw("Entity was not created from a World");
-
-            ref ComponentEnum components = ref Components;
-            if (ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component))
-            {
-                components[ComponentManager<T>.Flag] = true;
-                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
-            }
-            else if (components[ComponentManager<T>.Flag])
-            {
-                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
-            }
-        }
+        public void Set<T>(in T component = default) => World.GetEntityMutator().Set(this, component);
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/> to the same instance of an other <see cref="Entity"/>.
@@ -195,38 +134,13 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> comes from a different <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
-        public void SetSameAs<T>(in Entity reference)
-        {
-            if (WorldId == 0) Throw("Entity was not created from a World");
-            if (WorldId != reference.WorldId) Throw("Reference Entity comes from a different World");
-            ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
-            if (!(pool?.Has(reference.EntityId) ?? false)) Throw($"Reference Entity does not have a component of type {nameof(T)}");
-
-            ref ComponentEnum components = ref Components;
-            if (pool.SetSameAs(EntityId, reference.EntityId))
-            {
-                components[ComponentManager<T>.Flag] = true;
-                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
-            }
-            else if (components[ComponentManager<T>.Flag])
-            {
-                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
-            }
-        }
+        public void SetSameAs<T>(in Entity reference) => World.GetEntityMutator().SetSameAs<T>(this, reference);
 
         /// <summary>
         /// Removes the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
-        public void Remove<T>()
-        {
-            if (ComponentManager<T>.Get(WorldId)?.Remove(EntityId) ?? false)
-            {
-                ref ComponentEnum components = ref Components;
-                components[ComponentManager<T>.Flag] = false;
-                Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
-            }
-        }
+        public void Remove<T>() => World.GetEntityMutator().Remove<T>(this);
 
         /// <summary>
         /// Returns whether the current <see cref="Entity"/> has a component of type <typeparamref name="T"/>.
@@ -234,7 +148,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has<T>() => WorldId < ComponentManager<T>.Pools.Length && (ComponentManager<T>.Pools[WorldId]?.Has(EntityId) ?? false);
+        public bool Has<T>() => World.GetEntityAccessor().Has<T>(this);
 
         /// <summary>
         /// Gets the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
@@ -243,7 +157,7 @@ namespace DefaultEcs
         /// <returns>A reference to the component.</returns>
         /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/> or does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
+        public ref T Get<T>() => ref World.GetEntityAccessor().Get<T>(this);
 
         /// <summary>
         /// Makes it so when given <see cref="Entity"/> is disposed, current <see cref="Entity"/> will also be disposed.
@@ -251,19 +165,7 @@ namespace DefaultEcs
         /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
-        public void SetAsChildOf(in Entity parent)
-        {
-            if (WorldId != parent.WorldId) Throw("Child and parent Entity come from a different World");
-            if (WorldId == 0) Throw("Entity was not created from a World");
-
-            ref HashSet<int> children = ref World.EntityInfos[parent.EntityId].Children;
-            children ??= new HashSet<int>();
-
-            if (children.Add(EntityId))
-            {
-                World.EntityInfos[EntityId].Parents += children.Remove;
-            }
-        }
+        public void SetAsChildOf(in Entity parent) => World.GetEntityMutator().SetAsChildOf(this, parent);
 
         /// <summary>
         /// Makes it so when current <see cref="Entity"/> is disposed, given <see cref="Entity"/> will also be disposed.
@@ -272,7 +174,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetAsParentOf(in Entity child) => child.SetAsChildOf(this);
+        public void SetAsParentOf(in Entity child) => World.GetEntityMutator().SetAsChildOf(this, child);
 
         /// <summary>
         /// Remove the given <see cref="Entity"/> from current <see cref="Entity"/> parents.
@@ -280,17 +182,7 @@ namespace DefaultEcs
         /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
-        public void RemoveFromChildrenOf(in Entity parent)
-        {
-            if (WorldId != parent.WorldId) Throw("Child and parent Entity come from a different World");
-            if (WorldId == 0) Throw("Entity was not created from a World");
-
-            HashSet<int> children = World.EntityInfos[parent.EntityId].Children;
-            if (children?.Remove(EntityId) ?? false)
-            {
-                World.EntityInfos[EntityId].Parents -= children.Remove;
-            }
-        }
+        public void RemoveFromChildrenOf(in Entity parent) => World.GetEntityMutator().RemoveFromChildrenOf(this, parent);
 
         /// <summary>
         /// Remove the given <see cref="Entity"/> from current <see cref="Entity"/> children.
@@ -299,19 +191,13 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveFromParentsOf(in Entity child) => child.RemoveFromChildrenOf(this);
+        public void RemoveFromParentsOf(in Entity child) => World.GetEntityMutator().RemoveFromParentsOf(this, child);
 
         /// <summary>
         /// Gets all the <see cref="Entity"/> setted as children of the current <see cref="Entity"/>.
         /// </summary>
         /// <returns>An <see cref="IEnumerable{Entity}"/> of all the current <see cref="Entity"/> children.</returns>
-        public IEnumerable<Entity> GetChildren()
-        {
-            foreach (int childId in World?.EntityInfos[EntityId].Children ?? Enumerable.Empty<int>())
-            {
-                yield return new Entity(WorldId, childId);
-            }
-        }
+        public IEnumerable<Entity> GetChildren() => World.GetEntityAccessor().GetChildren(this);
 
         /// <summary>
         /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="DefaultEcs.World"/>.
@@ -319,40 +205,14 @@ namespace DefaultEcs
         /// <param name="world">The <see cref="DefaultEcs.World"/> instance to which copy current <see cref="Entity"/> and its components.</param>
         /// <returns>The created <see cref="Entity"/> in the given <see cref="DefaultEcs.World"/>.</returns>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
-        public Entity CopyTo(World world)
-        {
-            if (WorldId == 0) Throw("Entity was not created from a World");
-
-            Entity copy = IsEnabled() ? world.CreateEntity() : world.CreateDisabledEntity();
-            try
-            {
-                Publisher.Publish(WorldId, new EntityCopyMessage(EntityId, copy));
-                copy.Components = Components.Copy();
-                if (IsEnabled())
-                {
-                    Publisher.Publish(WorldId, new EntityEnabledMessage(copy.EntityId, copy.Components));
-                }
-                else
-                {
-                    Publisher.Publish(WorldId, new EntityDisabledMessage(copy.EntityId, copy.Components));
-                }
-            }
-            catch
-            {
-                copy.Dispose();
-
-                throw;
-            }
-
-            return copy;
-        }
+        public Entity CopyTo(World world) => World.GetEntityMutator().CopyTo(this, world);
 
         /// <summary>
         /// Calls on <paramref name="reader"/> with all the component of the current <see cref="Entity"/>.
         /// This method is primiraly used for serialization purpose and should not be called in game logic.
         /// </summary>
         /// <param name="reader">The <see cref="IComponentReader"/> instance to be used as callback with the current <see cref="Entity"/> components.</param>
-        public void ReadAllComponents(IComponentReader reader) => Publisher.Publish(WorldId, new ComponentReadMessage(EntityId, reader ?? throw new ArgumentNullException(nameof(reader))));
+        public void ReadAllComponents(IComponentReader reader) => World.GetEntityAccessor().ReadAllComponents(this, reader);
 
         #endregion
 
@@ -363,11 +223,7 @@ namespace DefaultEcs
         /// The current <see cref="Entity"/> should not be used again after calling this method and <see cref="IsAlive"/> will return false.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Dispose()
-        {
-            Publisher.Publish(WorldId, new EntityDisposingMessage(EntityId));
-            Publisher.Publish(WorldId, new EntityDisposedMessage(EntityId));
-        }
+        public void Dispose() => World.GetEntityMutator().Dispose(this);
 
         #endregion
 

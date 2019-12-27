@@ -29,6 +29,9 @@ namespace DefaultEcs
         private readonly IntDispenser _entityIdDispenser;
 
         internal readonly short WorldId;
+        
+        private IEntityMutator _entityMutator;
+        private IEntityAccessor _entityAccessor;
 
         internal EntityInfo[] EntityInfos;
 
@@ -77,6 +80,8 @@ namespace DefaultEcs
             }
 
             _entityIdDispenser = new IntDispenser(-1);
+            _entityMutator = new EntityMutator();
+            _entityAccessor = new EntityAccessor();
             WorldId = (short)_worldIdDispenser.GetFreeInt();
 
             MaxEntityCount = maxEntityCount;
@@ -159,6 +164,38 @@ namespace DefaultEcs
             Publish(new EntityDisabledMessage(entityId, components));
 
             return new Entity(WorldId, entityId);
+        }
+
+        /// <summary>
+        /// Sets world's EntityMutator
+        /// </summary>
+        /// <param name="entityMutator"></param>
+        public void SetEntityMutator(IEntityMutator entityMutator) {
+            _entityMutator = entityMutator;
+        }
+
+        /// <summary>
+        /// Returns current EntityMutator. 
+        /// </summary>
+        /// <returns></returns>
+        public IEntityMutator GetEntityMutator() {
+            return _entityMutator;
+        }
+        
+        /// <summary>
+        /// Sets world's EntityAccessor
+        /// </summary>
+        /// <param name="entityAccessor"></param>
+        public void SetEntityAccessor(IEntityAccessor entityAccessor) {
+            _entityAccessor = entityAccessor;
+        }
+
+        /// <summary>
+        /// Returns current EntityAccessor. 
+        /// </summary>
+        /// <returns><see cref="IEntityAccessor"/></returns>
+        public IEntityAccessor GetEntityAccessor() {
+            return _entityAccessor;
         }
 
         /// <summary>
