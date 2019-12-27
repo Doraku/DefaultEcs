@@ -158,8 +158,9 @@ namespace DefaultEcs {
             {
                 Publisher.Publish(entity.WorldId, new EntityCopyMessage(entity.EntityId, copy));
 
+                copy.World.EntityInfos[copy.EntityId].Components = GetComponentsReference(entity);
                 ref ComponentEnum copyComponents = ref GetComponentsReference(copy);
-                copyComponents = GetComponentsReference(entity).Copy();
+                
                 if (entity.IsEnabled())
                 {
                     Publisher.Publish(entity.WorldId, new EntityEnabledMessage(copy.EntityId, copyComponents));
