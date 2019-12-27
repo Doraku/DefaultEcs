@@ -10,11 +10,11 @@ namespace DefaultEcs
     public class EntityMutator : IEntityMutator
     {
         /// <inheritdoc />
-        public void SetDisabled<T>(Entity entity, in T component) =>
+        public virtual void SetDisabled<T>(Entity entity, in T component) =>
             ComponentManager<T>.GetOrCreate(entity.WorldId).Set(entity.EntityId, component);
 
         /// <inheritdoc />
-        public void SetSameAsDisabled<T>(Entity entity, in Entity reference)
+        public virtual void SetSameAsDisabled<T>(Entity entity, in Entity reference)
         {
             ComponentPool<T> pool = ComponentManager<T>.Get(entity.WorldId);
             if (!(pool?.Has(reference.EntityId) ?? false))
@@ -24,7 +24,7 @@ namespace DefaultEcs
         }
 
         /// <inheritdoc />
-        public void Enable(Entity entity)
+        public virtual void Enable(Entity entity)
         {
             ref ComponentEnum components = ref GetComponentsReference(entity);
             if (!components[World.IsEnabledFlag]) {
@@ -34,7 +34,7 @@ namespace DefaultEcs
         }
 
         /// <inheritdoc />
-        public void Disable(Entity entity)
+        public virtual void Disable(Entity entity)
         {
             ref ComponentEnum components = ref GetComponentsReference(entity);
             if (components[World.IsEnabledFlag]) {
@@ -44,7 +44,7 @@ namespace DefaultEcs
         }
 
         /// <inheritdoc />
-        public void Enable<T>(Entity entity)
+        public virtual void Enable<T>(Entity entity)
         {
             if (entity.Has<T>()) {
                 ref ComponentEnum components = ref GetComponentsReference(entity);
@@ -56,7 +56,7 @@ namespace DefaultEcs
         }
 
         /// <inheritdoc />
-        public void Disable<T>(Entity entity)
+        public virtual void Disable<T>(Entity entity)
         {
             ref ComponentEnum components = ref GetComponentsReference(entity);
             if (components[ComponentManager<T>.Flag]) {
@@ -66,7 +66,7 @@ namespace DefaultEcs
         }
 
         /// <inheritdoc />
-        public void Set<T>(Entity entity, in T component)
+        public virtual void Set<T>(Entity entity, in T component)
         {
             ref ComponentEnum components = ref GetComponentsReference(entity);
             if (ComponentManager<T>.GetOrCreate(entity.WorldId).Set(entity.EntityId, component)) {
@@ -78,7 +78,7 @@ namespace DefaultEcs
         }
 
         /// <inheritdoc />
-        public void SetSameAs<T>(Entity target, in Entity reference)
+        public virtual void SetSameAs<T>(Entity target, in Entity reference)
         {
             if (target.WorldId != reference.WorldId) Throw("Reference Entity comes from a different World");
             ComponentPool<T> pool = ComponentManager<T>.Get(target.WorldId);
@@ -95,7 +95,7 @@ namespace DefaultEcs
         }
 
         /// <inheritdoc />
-        public void Remove<T>(Entity entity)
+        public virtual void Remove<T>(Entity entity)
         {
             if (ComponentManager<T>.Get(entity.WorldId)?.Remove(entity.EntityId) ?? false) {
                 ref ComponentEnum components = ref GetComponentsReference(entity);
@@ -104,9 +104,8 @@ namespace DefaultEcs
             }
         }
 
-
         /// <inheritdoc />
-        public void SetAsChildOf(Entity entity, in Entity parent)
+        public virtual void SetAsChildOf(Entity entity, in Entity parent)
         {
             if (entity.WorldId != parent.WorldId) Throw("Child and parent Entity come from a different World");
 
@@ -120,10 +119,10 @@ namespace DefaultEcs
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetAsParentOf(Entity parent, in Entity child) => child.SetAsChildOf(parent);
+        public virtual void SetAsParentOf(Entity parent, in Entity child) => child.SetAsChildOf(parent);
 
         /// <inheritdoc />
-        public void RemoveFromChildrenOf(Entity entity, in Entity parent)
+        public virtual void RemoveFromChildrenOf(Entity entity, in Entity parent)
         {
             if (entity.WorldId != parent.WorldId) Throw("Child and parent Entity come from a different World");
 
@@ -135,21 +134,18 @@ namespace DefaultEcs
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveFromParentsOf(Entity parent, in Entity child) => child.RemoveFromChildrenOf(parent);
+        public virtual void RemoveFromParentsOf(Entity parent, in Entity child) => child.RemoveFromChildrenOf(parent);
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Dispose(Entity entity)
+        public virtual void Dispose(Entity entity)
         {
             Publisher.Publish(entity.WorldId, new EntityDisposingMessage(entity.EntityId));
             Publisher.Publish(entity.WorldId, new EntityDisposedMessage(entity.EntityId));
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void Throw(string message) => throw new InvalidOperationException(message);
-
         /// <inheritdoc />
-        public Entity CopyTo(Entity entity, World world)
+        public virtual Entity CopyTo(Entity entity, World world)
         {
             Entity copy = entity.IsEnabled() ? world.CreateEntity() : world.CreateDisabledEntity();
             try {
@@ -171,6 +167,9 @@ namespace DefaultEcs
 
             return copy;
         }
+        
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void Throw(string message) => throw new InvalidOperationException(message);
 
         private ref ComponentEnum GetComponentsReference(Entity entity)
         {
