@@ -5,9 +5,11 @@ using DefaultEcs.Serialization;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
 
-namespace DefaultEcs {
+namespace DefaultEcs
+{
     /// <inheritdoc />
-    public class EntityAccessor : IEntityAccessor {
+    public class EntityAccessor : IEntityAccessor
+    {
         /// <inheritdoc />
         public bool IsEnabled(Entity entity) =>
             entity.WorldId != 0 && GetComponentsReference(entity)[World.IsEnabledFlag];
@@ -24,21 +26,24 @@ namespace DefaultEcs {
         public ref T Get<T>(Entity entity) => ref ComponentManager<T>.Pools[entity.WorldId].Get(entity.EntityId);
 
         /// <inheritdoc />
-        public IEnumerable<Entity> GetChildren(Entity entity) {
+        public IEnumerable<Entity> GetChildren(Entity entity)
+        {
             foreach (int childId in entity.World?.EntityInfos[entity.EntityId].Children ?? Enumerable.Empty<int>()) {
                 yield return new Entity(entity.WorldId, childId);
             }
         }
 
         /// <inheritdoc />
-        public void ReadAllComponents(Entity entity, IComponentReader reader) {
+        public void ReadAllComponents(Entity entity, IComponentReader reader)
+        {
             Publisher.Publish(
                 entity.WorldId,
                 new ComponentReadMessage(entity.EntityId, reader ?? throw new ArgumentNullException(nameof(reader)))
             );
         }
 
-        private ref ComponentEnum GetComponentsReference(Entity entity) {
+        private ref ComponentEnum GetComponentsReference(Entity entity)
+        {
             return ref entity.World.EntityInfos[entity.EntityId].Components;
         }
     }

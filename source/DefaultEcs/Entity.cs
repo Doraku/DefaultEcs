@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using DefaultEcs.Serialization;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Debug;
-using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs
 {
@@ -20,14 +19,11 @@ namespace DefaultEcs
     {
         #region Fields
 
-        [FieldOffset(0)]
-        internal readonly short Version;
+        [FieldOffset(0)] internal readonly short Version;
 
-        [FieldOffset(2)]
-        internal readonly short WorldId;
+        [FieldOffset(2)] internal readonly short WorldId;
 
-        [FieldOffset(4)]
-        internal readonly int EntityId;
+        [FieldOffset(4)] internal readonly int EntityId;
 
         #endregion
 
@@ -64,12 +60,14 @@ namespace DefaultEcs
 
         #region Methods
 
-        internal void SetDisabled<T>(in T component) { 
+        internal void SetDisabled<T>(in T component)
+        {
             CheckEntity();
             World.GetEntityMutator().SetDisabled(this, component);
         }
 
-        internal void SetSameAsDisabled<T>(in Entity reference) { 
+        internal void SetSameAsDisabled<T>(in Entity reference)
+        {
             CheckEntity();
             World.GetEntityMutator().SetSameAsDisabled<T>(this, reference);
         }
@@ -79,7 +77,8 @@ namespace DefaultEcs
         /// </summary>
         /// <returns>true if the <see cref="Entity"/> is enabled; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsEnabled() { 
+        public bool IsEnabled()
+        {
             CheckEntity();
             return World.GetEntityAccessor().IsEnabled(this);
         }
@@ -110,7 +109,8 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/> enabled; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsEnabled<T>() { 
+        public bool IsEnabled<T>()
+        {
             CheckEntity();
             return World.GetEntityAccessor().IsEnabled<T>(this);
         }
@@ -121,7 +121,8 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
-        public void Enable<T>() { 
+        public void Enable<T>()
+        {
             CheckEntity();
             World.GetEntityMutator().Enable<T>(this);
         }
@@ -132,7 +133,8 @@ namespace DefaultEcs
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
-        public void Disable<T>() { 
+        public void Disable<T>()
+        {
             CheckEntity();
             World.GetEntityMutator().Disable<T>(this);
         }
@@ -144,7 +146,8 @@ namespace DefaultEcs
         /// <param name="component">The value of the component.</param>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
-        public void Set<T>(in T component = default) { 
+        public void Set<T>(in T component = default)
+        {
             CheckEntity();
             World.GetEntityMutator().Set(this, component);
         }
@@ -157,7 +160,8 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> comes from a different <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
-        public void SetSameAs<T>(in Entity reference) {
+        public void SetSameAs<T>(in Entity reference)
+        {
             CheckEntity();
             World.GetEntityMutator().SetSameAs<T>(this, reference);
         }
@@ -166,7 +170,8 @@ namespace DefaultEcs
         /// Removes the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
-        public void Remove<T>() {
+        public void Remove<T>()
+        {
             CheckEntity();
             World.GetEntityMutator().Remove<T>(this);
         }
@@ -177,7 +182,8 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has<T>() {
+        public bool Has<T>()
+        {
             CheckEntity();
             return World.GetEntityAccessor().Has<T>(this);
         }
@@ -189,7 +195,8 @@ namespace DefaultEcs
         /// <returns>A reference to the component.</returns>
         /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/> or does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get<T>() {
+        public ref T Get<T>()
+        {
             CheckEntity();
             return ref World.GetEntityAccessor().Get<T>(this);
         }
@@ -200,7 +207,8 @@ namespace DefaultEcs
         /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
-        public void SetAsChildOf(in Entity parent) {
+        public void SetAsChildOf(in Entity parent)
+        {
             CheckEntity();
             World.GetEntityMutator().SetAsChildOf(this, parent);
         }
@@ -212,7 +220,8 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetAsParentOf(in Entity child) {
+        public void SetAsParentOf(in Entity child)
+        {
             CheckEntity();
             World.GetEntityMutator().SetAsParentOf(this, child);
         }
@@ -223,7 +232,8 @@ namespace DefaultEcs
         /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
-        public void RemoveFromChildrenOf(in Entity parent) {
+        public void RemoveFromChildrenOf(in Entity parent)
+        {
             CheckEntity();
             World.GetEntityMutator().RemoveFromChildrenOf(this, parent);
         }
@@ -235,7 +245,8 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveFromParentsOf(in Entity child) {
+        public void RemoveFromParentsOf(in Entity child)
+        {
             CheckEntity();
             World.GetEntityMutator().RemoveFromParentsOf(this, child);
         }
@@ -244,7 +255,8 @@ namespace DefaultEcs
         /// Gets all the <see cref="Entity"/> setted as children of the current <see cref="Entity"/>.
         /// </summary>
         /// <returns>An <see cref="IEnumerable{Entity}"/> of all the current <see cref="Entity"/> children.</returns>
-        public IEnumerable<Entity> GetChildren() {
+        public IEnumerable<Entity> GetChildren()
+        {
             CheckEntity();
             return World.GetEntityAccessor().GetChildren(this);
         }
@@ -255,7 +267,8 @@ namespace DefaultEcs
         /// <param name="world">The <see cref="DefaultEcs.World"/> instance to which copy current <see cref="Entity"/> and its components.</param>
         /// <returns>The created <see cref="Entity"/> in the given <see cref="DefaultEcs.World"/>.</returns>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
-        public Entity CopyTo(World world) {
+        public Entity CopyTo(World world)
+        {
             CheckEntity();
             return World.GetEntityMutator().CopyTo(this, world);
         }
@@ -265,15 +278,17 @@ namespace DefaultEcs
         /// This method is primiraly used for serialization purpose and should not be called in game logic.
         /// </summary>
         /// <param name="reader">The <see cref="IComponentReader"/> instance to be used as callback with the current <see cref="Entity"/> components.</param>
-        public void ReadAllComponents(IComponentReader reader) {
+        public void ReadAllComponents(IComponentReader reader)
+        {
             CheckEntity();
-            World.GetEntityAccessor().ReadAllComponents(this, reader);                
-        } 
+            World.GetEntityAccessor().ReadAllComponents(this, reader);
+        }
 
-        private void CheckEntity() {
+        private void CheckEntity()
+        {
             if (WorldId == 0) throw new InvalidOperationException("Entity was not created from a World");
         }
-        
+
         #endregion
 
         #region IDisposable
@@ -296,8 +311,8 @@ namespace DefaultEcs
         /// <returns>true if the current object is equal to the other parameter; otherwise, false.</returns>
         public bool Equals(Entity other)
             => EntityId == other.EntityId
-            && WorldId == other.WorldId
-            && Version == other.Version;
+               && WorldId == other.WorldId
+               && Version == other.Version;
 
         #endregion
 

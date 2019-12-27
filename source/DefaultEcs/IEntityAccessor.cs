@@ -2,25 +2,26 @@ using System;
 using System.Collections.Generic;
 using DefaultEcs.Serialization;
 
-namespace DefaultEcs {
+namespace DefaultEcs
+{
     /// <summary>
     /// This interface needed to access Entity components and other stuff
     /// </summary>
-    public interface IEntityAccessor {
-        
+    public interface IEntityAccessor
+    {
         /// <summary>
         /// Gets whether the current <see cref="Entity"/> is enabled or not.
         /// </summary>
         /// <returns>true if the <see cref="Entity"/> is enabled; otherwise, false.</returns>
         bool IsEnabled(Entity entity);
-        
+
         /// <summary>
         /// Gets whether the current <see cref="Entity"/> component of type <typeparamref name="T"/> is enabled or not.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/> enabled; otherwise, false.</returns>
         bool IsEnabled<T>(Entity entity);
-        
+
         /// <summary>
         /// Returns whether the current <see cref="Entity"/> has a component of type <typeparamref name="T"/>.
         /// </summary>
@@ -35,7 +36,7 @@ namespace DefaultEcs {
         /// <returns>A reference to the component.</returns>
         /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/> or does not have a component of type <typeparamref name="T"/>.</exception>
         ref T Get<T>(Entity entity);
-        
+
         /// <summary>
         /// Gets all the <see cref="Entity"/> setted as children of the current <see cref="Entity"/>.
         /// </summary>

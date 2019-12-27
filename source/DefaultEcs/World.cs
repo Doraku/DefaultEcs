@@ -170,7 +170,8 @@ namespace DefaultEcs
         /// Sets world's EntityMutator
         /// </summary>
         /// <param name="entityMutator"></param>
-        public void SetEntityMutator(IEntityMutator entityMutator) {
+        public void SetEntityMutator(IEntityMutator entityMutator)
+        {
             _entityMutator = entityMutator;
         }
 
@@ -178,15 +179,17 @@ namespace DefaultEcs
         /// Returns current EntityMutator. 
         /// </summary>
         /// <returns></returns>
-        public IEntityMutator GetEntityMutator() {
+        public IEntityMutator GetEntityMutator()
+        {
             return _entityMutator;
         }
-        
+
         /// <summary>
         /// Sets world's EntityAccessor
         /// </summary>
         /// <param name="entityAccessor"></param>
-        public void SetEntityAccessor(IEntityAccessor entityAccessor) {
+        public void SetEntityAccessor(IEntityAccessor entityAccessor)
+        {
             _entityAccessor = entityAccessor;
         }
 
@@ -194,7 +197,8 @@ namespace DefaultEcs
         /// Returns current EntityAccessor. 
         /// </summary>
         /// <returns><see cref="IEntityAccessor"/></returns>
-        public IEntityAccessor GetEntityAccessor() {
+        public IEntityAccessor GetEntityAccessor()
+        {
             return _entityAccessor;
         }
 

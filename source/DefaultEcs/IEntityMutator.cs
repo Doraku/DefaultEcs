@@ -1,11 +1,12 @@
 using System;
 
-namespace DefaultEcs {
+namespace DefaultEcs
+{
     /// <summary>
     /// A thing that responsible to mutate Entities
     /// </summary>
-    public interface IEntityMutator {
-
+    public interface IEntityMutator
+    {
         /// <summary>
         /// Some internal stuff 
         /// </summary>
@@ -21,7 +22,7 @@ namespace DefaultEcs {
         /// <param name="reference"></param>
         /// <typeparam name="T"></typeparam>
         void SetSameAsDisabled<T>(Entity entity, in Entity reference);
-        
+
         /// <summary>
         /// Enables the current <see cref="Entity"/> so it can appear in <see cref="EntitySet"/>.
         /// </summary>
