@@ -119,7 +119,7 @@ namespace DefaultEcs {
 
         /// <summary>
         /// Clean the current <see cref="Entity"/> of all its components.
-        /// The current <see cref="Entity"/> should not be used again after calling this method and <see cref="IsAlive"/> will return false.
+        /// The current <see cref="Entity"/> should not be used again after calling this method.
         /// </summary>
         /// <param name="entity">Entity to mutate</param>
         void Dispose(Entity entity);

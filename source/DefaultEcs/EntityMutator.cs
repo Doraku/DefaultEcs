@@ -22,7 +22,6 @@ namespace DefaultEcs {
 
         /// <inheritdoc />
         public void Enable(Entity entity) {
-            if (entity.WorldId == 0) Throw("Entity was not created from a World");
 
             ref ComponentEnum components = ref GetComponentsReference(entity);
             if (!components[World.IsEnabledFlag]) {
@@ -33,8 +32,6 @@ namespace DefaultEcs {
 
         /// <inheritdoc />
         public void Disable(Entity entity) {
-            if (entity.WorldId == 0) Throw("Entity was not created from a World");
-
             ref ComponentEnum components = ref GetComponentsReference(entity);
             if (components[World.IsEnabledFlag]) {
                 components[World.IsEnabledFlag] = false;
@@ -44,8 +41,6 @@ namespace DefaultEcs {
 
         /// <inheritdoc />
         public void Enable<T>(Entity entity) {
-            if (entity.WorldId == 0) Throw("Entity was not created from a World");
-
             if (entity.Has<T>()) {
                 ref ComponentEnum components = ref GetComponentsReference(entity);
                 if (!components[ComponentManager<T>.Flag]) {
@@ -57,8 +52,6 @@ namespace DefaultEcs {
 
         /// <inheritdoc />
         public void Disable<T>(Entity entity) {
-            if (entity.WorldId == 0) Throw("Entity was not created from a World");
-
             ref ComponentEnum components = ref GetComponentsReference(entity);
             if (components[ComponentManager<T>.Flag]) {
                 components[ComponentManager<T>.Flag] = false;
@@ -68,8 +61,6 @@ namespace DefaultEcs {
 
         /// <inheritdoc />
         public void Set<T>(Entity entity, in T component) {
-            if (entity.WorldId == 0) Throw("Entity was not created from a World");
-
             ref ComponentEnum components = ref GetComponentsReference(entity);
             if (ComponentManager<T>.GetOrCreate(entity.WorldId).Set(entity.EntityId, component)) {
                 components[ComponentManager<T>.Flag] = true;
@@ -81,8 +72,7 @@ namespace DefaultEcs {
 
         /// <inheritdoc />
         public void SetSameAs<T>(Entity target, in Entity reference) {
-            if (target.WorldId == 0) Throw("Entity was not created from a World");
-            if (target.WorldId != reference.World.WorldId) Throw("Reference Entity comes from a different World");
+            if (target.WorldId != reference.WorldId) Throw("Reference Entity comes from a different World");
             ComponentPool<T> pool = ComponentManager<T>.Get(target.WorldId);
             if (!(pool?.Has(reference.EntityId) ?? false))
                 Throw($"Reference Entity does not have a component of type {nameof(T)}");
@@ -109,7 +99,6 @@ namespace DefaultEcs {
         /// <inheritdoc />
         public void SetAsChildOf(Entity entity, in Entity parent) {
             if (entity.WorldId != parent.WorldId) Throw("Child and parent Entity come from a different World");
-            if (entity.WorldId == 0) Throw("Entity was not created from a World");
 
             ref HashSet<int> children = ref entity.World.EntityInfos[parent.EntityId].Children;
             children ??= new HashSet<int>();
@@ -126,7 +115,6 @@ namespace DefaultEcs {
         /// <inheritdoc />
         public void RemoveFromChildrenOf(Entity entity, in Entity parent) {
             if (entity.WorldId != parent.WorldId) Throw("Child and parent Entity come from a different World");
-            if (entity.WorldId == 0) Throw("Entity was not created from a World");
 
             HashSet<int> children = entity.World.EntityInfos[parent.EntityId].Children;
             if (children?.Remove(entity.EntityId) ?? false) {
@@ -151,8 +139,6 @@ namespace DefaultEcs {
         /// <inheritdoc />
         public Entity CopyTo(Entity entity, World world)
         {
-            if (entity.WorldId == 0) Throw("Entity was not created from a World");
-
             Entity copy = entity.IsEnabled() ? world.CreateEntity() : world.CreateDisabledEntity();
             try
             {
@@ -172,7 +158,7 @@ namespace DefaultEcs {
             }
             catch
             {
-                copy.Dispose();
+                Dispose(copy);
 
                 throw;
             }
