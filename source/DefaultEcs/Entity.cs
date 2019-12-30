@@ -17,6 +17,7 @@ namespace DefaultEcs
     /// </summary>
     [DebuggerTypeProxy(typeof(EntityDebugView))]
     [StructLayout(LayoutKind.Explicit)]
+    [Serializable]
     public readonly struct Entity : IDisposable, IEquatable<Entity>
     {
         #region Fields
