@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using DefaultEcs.Serialization;
+using DefaultEcs.Technical.Helper;
 
 namespace DefaultEcs.Technical.Serialization.TextSerializer
 {
@@ -42,7 +43,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             _types.Add(typeof(T), shortName);
 
             _writer.WriteLine($"{nameof(EntryType.ComponentType)} {shortName} {typeof(T).FullName}, {typeof(T).GetTypeInfo().Assembly.GetName().Name}");
-            if (maxComponentCount != _maxEntityCount)
+            if (maxComponentCount != _maxEntityCount && !typeof(T).GetTypeInfo().IsFlagType())
             {
                 _writer.WriteLine($"{nameof(EntryType.MaxComponentCount)} {shortName} {maxComponentCount}");
             }
