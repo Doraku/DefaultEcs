@@ -2,6 +2,7 @@
 using DefaultEcs.System;
 using DefaultEcs.Threading;
 using NFluent;
+using NSubstitute;
 using Xunit;
 
 namespace DefaultEcs.Test.System
@@ -16,6 +17,10 @@ namespace DefaultEcs.Test.System
 
             public System(World world, IParallelRunner runner)
                 : base(world, runner)
+            { }
+
+            public System(World world, IParallelRunner runner, int minComponentCountByRunnerIndex)
+                : base(world, runner, minComponentCountByRunnerIndex)
             { }
 
             protected override void Update(int state, ref bool component)
@@ -101,6 +106,33 @@ namespace DefaultEcs.Test.System
             using (ISystem<int> system = new System(world, runner))
             {
                 system.Update(0);
+            }
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+        }
+
+        [Fact]
+        public void Update_Should_not_use_runner_When_minComponentCountByRunnerIndex_not_respected()
+        {
+            IParallelRunner runner = Substitute.For<IParallelRunner>();
+            runner.DegreeOfParallelism.Returns(4);
+            runner.When(m => m.Run(Arg.Any<IParallelRunnable>())).Throw<Exception>();
+            using World world = new World(3);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set<bool>();
+
+            Entity entity2 = world.CreateEntity();
+            entity2.Set<bool>();
+
+            Entity entity3 = world.CreateEntity();
+            entity3.Set<bool>();
+
+            using (ISystem<int> system = new System(world, runner, 10))
+            {
+                Check.ThatCode(() => system.Update(0)).DoesNotThrow();
             }
 
             Check.That(entity1.Get<bool>()).IsTrue();

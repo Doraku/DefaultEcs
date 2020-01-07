@@ -39,6 +39,7 @@ namespace DefaultEcs.System
         private readonly IParallelRunner _runner;
         private readonly Runnable _runnable;
         private readonly EntitySet _set;
+        private readonly int _minEntityCountByRunnerIndex;
 
         /// <summary>
         /// Event called when an <see cref="Entity"/> is added to the inner <see cref="EntitySet"/>.
@@ -62,10 +63,24 @@ namespace DefaultEcs.System
 
         #region Initialisation
 
-        private AEntitySystem(IParallelRunner runner)
+        private AEntitySystem(IParallelRunner runner, int minEntityCountByRunnerIndex)
         {
             _runner = runner ?? DefaultParallelRunner.Default;
             _runnable = new Runnable(this);
+            _minEntityCountByRunnerIndex = minEntityCountByRunnerIndex;
+        }
+
+        /// <summary>
+        /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="EntitySet"/> and <see cref="IParallelRunner"/>.
+        /// </summary>
+        /// <param name="set">The <see cref="EntitySet"/> on which to process the update.</param>
+        /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
+        /// <param name="minEntityCountByRunnerIndex">The minimum number of <see cref="Entity"/> per runner index to use the given <paramref name="runner"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
+        protected AEntitySystem(EntitySet set, IParallelRunner runner, int minEntityCountByRunnerIndex)
+            : this(runner, minEntityCountByRunnerIndex)
+        {
+            _set = set ?? throw new ArgumentNullException(nameof(set));
         }
 
         /// <summary>
@@ -75,7 +90,7 @@ namespace DefaultEcs.System
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
         protected AEntitySystem(EntitySet set, IParallelRunner runner)
-            : this(runner)
+            : this(runner, 0)
         {
             _set = set ?? throw new ArgumentNullException(nameof(set));
         }
@@ -95,9 +110,23 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
+        /// <param name="minEntityCountByRunnerIndex">The minimum number of <see cref="Entity"/> per runner index to use the given <paramref name="runner"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
+        protected AEntitySystem(World world, IParallelRunner runner, int minEntityCountByRunnerIndex)
+            : this(runner, minEntityCountByRunnerIndex)
+        {
+            _set = EntitySetFactory.Create(GetType())(world ?? throw new ArgumentNullException(nameof(world)));
+        }
+
+        /// <summary>
+        /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="World"/>.
+        /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
+        /// </summary>
+        /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
+        /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntitySystem(World world, IParallelRunner runner)
-            : this(runner)
+            : this(runner, 0)
         {
             _set = EntitySetFactory.Create(GetType())(world ?? throw new ArgumentNullException(nameof(world)));
         }
@@ -172,7 +201,15 @@ namespace DefaultEcs.System
 
                 _runnable.CurrentState = state;
                 _runnable.EntitiesPerIndex = _set.Count / _runner.DegreeOfParallelism;
-                _runner.Run(_runnable);
+
+                if (_runnable.EntitiesPerIndex < _minEntityCountByRunnerIndex)
+                {
+                    Update(state, _set.GetEntities());
+                }
+                else
+                {
+                    _runner.Run(_runnable);
+                }
 
                 _set.Complete();
 

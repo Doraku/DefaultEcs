@@ -2,6 +2,7 @@
 using DefaultEcs.System;
 using DefaultEcs.Threading;
 using NFluent;
+using NSubstitute;
 using Xunit;
 
 namespace DefaultEcs.Test.System
@@ -27,6 +28,14 @@ namespace DefaultEcs.Test.System
 
             public System(World world, IParallelRunner runner)
                 : base(world, runner)
+            { }
+
+            public System(EntitySet set, IParallelRunner runner, int minEntityCountByRunnerIndex)
+                : base(set, runner, minEntityCountByRunnerIndex)
+            { }
+
+            public System(World world, IParallelRunner runner, int minEntityCountByRunnerIndex)
+                : base(world, runner, minEntityCountByRunnerIndex)
             { }
 
             protected override void Update(int state, in Entity entity)
@@ -294,6 +303,57 @@ namespace DefaultEcs.Test.System
             entity.Remove<bool>();
 
             Check.That(removedEntity).IsEqualTo(default(Entity));
+        }
+
+        [Fact]
+        public void Update_Should_not_use_runner_When_minEntityCountByRunnerIndex_not_respected()
+        {
+            IParallelRunner runner = Substitute.For<IParallelRunner>();
+            runner.DegreeOfParallelism.Returns(4);
+            runner.When(m => m.Run(Arg.Any<IParallelRunnable>())).Throw<Exception>();
+
+            using World world = new World(4);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set<bool>();
+
+            Entity entity2 = world.CreateEntity();
+            entity2.Set<bool>();
+
+            Entity entity3 = world.CreateEntity();
+            entity3.Set<bool>();
+
+            Entity entity4 = world.CreateEntity();
+            entity4.Set<bool>();
+
+            using (ISystem<int> system = new System(world.GetEntities().With<bool>().AsSet(), runner, 10))
+            {
+                Check.ThatCode(() => system.Update(0)).DoesNotThrow();
+            }
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+            Check.That(entity4.Get<bool>()).IsTrue();
+
+            entity1.Set<bool>();
+            entity1.Set<double>();
+            entity2.Set<bool>();
+            entity2.Set<double>();
+            entity3.Set<bool>();
+            entity3.Set<double>();
+            entity4.Set<bool>();
+            entity4.Set<double>();
+
+            using (ISystem<int> system = new System(world, runner, 10))
+            {
+                Check.ThatCode(() => system.Update(0)).DoesNotThrow();
+            }
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+            Check.That(entity4.Get<bool>()).IsTrue();
         }
 
         #endregion

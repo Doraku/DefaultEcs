@@ -27,7 +27,7 @@ namespace DefaultEcs.System
 
             public void Run(int index, int maxIndex)
             {
-                Span<TComponent> components = _system._component.GetAll();
+                Span<TComponent> components = _system._components.GetAll();
                 int start = index * ComponentsPerIndex;
 
                 _system.Update(CurrentState, index == maxIndex ? components.Slice(start) : components.Slice(start, ComponentsPerIndex));
@@ -40,16 +40,31 @@ namespace DefaultEcs.System
 
         private readonly IParallelRunner _runner;
         private readonly Runnable _runnable;
-        private readonly ComponentPool<TComponent> _component;
+        private readonly ComponentPool<TComponent> _components;
+        private readonly int _minComponentCountByRunnerIndex;
 
         #endregion
 
         #region Initialisation
 
-        private AComponentSystem(IParallelRunner runner)
+        private AComponentSystem(IParallelRunner runner, int minComponentCountByRunnerIndex)
         {
             _runner = runner ?? DefaultParallelRunner.Default;
             _runnable = new Runnable(this);
+            _minComponentCountByRunnerIndex = minComponentCountByRunnerIndex;
+        }
+
+        /// <summary>
+        /// Initialise a new instance of the <see cref="AComponentSystem{TState, TComponent}"/> class with the given <see cref="World"/> and <see cref="IParallelRunner"/>.
+        /// </summary>
+        /// <param name="world">The <see cref="World"/> on which to process the update.</param>
+        /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
+        /// <param name="minComponentCountByRunnerIndex">The minimum number of component per runner index to use the given <paramref name="runner"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
+        protected AComponentSystem(World world, IParallelRunner runner, int minComponentCountByRunnerIndex)
+            : this(runner, minComponentCountByRunnerIndex)
+        {
+            _components = ComponentManager<TComponent>.GetOrCreate(world?.WorldId ?? throw new ArgumentNullException(nameof(world)));
         }
 
         /// <summary>
@@ -59,9 +74,9 @@ namespace DefaultEcs.System
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AComponentSystem(World world, IParallelRunner runner)
-            : this(runner)
+            : this(runner, 0)
         {
-            _component = ComponentManager<TComponent>.GetOrCreate(world?.WorldId ?? throw new ArgumentNullException(nameof(world)));
+            _components = ComponentManager<TComponent>.GetOrCreate(world?.WorldId ?? throw new ArgumentNullException(nameof(world)));
         }
 
         /// <summary>
@@ -127,13 +142,21 @@ namespace DefaultEcs.System
         /// <param name="state">The state to use.</param>
         public void Update(TState state)
         {
-            if (IsEnabled && _component.IsNotEmpty)
+            if (IsEnabled && _components.IsNotEmpty)
             {
                 PreUpdate(state);
 
-                _runnable.ComponentsPerIndex = _component.Count / _runner.DegreeOfParallelism;
+                _runnable.ComponentsPerIndex = _components.Count / _runner.DegreeOfParallelism;
                 _runnable.CurrentState = state;
-                _runner.Run(_runnable);
+
+                if (_runnable.ComponentsPerIndex < _minComponentCountByRunnerIndex)
+                {
+                    Update(state, _components.GetAll());
+                }
+                else
+                {
+                    _runner.Run(_runnable);
+                }
 
                 PostUpdate(state);
             }

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="DefaultEcs.targets" />
-  
+
   <PropertyGroup Label="Sign">
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
@@ -16,6 +16,9 @@
   <PropertyGroup Label="Package">
     <Version>0.13.0</Version>
     <PackageReleaseNotes>
+added minEntityCountByRunnerIndex to AEntitySystem constructors
+added minComponentCountByRunnerIndex to AComponentSystem constructor
+
 updated System.Reflection.Emit.Lightweight to 4.7.0
     </PackageReleaseNotes>
   </PropertyGroup>
