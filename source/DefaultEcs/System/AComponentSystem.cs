@@ -47,13 +47,6 @@ namespace DefaultEcs.System
 
         #region Initialisation
 
-        private AComponentSystem(IParallelRunner runner, int minComponentCountByRunnerIndex)
-        {
-            _runner = runner ?? DefaultParallelRunner.Default;
-            _runnable = new Runnable(this);
-            _minComponentCountByRunnerIndex = minComponentCountByRunnerIndex;
-        }
-
         /// <summary>
         /// Initialise a new instance of the <see cref="AComponentSystem{TState, TComponent}"/> class with the given <see cref="World"/> and <see cref="IParallelRunner"/>.
         /// </summary>
@@ -62,9 +55,11 @@ namespace DefaultEcs.System
         /// <param name="minComponentCountByRunnerIndex">The minimum number of component per runner index to use the given <paramref name="runner"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AComponentSystem(World world, IParallelRunner runner, int minComponentCountByRunnerIndex)
-            : this(runner, minComponentCountByRunnerIndex)
         {
+            _runner = runner ?? DefaultParallelRunner.Default;
+            _runnable = new Runnable(this);
             _components = ComponentManager<TComponent>.GetOrCreate(world?.WorldId ?? throw new ArgumentNullException(nameof(world)));
+            _minComponentCountByRunnerIndex = minComponentCountByRunnerIndex;
         }
 
         /// <summary>
@@ -74,10 +69,8 @@ namespace DefaultEcs.System
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AComponentSystem(World world, IParallelRunner runner)
-            : this(runner, 0)
-        {
-            _components = ComponentManager<TComponent>.GetOrCreate(world?.WorldId ?? throw new ArgumentNullException(nameof(world)));
-        }
+            : this(world, runner, 0)
+        { }
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AComponentSystem{TState, TComponent}"/> class with the given <see cref="World"/>.

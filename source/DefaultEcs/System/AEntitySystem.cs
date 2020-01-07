@@ -90,10 +90,8 @@ namespace DefaultEcs.System
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
         protected AEntitySystem(EntitySet set, IParallelRunner runner)
-            : this(runner, 0)
-        {
-            _set = set ?? throw new ArgumentNullException(nameof(set));
-        }
+            : this(set, runner, 0)
+        { }
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="EntitySet"/>.
@@ -126,10 +124,8 @@ namespace DefaultEcs.System
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntitySystem(World world, IParallelRunner runner)
-            : this(runner, 0)
-        {
-            _set = EntitySetFactory.Create(GetType())(world ?? throw new ArgumentNullException(nameof(world)));
-        }
+            : this(world, runner, 0)
+        { }
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="World"/>.
