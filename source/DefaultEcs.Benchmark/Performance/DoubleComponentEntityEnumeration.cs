@@ -40,9 +40,8 @@ namespace DefaultEcs.Benchmark.Performance
 
             protected override void Update(float state, ReadOnlySpan<DefaultEntity> entities)
             {
-                for (int i = 0; i < entities.Length; i++)
+                foreach (ref readonly DefaultEntity entity in entities)
                 {
-                    DefaultEntity entity = entities[i];
                     DefaultSpeed speed = entity.Get<DefaultSpeed>();
                     ref DefaultPosition position = ref entity.Get<DefaultPosition>();
 
@@ -129,10 +128,8 @@ namespace DefaultEcs.Benchmark.Performance
         [Benchmark]
         public void DefaultEcs_EntitySet()
         {
-            ReadOnlySpan<DefaultEntity> entities = _defaultEntitySet.GetEntities();
-            for (int i = 0; i < entities.Length; i++)
+            foreach (ref readonly DefaultEntity entity in _defaultEntitySet.GetEntities())
             {
-                DefaultEntity entity = entities[i];
                 DefaultSpeed speed = entity.Get<DefaultSpeed>();
                 ref DefaultPosition position = ref entity.Get<DefaultPosition>();
 
@@ -142,27 +139,15 @@ namespace DefaultEcs.Benchmark.Performance
         }
 
         [Benchmark]
-        public void DefaultEcs_System()
-        {
-            _defaultSystem.Update(Time);
-        }
+        public void DefaultEcs_System() => _defaultSystem.Update(Time);
 
         [Benchmark]
-        public void DefaultEcs_MultiSystem()
-        {
-            _defaultMultiSystem.Update(Time);
-        }
+        public void DefaultEcs_MultiSystem() => _defaultMultiSystem.Update(Time);
 
         [Benchmark]
-        public void Entitas_System()
-        {
-            _entitasSystem.Execute();
-        }
+        public void Entitas_System() => _entitasSystem.Execute();
 
         [Benchmark]
-        public void Entitas_MultiSystem()
-        {
-            _entitasMultiSystem.Execute();
-        }
+        public void Entitas_MultiSystem() => _entitasMultiSystem.Execute();
     }
 }

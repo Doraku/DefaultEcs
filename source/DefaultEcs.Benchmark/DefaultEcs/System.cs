@@ -40,20 +40,24 @@ namespace DefaultEcs.Benchmark.DefaultEcs
                 : base(world.GetEntities().With<Position>().With<Speed>().AsSet(), runner)
             { }
 
-            protected override void Update(float state, in Entity entity)
+            protected override void Update(float state, ReadOnlySpan<Entity> entities)
             {
-                Speed speed = entity.Get<Speed>();
-                ref Position position = ref entity.Get<Position>();
+                foreach (ref readonly Entity entity in entities)
+                {
+                    Speed speed = entity.Get<Speed>();
+                    ref Position position = ref entity.Get<Position>();
 
-                position.X += speed.X * state;
-                position.Y += speed.Y * state;
+                    position.X += speed.X * state;
+                    position.Y += speed.Y * state;
+                }
             }
         }
 
-        private sealed class Test2System : AEntitySystem<float>
+        [With(typeof(Speed), typeof(Position))]
+        private sealed class TestBufferedSystem : AEntityBufferedSystem<float>
         {
-            public Test2System(World world, IParallelRunner runner)
-                : base(world.GetEntities().With<Position>().With<Speed>().AsSet(), runner)
+            public TestBufferedSystem(World world)
+                : base(world)
             { }
 
             protected override void Update(float state, ReadOnlySpan<Entity> entities)
@@ -84,7 +88,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             {
                 _set.ProcessInParallel(entities =>
                 {
-                    foreach (Entity entity in entities)
+                    foreach (ref readonly Entity entity in entities)
                     {
                         Speed speed = entity.Get<Speed>();
                         ref Position position = ref entity.Get<Position>();
@@ -105,8 +109,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private DefaultParallelRunner _runner;
         private ISystem<float> _systemSingle;
         private ISystem<float> _system;
-        private ISystem<float> _system2Single;
-        private ISystem<float> _system2;
+        private ISystem<float> _bufferedSystem;
         private ISystem<float> _systemTPL;
 
         [Params(100000)]
@@ -119,8 +122,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _systemSingle = new TestSystem(_world, null);
             _system = new TestSystem(_world, _runner);
-            _system2Single = new Test2System(_world, null);
-            _system2 = new Test2System(_world, _runner);
+            _bufferedSystem = new TestBufferedSystem(_world);
             _systemTPL = new TestSystemTPL(_world);
 
             for (int i = 0; i < EntityCount; ++i)
@@ -138,8 +140,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             _world.Dispose();
             _systemSingle.Dispose();
             _system.Dispose();
-            _system2Single.Dispose();
-            _system2.Dispose();
+            _bufferedSystem.Dispose();
             _systemTPL.Dispose();
         }
 
@@ -150,10 +151,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public void DefaultEcs_UpdateMulti() => _system.Update(1f / 60f);
 
         [Benchmark]
-        public void DefaultEcs_Update2Single() => _system2Single.Update(1f / 60f);
-
-        [Benchmark]
-        public void DefaultEcs_Update2Multi() => _system2.Update(1f / 60f);
+        public void DefaultEcs_UpdateBuffered() => _bufferedSystem.Update(1f / 60f);
 
         [Benchmark]
         public void DefaultEcs_UpdateTPL() => _systemTPL.Update(1f / 60f);

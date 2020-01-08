@@ -6,6 +6,7 @@ namespace DefaultEcs.System
 {
     /// <summary>
     /// Represents a base class to process updates on a given <see cref="EntitySet"/> instance.
+    /// Only <see cref="Entity.Get{T}"/>, <see cref="Entity.Set{T}(in T)"/> and <see cref="Entity.SetSameAs{T}(in Entity)"/> operation on already present component type are safe.
     /// </summary>
     /// <typeparam name="T">The type of the object used as state to update the system.</typeparam>
     public abstract class AEntitySystem<T> : ISystem<T>
@@ -165,9 +166,7 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="state">The state to use.</param>
         /// <param name="entities">The <see cref="Entity"/> instances to update.</param>
-#pragma warning disable RCS1231 // Make parameter ref read-only. For some reason, less performant with a "in"
         protected virtual void Update(T state, ReadOnlySpan<Entity> entities)
-#pragma warning restore RCS1231 // Make parameter ref read-only.
         {
             foreach (ref readonly Entity entity in entities)
             {

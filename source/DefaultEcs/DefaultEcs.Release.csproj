@@ -18,6 +18,7 @@
     <PackageReleaseNotes>
 added minEntityCountByRunnerIndex to AEntitySystem constructors
 added minComponentCountByRunnerIndex to AComponentSystem constructor
+added AEntityBufferedSystem to make structural modification on entities in a safe way
 
 updated System.Reflection.Emit.Lightweight to 4.7.0
     </PackageReleaseNotes>

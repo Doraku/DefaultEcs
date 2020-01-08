@@ -109,9 +109,7 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="state">The state to use.</param>
         /// <param name="components">The <typeparamref name="TComponent"/> to update.</param>
-#pragma warning disable RCS1231 // Make parameter ref read-only. For some reason, less performant with a "in"
         protected virtual void Update(TState state, Span<TComponent> components)
-#pragma warning restore RCS1231 // Make parameter ref read-only.
         {
             foreach (ref TComponent component in components)
             {

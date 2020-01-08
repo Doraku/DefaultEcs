@@ -135,16 +135,10 @@ namespace DefaultEcs.Benchmark.Performance
         }
 
         [Benchmark]
-        public void DefaultEcs_System()
-        {
-            _defaultSystem.Update(42);
-        }
+        public void DefaultEcs_System() => _defaultSystem.Update(42);
 
         [Benchmark]
-        public void DefaultEcs_MultiSystem()
-        {
-            _defaultMultiSystem.Update(42);
-        }
+        public void DefaultEcs_MultiSystem() => _defaultMultiSystem.Update(42);
 
         [Benchmark]
         public void DefaultEcs_Component()
@@ -157,27 +151,15 @@ namespace DefaultEcs.Benchmark.Performance
         }
 
         [Benchmark]
-        public void DefaultEcs_ComponentSystem()
-        {
-            _defaultComponentSystem.Update(42);
-        }
+        public void DefaultEcs_ComponentSystem() => _defaultComponentSystem.Update(42);
 
         [Benchmark]
-        public void DefaultEcs_ComponentMultiSystem()
-        {
-            _defaultComponentMultiSystem.Update(42);
-        }
+        public void DefaultEcs_ComponentMultiSystem() => _defaultComponentMultiSystem.Update(42);
 
         [Benchmark]
-        public void Entitas_System()
-        {
-            _entitasSystem.Execute();
-        }
+        public void Entitas_System() => _entitasSystem.Execute();
 
         [Benchmark]
-        public void Entitas_MultiSystem()
-        {
-            _entitasMultiSystem.Execute();
-        }
+        public void Entitas_MultiSystem() => _entitasMultiSystem.Execute();
     }
 }
