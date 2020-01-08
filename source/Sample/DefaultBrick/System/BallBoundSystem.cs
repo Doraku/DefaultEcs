@@ -1,21 +1,18 @@
-﻿using System.Collections.Generic;
-using DefaultBrick.Component;
+﻿using DefaultBrick.Component;
 using DefaultBrick.Message;
 using DefaultEcs;
 using DefaultEcs.System;
 
 namespace DefaultBrick.System
 {
-    public sealed class BallBoundSystem : AEntitySystem<float>
+    public sealed class BallBoundSystem : AEntityBufferedSystem<float>
     {
         private readonly World _world;
-        private readonly List<Entity> _toRemove;
 
         public BallBoundSystem(World world)
             : base(world.GetEntities().With<Velocity>().With<Position>().With<Ball>().AsSet())
         {
             _world = world;
-            _toRemove = new List<Entity>();
         }
 
         protected override void Update(float state, in Entity entity)
@@ -41,20 +38,11 @@ namespace DefaultBrick.System
             }
             else if (position.Value.Y > 600)
             {
-                _toRemove.Add(entity);
+                entity.Dispose();
                 _world.Publish<BallDroppedMessage>(default);
             }
 
             entity.Set(position);
-        }
-
-        protected override void PostUpdate(float state)
-        {
-            while (_toRemove.Count > 0)
-            {
-                _toRemove[0].Dispose();
-                _toRemove.RemoveAt(0);
-            }
         }
     }
 }
