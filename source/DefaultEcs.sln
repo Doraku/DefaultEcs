@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultEcs.Analyzer.Vsix", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{43B74E8B-28B8-4049-A1BA-57BCB274AE08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultBoids", "Sample\DefaultBoids\DefaultBoids.csproj", "{198A12F3-B396-4243-BFD4-B93FA488AB76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{39887C79-69C9-4347-92E2-5A800959F7D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39887C79-69C9-4347-92E2-5A800959F7D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39887C79-69C9-4347-92E2-5A800959F7D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{198A12F3-B396-4243-BFD4-B93FA488AB76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{198A12F3-B396-4243-BFD4-B93FA488AB76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{198A12F3-B396-4243-BFD4-B93FA488AB76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{198A12F3-B396-4243-BFD4-B93FA488AB76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,6 +90,7 @@ Global
 		{6D2BA0F6-177E-454B-8AD7-42AF0AD539B7} = {DC400F20-A383-4C0F-83D4-F19B4F45191A}
 		{95F4D6A0-FD01-4AA8-B603-5811C9FFAEEA} = {DC400F20-A383-4C0F-83D4-F19B4F45191A}
 		{3B7E7A97-51E3-4B94-A50F-11808FA87621} = {43B74E8B-28B8-4049-A1BA-57BCB274AE08}
+		{198A12F3-B396-4243-BFD4-B93FA488AB76} = {DC400F20-A383-4C0F-83D4-F19B4F45191A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D44A5DBD-5CAD-4E51-BCC2-9AFAD5486CAD}
