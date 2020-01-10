@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DefaultBoids.Component;
 using DefaultEcs;
 using DefaultEcs.System;
@@ -7,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBoids.System
 {
-    [With(typeof(DrawInfo), typeof(Acceleration), typeof(Velocity))]
+    [With(typeof(DrawInfo), typeof(Acceleration), typeof(Velocity), typeof(Grid))]
     public sealed class BoidsSystem : AEntitySystem<float>
     {
         private readonly float _maxDistance;
@@ -30,33 +31,37 @@ namespace DefaultBoids.System
                 Vector2 cohesion = Vector2.Zero;
                 int neighborCount = 0;
 
-                foreach (ref readonly Entity other in entities)
+                foreach (List<Entity> neighbors in entity.Get<Grid>().GetEnumerator(position))
                 {
-                    Vector2 otherPosition = other.Get<DrawInfo>().Position;
-
-                    Vector2 offset = position - otherPosition;
-
-                    if (offset.LengthSquared() < _maxDistanceSquared && entity != other)
+                    foreach (Entity neighbor in neighbors)
                     {
-                        separation += Vector2.Normalize(offset);
+                        if (entity == neighbor)
+                        {
+                            continue;
+                        }
 
-                        alignment += other.Get<Velocity>().Value;
+                        Vector2 otherPosition = neighbor.Get<DrawInfo>().Position;
 
-                        cohesion += otherPosition;
+                        Vector2 offset = position - otherPosition;
 
-                        ++neighborCount;
+                        if (offset.LengthSquared() < _maxDistanceSquared)
+                        {
+                            separation += Vector2.Normalize(offset);
+
+                            alignment += neighbor.Get<Velocity>().Value;
+
+                            cohesion += otherPosition;
+
+                            ++neighborCount;
+                        }
                     }
                 }
 
                 if (neighborCount > 0)
                 {
-                    separation /= neighborCount;
+                    alignment = (alignment / neighborCount) - entity.Get<Velocity>().Value;
 
-                    alignment /= neighborCount;
-                    alignment -= entity.Get<Velocity>().Value;
-
-                    cohesion /= neighborCount;
-                    cohesion -= position;
+                    cohesion = position - (cohesion / neighborCount);
                 }
 
                 entity.Get<Acceleration>().Value =

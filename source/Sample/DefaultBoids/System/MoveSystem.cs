@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBoids.System
 {
-    [With(typeof(DrawInfo), typeof(Velocity), typeof(Acceleration))]
+    [With(typeof(DrawInfo), typeof(Velocity), typeof(Acceleration), typeof(Grid))]
     public sealed class MoveSystem : AEntitySystem<float>
     {
         public MoveSystem(World world, IParallelRunner runner)
@@ -18,10 +18,9 @@ namespace DefaultBoids.System
         {
             foreach (ref readonly Entity entity in entities)
             {
-                ref Vector2 acceleration = ref entity.Get<Acceleration>().Value;
                 ref Vector2 velocity = ref entity.Get<Velocity>().Value;
 
-                velocity += acceleration * state;
+                velocity += entity.Get<Acceleration>().Value * state;
 
                 Vector2 direction = Vector2.Normalize(velocity);
                 float speed = velocity.Length();
@@ -29,7 +28,9 @@ namespace DefaultBoids.System
                 velocity = Math.Clamp(speed, DefaultGame.MinVelocity, DefaultGame.MaxVelocity) * direction;
 
                 ref DrawInfo drawInfo = ref entity.Get<DrawInfo>();
-                drawInfo.Position += velocity * state;
+                Vector2 newPosition = drawInfo.Position + velocity * state;
+                entity.Get<Grid>().Update(entity, drawInfo.Position, newPosition);
+                drawInfo.Position = newPosition;
 
                 if ((drawInfo.Position.X < 0 && velocity.X < 0)
                     || (drawInfo.Position.X > DefaultGame.ResolutionWidth && velocity.X > 0))
@@ -43,8 +44,6 @@ namespace DefaultBoids.System
                 }
 
                 drawInfo.Rotation = MathF.Atan2(velocity.X, -velocity.Y);
-
-                acceleration = Vector2.Zero;
             }
         }
     }
