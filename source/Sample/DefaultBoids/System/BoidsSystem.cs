@@ -16,7 +16,7 @@ namespace DefaultBoids.System
         public BoidsSystem(World world, IParallelRunner runner)
             : base(world, runner)
         {
-            _maxDistance = 100f;
+            _maxDistance = DefaultGame.NeighborRange;
             _maxDistanceSquared = MathF.Pow(_maxDistance, 2);
         }
 
@@ -59,7 +59,10 @@ namespace DefaultBoids.System
                     cohesion -= position;
                 }
 
-                entity.Get<Acceleration>().Value += (separation * 300f) + (alignment * 2f) + (cohesion * 3f);
+                entity.Get<Acceleration>().Value =
+                    (separation * DefaultGame.BehaviorSeparationWeight)
+                    + (alignment * DefaultGame.BehaviorAlignmentWeight)
+                    + (cohesion * DefaultGame.BehaviorCohesionWeight);
             }
         }
     }

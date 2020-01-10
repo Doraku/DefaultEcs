@@ -10,13 +10,9 @@ namespace DefaultBoids.System
     [With(typeof(DrawInfo), typeof(Velocity), typeof(Acceleration))]
     public sealed class MoveSystem : AEntitySystem<float>
     {
-        private readonly float _maxVelocity;
-
         public MoveSystem(World world, IParallelRunner runner)
             : base(world, runner)
-        {
-            _maxVelocity = 100f;
-        }
+        { }
 
         protected override void Update(float state, ReadOnlySpan<Entity> entities)
         {
@@ -30,18 +26,18 @@ namespace DefaultBoids.System
                 Vector2 direction = Vector2.Normalize(velocity);
                 float speed = velocity.Length();
 
-                velocity = Math.Clamp(speed, 80f, _maxVelocity) * direction;
+                velocity = Math.Clamp(speed, DefaultGame.MinVelocity, DefaultGame.MaxVelocity) * direction;
 
                 ref DrawInfo drawInfo = ref entity.Get<DrawInfo>();
                 drawInfo.Position += velocity * state;
 
                 if ((drawInfo.Position.X < 0 && velocity.X < 0)
-                    || (drawInfo.Position.X > 800 && velocity.X > 0))
+                    || (drawInfo.Position.X > DefaultGame.ResolutionWidth && velocity.X > 0))
                 {
                     velocity.X *= -1;
                 }
                 if ((drawInfo.Position.Y < 0 && velocity.Y < 0)
-                    || (drawInfo.Position.Y > 600 && velocity.Y > 0))
+                    || (drawInfo.Position.Y > DefaultGame.ResolutionHeight && velocity.Y > 0))
                 {
                     velocity.Y *= -1;
                 }

@@ -15,12 +15,27 @@ namespace DefaultBoids
     {
         #region Fields
 
+        public const int BoidsCount = 1000;
+
+        public const int ResolutionWidth = 800;
+        public const int ResolutionHeight = 600;
+
+        public const float BehaviorSeparationWeight = 210;
+        public const float BehaviorAlignmentWeight = 2;
+        public const float BehaviorCohesionWeight = 3;
+
+        public const float NeighborRange = 100;
+
+        public const float MinVelocity = 80;
+        public const float MaxVelocity = 100;
+
         private readonly GraphicsDeviceManager _deviceManager;
         private readonly SpriteBatch _batch;
         private readonly Texture2D _square;
         private readonly World _world;
         private readonly DefaultParallelRunner _runner;
         private readonly ISystem<float> _system;
+        private readonly ISystem<float> _drawSystem;
         private readonly Stopwatch _watch;
 
         private int _frameCount;
@@ -35,8 +50,8 @@ namespace DefaultBoids
             IsFixedTimeStep = false;
             _deviceManager.GraphicsProfile = GraphicsProfile.HiDef;
             _deviceManager.IsFullScreen = false;
-            _deviceManager.PreferredBackBufferWidth = 800;
-            _deviceManager.PreferredBackBufferHeight = 600;
+            _deviceManager.PreferredBackBufferWidth = ResolutionWidth;
+            _deviceManager.PreferredBackBufferHeight = ResolutionHeight;
             _deviceManager.SynchronizeWithVerticalRetrace = false;
             _deviceManager.ApplyChanges();
             GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
@@ -54,21 +69,22 @@ namespace DefaultBoids
             _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(
                 new BoidsSystem(_world, _runner),
-                new MoveSystem(_world, _runner),
-                new DrawSystem(_batch, _square, _world));
+                new MoveSystem(_world, _runner));
+
+            _drawSystem = new DrawSystem(_batch, _square, _world);
 
             Random random = new Random();
 
-            for (int i = 0; i < 1000; ++i)
+            for (int i = 0; i < BoidsCount; ++i)
             {
                 Entity entity = _world.CreateEntity();
                 entity.Set(new DrawInfo
                 {
                     Color = new Color((float)random.NextDouble(), (float)random.NextDouble(), (float)random.NextDouble(), 1f),
                     Position = new Vector2((float)random.NextDouble() * _deviceManager.PreferredBackBufferWidth, (float)random.NextDouble() * _deviceManager.PreferredBackBufferHeight),
-                    Size = new Vector2(random.Next(5, 10), random.Next(20, 30)),
+                    Size = new Vector2(random.Next(3, 6), random.Next(10, 15)),
                 });
-                entity.Set(new Velocity { Value = new Vector2(100, 0) });
+                entity.Set(new Velocity { Value = new Vector2(MinVelocity, 0) });
                 entity.Set<Acceleration>();
             }
 
@@ -93,7 +109,7 @@ namespace DefaultBoids
             }
         }
 
-        protected override void Draw(GameTime gameTime) { }
+        protected override void Draw(GameTime gameTime) => _drawSystem.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
         protected override void Dispose(bool disposing)
         {
