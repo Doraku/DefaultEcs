@@ -86,7 +86,7 @@ namespace DefaultBoids.Component
 
         private readonly float _cellWidth;
         private readonly float _cellHeight;
-        private List<Entity>[,] _cells;
+        private readonly List<Entity>[,] _cells;
 
         public Grid()
         {

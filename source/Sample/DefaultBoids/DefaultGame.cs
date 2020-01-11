@@ -92,7 +92,7 @@ namespace DefaultBoids
                     velocity.Normalize();
                 }
 
-                entity.Set(new Velocity { Value = velocity * (MinVelocity + (float)random.NextDouble() * (MaxVelocity - MinVelocity)) });
+                entity.Set(new Velocity { Value = velocity * (MinVelocity + ((float)random.NextDouble() * (MaxVelocity - MinVelocity))) });
                 entity.Set<Acceleration>();
                 entity.Set(grid);
             }

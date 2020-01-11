@@ -28,7 +28,7 @@ namespace DefaultBoids.System
                 velocity = Math.Clamp(speed, DefaultGame.MinVelocity, DefaultGame.MaxVelocity) * direction;
 
                 ref DrawInfo drawInfo = ref entity.Get<DrawInfo>();
-                Vector2 newPosition = drawInfo.Position + velocity * state;
+                Vector2 newPosition = drawInfo.Position + (velocity * state);
                 entity.Get<Grid>().Update(entity, drawInfo.Position, newPosition);
                 drawInfo.Position = newPosition;
 
