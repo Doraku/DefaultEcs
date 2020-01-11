@@ -557,6 +557,12 @@ This serializer is optimized for speed and file space.
 # Sample
 Some sample projects are available to give a better picture on how to use DefaultEcs. Those exemples were done relatively fast so they are probably not the best representation of the Entity Component System framework application.
 
+[DefaultBoids](https://github.com/Doraku/DefaultEcs/tree/master/source/Sample/DefaultBoids)
+
+![](https://github.com/Doraku/DefaultEcs/raw/master/image/defaultboids.gif)
+
+A really simple implementation of a [boids simulation](https://en.wikipedia.org/wiki/Boids), here displaying 10k boids with an old Intel Core i5-3570K CPU 3.40GHz at ~100fps.
+
 [DefaultBrick](https://github.com/Doraku/DefaultEcs/tree/master/source/Sample/DefaultBrick)
 [win10-x64](https://github.com/Doraku/DefaultEcs/releases/download/v0.9.0/DefaultBrick_win10-x64.zip)
 
@@ -576,43 +582,31 @@ Basic fly swatter clone. Every five seconds, flies (blue square) will damage the
 Feel free to correct my use of the compared ecs libraries as I looked only for basic uses which may not be the most performant way.
 
 ```
-BenchmarkDotNet=v0.11.0, OS=Windows 10.0.17134.165 (1803/April2018Update/Redstone4)
+BenchmarkDotNet=v0.12.0, OS=Windows 10.0.18362
 Intel Core i5-3570K CPU 3.40GHz (Ivy Bridge), 1 CPU, 4 logical and 4 physical cores
-Frequency=3320337 Hz, Resolution=301.1742 ns, Timer=TSC
-  [Host]     : .NET Framework 4.7.2 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.3131.0
-  Job-UJZYDN : .NET Framework 4.7.2 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.3131.0
-
-InvocationCount=10  IterationCount=10  LaunchCount=1
-RunStrategy=Monitoring  UnrollFactor=1  WarmupCount=10
+  [Host]     : .NET Framework 4.8 (4.8.4075.0), X64 RyuJIT
+  DefaultJob : .NET Framework 4.8 (4.8.4075.0), X64 RyuJIT
 ```
 
 SingleComponentEntityEnumeration: add one to the basic component (containing one int) of 100000 entities
 
- Method | Mean | Error | StdDev
----:|---:|---:|---:
-[DefaultEcs_EntitySet](# 'using directly the EntitySet class (single threaded)')                                                       |   292.30 us |   0.6382 us |  0.4221 us
-[DefaultEcs_System](# 'using the AEntitySystem base class (single threaded)')                                                          |   365.22 us |   7.6181 us |  5.0389 us
-[*DefaultEcs_System](# 'same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one')             |   293.36 us |   0.5569 us |  0.3684 us
-[DefaultEcs_MultiSystem](# 'using the AEntitySystem base class (multi threaded)')                                                      |   105.90 us |  18.5030 us | 12.2386 us
-[*DefaultEcs_MultiSystem](# 'same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one')        |    84.15 us |   6.8169 us |  4.5090 us
-[DefaultEcs_Component](# 'using directly the World class (single threaded)')                                                           |   110.81 us |   7.0749 us |  4.6796 us
-[DefaultEcs_ComponentSystem](# 'using the AComponentSystem base class (single threaded)')                                              |   250.65 us |   0.3340 us |  0.2210 us
-[*DefaultEcs_ComponentSystem](# 'same as above but overriding Span<Component> Update method instead of the single Component one')      |    84.49 us |   0.2756 us |  0.1823 us
-[DefaultEcs_ComponentMultiSystem](# 'using the AComponentSystem base class (multi threaded)')                                          |    68.72 us |   4.8234 us |  3.1904 us
-[*DefaultEcs_ComponentMultiSystem](# 'same as above but overriding Span<Component> Update method instead of the single Component one') |    29.02 us |   5.3375 us |  3.5304 us
-[Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp)|
-[Entitas_System](# 'using the JobSystem base class (single threaded)')                                                                 | 3,404.56 us | 101.3847 us | 67.0597 us
-[Entitas_MultiSystem](# 'using the JobSystem base class (multi threaded)')                                                             | 2,107.79 us |  79.0974 us | 52.3180 us
+|                          Method |        Mean |     Error |    StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
+|-------------------------------- |------------:|----------:|----------:|------:|------:|------:|----------:|
+|            DefaultEcs_EntitySet |   288.40 us |  0.242 us |  0.202 us |     - |     - |     - |         - |
+|               DefaultEcs_System |   288.11 us |  0.056 us |  0.053 us |     - |     - |     - |         - |
+|          DefaultEcs_MultiSystem |    77.77 us |  0.144 us |  0.135 us |     - |     - |     - |         - |
+|            DefaultEcs_Component |    96.87 us |  0.035 us |  0.029 us |     - |     - |     - |         - |
+|      DefaultEcs_ComponentSystem |    83.88 us |  0.015 us |  0.014 us |     - |     - |     - |         - |
+| DefaultEcs_ComponentMultiSystem |    27.55 us |  0.112 us |  0.105 us |     - |     - |     - |         - |
+|                  Entitas_System | 4,663.85 us | 11.923 us | 11.153 us |     - |     - |     - |     128 B |
+|             Entitas_MultiSystem | 2,804.34 us | 19.289 us | 18.043 us |     - |     - |     - |     465 B |
 
 DoubleComponentEntityEnumeration: do basic movement with two component (position, speed) on 100000 entities
 
- Method | Mean | Error | StdDev
----:|---:|---:|---:
-[DefaultEcs_EntitySet](# 'using directly the EntitySet class (single threaded)')                                                |   600.6 us |  0.8557 us |  0.5660 us
-[DefaultEcs_System](# 'using the AEntitySystem base class (single threaded)')                                                   |   657.9 us |  0.6519 us |  0.4312 us
-[*DefaultEcs_System](# 'same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one')      |   598.2 us |  7.0261 us |  4.6473 us
-[DefaultEcs_MultiSystem](# 'using the AEntitySystem base class (multi threaded)')                                               |   185.4 us | 13.9892 us |  9.2530 us
-[*DefaultEcs_MultiSystem](# 'same as above but overriding ReadOnlySpan<Entity> Update method instead of the single Entity one') |   169.8 us | 21.8569 us | 14.4570 us
-[Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp)|
-[Entitas_System](# 'using the JobSystem base class (single threaded)')                                                          | 3,087.1 us | 25.3565 us | 16.7718 us
-[Entitas_MultiSystem](# 'using the JobSystem base class (multi threaded)')                                                      | 2,239.0 us | 36.4984 us | 24.1415 us
+|                 Method |       Mean |    Error |   StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
+|----------------------- |-----------:|---------:|---------:|------:|------:|------:|----------:|
+|   DefaultEcs_EntitySet |   608.2 us |  0.35 us |  0.31 us |     - |     - |     - |         - |
+|      DefaultEcs_System |   602.8 us |  0.31 us |  0.28 us |     - |     - |     - |         - |
+| DefaultEcs_MultiSystem |   154.2 us |  0.24 us |  0.19 us |     - |     - |     - |         - |
+|         Entitas_System | 4,199.2 us | 16.25 us | 15.20 us |     - |     - |     - |     128 B |
+|    Entitas_MultiSystem | 2,988.5 us |  9.64 us |  9.02 us |     - |     - |     - |     481 B |
