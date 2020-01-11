@@ -10,7 +10,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         private readonly StreamWriterWrapper _writer;
         private readonly Dictionary<Type, ushort> _types;
-        private readonly int _maxEntityCount;
+        private readonly int _worldMaxCapacity;
 
         private ushort _currentType;
 
@@ -18,18 +18,18 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region Initialisation
 
-        public ComponentTypeWriter(in StreamWriterWrapper writer, Dictionary<Type, ushort> types, int maxEntityCount)
+        public ComponentTypeWriter(in StreamWriterWrapper writer, Dictionary<Type, ushort> types, int worldMaxCapacity)
         {
             _writer = writer;
             _types = types;
-            _maxEntityCount = maxEntityCount;
+            _worldMaxCapacity = worldMaxCapacity;
         }
 
         #endregion
 
         #region IComponentTypeReader
 
-        void IComponentTypeReader.OnRead<T>(int maxComponentCount)
+        void IComponentTypeReader.OnRead<T>(int maxCapacity)
         {
             _types.Add(typeof(T), _currentType);
 
@@ -37,11 +37,11 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             _writer.Write(_currentType);
             _writer.WriteString(typeof(T).AssemblyQualifiedName);
 
-            if (maxComponentCount != _maxEntityCount)
+            if (maxCapacity != _worldMaxCapacity)
             {
-                _writer.WriteByte((byte)EntryType.MaxComponentCount);
+                _writer.WriteByte((byte)EntryType.ComponentMaxCapacity);
                 _writer.Write(_currentType);
-                _writer.Write(maxComponentCount);
+                _writer.Write(maxCapacity);
             }
 
             ++_currentType;

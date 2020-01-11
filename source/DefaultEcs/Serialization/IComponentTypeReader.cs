@@ -9,7 +9,7 @@
         /// Processes the maximum number of component of type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
-        /// <param name="maxComponentCount">The maximum number of component of type <typeparamref name="T"/>.</param>
-        void OnRead<T>(int maxComponentCount);
+        /// <param name="maxCapacity">The maximum number of component of type <typeparamref name="T"/>.</param>
+        void OnRead<T>(int maxCapacity);
     }
 }

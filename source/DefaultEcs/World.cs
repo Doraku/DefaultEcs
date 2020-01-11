@@ -45,9 +45,15 @@ namespace DefaultEcs
         internal int LastEntityId => _entityIdDispenser.LastInt;
 
         /// <summary>
-        /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can create.
+        /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can handle.
         /// </summary>
-        public int MaxEntityCount { get; }
+        public int MaxCapacity { get; }
+
+        /// <summary>
+        /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can handle.
+        /// </summary>
+        [Obsolete("Use MaxCapacity instead, will be removed next version")]
+        public int MaxEntityCount => MaxCapacity;
 
         #endregion
 
@@ -67,19 +73,19 @@ namespace DefaultEcs
         /// <summary>
         /// Initializes a new instance of the <see cref="World"/> class.
         /// </summary>
-        /// <param name="maxEntityCount">The maximum number of <see cref="Entity"/> that can exist in this <see cref="World"/>.</param>
-        /// <exception cref="ArgumentException"><paramref name="maxEntityCount"/> cannot be negative.</exception>
-        public World(int maxEntityCount)
+        /// <param name="maxCapacity">The maximum number of <see cref="Entity"/> that can exist in this <see cref="World"/>.</param>
+        /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
+        public World(int maxCapacity)
         {
-            if (maxEntityCount < 0)
+            if (maxCapacity < 0)
             {
-                throw new ArgumentException("Argument cannot be negative", nameof(maxEntityCount));
+                throw new ArgumentException("Argument cannot be negative", nameof(maxCapacity));
             }
 
             _entityIdDispenser = new IntDispenser(-1);
             WorldId = (short)_worldIdDispenser.GetFreeInt();
 
-            MaxEntityCount = maxEntityCount;
+            MaxCapacity = maxCapacity;
             EntityInfos = EmptyArray<EntityInfo>.Value;
 
             lock (_lockObject)
@@ -147,12 +153,12 @@ namespace DefaultEcs
         {
             int entityId = _entityIdDispenser.GetFreeInt();
 
-            if (entityId >= MaxEntityCount)
+            if (entityId >= MaxCapacity)
             {
                 throw new InvalidOperationException("Max number of Entity reached");
             }
 
-            ArrayExtension.EnsureLength(ref EntityInfos, entityId, MaxEntityCount);
+            ArrayExtension.EnsureLength(ref EntityInfos, entityId, MaxCapacity);
 
             ref ComponentEnum components = ref EntityInfos[entityId].Components;
             components[IsAliveFlag] = true;
@@ -170,12 +176,12 @@ namespace DefaultEcs
         {
             int entityId = _entityIdDispenser.GetFreeInt();
 
-            if (entityId >= MaxEntityCount)
+            if (entityId >= MaxCapacity)
             {
                 throw new InvalidOperationException("Max number of Entity reached");
             }
 
-            ArrayExtension.EnsureLength(ref EntityInfos, entityId, MaxEntityCount);
+            ArrayExtension.EnsureLength(ref EntityInfos, entityId, MaxCapacity);
 
             EntityInfos[entityId].Components[IsAliveFlag] = true;
             EntityInfos[entityId].Components[IsEnabledFlag] = true;
@@ -185,30 +191,48 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Sets up the current <see cref="World"/> to handle component of type <typeparamref name="T"/> with a different maximum count than <see cref="MaxEntityCount"/>.
+        /// Sets up the current <see cref="World"/> to handle component of type <typeparamref name="T"/> with a different maximum count than <see cref="MaxCapacity"/>.
         /// If the type of component is already handled by the current <see cref="World"/>, does nothing.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
-        /// <param name="maxComponentCount">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
+        /// <param name="maxCapacity">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
         /// <returns>Whether the maximum count has been setted or not.</returns>
-        /// <exception cref="ArgumentException"><paramref name="maxComponentCount"/> cannot be negative.</exception>
-        public bool SetMaximumComponentCount<T>(int maxComponentCount)
+        /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
+        public bool SetMaxCapacityFor<T>(int maxCapacity)
         {
-            if (maxComponentCount < 0)
+            if (maxCapacity < 0)
             {
-                throw new ArgumentException("Argument cannot be negative", nameof(maxComponentCount));
+                throw new ArgumentException("Argument cannot be negative", nameof(maxCapacity));
             }
 
-            return ComponentManager<T>.GetOrCreate(WorldId, maxComponentCount).MaxComponentCount == maxComponentCount;
+            return ComponentManager<T>.GetOrCreate(WorldId, maxCapacity).MaxCapacity == maxCapacity;
         }
 
         /// <summary>
+        /// Sets up the current <see cref="World"/> to handle component of type <typeparamref name="T"/> with a different maximum count than <see cref="MaxCapacity"/>.
+        /// If the type of component is already handled by the current <see cref="World"/>, does nothing.
+        /// </summary>
+        /// <typeparam name="T">The type of component.</typeparam>
+        /// <param name="maxCapacity">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
+        /// <returns>Whether the maximum count has been setted or not.</returns>
+        /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
+        [Obsolete("Use SetMaxCapacityFor instead, will be removed next version")]
+        public bool SetMaximumComponentCount<T>(int maxCapacity) => SetMaxCapacityFor<T>(maxCapacity);
+
+        /// <summary>
         /// Gets the maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create.
-        /// Returns a negative value if there is no limit.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public int GetMaximumComponentCount<T>() => ComponentManager<T>.Get(WorldId)?.MaxComponentCount ?? MaxEntityCount;
+        /// <returns>The maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create, or -1 if it is currently not handled.</returns>
+        public int GetMaxCapacityFor<T>() => ComponentManager<T>.Get(WorldId)?.MaxCapacity ?? -1;
+
+        /// <summary>
+        /// Gets the maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>The maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create, or -1 if it is currently not handled.</returns>
+        [Obsolete("Use GetMaxCapacityFor instead, will be removed next version")]
+        public int GetMaximumComponentCount<T>() => GetMaxCapacityFor<T>();
 
         /// <summary>
         /// Gets all the component of a given type <typeparamref name="T"/>.

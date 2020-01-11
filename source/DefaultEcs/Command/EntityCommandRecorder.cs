@@ -45,26 +45,26 @@ namespace DefaultEcs.Command
         /// <summary>
         /// Creates an <see cref="EntityCommandRecorder"/> with a custom default size which can grow to a maximum capacity. 
         /// </summary>
-        /// <param name="defaultCapacity">The default size of the <see cref="EntityCommandRecorder"/>.</param>
+        /// <param name="capacity">The default size of the <see cref="EntityCommandRecorder"/>.</param>
         /// <param name="maxCapacity">The maximum capacity of the <see cref="EntityCommandRecorder"/>.</param>
-        /// <exception cref="ArgumentException"><paramref name="defaultCapacity"/> cannot be negative.</exception>
+        /// <exception cref="ArgumentException"><paramref name="capacity"/> cannot be negative.</exception>
         /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
-        /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> is inferior to <paramref name="defaultCapacity"/>.</exception>
-        public EntityCommandRecorder(int defaultCapacity, int maxCapacity)
+        /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> is inferior to <paramref name="capacity"/>.</exception>
+        public EntityCommandRecorder(int capacity, int maxCapacity)
         {
-            if (defaultCapacity < 0)
+            if (capacity < 0)
             {
-                throw new ArgumentException("Argument cannot be negative.", nameof(defaultCapacity));
+                throw new ArgumentException("Argument cannot be negative.", nameof(capacity));
             }
-            if (maxCapacity < defaultCapacity)
+            if (maxCapacity < capacity)
             {
-                throw new ArgumentException($"{nameof(maxCapacity)} is inferior to {nameof(defaultCapacity)}.", nameof(maxCapacity));
+                throw new ArgumentException($"{nameof(maxCapacity)} is inferior to {nameof(capacity)}.", nameof(maxCapacity));
             }
 
             MaxCapacity = maxCapacity;
             _objects = new List<object>();
-            _lockObject = maxCapacity == defaultCapacity ? null : new ReaderWriterLockSlim();
-            _memory = new byte[defaultCapacity];
+            _lockObject = maxCapacity == capacity ? null : new ReaderWriterLockSlim();
+            _memory = new byte[capacity];
             _nextCommandOffset = 0;
         }
 

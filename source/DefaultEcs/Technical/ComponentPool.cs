@@ -16,7 +16,7 @@ namespace DefaultEcs.Technical
         private static readonly bool _isManagedResourceType;
 
         private readonly short _worldId;
-        private readonly int _maxEntityCount;
+        private readonly int _worldMaxCapacity;
 
         private int[] _mapping;
         private ComponentLink[] _links;
@@ -27,7 +27,7 @@ namespace DefaultEcs.Technical
 
         #region Properties
 
-        public int MaxComponentCount { get; }
+        public int MaxCapacity { get; }
 
         public bool IsNotEmpty => _lastComponentIndex > -1;
 
@@ -46,11 +46,11 @@ namespace DefaultEcs.Technical
             _isManagedResourceType = typeInfo.GenericTypeArguments.Length > 0 && typeInfo.GetGenericTypeDefinition() == typeof(ManagedResource<,>);
         }
 
-        public ComponentPool(short worldId, int maxEntityCount, int maxComponentCount)
+        public ComponentPool(short worldId, int worldMaxCapacity, int maxCapacity)
         {
             _worldId = worldId;
-            _maxEntityCount = maxEntityCount;
-            MaxComponentCount = _isFlagType ? 1 : Math.Min(maxEntityCount, maxComponentCount);
+            _worldMaxCapacity = worldMaxCapacity;
+            MaxCapacity = _isFlagType ? 1 : Math.Min(worldMaxCapacity, maxCapacity);
 
             _mapping = EmptyArray<int>.Value;
             _links = EmptyArray<ComponentLink>.Value;
@@ -72,7 +72,7 @@ namespace DefaultEcs.Technical
 
         #region Callbacks
 
-        private void On(in ComponentTypeReadMessage message) => message.Reader.OnRead<T>(MaxComponentCount);
+        private void On(in ComponentTypeReadMessage message) => message.Reader.OnRead<T>(MaxCapacity);
 
         private void On(in EntityDisposedMessage message) => Remove(message.EntityId);
 
@@ -117,7 +117,7 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Set(int entityId, in T component)
         {
-            ArrayExtension.EnsureLength(ref _mapping, entityId, _maxEntityCount, -1);
+            ArrayExtension.EnsureLength(ref _mapping, entityId, _worldMaxCapacity, -1);
 
             ref int componentIndex = ref _mapping[entityId];
             if (componentIndex != -1)
@@ -137,7 +137,7 @@ namespace DefaultEcs.Technical
                 return false;
             }
 
-            if (_lastComponentIndex == MaxComponentCount - 1)
+            if (_lastComponentIndex == MaxCapacity - 1)
             {
                 if (_isFlagType)
                 {
@@ -149,8 +149,8 @@ namespace DefaultEcs.Technical
 
             componentIndex = ++_lastComponentIndex;
 
-            ArrayExtension.EnsureLength(ref _components, _lastComponentIndex, MaxComponentCount);
-            ArrayExtension.EnsureLength(ref _links, _lastComponentIndex, MaxComponentCount);
+            ArrayExtension.EnsureLength(ref _components, _lastComponentIndex, MaxCapacity);
+            ArrayExtension.EnsureLength(ref _links, _lastComponentIndex, MaxCapacity);
 
             _components[_lastComponentIndex] = component;
             _links[_lastComponentIndex] = new ComponentLink(entityId);
@@ -166,7 +166,7 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool SetSameAs(int entityId, int referenceEntityId)
         {
-            ArrayExtension.EnsureLength(ref _mapping, entityId, _maxEntityCount, -1);
+            ArrayExtension.EnsureLength(ref _mapping, entityId, _worldMaxCapacity, -1);
 
             int referenceComponentIndex = _mapping[referenceEntityId];
 

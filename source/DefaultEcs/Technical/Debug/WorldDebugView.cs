@@ -16,14 +16,14 @@ namespace DefaultEcs.Technical.Debug
 
             public Type Type => typeof(T);
 
-            public int MaxComponentCount { get; }
+            public int MaxCapacity { get; }
 
             public T[] Components => _world.GetAllComponents<T>().ToArray();
 
-            public WorldComponents(World world, int maxComponentCount)
+            public WorldComponents(World world, int maxCapacity)
             {
                 _world = world;
-                MaxComponentCount = maxComponentCount;
+                MaxCapacity = maxCapacity;
             }
         }
 
@@ -38,13 +38,13 @@ namespace DefaultEcs.Technical.Debug
                 _world = world;
             }
 
-            public void OnRead<T>(int maxComponentCount) => _components.Add(new WorldComponents<T>(_world, maxComponentCount));
+            public void OnRead<T>(int maxCapacity) => _components.Add(new WorldComponents<T>(_world, maxCapacity));
         }
 
         private readonly World _world;
         private readonly List<IComponent> _components;
 
-        public int MaxEntityCount => _world.MaxEntityCount;
+        public int MaxCapacity => _world.MaxCapacity;
         public Entity[] Entities => _world.GetAllEntities().ToArray();
         public IComponent[] Components => _components.ToArray();
 

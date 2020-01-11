@@ -17,22 +17,22 @@ namespace DefaultEcs.Serialization
     {
         #region Types
 
-        private interface IOperation
+        private interface IComponentOperation
         {
-            void SetMaximumComponentCount(World world, int maxComponentCount);
-            void SetComponent(in Entity entity, string line, StreamReader reader);
-            void SetSameAsComponent(in Entity entity, in Entity reference);
-            void SetDisabledComponent(in Entity entity, string line, StreamReader reader);
-            void SetDisabledSameAsComponent(in Entity entity, in Entity reference);
+            void SetMaxCapacity(World world, int maxCapacity);
+            void Set(in Entity entity, string line, StreamReader reader);
+            void SetSameAs(in Entity entity, in Entity reference);
+            void SetDisabled(in Entity entity, string line, StreamReader reader);
+            void SetDisabledSameAs(in Entity entity, in Entity reference);
         }
 
-        private sealed class Operation<T> : IOperation
+        private sealed class ComponentOperation<T> : IComponentOperation
         {
             #region IOperation
 
-            public void SetMaximumComponentCount(World world, int maxComponentCount) => world.SetMaximumComponentCount<T>(maxComponentCount);
+            public void SetMaxCapacity(World world, int maxCapacity) => world.SetMaxCapacityFor<T>(maxCapacity);
 
-            public void SetComponent(in Entity entity, string line, StreamReader reader)
+            public void Set(in Entity entity, string line, StreamReader reader)
             {
                 try
                 {
@@ -44,9 +44,9 @@ namespace DefaultEcs.Serialization
                 }
             }
 
-            public void SetSameAsComponent(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
+            public void SetSameAs(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
 
-            public void SetDisabledComponent(in Entity entity, string line, StreamReader reader)
+            public void SetDisabled(in Entity entity, string line, StreamReader reader)
             {
                 try
                 {
@@ -58,7 +58,7 @@ namespace DefaultEcs.Serialization
                 }
             }
 
-            public void SetDisabledSameAsComponent(in Entity entity, in Entity reference) => entity.SetSameAsDisabled<T>(reference);
+            public void SetDisabledSameAs(in Entity entity, in Entity reference) => entity.SetSameAsDisabled<T>(reference);
 
             #endregion
         }
@@ -68,7 +68,7 @@ namespace DefaultEcs.Serialization
         #region Fields
 
         private static readonly char[] _split = new[] { ' ', '\t' };
-        private static readonly ConcurrentDictionary<Type, IOperation> _operations = new ConcurrentDictionary<Type, IOperation>();
+        private static readonly ConcurrentDictionary<Type, IComponentOperation> _componentOperations = new ConcurrentDictionary<Type, IComponentOperation>();
 
         #endregion
 
@@ -84,7 +84,7 @@ namespace DefaultEcs.Serialization
                 using StreamReader reader = new StreamReader(stream);
 
                 Entity currentEntity = default;
-                Dictionary<string, IOperation> operations = new Dictionary<string, IOperation>();
+                Dictionary<string, IComponentOperation> componentOperations = new Dictionary<string, IComponentOperation>();
 
                 while (!reader.EndOfStream)
                 {
@@ -117,56 +117,56 @@ namespace DefaultEcs.Serialization
                         {
                             switch (entry)
                             {
-                                case nameof(EntryType.MaxEntityCount):
+                                case nameof(EntryType.WorldMaxCapacity):
                                     if (!isNewWorld)
                                     {
-                                        throw new ArgumentException("Encoutered MaxEntityCount line");
+                                        throw new ArgumentException($"Encoutered {nameof(EntryType.WorldMaxCapacity)} line");
                                     }
                                     if (world != null)
                                     {
-                                        throw new ArgumentException("Encoutered MaxEntityCount, MaxComponentCount or Entity line before current MaxEntityCount");
+                                        throw new ArgumentException($"Encoutered {nameof(EntryType.ComponentMaxCapacity)} or Entity line before current {nameof(EntryType.WorldMaxCapacity)}");
                                     }
-                                    if (!int.TryParse(lineParts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out int maxEntityCount))
+                                    if (!int.TryParse(lineParts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out int worldMaxCapacity))
                                     {
                                         throw new ArgumentException($"Unable to convert '{lineParts[1]}' to a number");
                                     }
 
-                                    world = new World(maxEntityCount);
+                                    world = new World(worldMaxCapacity);
                                     break;
 
                                 case nameof(EntryType.ComponentType):
                                     string[] componentTypeEntry = lineParts[1].Split(_split, 2, StringSplitOptions.RemoveEmptyEntries);
                                     Type type = Type.GetType(componentTypeEntry[1], false) ?? throw new ArgumentException($"Unable to get type from '{componentTypeEntry[1]}'");
 
-                                    operations.Add(
+                                    componentOperations.Add(
                                         componentTypeEntry[0],
-                                        _operations.GetOrAdd(
+                                        _componentOperations.GetOrAdd(
                                             type,
-                                            t => (IOperation)Activator.CreateInstance(typeof(Operation<>).MakeGenericType(t))));
+                                            t => (IComponentOperation)Activator.CreateInstance(typeof(ComponentOperation<>).MakeGenericType(t))));
                                     break;
 
-                                case nameof(EntryType.MaxComponentCount):
+                                case nameof(EntryType.ComponentMaxCapacity):
                                     if (!isNewWorld)
                                     {
-                                        throw new ArgumentException("Encoutered MaxComponentCount line");
+                                        throw new ArgumentException($"Encoutered {nameof(EntryType.ComponentMaxCapacity)} line");
                                     }
-                                    string[] maxComponentCountEntry = lineParts[1].Split(_split, StringSplitOptions.RemoveEmptyEntries);
-                                    if (maxComponentCountEntry.Length < 2)
+                                    string[] componentMaxCapacityEntry = lineParts[1].Split(_split, StringSplitOptions.RemoveEmptyEntries);
+                                    if (componentMaxCapacityEntry.Length < 2)
                                     {
-                                        throw new ArgumentException($"Unable to get {nameof(EntryType.MaxComponentCount)} informations from '{lineParts[1]}'");
+                                        throw new ArgumentException($"Unable to get {nameof(EntryType.ComponentMaxCapacity)} informations from '{lineParts[1]}'");
                                     }
-                                    if (!operations.TryGetValue(maxComponentCountEntry[0], out IOperation operation))
+                                    if (!componentOperations.TryGetValue(componentMaxCapacityEntry[0], out IComponentOperation componentOperation))
                                     {
-                                        throw new ArgumentException($"Unknown component type used '{maxComponentCountEntry[0]}'");
+                                        throw new ArgumentException($"Unknown component type used '{componentMaxCapacityEntry[0]}'");
                                     }
-                                    if (!int.TryParse(maxComponentCountEntry[1], NumberStyles.Any, CultureInfo.InvariantCulture, out int maxComponentCount))
+                                    if (!int.TryParse(componentMaxCapacityEntry[1], NumberStyles.Any, CultureInfo.InvariantCulture, out int maxCapacity))
                                     {
-                                        throw new ArgumentException($"Unable to convert '{maxComponentCountEntry[1]}' to a number");
+                                        throw new ArgumentException($"Unable to convert '{componentMaxCapacityEntry[1]}' to a number");
                                     }
 
                                     world ??= new World();
 
-                                    operation.SetMaximumComponentCount(world, maxComponentCount);
+                                    componentOperation.SetMaxCapacity(world, maxCapacity);
                                     break;
 
                                 case nameof(EntryType.Component):
@@ -179,12 +179,12 @@ namespace DefaultEcs.Serialization
                                     {
                                         throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
                                     }
-                                    if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
+                                    if (!componentOperations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out componentOperation))
                                     {
                                         throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
                                     }
 
-                                    operation.SetComponent(currentEntity, componentEntry.Length > 1 ? componentEntry[1] : null, reader);
+                                    componentOperation.Set(currentEntity, componentEntry.Length > 1 ? componentEntry[1] : null, reader);
                                     break;
 
                                 case nameof(EntryType.ComponentSameAs):
@@ -197,7 +197,7 @@ namespace DefaultEcs.Serialization
                                     {
                                         throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
                                     }
-                                    if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
+                                    if (!componentOperations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out componentOperation))
                                     {
                                         throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
                                     }
@@ -206,7 +206,7 @@ namespace DefaultEcs.Serialization
                                         throw new ArgumentException($"Unknown reference Entity '{componentEntry[1]}'");
                                     }
 
-                                    operation.SetSameAsComponent(currentEntity, reference);
+                                    componentOperation.SetSameAs(currentEntity, reference);
                                     break;
 
                                 case nameof(EntryType.ParentChild):
@@ -237,12 +237,12 @@ namespace DefaultEcs.Serialization
                                     {
                                         throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
                                     }
-                                    if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
+                                    if (!componentOperations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out componentOperation))
                                     {
                                         throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
                                     }
 
-                                    operation.SetDisabledComponent(currentEntity, componentEntry.Length > 1 ? componentEntry[1] : null, reader);
+                                    componentOperation.SetDisabled(currentEntity, componentEntry.Length > 1 ? componentEntry[1] : null, reader);
                                     break;
 
                                 case nameof(EntryType.DisabledComponentSameAs):
@@ -255,7 +255,7 @@ namespace DefaultEcs.Serialization
                                     {
                                         throw new ArgumentException($"Unable to get component type information from '{lineParts[1]}'");
                                     }
-                                    if (!operations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out operation))
+                                    if (!componentOperations.TryGetValue(componentEntry[0].TrimEnd(':', '='), out componentOperation))
                                     {
                                         throw new ArgumentException($"Unknown component type used '{componentEntry[0].TrimEnd(':', '=')}'");
                                     }
@@ -264,7 +264,7 @@ namespace DefaultEcs.Serialization
                                         throw new ArgumentException($"Unknown reference Entity '{componentEntry[1]}'");
                                     }
 
-                                    operation.SetDisabledSameAsComponent(currentEntity, reference);
+                                    componentOperation.SetDisabledSameAs(currentEntity, reference);
                                     break;
                             }
                         }
@@ -344,12 +344,12 @@ namespace DefaultEcs.Serialization
 
             Dictionary<Type, string> types = new Dictionary<Type, string>();
 
-            if (world.MaxEntityCount != int.MaxValue)
+            if (world.MaxCapacity != int.MaxValue)
             {
-                writer.WriteLine($"{nameof(EntryType.MaxEntityCount)} {world.MaxEntityCount}");
+                writer.WriteLine($"{nameof(EntryType.WorldMaxCapacity)} {world.MaxCapacity}");
             }
 
-            world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxEntityCount));
+            world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxCapacity));
 
             new EntityWriter(writer, types).Write(world.GetAllEntities());
         }

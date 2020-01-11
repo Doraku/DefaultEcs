@@ -14,11 +14,14 @@
   </ItemGroup>
 
   <PropertyGroup Label="Package">
-    <Version>0.13.0</Version>
+    <Version>0.13.1</Version>
     <PackageReleaseNotes>
 added minEntityCountByRunnerIndex to AEntitySystem constructors
 added minComponentCountByRunnerIndex to AComponentSystem constructor
 added AEntityBufferedSystem to make structural modification on entities in a safe way
+added World.MaxCapacity, obsolete MaxEntityCount
+added World.SetMaxCapacityFor, obsolete SetMaximumComponentCount
+added World.GetMaxCapacityFor, obsolete GetMaximumComponentCount
 
 updated System.Reflection.Emit.Lightweight to 4.7.0
     </PackageReleaseNotes>

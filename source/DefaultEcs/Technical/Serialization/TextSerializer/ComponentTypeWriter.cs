@@ -13,24 +13,24 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         private readonly StreamWriter _writer;
         private readonly Dictionary<Type, string> _types;
-        private readonly int _maxEntityCount;
+        private readonly int _worldMaxCapacity;
 
         #endregion
 
         #region Initialisation
 
-        public ComponentTypeWriter(StreamWriter writer, Dictionary<Type, string> types, int maxEntityCount)
+        public ComponentTypeWriter(StreamWriter writer, Dictionary<Type, string> types, int worldMaxCapacity)
         {
             _writer = writer;
             _types = types;
-            _maxEntityCount = maxEntityCount;
+            _worldMaxCapacity = worldMaxCapacity;
         }
 
         #endregion
 
         #region IComponentTypeReader
 
-        void IComponentTypeReader.OnRead<T>(int maxComponentCount)
+        void IComponentTypeReader.OnRead<T>(int maxCapacity)
         {
             string shortName = typeof(T).Name;
 
@@ -43,9 +43,9 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             _types.Add(typeof(T), shortName);
 
             _writer.WriteLine($"{nameof(EntryType.ComponentType)} {shortName} {typeof(T).FullName}, {typeof(T).GetTypeInfo().Assembly.GetName().Name}");
-            if (maxComponentCount != _maxEntityCount && !typeof(T).GetTypeInfo().IsFlagType())
+            if (maxCapacity != _worldMaxCapacity && !typeof(T).GetTypeInfo().IsFlagType())
             {
-                _writer.WriteLine($"{nameof(EntryType.MaxComponentCount)} {shortName} {maxComponentCount}");
+                _writer.WriteLine($"{nameof(EntryType.ComponentMaxCapacity)} {shortName} {maxCapacity}");
             }
         }
 

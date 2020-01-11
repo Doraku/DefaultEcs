@@ -21,7 +21,7 @@ namespace DefaultEcs
 
         private readonly bool _needClearing;
         private readonly short _worldId;
-        private readonly int _maxEntityCount;
+        private readonly int _worldMaxCapacity;
         private readonly Predicate<ComponentEnum> _filter;
         private readonly IDisposable _subscriptions;
 
@@ -81,7 +81,7 @@ namespace DefaultEcs
         {
             _needClearing = needClearing;
             _worldId = world.WorldId;
-            _maxEntityCount = world.MaxEntityCount;
+            _worldMaxCapacity = world.MaxCapacity;
 
             _filter = EntitySetFilterFactory.GetFilter(withFilter.Copy(), withoutFilter.Copy(), withEitherFilters?.ToList(), withoutEitherFilters?.ToList());
 
@@ -110,14 +110,14 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Add(int entityId)
         {
-            ArrayExtension.EnsureLength(ref _mapping, entityId, _maxEntityCount, -1);
+            ArrayExtension.EnsureLength(ref _mapping, entityId, _worldMaxCapacity, -1);
 
             ref int index = ref _mapping[entityId];
             if (index == -1)
             {
                 index = Count++;
 
-                ArrayExtension.EnsureLength(ref _entities, index, _maxEntityCount);
+                ArrayExtension.EnsureLength(ref _entities, index, _worldMaxCapacity);
 
                 _entities[index] = new Entity(_worldId, entityId);
                 EntityAddedEvent?.Invoke(_entities[index]);

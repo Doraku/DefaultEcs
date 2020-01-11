@@ -193,8 +193,8 @@ namespace DefaultEcs.Test.Serialization
         {
             using World world = new World(42);
 
-            world.SetMaximumComponentCount<int>(13);
-            world.SetMaximumComponentCount<float>(60);
+            world.SetMaxCapacityFor<int>(13);
+            world.SetMaxCapacityFor<float>(60);
 
             Entity[] entities = new[]
             {
@@ -253,7 +253,7 @@ namespace DefaultEcs.Test.Serialization
 
                 using (copyWorld)
                 {
-                    Check.That(copyWorld.MaxEntityCount).IsEqualTo(world.MaxEntityCount);
+                    Check.That(copyWorld.MaxCapacity).IsEqualTo(world.MaxCapacity);
 
                     Entity[] entitiesCopy = copyWorld.GetAllEntities().ToArray();
 
@@ -309,8 +309,8 @@ namespace DefaultEcs.Test.Serialization
         {
             using World world = new World(42);
 
-            world.SetMaximumComponentCount<int>(13);
-            world.SetMaximumComponentCount<float>(60);
+            world.SetMaxCapacityFor<int>(13);
+            world.SetMaxCapacityFor<float>(60);
 
             Entity[] entities = new[]
             {

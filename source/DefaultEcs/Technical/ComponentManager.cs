@@ -49,14 +49,14 @@ namespace DefaultEcs.Technical
         #region Methods
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static ComponentPool<T> Add(short worldId, int maxEntityCount, int maxComponentCount)
+        private static ComponentPool<T> Add(short worldId, int worldMaxCapacity, int maxCapacity)
         {
             lock (_lockObject)
             {
                 ArrayExtension.EnsureLength(ref Pools, worldId);
 
                 ref ComponentPool<T> pool = ref Pools[worldId];
-                pool ??= new ComponentPool<T>(worldId, maxEntityCount, maxComponentCount);
+                pool ??= new ComponentPool<T>(worldId, worldMaxCapacity, maxCapacity);
 
                 return pool;
             }
@@ -66,10 +66,10 @@ namespace DefaultEcs.Technical
         public static ComponentPool<T> Get(short worldId) => worldId < Pools.Length ? Pools[worldId] : null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComponentPool<T> GetOrCreate(short worldId, int maxComponentCount) => Get(worldId) ?? Add(worldId, World.Worlds[worldId].MaxEntityCount, maxComponentCount);
+        public static ComponentPool<T> GetOrCreate(short worldId, int maxCapacity) => Get(worldId) ?? Add(worldId, World.Worlds[worldId].MaxCapacity, maxCapacity);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComponentPool<T> GetOrCreate(short worldId) => Get(worldId) ?? Add(worldId, World.Worlds[worldId].MaxEntityCount, World.Worlds[worldId].MaxEntityCount);
+        public static ComponentPool<T> GetOrCreate(short worldId) => Get(worldId) ?? Add(worldId, World.Worlds[worldId].MaxCapacity, World.Worlds[worldId].MaxCapacity);
 
         #endregion
     }

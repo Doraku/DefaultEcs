@@ -2,9 +2,9 @@
 {
     internal enum EntryType : byte
     {
-        MaxEntityCount = 0,
+        WorldMaxCapacity = 0,
         ComponentType = 1,
-        MaxComponentCount = 2,
+        ComponentMaxCapacity = 2,
         Entity = 3,
         Component = 4,
         ComponentSameAs = 5,
