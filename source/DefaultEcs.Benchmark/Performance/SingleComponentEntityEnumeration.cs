@@ -31,9 +31,9 @@ namespace DefaultEcs.Benchmark.Performance
 
             protected override void Update(int state, ReadOnlySpan<DefaultEntity> entities)
             {
-                for (int i = 0; i < entities.Length; i++)
+                foreach (ref readonly DefaultEntity entity in entities)
                 {
-                    ++entities[i].Get<DefaultComponent>().Value;
+                    ++entity.Get<DefaultComponent>().Value;
                 }
             }
         }
@@ -50,9 +50,9 @@ namespace DefaultEcs.Benchmark.Performance
 
             protected override void Update(int state, Span<DefaultComponent> components)
             {
-                for (int i = 0; i < components.Length; i++)
+                foreach (ref DefaultComponent component in components)
                 {
-                    ++components[i].Value;
+                    ++component.Value;
                 }
             }
         }
@@ -127,10 +127,9 @@ namespace DefaultEcs.Benchmark.Performance
         [Benchmark]
         public void DefaultEcs_EntitySet()
         {
-            ReadOnlySpan<DefaultEntity> entities = _defaultEntitySet.GetEntities();
-            for (int i = 0; i < entities.Length; i++)
+            foreach (ref readonly DefaultEntity entity in _defaultEntitySet.GetEntities())
             {
-                ++entities[i].Get<DefaultComponent>().Value;
+                ++entity.Get<DefaultComponent>().Value;
             }
         }
 
@@ -143,10 +142,9 @@ namespace DefaultEcs.Benchmark.Performance
         [Benchmark]
         public void DefaultEcs_Component()
         {
-            Span<DefaultComponent> components = _defaultWorld.GetAllComponents<DefaultComponent>();
-            for (int i = 0; i < components.Length; i++)
+            foreach (ref DefaultComponent component in _defaultWorld.GetAllComponents<DefaultComponent>())
             {
-                ++components[i].Value;
+                ++component.Value;
             }
         }
 

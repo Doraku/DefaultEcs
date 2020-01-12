@@ -38,7 +38,7 @@ namespace DefaultSlap.System
         {
             Span<Entity> bugs = stackalloc Entity[_bugsSet.Count];
             _bugsSet.GetEntities().CopyTo(bugs);
-            foreach (Entity bug in bugs)
+            foreach (ref readonly Entity bug in bugs)
             {
                 bug.Dispose();
             }
@@ -58,7 +58,7 @@ namespace DefaultSlap.System
         {
             Span<Entity> bugs = stackalloc Entity[_bugsSet.Count];
             _bugsSet.GetEntities().CopyTo(bugs);
-            foreach (Entity bug in bugs)
+            foreach (ref readonly Entity bug in bugs)
             {
                 Point position = bug.Get<Position>().Value;
                 Point size = bug.Get<DrawInfo>().Size;

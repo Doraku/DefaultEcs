@@ -58,7 +58,7 @@ public sealed class CollisionSystem : AEntitySystem<float>
     {
         foreach (ref readonly Entity ally in _allies.GetEntities())
         {
-            foreach (ref readonly Entity entityin entities)
+            foreach (ref readonly Entity entity in entities)
             {
                 if (entity.Get<CollisionBox>().Intersects(ally.Get<CollisionBox>()))
                 {

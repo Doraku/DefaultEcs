@@ -45,7 +45,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         [Benchmark]
         public void DefaultEnumeration()
         {
-            foreach (Entity entity in _set.GetEntities())
+            foreach (ref readonly Entity entity in _set.GetEntities())
             {
                 _count += entity.Get<int>();
                 _uCount += entity.Get<uint>();
@@ -186,7 +186,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         [Benchmark]
         public void DefaultEnumeration3()
         {
-            foreach (Entity entity in _set.GetEntities())
+            foreach (ref readonly Entity entity in _set.GetEntities())
             {
                 _count += entity.Get<int>();
                 _uCount += entity.Get<uint>();

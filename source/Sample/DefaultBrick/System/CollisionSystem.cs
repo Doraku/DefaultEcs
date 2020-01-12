@@ -29,9 +29,6 @@ namespace DefaultBrick.System
                 Rectangle ballXBound = new Rectangle((int)position.Value.X, (int)(position.Value.Y - (velocity.Value.Y * state)), 10, 10);
                 Rectangle ballYBound = new Rectangle((int)(position.Value.X - (velocity.Value.X * state)), (int)position.Value.Y, 10, 10);
 
-                Span<Entity> solids = stackalloc Entity[_balls.Count];
-                _balls.GetEntities().CopyTo(solids);
-
                 int speedUp = 0;
 
                 foreach (ref readonly Entity solid in entities)
