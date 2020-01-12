@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Engines;
 using DefaultEcs.Serialization;
 
 namespace DefaultEcs.Benchmark.DefaultEcs
