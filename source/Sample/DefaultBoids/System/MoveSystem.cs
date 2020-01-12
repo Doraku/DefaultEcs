@@ -10,40 +10,53 @@ namespace DefaultBoids.System
     [With(typeof(DrawInfo), typeof(Velocity), typeof(Acceleration), typeof(Grid))]
     public sealed class MoveSystem : AEntitySystem<float>
     {
-        public MoveSystem(World world, IParallelRunner runner)
+        private readonly World _world;
+        private readonly Grid _grid;
+
+        public MoveSystem(World world, IParallelRunner runner, Grid grid)
             : base(world, runner)
-        { }
+        {
+            _world = world;
+            _grid = grid;
+        }
 
         protected override void Update(float state, ReadOnlySpan<Entity> entities)
         {
-            foreach (ref readonly Entity entity in entities)
+            (Component<Velocity> velocities, Component<Acceleration> accelerations, Component<DrawInfo> drawInfos) = _world.Prefetch<Velocity, Acceleration, DrawInfo>(entities);
+
+            using (velocities)
+            using (accelerations)
+            using (drawInfos)
             {
-                ref Vector2 velocity = ref entity.Get<Velocity>().Value;
-
-                velocity += entity.Get<Acceleration>().Value * state;
-
-                Vector2 direction = Vector2.Normalize(velocity);
-                float speed = velocity.Length();
-
-                velocity = Math.Clamp(speed, DefaultGame.MinVelocity, DefaultGame.MaxVelocity) * direction;
-
-                ref DrawInfo drawInfo = ref entity.Get<DrawInfo>();
-                Vector2 newPosition = drawInfo.Position + (velocity * state);
-                entity.Get<Grid>().Update(entity, drawInfo.Position, newPosition);
-                drawInfo.Position = newPosition;
-
-                if ((drawInfo.Position.X < 0 && velocity.X < 0)
-                    || (drawInfo.Position.X > DefaultGame.ResolutionWidth && velocity.X > 0))
+                for (int i = 0; i < entities.Length; ++i)
                 {
-                    velocity.X *= -1;
-                }
-                if ((drawInfo.Position.Y < 0 && velocity.Y < 0)
-                    || (drawInfo.Position.Y > DefaultGame.ResolutionHeight && velocity.Y > 0))
-                {
-                    velocity.Y *= -1;
-                }
+                    ref Vector2 velocity = ref velocities[i].Value;
 
-                drawInfo.Rotation = MathF.Atan2(velocity.X, -velocity.Y);
+                    velocity += accelerations[i].Value * state;
+
+                    Vector2 direction = Vector2.Normalize(velocity);
+                    float speed = velocity.Length();
+
+                    velocity = Math.Clamp(speed, DefaultGame.MinVelocity, DefaultGame.MaxVelocity) * direction;
+
+                    ref DrawInfo drawInfo = ref drawInfos[i];
+                    Vector2 newPosition = drawInfo.Position + (velocity * state);
+                    _grid.Update(entities[i], drawInfo.Position, newPosition);
+                    drawInfo.Position = newPosition;
+
+                    if ((drawInfo.Position.X < 0 && velocity.X < 0)
+                        || (drawInfo.Position.X > DefaultGame.ResolutionWidth && velocity.X > 0))
+                    {
+                        velocity.X *= -1;
+                    }
+                    if ((drawInfo.Position.Y < 0 && velocity.Y < 0)
+                        || (drawInfo.Position.Y > DefaultGame.ResolutionHeight && velocity.Y > 0))
+                    {
+                        velocity.Y *= -1;
+                    }
+
+                    drawInfo.Rotation = MathF.Atan2(velocity.X, -velocity.Y);
+                }
             }
         }
     }

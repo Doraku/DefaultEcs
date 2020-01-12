@@ -38,6 +38,31 @@ namespace DefaultEcs.Benchmark.Performance
             }
         }
 
+        private sealed class DefaultEcsPrefetchedSystem : AEntitySystem<int>
+        {
+            private readonly DefaultWorld _world;
+
+            public DefaultEcsPrefetchedSystem(DefaultWorld world, IParallelRunner runner)
+                : base(world.GetEntities().With<DefaultComponent>().AsSet(), runner)
+            {
+                _world = world;
+            }
+
+            public DefaultEcsPrefetchedSystem(DefaultWorld world)
+                : this(world, null)
+            { }
+
+            protected override void Update(int state, ReadOnlySpan<DefaultEntity> entities)
+            {
+                using Component<DefaultComponent> components = _world.Prefetch<DefaultComponent>(entities);
+
+                for (int i = 0; i < entities.Length; ++i)
+                {
+                    ++components[i].Value;
+                }
+            }
+        }
+
         private sealed class DefaultEcsComponentSystem : AComponentSystem<int, DefaultComponent>
         {
             public DefaultEcsComponentSystem(DefaultWorld world, IParallelRunner runner)
@@ -78,10 +103,12 @@ namespace DefaultEcs.Benchmark.Performance
         }
 
         private DefaultWorld _defaultWorld;
+        private DefaultParallelRunner _defaultRunner;
         private DefaultEntitySet _defaultEntitySet;
         private DefaultEcsSystem _defaultSystem;
-        private DefaultParallelRunner _defaultRunner;
         private DefaultEcsSystem _defaultMultiSystem;
+        private DefaultEcsPrefetchedSystem _defaultPrefetchedSystem;
+        private DefaultEcsPrefetchedSystem _defaultMultiPrefetchedSystem;
         private DefaultEcsComponentSystem _defaultComponentSystem;
         private DefaultEcsComponentSystem _defaultComponentMultiSystem;
 
@@ -97,9 +124,11 @@ namespace DefaultEcs.Benchmark.Performance
         {
             _defaultWorld = new DefaultWorld(EntityCount);
             _defaultEntitySet = _defaultWorld.GetEntities().With<DefaultComponent>().AsSet();
-            _defaultSystem = new DefaultEcsSystem(_defaultWorld);
             _defaultRunner = new DefaultParallelRunner(Environment.ProcessorCount);
+            _defaultSystem = new DefaultEcsSystem(_defaultWorld);
             _defaultMultiSystem = new DefaultEcsSystem(_defaultWorld, _defaultRunner);
+            _defaultPrefetchedSystem = new DefaultEcsPrefetchedSystem(_defaultWorld);
+            _defaultMultiPrefetchedSystem = new DefaultEcsPrefetchedSystem(_defaultWorld, _defaultRunner);
             _defaultComponentSystem = new DefaultEcsComponentSystem(_defaultWorld);
             _defaultComponentMultiSystem = new DefaultEcsComponentSystem(_defaultWorld, _defaultRunner);
 
@@ -138,6 +167,12 @@ namespace DefaultEcs.Benchmark.Performance
 
         [Benchmark]
         public void DefaultEcs_MultiSystem() => _defaultMultiSystem.Update(42);
+
+        [Benchmark]
+        public void DefaultEcs_PrefetchedSystem() => _defaultPrefetchedSystem.Update(42);
+
+        [Benchmark]
+        public void DefaultEcs_MultiPrefetchedSystem() => _defaultMultiPrefetchedSystem.Update(42);
 
         [Benchmark]
         public void DefaultEcs_Component()

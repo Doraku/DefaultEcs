@@ -15,10 +15,10 @@ namespace DefaultBoids
     {
         #region Fields
 
-        public const int BoidsCount = 10000;
+        public const int BoidsCount = 20000;
 
-        public const int ResolutionWidth = 800;
-        public const int ResolutionHeight = 600;
+        public const int ResolutionWidth = 1920;
+        public const int ResolutionHeight = 1080;
 
         public const float BehaviorSeparationWeight = 10;
         public const float BehaviorAlignmentWeight = 4;
@@ -26,8 +26,8 @@ namespace DefaultBoids
 
         public const float NeighborRange = 10;
 
-        public const float MinVelocity = 80;
-        public const float MaxVelocity = 200;
+        public const float MinVelocity = 160;
+        public const float MaxVelocity = 400;
 
         private readonly GraphicsDeviceManager _deviceManager;
         private readonly SpriteBatch _batch;
@@ -49,7 +49,7 @@ namespace DefaultBoids
             _deviceManager = new GraphicsDeviceManager(this);
             IsFixedTimeStep = false;
             _deviceManager.GraphicsProfile = GraphicsProfile.HiDef;
-            _deviceManager.IsFullScreen = false;
+            _deviceManager.IsFullScreen = true;
             _deviceManager.PreferredBackBufferWidth = ResolutionWidth;
             _deviceManager.PreferredBackBufferHeight = ResolutionHeight;
             _deviceManager.SynchronizeWithVerticalRetrace = false;
@@ -65,16 +65,16 @@ namespace DefaultBoids
             }
 
             _world = new World();
+            Grid grid = new Grid();
 
             _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(
-                new BoidsSystem(_world, _runner),
-                new MoveSystem(_world, _runner));
+                new BoidsSystem(_world, _runner, grid),
+                new MoveSystem(_world, _runner, grid));
 
             _drawSystem = new DrawSystem(_batch, _square, _world);
 
             Random random = new Random();
-            Grid grid = new Grid();
 
             for (int i = 0; i < BoidsCount; ++i)
             {

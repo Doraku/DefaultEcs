@@ -54,6 +54,36 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [With(typeof(Speed), typeof(Position))]
+        private sealed class TestPrefetchedSystem : AEntitySystem<float>
+        {
+            private readonly World _world;
+
+            public TestPrefetchedSystem(World world, IParallelRunner runner)
+                : base(world, runner)
+            {
+                _world = world;
+            }
+
+            protected override void Update(float state, ReadOnlySpan<Entity> entities)
+            {
+                (Component<Speed> speeds, Component<Position> positions) = _world.Prefetch<Speed, Position>(entities);
+
+                using (speeds)
+                using (positions)
+                {
+                    for (int i = 0; i < entities.Length; ++i)
+                    {
+                        Speed speed = speeds[i];
+                        ref Position position = ref positions[i];
+
+                        position.X += speed.X * state;
+                        position.Y += speed.Y * state;
+                    }
+                }
+            }
+        }
+
+        [With(typeof(Speed), typeof(Position))]
         private sealed class TestBufferedSystem : AEntityBufferedSystem<float>
         {
             public TestBufferedSystem(World world)
@@ -109,6 +139,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private DefaultParallelRunner _runner;
         private ISystem<float> _systemSingle;
         private ISystem<float> _system;
+        private ISystem<float> _prefetchedSystem;
         private ISystem<float> _bufferedSystem;
         private ISystem<float> _systemTPL;
 
@@ -122,6 +153,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _systemSingle = new TestSystem(_world, null);
             _system = new TestSystem(_world, _runner);
+            _prefetchedSystem = new TestPrefetchedSystem(_world, _runner);
             _bufferedSystem = new TestBufferedSystem(_world);
             _systemTPL = new TestSystemTPL(_world);
 
@@ -140,6 +172,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             _world.Dispose();
             _systemSingle.Dispose();
             _system.Dispose();
+            _prefetchedSystem.Dispose();
             _bufferedSystem.Dispose();
             _systemTPL.Dispose();
         }
@@ -149,6 +182,9 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 
         [Benchmark]
         public void DefaultEcs_UpdateMulti() => _system.Update(1f / 60f);
+
+        [Benchmark]
+        public void DefaultEcs_UpdateMultiPrefetched() => _prefetchedSystem.Update(1f / 60f);
 
         [Benchmark]
         public void DefaultEcs_UpdateBuffered() => _bufferedSystem.Update(1f / 60f);

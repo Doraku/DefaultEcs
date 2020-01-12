@@ -38,7 +38,7 @@ namespace DefaultEcs.Benchmark.Performance
                 : this(world, null)
             { }
 
-            protected override void Update(float state, ReadOnlySpan<DefaultEntity> entities)
+            protected unsafe override void Update(float state, ReadOnlySpan<DefaultEntity> entities)
             {
                 foreach (ref readonly DefaultEntity entity in entities)
                 {
@@ -47,6 +47,39 @@ namespace DefaultEcs.Benchmark.Performance
 
                     position.X += speed.X * state;
                     position.Y += speed.Y * state;
+                }
+            }
+        }
+
+        private sealed class DefaultEcsPrefetchedSystem : AEntitySystem<float>
+        {
+            private readonly DefaultWorld _world;
+
+            public DefaultEcsPrefetchedSystem(DefaultWorld world, IParallelRunner runner)
+                : base(world.GetEntities().With<DefaultSpeed>().With<DefaultPosition>().AsSet(), runner)
+            {
+                _world = world;
+            }
+
+            public DefaultEcsPrefetchedSystem(DefaultWorld world)
+                : this(world, null)
+            { }
+
+            protected override void Update(float state, ReadOnlySpan<DefaultEntity> entities)
+            {
+                (Component<DefaultSpeed> speeds, Component<DefaultPosition> positions) = _world.Prefetch<DefaultSpeed, DefaultPosition>(entities);
+
+                using (speeds)
+                using (positions)
+                {
+                    for (int i = 0; i < entities.Length; ++i)
+                    {
+                        DefaultSpeed speed = speeds[i];
+                        ref DefaultPosition position = ref positions[i];
+
+                        position.X += speed.X * state;
+                        position.Y += speed.Y * state;
+                    }
                 }
             }
         }
@@ -82,9 +115,11 @@ namespace DefaultEcs.Benchmark.Performance
 
         private DefaultWorld _defaultWorld;
         private DefaultEntitySet _defaultEntitySet;
-        private DefaultEcsSystem _defaultSystem;
         private DefaultParallelRunner _defaultRunner;
+        private DefaultEcsSystem _defaultSystem;
         private DefaultEcsSystem _defaultMultiSystem;
+        private DefaultEcsPrefetchedSystem _defaultPrefetchedSystem;
+        private DefaultEcsPrefetchedSystem _defaultMultiPrefetchedSystem;
 
         private EntitiasWorld _entitasWorld;
         private EntitasSystem _entitasSystem;
@@ -98,9 +133,11 @@ namespace DefaultEcs.Benchmark.Performance
         {
             _defaultWorld = new DefaultWorld(EntityCount);
             _defaultEntitySet = _defaultWorld.GetEntities().With<DefaultSpeed>().With<DefaultPosition>().AsSet();
-            _defaultSystem = new DefaultEcsSystem(_defaultWorld);
             _defaultRunner = new DefaultParallelRunner(Environment.ProcessorCount);
+            _defaultSystem = new DefaultEcsSystem(_defaultWorld);
             _defaultMultiSystem = new DefaultEcsSystem(_defaultWorld, _defaultRunner);
+            _defaultPrefetchedSystem = new DefaultEcsPrefetchedSystem(_defaultWorld);
+            _defaultMultiPrefetchedSystem = new DefaultEcsPrefetchedSystem(_defaultWorld, _defaultRunner);
 
             _entitasWorld = new Context<EntitasEntity>(2, () => new EntitasEntity());
             _entitasSystem = new EntitasSystem(_entitasWorld);
@@ -143,6 +180,12 @@ namespace DefaultEcs.Benchmark.Performance
 
         [Benchmark]
         public void DefaultEcs_MultiSystem() => _defaultMultiSystem.Update(Time);
+
+        [Benchmark]
+        public void DefaultEcs_PrefetchedSystem() => _defaultPrefetchedSystem.Update(Time);
+
+        [Benchmark]
+        public void DefaultEcs_MultiPrefetchedSystem() => _defaultMultiPrefetchedSystem.Update(Time);
 
         [Benchmark]
         public void Entitas_System() => _entitasSystem.Execute();

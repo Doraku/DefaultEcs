@@ -267,6 +267,27 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> AsSpan() => new Span<T>(_components, 0, _lastComponentIndex + 1);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void FillIndices(Entity* entity, int* indices, int count)
+        {
+            fixed (int* mapping = _mapping)
+            {
+                while (--count >= 0)
+                {
+                    *indices = mapping[entity->EntityId];
+
+                    ++indices;
+                    ++entity;
+                }
+            }
+        }
+
+        public ref T this[int index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return ref _components[index]; }
+        }
+
         #endregion
     }
 }
