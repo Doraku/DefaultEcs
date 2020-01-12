@@ -124,7 +124,7 @@ namespace DefaultEcs.Test.Serialization
         {
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
 
-            Check.ThatCode(() => serializer.Serialize(null, default(World))).Throws<ArgumentNullException>();
+            Check.ThatCode(() => serializer.Serialize(null, default)).Throws<ArgumentNullException>();
         }
 
         [Theory]
@@ -135,7 +135,7 @@ namespace DefaultEcs.Test.Serialization
 
             using Stream stream = new MemoryStream();
 
-            Check.ThatCode(() => serializer.Serialize(stream, default(World))).Throws<ArgumentNullException>();
+            Check.ThatCode(() => serializer.Serialize(stream, default)).Throws<ArgumentNullException>();
         }
 
         [Theory]
@@ -255,7 +255,7 @@ namespace DefaultEcs.Test.Serialization
                 {
                     Check.That(copyWorld.MaxCapacity).IsEqualTo(world.MaxCapacity);
 
-                    Entity[] entitiesCopy = copyWorld.GetAllEntities().ToArray();
+                    Entity[] entitiesCopy = copyWorld.ToArray();
 
                     Check.That(entitiesCopy[0].Has<Int32>());
                     Check.That(entitiesCopy[0].Get<bool>()).IsEqualTo(entities[0].Get<bool>());
@@ -294,7 +294,7 @@ namespace DefaultEcs.Test.Serialization
 
                     entitiesCopy[0].Dispose();
 
-                    Check.That(copyWorld.GetAllEntities().Count()).IsEqualTo(1);
+                    Check.That(copyWorld.Count()).IsEqualTo(1);
                 }
             }
             finally
@@ -407,7 +407,7 @@ namespace DefaultEcs.Test.Serialization
 
                 entitiesCopy[0].Dispose();
 
-                Check.That(copyWorld.GetAllEntities().Count()).IsEqualTo(1);
+                Check.That(copyWorld.Count()).IsEqualTo(1);
             }
             finally
             {

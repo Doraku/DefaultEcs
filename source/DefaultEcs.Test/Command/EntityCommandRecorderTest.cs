@@ -37,7 +37,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Count()).IsEqualTo(5);
+            Check.That(world.Count()).IsEqualTo(5);
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Single().IsEnabled()).IsFalse();
+            Check.That(world.Single().IsEnabled()).IsFalse();
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Single().IsEnabled()).IsTrue();
+            Check.That(world.Single().IsEnabled()).IsTrue();
         }
 
         [Fact]
@@ -129,7 +129,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Single().Get<bool>()).IsTrue();
+            Check.That(world.Single().Get<bool>()).IsTrue();
         }
 
         [Fact]
@@ -161,7 +161,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Single().Get<object>()).IsEqualTo(o);
+            Check.That(world.Single().Get<object>()).IsEqualTo(o);
         }
 
         [Fact]
@@ -194,8 +194,8 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Single().Get<NonBlittable>().Id).IsEqualTo(42);
-            Check.That(world.GetAllEntities().Single().Get<NonBlittable>().Item).IsEqualTo(o);
+            Check.That(world.Single().Get<NonBlittable>().Id).IsEqualTo(42);
+            Check.That(world.Single().Get<NonBlittable>().Item).IsEqualTo(o);
         }
 
         [Fact]
@@ -227,7 +227,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Single().IsEnabled<bool>()).IsFalse();
+            Check.That(world.Single().IsEnabled<bool>()).IsFalse();
         }
 
         [Fact]
@@ -261,7 +261,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Single().IsEnabled()).IsTrue();
+            Check.That(world.Single().IsEnabled()).IsTrue();
         }
 
         [Fact]
@@ -293,7 +293,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Single().Has<bool>()).IsFalse();
+            Check.That(world.Single().Has<bool>()).IsFalse();
         }
 
         [Fact]
@@ -323,7 +323,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Count()).IsEqualTo(0);
+            Check.That(world.Count()).IsEqualTo(0);
         }
 
         [Fact]
@@ -360,7 +360,7 @@ namespace DefaultEcs.Test.Command
 
             reference.Dispose();
 
-            Check.That(world.GetAllEntities().Single().Get<bool>()).IsTrue();
+            Check.That(world.Single().Get<bool>()).IsTrue();
         }
 
         [Fact]
@@ -410,7 +410,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(parent.GetChildren()).Contains(world.GetAllEntities().Skip(1).Single());
+            Check.That(parent.GetChildren()).Contains(world.Skip(1).Single());
         }
 
         [Fact]
@@ -426,7 +426,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Skip(1).Single().GetChildren()).Contains(child);
+            Check.That(world.Skip(1).Single().GetChildren()).Contains(child);
         }
 
         [Fact]
@@ -498,7 +498,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Skip(1).Single().GetChildren()).IsEmpty();
+            Check.That(world.Skip(1).Single().GetChildren()).IsEmpty();
         }
 
         [Fact]
@@ -511,7 +511,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Count()).IsEqualTo(100000);
+            Check.That(world.Count()).IsEqualTo(100000);
         }
 
         [Fact]
@@ -561,13 +561,13 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Count()).IsEqualTo(1);
+            Check.That(world.Count()).IsEqualTo(1);
 
             Check.That(recorder.Size).IsZero();
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Count()).IsEqualTo(1);
+            Check.That(world.Count()).IsEqualTo(1);
         }
 
         [Fact]
@@ -586,7 +586,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Execute(world);
 
-            Check.That(world.GetAllEntities().Count()).IsZero();
+            Check.That(world.Count()).IsZero();
         }
 
         #endregion

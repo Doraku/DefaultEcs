@@ -265,7 +265,7 @@ namespace DefaultEcs.Technical
         public ref T Get(int entityId) => ref _components[_mapping[entityId]];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> GetAll() => new Span<T>(_components, 0, _lastComponentIndex + 1);
+        public Span<T> AsSpan() => new Span<T>(_components, 0, _lastComponentIndex + 1);
 
         #endregion
     }

@@ -45,7 +45,7 @@ namespace DefaultEcs.Technical.Debug
         private readonly List<IComponent> _components;
 
         public int MaxCapacity => _world.MaxCapacity;
-        public Entity[] Entities => _world.GetAllEntities().ToArray();
+        public Entity[] Entities => _world.ToArray();
         public IComponent[] Components => _components.ToArray();
 
         public WorldDebugView(World world)

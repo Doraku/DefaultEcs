@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -14,7 +15,7 @@ namespace DefaultEcs
     /// Represents a item used to create and manage <see cref="Entity"/> objects.
     /// </summary>
     [DebuggerTypeProxy(typeof(WorldDebugView))]
-    public sealed class World : IPublisher, IDisposable
+    public sealed class World : IEnumerable<Entity>, IPublisher, IDisposable
     {
         #region Fields
 
@@ -240,7 +241,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of component.</typeparam>
         /// <returns>A <see cref="Span{T}"/> pointing directly to the component values to edit them.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> GetAllComponents<T>() => ComponentManager<T>.GetOrCreate(WorldId).GetAll();
+        public Span<T> GetAllComponents<T>() => ComponentManager<T>.GetOrCreate(WorldId).AsSpan();
 
         /// <summary>
         /// Gets an <see cref="EntitySetBuilder"/> to create a subset of <see cref="Entity"/> of the current <see cref="World"/>.
@@ -259,7 +260,25 @@ namespace DefaultEcs
         /// This method is primiraly used for serialization purpose and should not be called in game logic.
         /// </summary>
         /// <returns>All the <see cref="Entity"/> of the current <see cref="World"/>.</returns>
-        public IEnumerable<Entity> GetAllEntities()
+        [Obsolete("Use the instance as IEnumerable<Entity> instead, will be removed next version")]
+        public IEnumerable<Entity> GetAllEntities() => this;
+
+        /// <summary>
+        /// Calls on <paramref name="reader"/> with all the maximum number of component of the current <see cref="World"/>.
+        /// This method is primiraly used for serialization purpose and should not be called in game logic.
+        /// </summary>
+        /// <param name="reader">The <see cref="IComponentTypeReader"/> instance to be used as callback with the current <see cref="World"/> maximum number of component.</param>
+        public void ReadAllComponentTypes(IComponentTypeReader reader) => Publish(new ComponentTypeReadMessage(reader ?? throw new ArgumentNullException(nameof(reader))));
+
+        #endregion
+
+        #region IEnumerable
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="Entity"/> of the current <see cref="World"/> instance.
+        /// </summary>
+        /// <returns>An enumerator that can be used to iterate through the <see cref="Entity"/>.</returns>
+        public IEnumerator<Entity> GetEnumerator()
         {
             for (int i = 0; i <= Math.Min(EntityInfos.Length, LastEntityId); ++i)
             {
@@ -270,12 +289,7 @@ namespace DefaultEcs
             }
         }
 
-        /// <summary>
-        /// Calls on <paramref name="reader"/> with all the maximum number of component of the current <see cref="World"/>.
-        /// This method is primiraly used for serialization purpose and should not be called in game logic.
-        /// </summary>
-        /// <param name="reader">The <see cref="IComponentTypeReader"/> instance to be used as callback with the current <see cref="World"/> maximum number of component.</param>
-        public void ReadAllComponentTypes(IComponentTypeReader reader) => Publish(new ComponentTypeReadMessage(reader ?? throw new ArgumentNullException(nameof(reader))));
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         #endregion
 

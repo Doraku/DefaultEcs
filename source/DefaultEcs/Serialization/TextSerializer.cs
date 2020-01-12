@@ -351,7 +351,7 @@ namespace DefaultEcs.Serialization
 
             world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxCapacity));
 
-            new EntityWriter(writer, types).Write(world.GetAllEntities());
+            new EntityWriter(writer, types).Write(world);
         }
 
         /// <summary>

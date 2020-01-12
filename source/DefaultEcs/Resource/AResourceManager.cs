@@ -144,7 +144,7 @@ namespace DefaultEcs.Resource
             ComponentPool<ManagedResource<TInfo, TResource>> singleComponents = ComponentManager<ManagedResource<TInfo, TResource>>.Get(world.WorldId);
             if (singleComponents != null)
             {
-                foreach (Entity entity in world.GetAllEntities().Where(e => singleComponents.Has(e.EntityId)))
+                foreach (Entity entity in world.Where(e => singleComponents.Has(e.EntityId)))
                 {
                     On(new ManagedResourceRequestMessage<ManagedResource<TInfo, TResource>>(entity, singleComponents.Get(entity.EntityId)));
                 }
@@ -153,7 +153,7 @@ namespace DefaultEcs.Resource
             ComponentPool<ManagedResource<TInfo[], TResource>> multipleComponents = ComponentManager<ManagedResource<TInfo[], TResource>>.Get(world.WorldId);
             if (multipleComponents != null)
             {
-                foreach (Entity entity in world.GetAllEntities().Where(e => multipleComponents.Has(e.EntityId)))
+                foreach (Entity entity in world.Where(e => multipleComponents.Has(e.EntityId)))
                 {
                     On(new ManagedResourceRequestMessage<ManagedResource<TInfo[], TResource>>(entity, multipleComponents.Get(entity.EntityId)));
                 }

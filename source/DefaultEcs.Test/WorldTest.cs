@@ -186,7 +186,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void GetAllEntities_Should_return_all_entities()
+        public void GetEnumerator_Should_return_all_entities()
         {
             using World world = new World(4);
 
@@ -199,11 +199,11 @@ namespace DefaultEcs.Test
             entities.Add(world.CreateEntity());
             entity.Dispose();
 
-            Check.That(world.GetAllEntities()).ContainsExactly(entities);
+            Check.That(world).ContainsExactly(entities);
         }
 
         [Fact]
-        public void GetAllEntities_Should_return_disabled_entities()
+        public void GetEnumerator_Should_return_disabled_entities()
         {
             using World world = new World(4);
 
@@ -217,7 +217,7 @@ namespace DefaultEcs.Test
             entity.Dispose();
             entities[1].Disable();
 
-            Check.That(world.GetAllEntities()).ContainsExactly(entities);
+            Check.That(world).ContainsExactly(entities);
         }
 
         [Fact]

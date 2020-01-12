@@ -27,7 +27,7 @@ namespace DefaultEcs.System
 
             public void Run(int index, int maxIndex)
             {
-                Span<TComponent> components = _system._components.GetAll();
+                Span<TComponent> components = _system._components.AsSpan();
                 int start = index * ComponentsPerIndex;
 
                 _system.Update(CurrentState, index == maxIndex ? components.Slice(start) : components.Slice(start, ComponentsPerIndex));
@@ -142,7 +142,7 @@ namespace DefaultEcs.System
 
                 if (_runnable.ComponentsPerIndex < _minComponentCountByRunnerIndex)
                 {
-                    Update(state, _components.GetAll());
+                    Update(state, _components.AsSpan());
                 }
                 else
                 {

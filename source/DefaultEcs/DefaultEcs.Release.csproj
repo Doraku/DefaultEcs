@@ -22,6 +22,7 @@ added AEntityBufferedSystem to make structural modification on entities in a saf
 added World.MaxCapacity, obsolete MaxEntityCount
 added World.SetMaxCapacityFor, obsolete SetMaximumComponentCount
 added World.GetMaxCapacityFor, obsolete GetMaximumComponentCount
+added IEnumerable implementation on World, obsolete GetAllEntities
 
 updated System.Reflection.Emit.Lightweight to 4.7.0
     </PackageReleaseNotes>
