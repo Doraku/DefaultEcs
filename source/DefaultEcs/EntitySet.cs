@@ -58,6 +58,12 @@ namespace DefaultEcs
         #region Properties
 
         /// <summary>
+        /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="EntitySet"/> originate. 
+        /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public World World => World.Worlds[_worldId];
+
+        /// <summary>
         /// Gets the numbers of <see cref="Entity"/> in the current <see cref="EntitySet"/>.
         /// </summary>
         public int Count
