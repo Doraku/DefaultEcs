@@ -6,7 +6,7 @@ namespace DefaultEcs.System
 {
     /// <summary>
     /// Represents a base class to process updates on a given <see cref="EntitySet"/> instance.
-    /// Only <see cref="Entity.Get{T}"/>, <see cref="Entity.Set{T}(in T)"/> and <see cref="Entity.SetSameAs{T}(in Entity)"/> operation on already present component type are safe.
+    /// Only <see cref="Entity.Get{T}()"/>, <see cref="Entity.Set{T}(in T)"/> and <see cref="Entity.SetSameAs{T}(in Entity)"/> operation on already present component type are safe.
     /// </summary>
     /// <typeparam name="T">The type of the object used as state to update the system.</typeparam>
     public abstract class AEntitySystem<T> : ISystem<T>

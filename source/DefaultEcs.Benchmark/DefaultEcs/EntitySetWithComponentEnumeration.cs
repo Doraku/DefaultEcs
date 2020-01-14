@@ -1,11 +1,8 @@
-﻿using System;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnosers;
-//using static DefaultEcs.EntitySetExtension;
 
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
-    //[HardwareCounters(HardwareCounter.CacheMisses)]
     [MemoryDiagnoser]
     public class EntitySetWithComponentEnumeration
     {
@@ -43,7 +40,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [Benchmark]
-        public void DefaultEnumeration()
+        public void DefaultEnumeration2()
         {
             foreach (ref readonly Entity entity in _set.GetEntities())
             {
@@ -53,33 +50,15 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [Benchmark]
-        public void PrefetchedEnumeration()
+        public void ComponentEnumeration2()
         {
-            ReadOnlySpan<Entity> entities = _set.GetEntities();
+            using Components<int> ints = _world.GetComponents<int>();
+            using Components<uint> uints = _world.GetComponents<uint>();
 
-            using Component<int> ints = _world.Prefetch<int>(entities);
-            using Component<uint> uints = _world.Prefetch<uint>(entities);
-
-            for (int i = 0; i < entities.Length; ++i)
+            foreach (ref readonly Entity entity in _set.GetEntities())
             {
-                _count += ints[i];
-                _uCount += uints[i];
-            }
-        }
-
-        [Benchmark]
-        public void Prefetched2Enumeration()
-        {
-            (Component<int> ints, Component<uint> uints) = _world.Prefetch<int, uint>(_set.GetEntities());
-
-            using (ints)
-            using (uints)
-            {
-                for (int i = 0; i < _set.Count; ++i)
-                {
-                    _count += ints[i];
-                    _uCount += uints[i];
-                }
+                _count += entity.Get(ints);
+                _uCount += entity.Get(uints);
             }
         }
 
@@ -95,20 +74,17 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [Benchmark]
-        public void BufferedEnumeration3()
+        public void ComponentEnumeration3()
         {
-            (Component<int> ints, Component<uint> uints, Component<long> longs) = _world.Prefetch<int, uint, long>(_set.GetEntities());
+            using Components<int> ints = _world.GetComponents<int>();
+            using Components<uint> uints = _world.GetComponents<uint>();
+            using Components<long> longs = _world.GetComponents<long>();
 
-            using (ints)
-            using (uints)
-            using (longs)
+            foreach (ref readonly Entity entity in _set.GetEntities())
             {
-                for (int i = 0; i < _set.Count; ++i)
-                {
-                    _count += ints[i];
-                    _uCount += uints[i];
-                    _lCount += longs[i];
-                }
+                _count += entity.Get(ints);
+                _uCount += entity.Get(uints);
+                _lCount += entity.Get(longs);
             }
         }
     }

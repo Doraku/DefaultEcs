@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using DefaultEcs.Resource;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
@@ -267,25 +268,11 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> AsSpan() => new Span<T>(_components, 0, _lastComponentIndex + 1);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void FillIndices(Entity* entity, int* indices, int count)
+        public unsafe Components<T> AsComponents()
         {
-            fixed (int* mapping = _mapping)
-            {
-                while (--count >= 0)
-                {
-                    *indices = mapping[entity->EntityId];
+            GCHandle handle = GCHandle.Alloc(_mapping, GCHandleType.Pinned);
 
-                    ++indices;
-                    ++entity;
-                }
-            }
-        }
-
-        public ref T this[int index]
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return ref _components[index]; }
+            return new Components<T>(handle, (int*)handle.AddrOfPinnedObject().ToPointer(), _components);
         }
 
         #endregion

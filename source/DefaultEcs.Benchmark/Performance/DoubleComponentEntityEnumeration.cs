@@ -51,35 +51,28 @@ namespace DefaultEcs.Benchmark.Performance
             }
         }
 
-        private sealed class DefaultEcsPrefetchedSystem : AEntitySystem<float>
+        private sealed class DefaultEcsComponentSystem : AEntitySystem<float>
         {
             private readonly DefaultWorld _world;
 
-            public DefaultEcsPrefetchedSystem(DefaultWorld world, IParallelRunner runner)
+            public DefaultEcsComponentSystem(DefaultWorld world, IParallelRunner runner)
                 : base(world.GetEntities().With<DefaultSpeed>().With<DefaultPosition>().AsSet(), runner)
             {
                 _world = world;
             }
 
-            public DefaultEcsPrefetchedSystem(DefaultWorld world)
-                : this(world, null)
-            { }
-
-            protected override void Update(float state, ReadOnlySpan<DefaultEntity> entities)
+            protected unsafe override void Update(float state, ReadOnlySpan<DefaultEntity> entities)
             {
-                (Component<DefaultSpeed> speeds, Component<DefaultPosition> positions) = _world.Prefetch<DefaultSpeed, DefaultPosition>(entities);
+                using Components<DefaultSpeed> speeds = _world.GetComponents<DefaultSpeed>();
+                using Components<DefaultPosition> positions = _world.GetComponents<DefaultPosition>();
 
-                using (speeds)
-                using (positions)
+                foreach (ref readonly DefaultEntity entity in entities)
                 {
-                    for (int i = 0; i < entities.Length; ++i)
-                    {
-                        DefaultSpeed speed = speeds[i];
-                        ref DefaultPosition position = ref positions[i];
+                    DefaultSpeed speed = entity.Get(speeds);
+                    ref DefaultPosition position = ref entity.Get(positions);
 
-                        position.X += speed.X * state;
-                        position.Y += speed.Y * state;
-                    }
+                    position.X += speed.X * state;
+                    position.Y += speed.Y * state;
                 }
             }
         }
@@ -118,8 +111,8 @@ namespace DefaultEcs.Benchmark.Performance
         private DefaultParallelRunner _defaultRunner;
         private DefaultEcsSystem _defaultSystem;
         private DefaultEcsSystem _defaultMultiSystem;
-        private DefaultEcsPrefetchedSystem _defaultPrefetchedSystem;
-        private DefaultEcsPrefetchedSystem _defaultMultiPrefetchedSystem;
+        private DefaultEcsComponentSystem _defaultComponentSystem;
+        private DefaultEcsComponentSystem _defaultMultiComponentSystem;
 
         private EntitiasWorld _entitasWorld;
         private EntitasSystem _entitasSystem;
@@ -136,8 +129,8 @@ namespace DefaultEcs.Benchmark.Performance
             _defaultRunner = new DefaultParallelRunner(Environment.ProcessorCount);
             _defaultSystem = new DefaultEcsSystem(_defaultWorld);
             _defaultMultiSystem = new DefaultEcsSystem(_defaultWorld, _defaultRunner);
-            _defaultPrefetchedSystem = new DefaultEcsPrefetchedSystem(_defaultWorld);
-            _defaultMultiPrefetchedSystem = new DefaultEcsPrefetchedSystem(_defaultWorld, _defaultRunner);
+            _defaultComponentSystem = new DefaultEcsComponentSystem(_defaultWorld, null);
+            _defaultMultiComponentSystem = new DefaultEcsComponentSystem(_defaultWorld, _defaultRunner);
 
             _entitasWorld = new Context<EntitasEntity>(2, () => new EntitasEntity());
             _entitasSystem = new EntitasSystem(_entitasWorld);
@@ -182,10 +175,10 @@ namespace DefaultEcs.Benchmark.Performance
         public void DefaultEcs_MultiSystem() => _defaultMultiSystem.Update(Time);
 
         [Benchmark]
-        public void DefaultEcs_PrefetchedSystem() => _defaultPrefetchedSystem.Update(Time);
+        public void DefaultEcs_ComponentSystem() => _defaultComponentSystem.Update(Time);
 
         [Benchmark]
-        public void DefaultEcs_MultiPrefetchedSystem() => _defaultMultiPrefetchedSystem.Update(Time);
+        public void DefaultEcs_ComponentMultiSystem() => _defaultMultiComponentSystem.Update(Time);
 
         [Benchmark]
         public void Entitas_System() => _entitasSystem.Execute();

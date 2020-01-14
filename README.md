@@ -102,8 +102,8 @@ public struct Example
 
 To reduce memory, it is possible to set a maximum count for a given component type. If nothing is set, then the maximum entity count of the world will be used.
 ```csharp
-int maxComponentCount = 42;
-world.SetMaximumComponentCount<Example>(maxComponentCount);
+int componentMaxCapacity = 42;
+world.SetMaxCapacityFor<Example>(componentMaxCapacity);
 ```
 
 It is then possible to add the component to the entity
@@ -478,7 +478,7 @@ Note that the Subscribe method return an IDisposable object acting as a subscrip
 DefaultEcs support serialization to save and load a World state. Two implementations are provided which are equals in feature and it is possible to create a custom serialization engine using the framework of your choice by implementing a set of interfaces.
 
 - ISerializer is the base interface
-- IComponentTypeReader is used to get the settings of the serialized World in case a maxComponentCount has been set for a specific type different from the maxEntityCount
+- IComponentTypeReader is used to get the settings of the serialized World in case a component max capacity has been set for a specific type different from the world max capacity
 - IComponentReader is used to get all the components of an Entity
 
 The provided implementation TextSerializer and BinarySerializer are highly permissive and will serialize every fields and properties even if the are private or readonly and do not require any attribute decoration to work.  
@@ -507,14 +507,14 @@ using (Stream stream = File.OpenRead(filePath))
 ### TextSerializer
 The purpose of this serializer is to provide a readable save format which can be edited by hand.
 ```
-// declare the maximum number of entity in the World, this must be before any Entity or MaxComponentCount line
-MaxEntityCount 42
+// declare the maximum number of entity in the World, this must be before any Entity or ComponentMaxCapacity line
+WorldMaxCapacity 42
 
 // this line is used to define an alias for a type used as component inside the world and must be declared before being used
 ComponentType Int32 System.Int32, System.Private.CoreLib
 
-// this line is used to set the maxComponentCount for the given type, in case it is different from the maxEntityCount
-MaxComponentCount Int32 13
+// this line is used to set the max capacity for the given type, in case it is different from the world max capacity
+ComponentMaxCapacity Int32 13
 
 // this line create an entity with the id "MyEntity", this must be before any Component, ComponentSameAs or ParentChild line
 Entity MyEntity

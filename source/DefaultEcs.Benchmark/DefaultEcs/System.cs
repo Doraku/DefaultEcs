@@ -54,11 +54,11 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [With(typeof(Speed), typeof(Position))]
-        private sealed class TestPrefetchedSystem : AEntitySystem<float>
+        private sealed class TestComponentSystem : AEntitySystem<float>
         {
             private readonly World _world;
 
-            public TestPrefetchedSystem(World world, IParallelRunner runner)
+            public TestComponentSystem(World world, IParallelRunner runner)
                 : base(world, runner)
             {
                 _world = world;
@@ -66,19 +66,16 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 
             protected override void Update(float state, ReadOnlySpan<Entity> entities)
             {
-                (Component<Speed> speeds, Component<Position> positions) = _world.Prefetch<Speed, Position>(entities);
+                using Components<Speed> speeds = _world.GetComponents<Speed>();
+                using Components<Position> positions = _world.GetComponents<Position>();
 
-                using (speeds)
-                using (positions)
+                foreach (ref readonly Entity entity in entities)
                 {
-                    for (int i = 0; i < entities.Length; ++i)
-                    {
-                        Speed speed = speeds[i];
-                        ref Position position = ref positions[i];
+                    Speed speed = entity.Get(speeds);
+                    ref Position position = ref entity.Get(positions);
 
-                        position.X += speed.X * state;
-                        position.Y += speed.Y * state;
-                    }
+                    position.X += speed.X * state;
+                    position.Y += speed.Y * state;
                 }
             }
         }
@@ -153,7 +150,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _systemSingle = new TestSystem(_world, null);
             _system = new TestSystem(_world, _runner);
-            _prefetchedSystem = new TestPrefetchedSystem(_world, _runner);
+            _prefetchedSystem = new TestComponentSystem(_world, _runner);
             _bufferedSystem = new TestBufferedSystem(_world);
             _systemTPL = new TestSystemTPL(_world);
 
@@ -184,7 +181,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public void DefaultEcs_UpdateMulti() => _system.Update(1f / 60f);
 
         [Benchmark]
-        public void DefaultEcs_UpdateMultiPrefetched() => _prefetchedSystem.Update(1f / 60f);
+        public void DefaultEcs_UpdateMultiComponent() => _prefetchedSystem.Update(1f / 60f);
 
         [Benchmark]
         public void DefaultEcs_UpdateBuffered() => _bufferedSystem.Update(1f / 60f);

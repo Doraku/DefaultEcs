@@ -22,41 +22,38 @@ namespace DefaultBoids.System
 
         protected override void Update(float state, ReadOnlySpan<Entity> entities)
         {
-            (Component<Velocity> velocities, Component<Acceleration> accelerations, Component<DrawInfo> drawInfos) = _world.Prefetch<Velocity, Acceleration, DrawInfo>(entities);
+            using Components<DrawInfo> drawInfos = _world.GetComponents<DrawInfo>();
+            using Components<Velocity> velocities = _world.GetComponents<Velocity>();
+            using Components<Acceleration> accelerations = _world.GetComponents<Acceleration>();
 
-            using (velocities)
-            using (accelerations)
-            using (drawInfos)
+            foreach (ref readonly Entity entity in entities)
             {
-                for (int i = 0; i < entities.Length; ++i)
+                ref Vector2 velocity = ref entity.Get(velocities).Value;
+
+                velocity += entity.Get(accelerations).Value * state;
+
+                Vector2 direction = Vector2.Normalize(velocity);
+                float speed = velocity.Length();
+
+                velocity = Math.Clamp(speed, DefaultGame.MinVelocity, DefaultGame.MaxVelocity) * direction;
+
+                ref DrawInfo drawInfo = ref entity.Get(drawInfos);
+                Vector2 newPosition = drawInfo.Position + (velocity * state);
+                _grid.Update(entity, drawInfo.Position, newPosition);
+                drawInfo.Position = newPosition;
+
+                if ((drawInfo.Position.X < 0 && velocity.X < 0)
+                    || (drawInfo.Position.X > DefaultGame.ResolutionWidth && velocity.X > 0))
                 {
-                    ref Vector2 velocity = ref velocities[i].Value;
-
-                    velocity += accelerations[i].Value * state;
-
-                    Vector2 direction = Vector2.Normalize(velocity);
-                    float speed = velocity.Length();
-
-                    velocity = Math.Clamp(speed, DefaultGame.MinVelocity, DefaultGame.MaxVelocity) * direction;
-
-                    ref DrawInfo drawInfo = ref drawInfos[i];
-                    Vector2 newPosition = drawInfo.Position + (velocity * state);
-                    _grid.Update(entities[i], drawInfo.Position, newPosition);
-                    drawInfo.Position = newPosition;
-
-                    if ((drawInfo.Position.X < 0 && velocity.X < 0)
-                        || (drawInfo.Position.X > DefaultGame.ResolutionWidth && velocity.X > 0))
-                    {
-                        velocity.X *= -1;
-                    }
-                    if ((drawInfo.Position.Y < 0 && velocity.Y < 0)
-                        || (drawInfo.Position.Y > DefaultGame.ResolutionHeight && velocity.Y > 0))
-                    {
-                        velocity.Y *= -1;
-                    }
-
-                    drawInfo.Rotation = MathF.Atan2(velocity.X, -velocity.Y);
+                    velocity.X *= -1;
                 }
+                if ((drawInfo.Position.Y < 0 && velocity.Y < 0)
+                    || (drawInfo.Position.Y > DefaultGame.ResolutionHeight && velocity.Y > 0))
+                {
+                    velocity.Y *= -1;
+                }
+
+                drawInfo.Rotation = MathF.Atan2(velocity.X, -velocity.Y);
             }
         }
     }
