@@ -88,7 +88,7 @@ namespace DefaultBoids.Component
         private readonly float _cellHeight;
         private readonly List<Entity>[,] _cells;
 
-        public Grid()
+        public Grid(int capacity)
         {
             _width = (int)(DefaultGame.ResolutionWidth / DefaultGame.NeighborRange);
             _height = (int)(DefaultGame.ResolutionHeight / DefaultGame.NeighborRange);
@@ -101,7 +101,7 @@ namespace DefaultBoids.Component
             {
                 for (int j = 0; j < _cells.GetLength(1); ++j)
                 {
-                    _cells[i, j] = new List<Entity>();
+                    _cells[i, j] = new List<Entity>(capacity);
                 }
             }
         }

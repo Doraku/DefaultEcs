@@ -15,7 +15,7 @@ namespace DefaultBoids
     {
         #region Fields
 
-        public const int BoidsCount = 20000;
+        public const int BoidsCount = 30000;
 
         public const int ResolutionWidth = 1920;
         public const int ResolutionHeight = 1080;
@@ -65,7 +65,7 @@ namespace DefaultBoids
             }
 
             _world = new World();
-            Grid grid = new Grid();
+            Grid grid = new Grid(BoidsCount);
 
             _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(
