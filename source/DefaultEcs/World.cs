@@ -96,9 +96,8 @@ namespace DefaultEcs
                 Worlds[WorldId] = this;
             }
 
-#pragma warning disable IDE0067 // Dispose objects before losing scope
-            this.Subscribe(this);
-#pragma warning restore IDE0067 // Dispose objects before losing scope
+            Subscribe<EntityDisposingMessage>(On);
+            Subscribe<EntityDisposedMessage>(On);
         }
 
         /// <summary>
@@ -111,16 +110,13 @@ namespace DefaultEcs
         #endregion
 
         #region Callbacks
-#pragma warning disable IDE0051 // Remove unused private members
 
-        [Subscribe]
         private void On(in EntityDisposingMessage message)
         {
             EntityDisposed?.Invoke(new Entity(WorldId, message.EntityId));
             EntityInfos[message.EntityId].Components.Clear();
         }
 
-        [Subscribe]
         private void On(in EntityDisposedMessage message)
         {
             ref EntityInfo entityInfo = ref EntityInfos[message.EntityId];
@@ -145,7 +141,6 @@ namespace DefaultEcs
             }
         }
 
-#pragma warning restore IDE0051 // Remove unused private members
         #endregion
 
         #region Methods
