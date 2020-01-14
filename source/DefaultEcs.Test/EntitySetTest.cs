@@ -10,6 +10,16 @@ namespace DefaultEcs.Test
         #region Tests
 
         [Fact]
+        public void World_Should_return_parent_world()
+        {
+            using World world = new World(4);
+
+            using EntitySet set = world.GetEntities().AsSet();
+
+            Check.That(set.World).IsEqualTo(world);
+        }
+
+        [Fact]
         public void GetEntities_Should_return_previously_created_Entity()
         {
             using World world = new World(4);

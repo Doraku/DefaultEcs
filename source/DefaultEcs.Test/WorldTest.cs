@@ -266,6 +266,29 @@ namespace DefaultEcs.Test
             Check.That(disposedEntity).IsEqualTo(entity);
         }
 
+        [Fact]
+        public void GetComponents_Should_return_fast_access_to_component()
+        {
+            using World world = new World(4);
+
+            Entity entity1 = world.CreateEntity();
+            Entity entity2 = world.CreateEntity();
+            Entity entity3 = world.CreateEntity();
+            Entity entity4 = world.CreateEntity();
+
+            entity1.Set("1");
+            entity2.Set("2");
+            entity3.Set("3");
+            entity4.Set("4");
+
+            using Components<string> strings = world.GetComponents<string>();
+
+            Check.That(entity1.Get<string>()).IsEqualTo(entity1.Get(strings));
+            Check.That(entity2.Get<string>()).IsEqualTo(entity2.Get(strings));
+            Check.That(entity3.Get<string>()).IsEqualTo(entity3.Get(strings));
+            Check.That(entity4.Get<string>()).IsEqualTo(entity4.Get(strings));
+        }
+
         #endregion
     }
 }
