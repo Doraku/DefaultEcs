@@ -54,9 +54,9 @@ namespace DefaultEcs.Benchmark.Performance
 
             protected override void Update(int state, ReadOnlySpan<DefaultEntity> entities)
             {
-                using Components<DefaultComponent> components = _world.GetComponents<DefaultComponent>();
+                Components<DefaultComponent> components = _world.GetComponents<DefaultComponent>();
 
-                foreach (ref readonly Entity entity in entities)
+                foreach (ref readonly DefaultEntity entity in entities)
                 {
                     ++entity.Get(components).Value;
                 }

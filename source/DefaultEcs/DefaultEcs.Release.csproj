@@ -24,7 +24,7 @@ added World.SetMaxCapacityFor method, obsolete SetMaximumComponentCount
 added World.GetMaxCapacityFor method, obsolete GetMaximumComponentCount
 added World.GetEnumerator method, obsolete GetAllEntities
 added EntitySet.World property
-added Components type for fast unsafe access to entities component
+added Components type for fast access to entities component
 added World.GetComponents method
 added Entity.Get(Components) method
 

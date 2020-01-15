@@ -66,8 +66,8 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 
             protected override void Update(float state, ReadOnlySpan<Entity> entities)
             {
-                using Components<Speed> speeds = _world.GetComponents<Speed>();
-                using Components<Position> positions = _world.GetComponents<Position>();
+                Components<Speed> speeds = _world.GetComponents<Speed>();
+                Components<Position> positions = _world.GetComponents<Position>();
 
                 foreach (ref readonly Entity entity in entities)
                 {

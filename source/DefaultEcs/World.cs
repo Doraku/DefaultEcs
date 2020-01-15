@@ -239,7 +239,7 @@ namespace DefaultEcs
         public Span<T> GetAllComponents<T>() => ComponentManager<T>.GetOrCreate(WorldId).AsSpan();
 
         /// <summary>
-        /// Gets an <see cref="Components{T}"/> to get a fast unsafe access to the component of type <typeparamref name="T"/> of this <see cref="World"/> instance <see cref="Entity"/>.
+        /// Gets an <see cref="Components{T}"/> to get a fast access to the component of type <typeparamref name="T"/> of this <see cref="World"/> instance <see cref="Entity"/>.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
         /// <returns>A <see cref="Components{T}"/> to use with <see cref="Entity.Get{T}(in Components{T})"/>.</returns>

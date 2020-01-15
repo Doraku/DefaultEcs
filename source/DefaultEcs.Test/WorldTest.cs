@@ -281,7 +281,7 @@ namespace DefaultEcs.Test
             entity3.Set("3");
             entity4.Set("4");
 
-            using Components<string> strings = world.GetComponents<string>();
+            Components<string> strings = world.GetComponents<string>();
 
             Check.That(entity1.Get<string>()).IsEqualTo(entity1.Get(strings));
             Check.That(entity2.Get<string>()).IsEqualTo(entity2.Get(strings));

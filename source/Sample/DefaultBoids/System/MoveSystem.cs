@@ -22,9 +22,9 @@ namespace DefaultBoids.System
 
         protected override void Update(float state, ReadOnlySpan<Entity> entities)
         {
-            using Components<DrawInfo> drawInfos = _world.GetComponents<DrawInfo>();
-            using Components<Velocity> velocities = _world.GetComponents<Velocity>();
-            using Components<Acceleration> accelerations = _world.GetComponents<Acceleration>();
+            Components<DrawInfo> drawInfos = _world.GetComponents<DrawInfo>();
+            Components<Velocity> velocities = _world.GetComponents<Velocity>();
+            Components<Acceleration> accelerations = _world.GetComponents<Acceleration>();
 
             foreach (ref readonly Entity entity in entities)
             {

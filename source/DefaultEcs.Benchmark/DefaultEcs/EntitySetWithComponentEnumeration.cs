@@ -14,7 +14,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private long _lCount;
 #pragma warning restore IDE0052 // Remove unread private members
 
-        [Params(100000)]
+        [Params(100, 1000, 10000, 100000)]
         public int EntityCount { get; set; }
 
         [IterationSetup]
@@ -52,8 +52,8 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         [Benchmark]
         public void ComponentEnumeration2()
         {
-            using Components<int> ints = _world.GetComponents<int>();
-            using Components<uint> uints = _world.GetComponents<uint>();
+            Components<int> ints = _world.GetComponents<int>();
+            Components<uint> uints = _world.GetComponents<uint>();
 
             foreach (ref readonly Entity entity in _set.GetEntities())
             {
@@ -76,9 +76,9 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         [Benchmark]
         public void ComponentEnumeration3()
         {
-            using Components<int> ints = _world.GetComponents<int>();
-            using Components<uint> uints = _world.GetComponents<uint>();
-            using Components<long> longs = _world.GetComponents<long>();
+            Components<int> ints = _world.GetComponents<int>();
+            Components<uint> uints = _world.GetComponents<uint>();
+            Components<long> longs = _world.GetComponents<long>();
 
             foreach (ref readonly Entity entity in _set.GetEntities())
             {

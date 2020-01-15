@@ -63,8 +63,8 @@ namespace DefaultEcs.Benchmark.Performance
 
             protected unsafe override void Update(float state, ReadOnlySpan<DefaultEntity> entities)
             {
-                using Components<DefaultSpeed> speeds = _world.GetComponents<DefaultSpeed>();
-                using Components<DefaultPosition> positions = _world.GetComponents<DefaultPosition>();
+                Components<DefaultSpeed> speeds = _world.GetComponents<DefaultSpeed>();
+                Components<DefaultPosition> positions = _world.GetComponents<DefaultPosition>();
 
                 foreach (ref readonly DefaultEntity entity in entities)
                 {

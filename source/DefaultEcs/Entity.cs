@@ -252,7 +252,7 @@ namespace DefaultEcs
         /// <param name="components">The <see cref="Components{T}"/> used for the fast unsafe access.</param>
         /// <returns>A reference to the component.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe ref T Get<T>(in Components<T> components) => ref components[EntityId];
+        public ref T Get<T>(in Components<T> components) => ref components[EntityId];
 
         /// <summary>
         /// Makes it so when given <see cref="Entity"/> is disposed, current <see cref="Entity"/> will also be disposed.
