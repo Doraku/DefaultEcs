@@ -209,7 +209,7 @@ namespace DefaultEcs.Test.Serialization
         public void Should_handle_struct_as_object() => Test<object>(42);
 
         [Fact]
-        public void Should_handle_Type() => Test(typeof(DerivedClass));
+        public void Should_handle_Type() => Test(typeof(DerivedClass[,,]));
 
 #if !NET452 // unsuported
         [Fact]
