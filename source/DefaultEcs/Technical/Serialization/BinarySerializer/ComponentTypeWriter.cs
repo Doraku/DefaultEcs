@@ -35,7 +35,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
             _writer.WriteByte((byte)EntryType.ComponentType);
             _writer.Write(_currentType);
-            _writer.WriteString(typeof(T).AssemblyQualifiedName);
+            _writer.WriteString(TypeNames.Get(typeof(T)));
 
             if (maxCapacity != _worldMaxCapacity)
             {

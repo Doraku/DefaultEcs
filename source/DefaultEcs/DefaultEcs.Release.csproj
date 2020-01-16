@@ -27,6 +27,7 @@ added EntitySet.World property
 added Components type for fast access to entities component
 added World.GetComponents method
 added Entity.Get(Components) method
+changed BinarySerializer and TextSerializer to be assembly version independent
 
 updated System.Reflection.Emit.Lightweight to 4.7.0
     </PackageReleaseNotes>

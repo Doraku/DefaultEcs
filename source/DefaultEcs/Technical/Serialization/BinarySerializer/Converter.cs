@@ -154,7 +154,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             else
             {
                 writer.WriteByte(2);
-                string typeName = value.GetType().AssemblyQualifiedName;
+                string typeName = TypeNames.Get(value.GetType());
                 writer.WriteString(typeName);
                 Converter.GetWriteAction(typeName)(writer, value);
             }

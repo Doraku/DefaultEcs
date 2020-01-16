@@ -217,7 +217,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             }
             else if (typeof(T) == typeof(Type))
             {
-                _writeAction = (Converter.WriteAction<T>)(Delegate)Converter<Type>.GetWriteAction(t => t.AssemblyQualifiedName);
+                _writeAction = (Converter.WriteAction<T>)(Delegate)Converter<Type>.GetWriteAction(TypeNames.Get);
                 _readAction = Converter.ConvertRead<T>(Converter<Type>.GetReadAction(s => Type.GetType(s, true)));
             }
             else if (typeInfo.IsEnum)

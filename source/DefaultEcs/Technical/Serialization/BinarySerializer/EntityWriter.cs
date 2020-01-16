@@ -73,7 +73,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
                 _writer.WriteByte((byte)EntryType.ComponentType);
                 _writer.Write(typeId);
-                _writer.WriteString(typeof(T).AssemblyQualifiedName);
+                _writer.WriteString(TypeNames.Get(typeof(T)));
             }
 
             Tuple<Entity, Type> componentKey = Tuple.Create(componentOwner, typeof(T));
