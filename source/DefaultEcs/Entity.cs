@@ -246,15 +246,6 @@ namespace DefaultEcs
         public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
 
         /// <summary>
-        /// Gets the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="components">The <see cref="Components{T}"/> used for the fast unsafe access.</param>
-        /// <returns>A reference to the component.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get<T>(in Components<T> components) => ref components[EntityId];
-
-        /// <summary>
         /// Makes it so when given <see cref="Entity"/> is disposed, current <see cref="Entity"/> will also be disposed.
         /// </summary>
         /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>

@@ -242,7 +242,7 @@ namespace DefaultEcs
         /// Gets an <see cref="Components{T}"/> to get a fast access to the component of type <typeparamref name="T"/> of this <see cref="World"/> instance <see cref="Entity"/>.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
-        /// <returns>A <see cref="Components{T}"/> to use with <see cref="Entity.Get{T}(in Components{T})"/>.</returns>
+        /// <returns>A <see cref="Components{T}"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Components<T> GetComponents<T>() => ComponentManager<T>.GetOrCreate(WorldId).AsComponents();
 

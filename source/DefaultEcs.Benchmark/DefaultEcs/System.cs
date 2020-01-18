@@ -71,8 +71,8 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 
                 foreach (ref readonly Entity entity in entities)
                 {
-                    Speed speed = entity.Get(speeds);
-                    ref Position position = ref entity.Get(positions);
+                    Speed speed = speeds[entity];
+                    ref Position position = ref positions[entity];
 
                     position.X += speed.X * state;
                     position.Y += speed.Y * state;
@@ -136,11 +136,11 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private DefaultParallelRunner _runner;
         private ISystem<float> _systemSingle;
         private ISystem<float> _system;
-        private ISystem<float> _prefetchedSystem;
+        private ISystem<float> _componentSystem;
         private ISystem<float> _bufferedSystem;
         private ISystem<float> _systemTPL;
 
-        [Params(100000)]
+        [Params(100, 1000, 10000, 100000, 1000000)]
         public int EntityCount { get; set; }
 
         [IterationSetup]
@@ -150,7 +150,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _systemSingle = new TestSystem(_world, null);
             _system = new TestSystem(_world, _runner);
-            _prefetchedSystem = new TestComponentSystem(_world, _runner);
+            _componentSystem = new TestComponentSystem(_world, _runner);
             _bufferedSystem = new TestBufferedSystem(_world);
             _systemTPL = new TestSystemTPL(_world);
 
@@ -169,7 +169,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             _world.Dispose();
             _systemSingle.Dispose();
             _system.Dispose();
-            _prefetchedSystem.Dispose();
+            _componentSystem.Dispose();
             _bufferedSystem.Dispose();
             _systemTPL.Dispose();
         }
@@ -181,7 +181,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public void DefaultEcs_UpdateMulti() => _system.Update(1f / 60f);
 
         [Benchmark]
-        public void DefaultEcs_UpdateMultiComponent() => _prefetchedSystem.Update(1f / 60f);
+        public void DefaultEcs_UpdateMultiComponent() => _componentSystem.Update(1f / 60f);
 
         [Benchmark]
         public void DefaultEcs_UpdateBuffered() => _bufferedSystem.Update(1f / 60f);

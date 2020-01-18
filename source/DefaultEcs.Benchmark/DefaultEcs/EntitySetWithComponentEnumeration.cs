@@ -57,8 +57,8 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 
             foreach (ref readonly Entity entity in _set.GetEntities())
             {
-                _count += entity.Get(ints);
-                _uCount += entity.Get(uints);
+                _count += ints[entity];
+                _uCount += uints[entity];
             }
         }
 
@@ -82,9 +82,9 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 
             foreach (ref readonly Entity entity in _set.GetEntities())
             {
-                _count += entity.Get(ints);
-                _uCount += entity.Get(uints);
-                _lCount += entity.Get(longs);
+                _count += ints[entity];
+                _uCount += uints[entity];
+                _lCount += longs[entity];
             }
         }
     }

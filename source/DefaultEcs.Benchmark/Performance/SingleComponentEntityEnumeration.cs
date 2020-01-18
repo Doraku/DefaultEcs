@@ -58,7 +58,7 @@ namespace DefaultEcs.Benchmark.Performance
 
                 foreach (ref readonly DefaultEntity entity in entities)
                 {
-                    ++entity.Get(components).Value;
+                    ++components[entity].Value;
                 }
             }
         }

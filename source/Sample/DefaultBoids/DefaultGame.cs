@@ -15,7 +15,7 @@ namespace DefaultBoids
     {
         #region Fields
 
-        public const int BoidsCount = 30000;
+        public const int BoidsCount = 20000;
 
         public const int ResolutionWidth = 1920;
         public const int ResolutionHeight = 1080;
@@ -32,6 +32,7 @@ namespace DefaultBoids
         private readonly GraphicsDeviceManager _deviceManager;
         private readonly SpriteBatch _batch;
         private readonly Texture2D _square;
+        private readonly SpriteFont _font;
         private readonly World _world;
         private readonly DefaultParallelRunner _runner;
         private readonly ISystem<float> _system;
@@ -39,6 +40,7 @@ namespace DefaultBoids
         private readonly Stopwatch _watch;
 
         private int _frameCount;
+        private string _fps = string.Empty;
 
         #endregion
 
@@ -63,9 +65,10 @@ namespace DefaultBoids
             {
                 _square = Texture2D.FromStream(GraphicsDevice, stream);
             }
+            _font = Content.Load<SpriteFont>("font");
 
             _world = new World();
-            Grid grid = new Grid(BoidsCount);
+            Grid grid = new Grid();
 
             _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(
@@ -110,15 +113,23 @@ namespace DefaultBoids
 
             _system.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
-            if (++_frameCount >= 100)
+            ++_frameCount;
+            if (_watch.Elapsed.TotalSeconds > .5)
             {
-                Window.Title = (100d / _watch.Elapsed.TotalSeconds).ToString();
+                _fps = (_frameCount / _watch.Elapsed.TotalSeconds).ToString();
                 _frameCount = 0;
                 _watch.Restart();
             }
         }
 
-        protected override void Draw(GameTime gameTime) => _drawSystem.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+        protected override void Draw(GameTime gameTime)
+        {
+            _drawSystem.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+
+            _batch.Begin();
+            _batch.DrawString(_font, _fps, new Vector2(10, 10), Color.Black);
+            _batch.End();
+        }
 
         protected override void Dispose(bool disposing)
         {

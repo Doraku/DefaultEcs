@@ -28,16 +28,16 @@ namespace DefaultBoids.System
 
             foreach (ref readonly Entity entity in entities)
             {
-                ref Vector2 velocity = ref entity.Get(velocities).Value;
+                ref Vector2 velocity = ref velocities[entity].Value;
 
-                velocity += entity.Get(accelerations).Value * state;
+                velocity += accelerations[entity].Value * state;
 
                 Vector2 direction = Vector2.Normalize(velocity);
                 float speed = velocity.Length();
 
                 velocity = Math.Clamp(speed, DefaultGame.MinVelocity, DefaultGame.MaxVelocity) * direction;
 
-                ref DrawInfo drawInfo = ref entity.Get(drawInfos);
+                ref DrawInfo drawInfo = ref drawInfos[entity];
                 Vector2 newPosition = drawInfo.Position + (velocity * state);
                 _grid.Update(entity, drawInfo.Position, newPosition);
                 drawInfo.Position = newPosition;

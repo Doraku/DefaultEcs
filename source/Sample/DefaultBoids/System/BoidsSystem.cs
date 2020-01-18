@@ -33,7 +33,7 @@ namespace DefaultBoids.System
 
             foreach (ref readonly Entity entity in entities)
             {
-                Vector2 position = entity.Get(drawInfos).Position;
+                Vector2 position = drawInfos[entity].Position;
                 Vector2 separation = Vector2.Zero;
                 Vector2 alignment = Vector2.Zero;
                 Vector2 cohesion = Vector2.Zero;
@@ -48,7 +48,7 @@ namespace DefaultBoids.System
                             continue;
                         }
 
-                        Vector2 otherPosition = neighbor.Get(drawInfos).Position;
+                        Vector2 otherPosition = drawInfos[neighbor].Position;
 
                         Vector2 offset = position - otherPosition;
 
@@ -56,7 +56,7 @@ namespace DefaultBoids.System
                         {
                             separation += Vector2.Normalize(offset);
 
-                            alignment += neighbor.Get(velocities).Value;
+                            alignment += velocities[neighbor].Value;
 
                             cohesion += otherPosition;
 
@@ -67,12 +67,12 @@ namespace DefaultBoids.System
 
                 if (neighborCount > 0)
                 {
-                    alignment = (alignment / neighborCount) - entity.Get(velocities).Value;
+                    alignment = (alignment / neighborCount) - velocities[entity].Value;
 
                     cohesion = position - (cohesion / neighborCount);
                 }
 
-                entity.Get(accelerations).Value =
+                accelerations[entity].Value =
                     (separation * DefaultGame.BehaviorSeparationWeight)
                     + (alignment * DefaultGame.BehaviorAlignmentWeight)
                     + (cohesion * DefaultGame.BehaviorCohesionWeight);

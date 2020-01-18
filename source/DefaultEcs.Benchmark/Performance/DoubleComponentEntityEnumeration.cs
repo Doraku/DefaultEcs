@@ -1,6 +1,7 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
 using DefaultEcs.System;
+using DefaultEcs.Technical;
 using DefaultEcs.Threading;
 using Entitas;
 using DefaultEntity = DefaultEcs.Entity;
@@ -68,8 +69,8 @@ namespace DefaultEcs.Benchmark.Performance
 
                 foreach (ref readonly DefaultEntity entity in entities)
                 {
-                    DefaultSpeed speed = entity.Get(speeds);
-                    ref DefaultPosition position = ref entity.Get(positions);
+                    DefaultSpeed speed = speeds[entity];
+                    ref DefaultPosition position = ref positions[entity];
 
                     position.X += speed.X * state;
                     position.Y += speed.Y * state;
