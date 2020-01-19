@@ -113,6 +113,12 @@ namespace DefaultBoids
 
             _system.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            _drawSystem.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+
             ++_frameCount;
             if (_watch.Elapsed.TotalSeconds > .5)
             {
@@ -120,11 +126,6 @@ namespace DefaultBoids
                 _frameCount = 0;
                 _watch.Restart();
             }
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            _drawSystem.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             _batch.Begin();
             _batch.DrawString(_font, _fps, new Vector2(10, 10), Color.Black);
