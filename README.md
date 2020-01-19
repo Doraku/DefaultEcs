@@ -590,27 +590,27 @@ Intel Core i5-3570K CPU 3.40GHz (Ivy Bridge), 1 CPU, 4 logical and 4 physical co
 
 SingleComponentEntityEnumeration: add one to the basic component (containing one int) of 100000 entities
 
-|                                Method | EntityCount |        Mean |     Error |    StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
-|-------------------------------------- |------------ |------------:|----------:|----------:|------:|------:|------:|----------:|
-|                  DefaultEcs_EntitySet |      100000 |   288.35 us |  0.032 us |  0.030 us |     - |     - |     - |         - |
-|                     DefaultEcs_System |      100000 |   287.54 us |  0.015 us |  0.013 us |     - |     - |     - |         - |
-|                DefaultEcs_MultiSystem |      100000 |    76.90 us |  0.223 us |  0.197 us |     - |     - |     - |         - |
-|      DefaultEcs_EntityComponentSystem |      100000 |   190.53 us |  0.237 us |  0.221 us |     - |     - |     - |         - |
-| DefaultEcs_MultiEntityComponentSystem |      100000 |    57.61 us |  0.197 us |  0.164 us |     - |     - |     - |         - |
-|                  DefaultEcs_Component |      100000 |    96.82 us |  0.025 us |  0.023 us |     - |     - |     - |         - |
-|            DefaultEcs_ComponentSystem |      100000 |    85.55 us |  0.650 us |  0.608 us |     - |     - |     - |         - |
-|       DefaultEcs_ComponentMultiSystem |      100000 |    27.22 us |  0.254 us |  0.238 us |     - |     - |     - |         - |
-|                        Entitas_System |      100000 | 4,950.17 us | 12.366 us | 11.567 us |     - |     - |     - |     128 B |
-|                   Entitas_MultiSystem |      100000 | 2,847.32 us | 16.705 us | 15.626 us |     - |     - |     - |     460 B |
+|                                Method |        Mean |     Error |    StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
+|-------------------------------------- |------------:|----------:|----------:|------:|------:|------:|----------:|
+|                  DefaultEcs_EntitySet |   288.35 us |  0.032 us |  0.030 us |     - |     - |     - |         - |
+|                     DefaultEcs_System |   287.54 us |  0.015 us |  0.013 us |     - |     - |     - |         - |
+|                DefaultEcs_MultiSystem |    76.90 us |  0.223 us |  0.197 us |     - |     - |     - |         - |
+|      DefaultEcs_EntityComponentSystem |   190.53 us |  0.237 us |  0.221 us |     - |     - |     - |         - |
+| DefaultEcs_MultiEntityComponentSystem |    57.61 us |  0.197 us |  0.164 us |     - |     - |     - |         - |
+|                  DefaultEcs_Component |    96.82 us |  0.025 us |  0.023 us |     - |     - |     - |         - |
+|            DefaultEcs_ComponentSystem |    85.55 us |  0.650 us |  0.608 us |     - |     - |     - |         - |
+|       DefaultEcs_ComponentMultiSystem |    27.22 us |  0.254 us |  0.238 us |     - |     - |     - |         - |
+|                        Entitas_System | 4,950.17 us | 12.366 us | 11.567 us |     - |     - |     - |     128 B |
+|                   Entitas_MultiSystem | 2,847.32 us | 16.705 us | 15.626 us |     - |     - |     - |     460 B |
 
 DoubleComponentEntityEnumeration: do basic movement with two component (position, speed) on 100000 entities
 
-|                          Method | EntityCount |       Mean |    Error |   StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
-|-------------------------------- |------------ |-----------:|---------:|---------:|------:|------:|------:|----------:|
-|            DefaultEcs_EntitySet |      100000 |   606.0 us |  0.08 us |  0.07 us |     - |     - |     - |         - |
-|               DefaultEcs_System |      100000 |   597.1 us |  0.07 us |  0.06 us |     - |     - |     - |         - |
-|          DefaultEcs_MultiSystem |      100000 |   157.4 us |  0.42 us |  0.35 us |     - |     - |     - |         - |
-|      DefaultEcs_ComponentSystem |      100000 |   401.4 us |  0.04 us |  0.04 us |     - |     - |     - |         - |
-| DefaultEcs_ComponentMultiSystem |      100000 |   107.3 us |  1.09 us |  1.02 us |     - |     - |     - |         - |
-|                  Entitas_System |      100000 | 4,280.1 us | 15.08 us | 14.11 us |     - |     - |     - |     128 B |
-|             Entitas_MultiSystem |      100000 | 3,030.2 us | 17.41 us | 16.29 us |     - |     - |     - |     465 B |
+|                          Method |       Mean |    Error |   StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
+|-------------------------------- |-----------:|---------:|---------:|------:|------:|------:|----------:|
+|            DefaultEcs_EntitySet |   606.0 us |  0.08 us |  0.07 us |     - |     - |     - |         - |
+|               DefaultEcs_System |   597.1 us |  0.07 us |  0.06 us |     - |     - |     - |         - |
+|          DefaultEcs_MultiSystem |   157.4 us |  0.42 us |  0.35 us |     - |     - |     - |         - |
+|      DefaultEcs_ComponentSystem |   401.4 us |  0.04 us |  0.04 us |     - |     - |     - |         - |
+| DefaultEcs_ComponentMultiSystem |   107.3 us |  1.09 us |  1.02 us |     - |     - |     - |         - |
+|                  Entitas_System | 4,280.1 us | 15.08 us | 14.11 us |     - |     - |     - |     128 B |
+|             Entitas_MultiSystem | 3,030.2 us | 17.41 us | 16.29 us |     - |     - |     - |     465 B |
