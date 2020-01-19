@@ -12,12 +12,12 @@ namespace DefaultEcs.Benchmark
                 //typeof(DefaultEcs.EntitySetFilter),
                 //typeof(DefaultEcs.MultipleFilterImpact),
                 //typeof(DefaultEcs.EntitySetEnumeration),
-                typeof(DefaultEcs.EntitySetWithComponentEnumeration),
+                //typeof(DefaultEcs.EntitySetWithComponentEnumeration),
                 //typeof(DefaultEcs.System),
                 //typeof(DefaultEcs.Recorder),
                 //typeof(DefaultEcs.Serialization),
                 //typeof(Performance.SingleComponentEntityEnumeration),
-                //typeof(Performance.DoubleComponentEntityEnumeration),
+                typeof(Performance.DoubleComponentEntityEnumeration),
                 //typeof(Message.Publish),
             }).RunAll();
 

@@ -103,7 +103,7 @@ public struct Example
 To reduce memory, it is possible to set a maximum count for a given component type. If nothing is set, then the maximum entity count of the world will be used.
 ```csharp
 int componentMaxCapacity = 42;
-world.SetMaxCapacityFor<Example>(componentMaxCapacity);
+world.SetComponentMaxCapacity<Example>(componentMaxCapacity);
 ```
 
 It is then possible to add the component to the entity
@@ -590,23 +590,27 @@ Intel Core i5-3570K CPU 3.40GHz (Ivy Bridge), 1 CPU, 4 logical and 4 physical co
 
 SingleComponentEntityEnumeration: add one to the basic component (containing one int) of 100000 entities
 
-|                          Method |        Mean |     Error |    StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
-|-------------------------------- |------------:|----------:|----------:|------:|------:|------:|----------:|
-|            DefaultEcs_EntitySet |   288.40 us |  0.242 us |  0.202 us |     - |     - |     - |         - |
-|               DefaultEcs_System |   288.11 us |  0.056 us |  0.053 us |     - |     - |     - |         - |
-|          DefaultEcs_MultiSystem |    77.77 us |  0.144 us |  0.135 us |     - |     - |     - |         - |
-|            DefaultEcs_Component |    96.87 us |  0.035 us |  0.029 us |     - |     - |     - |         - |
-|      DefaultEcs_ComponentSystem |    83.88 us |  0.015 us |  0.014 us |     - |     - |     - |         - |
-| DefaultEcs_ComponentMultiSystem |    27.55 us |  0.112 us |  0.105 us |     - |     - |     - |         - |
-|                  Entitas_System | 4,663.85 us | 11.923 us | 11.153 us |     - |     - |     - |     128 B |
-|             Entitas_MultiSystem | 2,804.34 us | 19.289 us | 18.043 us |     - |     - |     - |     465 B |
+|                                Method | EntityCount |        Mean |     Error |    StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
+|-------------------------------------- |------------ |------------:|----------:|----------:|------:|------:|------:|----------:|
+|                  DefaultEcs_EntitySet |      100000 |   288.35 us |  0.032 us |  0.030 us |     - |     - |     - |         - |
+|                     DefaultEcs_System |      100000 |   287.54 us |  0.015 us |  0.013 us |     - |     - |     - |         - |
+|                DefaultEcs_MultiSystem |      100000 |    76.90 us |  0.223 us |  0.197 us |     - |     - |     - |         - |
+|      DefaultEcs_EntityComponentSystem |      100000 |   190.53 us |  0.237 us |  0.221 us |     - |     - |     - |         - |
+| DefaultEcs_MultiEntityComponentSystem |      100000 |    57.61 us |  0.197 us |  0.164 us |     - |     - |     - |         - |
+|                  DefaultEcs_Component |      100000 |    96.82 us |  0.025 us |  0.023 us |     - |     - |     - |         - |
+|            DefaultEcs_ComponentSystem |      100000 |    85.55 us |  0.650 us |  0.608 us |     - |     - |     - |         - |
+|       DefaultEcs_ComponentMultiSystem |      100000 |    27.22 us |  0.254 us |  0.238 us |     - |     - |     - |         - |
+|                        Entitas_System |      100000 | 4,950.17 us | 12.366 us | 11.567 us |     - |     - |     - |     128 B |
+|                   Entitas_MultiSystem |      100000 | 2,847.32 us | 16.705 us | 15.626 us |     - |     - |     - |     460 B |
 
 DoubleComponentEntityEnumeration: do basic movement with two component (position, speed) on 100000 entities
 
-|                 Method |       Mean |    Error |   StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
-|----------------------- |-----------:|---------:|---------:|------:|------:|------:|----------:|
-|   DefaultEcs_EntitySet |   608.2 us |  0.35 us |  0.31 us |     - |     - |     - |         - |
-|      DefaultEcs_System |   602.8 us |  0.31 us |  0.28 us |     - |     - |     - |         - |
-| DefaultEcs_MultiSystem |   154.2 us |  0.24 us |  0.19 us |     - |     - |     - |         - |
-|         Entitas_System | 4,199.2 us | 16.25 us | 15.20 us |     - |     - |     - |     128 B |
-|    Entitas_MultiSystem | 2,988.5 us |  9.64 us |  9.02 us |     - |     - |     - |     481 B |
+|                          Method | EntityCount |       Mean |    Error |   StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
+|-------------------------------- |------------ |-----------:|---------:|---------:|------:|------:|------:|----------:|
+|            DefaultEcs_EntitySet |      100000 |   606.0 us |  0.08 us |  0.07 us |     - |     - |     - |         - |
+|               DefaultEcs_System |      100000 |   597.1 us |  0.07 us |  0.06 us |     - |     - |     - |         - |
+|          DefaultEcs_MultiSystem |      100000 |   157.4 us |  0.42 us |  0.35 us |     - |     - |     - |         - |
+|      DefaultEcs_ComponentSystem |      100000 |   401.4 us |  0.04 us |  0.04 us |     - |     - |     - |         - |
+| DefaultEcs_ComponentMultiSystem |      100000 |   107.3 us |  1.09 us |  1.02 us |     - |     - |     - |         - |
+|                  Entitas_System |      100000 | 4,280.1 us | 15.08 us | 14.11 us |     - |     - |     - |     128 B |
+|             Entitas_MultiSystem |      100000 | 3,030.2 us | 17.41 us | 16.29 us |     - |     - |     - |     465 B |

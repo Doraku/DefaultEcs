@@ -27,7 +27,7 @@ namespace DefaultEcs.Serialization
         {
             #region IOperation
 
-            public void SetMaxCapacity(World world, int maxCapacity) => world.SetMaxCapacityFor<T>(maxCapacity);
+            public void SetMaxCapacity(World world, int maxCapacity) => world.SetComponentMaxCapacity<T>(maxCapacity);
 
             public void Set(in Entity entity, in StreamReaderWrapper reader) => entity.Set(Converter<T>.Read(reader));
 

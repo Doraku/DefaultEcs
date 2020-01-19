@@ -112,7 +112,6 @@ namespace DefaultBoids
             GraphicsDevice.Clear(Color.White);
 
             _system.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-
         }
 
         protected override void Draw(GameTime gameTime)

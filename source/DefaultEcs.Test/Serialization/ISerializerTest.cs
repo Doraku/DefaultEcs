@@ -193,8 +193,8 @@ namespace DefaultEcs.Test.Serialization
         {
             using World world = new World(42);
 
-            world.SetMaxCapacityFor<int>(13);
-            world.SetMaxCapacityFor<float>(60);
+            world.SetComponentMaxCapacity<int>(13);
+            world.SetComponentMaxCapacity<float>(60);
 
             Entity[] entities = new[]
             {
@@ -309,8 +309,8 @@ namespace DefaultEcs.Test.Serialization
         {
             using World world = new World(42);
 
-            world.SetMaxCapacityFor<int>(13);
-            world.SetMaxCapacityFor<float>(60);
+            world.SetComponentMaxCapacity<int>(13);
+            world.SetComponentMaxCapacity<float>(60);
 
             Entity[] entities = new[]
             {

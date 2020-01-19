@@ -194,7 +194,7 @@ namespace DefaultEcs
         /// <param name="maxCapacity">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
         /// <returns>Whether the maximum count has been setted or not.</returns>
         /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
-        public bool SetMaxCapacityFor<T>(int maxCapacity)
+        public bool SetComponentMaxCapacity<T>(int maxCapacity)
         {
             if (maxCapacity < 0)
             {
@@ -212,23 +212,23 @@ namespace DefaultEcs
         /// <param name="maxCapacity">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
         /// <returns>Whether the maximum count has been setted or not.</returns>
         /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
-        [Obsolete("Use SetMaxCapacityFor instead, will be removed next version")]
-        public bool SetMaximumComponentCount<T>(int maxCapacity) => SetMaxCapacityFor<T>(maxCapacity);
+        [Obsolete("Use SetComponentMaxCapacity instead, will be removed next version")]
+        public bool SetMaximumComponentCount<T>(int maxCapacity) => SetComponentMaxCapacity<T>(maxCapacity);
 
         /// <summary>
         /// Gets the maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>The maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create, or -1 if it is currently not handled.</returns>
-        public int GetMaxCapacityFor<T>() => ComponentManager<T>.Get(WorldId)?.MaxCapacity ?? -1;
+        public int GetComponentMaxCapacity<T>() => ComponentManager<T>.Get(WorldId)?.MaxCapacity ?? -1;
 
         /// <summary>
         /// Gets the maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>The maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create, or -1 if it is currently not handled.</returns>
-        [Obsolete("Use GetMaxCapacityFor instead, will be removed next version")]
-        public int GetMaximumComponentCount<T>() => GetMaxCapacityFor<T>();
+        [Obsolete("Use GetComponentMaxCapacity instead, will be removed next version")]
+        public int GetMaximumComponentCount<T>() => GetComponentMaxCapacity<T>();
 
         /// <summary>
         /// Gets all the component of a given type <typeparamref name="T"/>.

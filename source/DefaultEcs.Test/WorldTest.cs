@@ -86,63 +86,63 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SetMaxCapacityOf_Should_return_true_When_maxCapacity_is_setted()
+        public void SetComponentMaxCapacity_Should_return_true_When_maxCapacity_is_setted()
         {
             using World world = new World(0);
 
-            Check.That(world.SetMaxCapacityFor<bool>(0)).IsTrue();
+            Check.That(world.SetComponentMaxCapacity<bool>(0)).IsTrue();
         }
 
         [Fact]
-        public void SetMaxCapacityOf_Should_return_false_When_maxCapacity_is_already_setted()
+        public void SetComponentMaxCapacity_Should_return_false_When_maxCapacity_is_already_setted()
         {
             using World world = new World(42);
 
-            Check.That(world.SetMaxCapacityFor<bool>(0)).IsTrue();
-            Check.That(world.SetMaxCapacityFor<bool>(42)).IsFalse();
+            Check.That(world.SetComponentMaxCapacity<bool>(0)).IsTrue();
+            Check.That(world.SetComponentMaxCapacity<bool>(42)).IsFalse();
         }
 
         [Fact]
-        public void GetMaxCapacityFor_Should_return_component_max_capacity()
+        public void GetComponentMaxCapacity_Should_return_component_max_capacity()
         {
             using World world = new World(100);
 
-            world.SetMaxCapacityFor<bool>(42);
-            Check.That(world.GetMaxCapacityFor<bool>()).IsEqualTo(42);
+            world.SetComponentMaxCapacity<bool>(42);
+            Check.That(world.GetComponentMaxCapacity<bool>()).IsEqualTo(42);
         }
 
         [Fact]
-        public void GetMaxCapacityFor_Should_return_minus_one_when_not_handled()
+        public void GetComponentMaxCapacity_Should_return_minus_one_when_not_handled()
         {
             using World world = new World(100);
 
-            Check.That(world.GetMaxCapacityFor<bool>()).IsEqualTo(-1);
+            Check.That(world.GetComponentMaxCapacity<bool>()).IsEqualTo(-1);
         }
 
         [Fact]
-        public void GetMaxCapacityFor_Should_return_one_for_flag_type()
+        public void GetComponentMaxCapacity_Should_return_one_for_flag_type()
         {
             using World world = new World(100);
 
-            world.SetMaxCapacityFor<FlagType>(42);
-            Check.That(world.GetMaxCapacityFor<FlagType>()).IsEqualTo(1);
+            world.SetComponentMaxCapacity<FlagType>(42);
+            Check.That(world.GetComponentMaxCapacity<FlagType>()).IsEqualTo(1);
         }
 
         [Fact]
-        public void SetMaxCapacityOf_Should_throw_When_maxCapacity_is_negative()
+        public void SetComponentMaxCapacity_Should_throw_When_maxCapacity_is_negative()
         {
             using World world = new World(0);
 
-            Check.ThatCode(() => world.SetMaxCapacityFor<bool>(-1)).Throws<ArgumentException>();
+            Check.ThatCode(() => world.SetComponentMaxCapacity<bool>(-1)).Throws<ArgumentException>();
         }
 
         [Fact]
-        public void SetMaxCapacityOf_Should_not_throw_When_already_added()
+        public void SetComponentMaxCapacity_Should_not_throw_When_already_added()
         {
             using World world = new World(0);
 
-            world.SetMaxCapacityFor<bool>(0);
-            Check.ThatCode(() => world.SetMaxCapacityFor<bool>(0)).DoesNotThrow();
+            world.SetComponentMaxCapacity<bool>(0);
+            Check.ThatCode(() => world.SetComponentMaxCapacity<bool>(0)).DoesNotThrow();
         }
 
         [Fact]
@@ -158,7 +158,7 @@ namespace DefaultEcs.Test
         {
             using World world = new World(2);
 
-            world.SetMaxCapacityFor<int>(2);
+            world.SetComponentMaxCapacity<int>(2);
             Entity entity = world.CreateEntity();
             Entity entity2 = world.CreateEntity();
 
@@ -237,7 +237,7 @@ namespace DefaultEcs.Test
             bool longIsOk = false;
             bool floatIsOk = true;
 
-            world.SetMaxCapacityFor<int>(1);
+            world.SetComponentMaxCapacity<int>(1);
             world.GetAllComponents<long>();
 
             IComponentTypeReader reader = Substitute.For<IComponentTypeReader>();
