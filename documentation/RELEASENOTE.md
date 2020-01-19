@@ -1,3 +1,22 @@
+## DefaultEcs 0.13.1
+added minEntityCountByRunnerIndex parameter to AEntitySystem constructors  
+added minComponentCountByRunnerIndex parameter to AComponentSystem constructor  
+added AEntityBufferedSystem type to make structural modification on entities in a safe way  
+added World.MaxCapacity property, obsolete MaxEntityCount  
+added World.SetMaxCapacity method, obsolete SetMaximumComponentCount  
+added World.GetMaxCapacity method, obsolete GetMaximumComponentCount  
+added World.Get method, obsolete GetAllComponents  
+added World.GetEnumerator method, obsolete GetAllEntities  
+added EntitySet.World property  
+added Components type for fast access to entities component  
+added World.GetComponents method  
+
+changed BinarySerializer and TextSerializer to be assembly version independent  
+
+updated System.Reflection.Emit.Lightweight to 4.7.0  
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.13.1)
+
 ## DefaultEcs 0.13.0
 breaking change:  
 removed SystemRunner type, use DefaultEcs.Threading.DefaultParallelRunner instead  

@@ -14,22 +14,14 @@
   </ItemGroup>
 
   <PropertyGroup Label="Package">
-    <Version>0.13.1</Version>
+    <Version>0.14.0</Version>
     <PackageReleaseNotes>
-added minEntityCountByRunnerIndex parameter to AEntitySystem constructors
-added minComponentCountByRunnerIndex parameter to AComponentSystem constructor
-added AEntityBufferedSystem type to make structural modification on entities in a safe way
-added World.MaxCapacity property, obsolete MaxEntityCount
-added World.SetMaxCapacity method, obsolete SetMaximumComponentCount
-added World.GetMaxCapacity method, obsolete GetMaximumComponentCount
-added World.Get method, obsolete GetAllComponents
-added World.GetEnumerator method, obsolete GetAllEntities
-added EntitySet.World property
-added Components type for fast access to entities component
-added World.GetComponents method
-changed BinarySerializer and TextSerializer to be assembly version independent
-
-updated System.Reflection.Emit.Lightweight to 4.7.0
+breaking change:
+removed World.MaxEntityCount, obsolete
+removed World.SetMaximumComponentCount, obsolete
+removed World.GetMaximumComponentCount, obsolete
+removed World.GetAllComponents, obsolete
+removed World.GetAllEntities, obsolete
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

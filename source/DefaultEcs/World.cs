@@ -50,12 +50,6 @@ namespace DefaultEcs
         /// </summary>
         public int MaxCapacity { get; }
 
-        /// <summary>
-        /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can handle.
-        /// </summary>
-        [Obsolete("Use MaxCapacity instead, will be removed next version")]
-        public int MaxEntityCount => MaxCapacity;
-
         #endregion
 
         #region Initialisation
@@ -205,30 +199,11 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Sets up the current <see cref="World"/> to handle component of type <typeparamref name="T"/> with a different maximum count than <see cref="MaxCapacity"/>.
-        /// If the type of component is already handled by the current <see cref="World"/>, does nothing.
-        /// </summary>
-        /// <typeparam name="T">The type of component.</typeparam>
-        /// <param name="maxCapacity">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
-        /// <returns>Whether the maximum count has been setted or not.</returns>
-        /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
-        [Obsolete("Use SetMaxCapacity instead, will be removed next version")]
-        public bool SetMaximumComponentCount<T>(int maxCapacity) => SetMaxCapacity<T>(maxCapacity);
-
-        /// <summary>
         /// Gets the maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>The maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create, or -1 if it is currently not handled.</returns>
         public int GetMaxCapacity<T>() => ComponentManager<T>.Get(WorldId)?.MaxCapacity ?? -1;
-
-        /// <summary>
-        /// Gets the maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns>The maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create, or -1 if it is currently not handled.</returns>
-        [Obsolete("Use GetMaxCapacity instead, will be removed next version")]
-        public int GetMaximumComponentCount<T>() => GetMaxCapacity<T>();
 
         /// <summary>
         /// Gets all the component of a given type <typeparamref name="T"/>.
@@ -237,15 +212,6 @@ namespace DefaultEcs
         /// <returns>A <see cref="Span{T}"/> pointing directly to the component values to edit them.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> Get<T>() => ComponentManager<T>.GetOrCreate(WorldId).AsSpan();
-
-        /// <summary>
-        /// Gets all the component of a given type <typeparamref name="T"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of component.</typeparam>
-        /// <returns>A <see cref="Span{T}"/> pointing directly to the component values to edit them.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [Obsolete("Use Get<T> instead, will be removed next version")]
-        public Span<T> GetAllComponents<T>() => Get<T>();
 
         /// <summary>
         /// Gets an <see cref="Components{T}"/> to get a fast access to the component of type <typeparamref name="T"/> of this <see cref="World"/> instance <see cref="Entity"/>.
@@ -266,14 +232,6 @@ namespace DefaultEcs
         /// </summary>
         /// <returns>An <see cref="EntitySetBuilder"/>.</returns>
         public EntitySetBuilder GetDisabledEntities() => new EntitySetBuilder(this, false);
-
-        /// <summary>
-        /// Get all the <see cref="Entity"/> of the current <see cref="World"/>.
-        /// This method is primiraly used for serialization purpose and should not be called in game logic.
-        /// </summary>
-        /// <returns>All the <see cref="Entity"/> of the current <see cref="World"/>.</returns>
-        [Obsolete("Use the instance as IEnumerable<Entity> instead, will be removed next version")]
-        public IEnumerable<Entity> GetAllEntities() => this;
 
         /// <summary>
         /// Calls on <paramref name="reader"/> with all the maximum number of component of the current <see cref="World"/>.
