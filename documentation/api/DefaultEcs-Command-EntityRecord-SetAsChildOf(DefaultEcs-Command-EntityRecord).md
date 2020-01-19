@@ -2,6 +2,7 @@
 ### [DefaultEcs.Command](./DefaultEcs-Command.md 'DefaultEcs.Command').[EntityRecord](./DefaultEcs-Command-EntityRecord.md 'DefaultEcs.Command.EntityRecord')
 ## EntityRecord.SetAsChildOf(DefaultEcs.Command.EntityRecord) Method
 Makes it so when given [EntityRecord](./DefaultEcs-Command-EntityRecord.md 'DefaultEcs.Command.EntityRecord') corresponding [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') is disposed, corresponding [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') will also be disposed.  
+This command takes 9 bytes.  
 ```C#
 public void SetAsChildOf(in DefaultEcs.Command.EntityRecord parent);
 ```

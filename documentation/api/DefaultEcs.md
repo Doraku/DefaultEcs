@@ -10,6 +10,7 @@ The [DefaultEcs](./DefaultEcs.md 'DefaultEcs') namespace contains types to put i
 - [SubscribeAttribute](./DefaultEcs-SubscribeAttribute.md 'DefaultEcs.SubscribeAttribute')
 - [World](./DefaultEcs-World.md 'DefaultEcs.World')
 ### Structs
+- [Components&lt;T&gt;](./DefaultEcs-Components-T-.md 'DefaultEcs.Components&lt;T&gt;')
 - [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ### Interfaces
 - [IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher')

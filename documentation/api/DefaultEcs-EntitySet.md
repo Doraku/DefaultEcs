@@ -1,7 +1,7 @@
 #### [DefaultEcs](./index.md 'index')
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## EntitySet Class
-Represents a sub-selection of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances from a [World](./DefaultEcs-World.md 'DefaultEcs.World').  
+Represents a sub-selection of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances from a [World](./DefaultEcs-EntitySet-World.md 'DefaultEcs.EntitySet.World').  
 ```C#
 public sealed class EntitySet :
 IDisposable
@@ -11,6 +11,7 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 ### Properties
 - [Count](./DefaultEcs-EntitySet-Count.md 'DefaultEcs.EntitySet.Count')
+- [World](./DefaultEcs-EntitySet-World.md 'DefaultEcs.EntitySet.World')
 ### Methods
 - [Complete()](./DefaultEcs-EntitySet-Complete().md 'DefaultEcs.EntitySet.Complete()')
 - [Contains(DefaultEcs.Entity)](./DefaultEcs-EntitySet-Contains(DefaultEcs-Entity).md 'DefaultEcs.EntitySet.Contains(DefaultEcs.Entity)')

@@ -2,6 +2,7 @@
 ### [DefaultEcs.Command](./DefaultEcs-Command.md 'DefaultEcs.Command').[EntityRecord](./DefaultEcs-Command-EntityRecord.md 'DefaultEcs.Command.EntityRecord')
 ## EntityRecord.RemoveFromChildrenOf(DefaultEcs.Command.EntityRecord) Method
 Remove the given [EntityRecord](./DefaultEcs-Command-EntityRecord.md 'DefaultEcs.Command.EntityRecord') corresponding [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') from corresponding [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') parents.  
+This command takes 9 bytes.  
 ```C#
 public void RemoveFromChildrenOf(in DefaultEcs.Command.EntityRecord parent);
 ```

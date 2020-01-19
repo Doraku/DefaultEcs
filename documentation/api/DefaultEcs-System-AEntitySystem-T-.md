@@ -2,6 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
 ## AEntitySystem&lt;T&gt; Class
 Represents a base class to process updates on a given [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') instance.  
+Only [Get&lt;T&gt;()](./DefaultEcs-Entity-Get-T-().md 'DefaultEcs.Entity.Get&lt;T&gt;()'), [Set&lt;T&gt;(T)](./DefaultEcs-Entity-Set-T-(T).md 'DefaultEcs.Entity.Set&lt;T&gt;(T)') and [SetSameAs&lt;T&gt;(DefaultEcs.Entity)](./DefaultEcs-Entity-SetSameAs-T-(DefaultEcs-Entity).md 'DefaultEcs.Entity.SetSameAs&lt;T&gt;(DefaultEcs.Entity)') operation on already present component type are safe.  
 ```C#
 public abstract class AEntitySystem<T> :
 ISystem<T>,
@@ -18,8 +19,10 @@ The type of the object used as state to update the system.
 ### Constructors
 - [AEntitySystem(DefaultEcs.EntitySet)](./DefaultEcs-System-AEntitySystem-T--AEntitySystem(DefaultEcs-EntitySet).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.AEntitySystem(DefaultEcs.EntitySet)')
 - [AEntitySystem(DefaultEcs.EntitySet, DefaultEcs.Threading.IParallelRunner)](./DefaultEcs-System-AEntitySystem-T--AEntitySystem(DefaultEcs-EntitySet_DefaultEcs-Threading-IParallelRunner).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.AEntitySystem(DefaultEcs.EntitySet, DefaultEcs.Threading.IParallelRunner)')
+- [AEntitySystem(DefaultEcs.EntitySet, DefaultEcs.Threading.IParallelRunner, int)](./DefaultEcs-System-AEntitySystem-T--AEntitySystem(DefaultEcs-EntitySet_DefaultEcs-Threading-IParallelRunner_int).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.AEntitySystem(DefaultEcs.EntitySet, DefaultEcs.Threading.IParallelRunner, int)')
 - [AEntitySystem(DefaultEcs.World)](./DefaultEcs-System-AEntitySystem-T--AEntitySystem(DefaultEcs-World).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.AEntitySystem(DefaultEcs.World)')
 - [AEntitySystem(DefaultEcs.World, DefaultEcs.Threading.IParallelRunner)](./DefaultEcs-System-AEntitySystem-T--AEntitySystem(DefaultEcs-World_DefaultEcs-Threading-IParallelRunner).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.AEntitySystem(DefaultEcs.World, DefaultEcs.Threading.IParallelRunner)')
+- [AEntitySystem(DefaultEcs.World, DefaultEcs.Threading.IParallelRunner, int)](./DefaultEcs-System-AEntitySystem-T--AEntitySystem(DefaultEcs-World_DefaultEcs-Threading-IParallelRunner_int).md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.AEntitySystem(DefaultEcs.World, DefaultEcs.Threading.IParallelRunner, int)')
 ### Properties
 - [IsEnabled](./DefaultEcs-System-AEntitySystem-T--IsEnabled.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;.IsEnabled')
 ### Methods
