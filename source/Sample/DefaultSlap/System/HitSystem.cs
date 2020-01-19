@@ -19,7 +19,7 @@ namespace DefaultSlap.System
 
         public void Update(float state)
         {
-            Span<HitDelay> hits = _world.GetAllComponents<HitDelay>();
+            Span<HitDelay> hits = _world.Get<HitDelay>();
             for (int i = 0; i < hits.Length; ++i)
             {
                 ref HitDelay hit = ref hits[i];

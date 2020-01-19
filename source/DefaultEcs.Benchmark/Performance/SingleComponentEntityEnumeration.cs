@@ -177,7 +177,7 @@ namespace DefaultEcs.Benchmark.Performance
         [Benchmark]
         public void DefaultEcs_Component()
         {
-            foreach (ref DefaultComponent component in _defaultWorld.GetAllComponents<DefaultComponent>())
+            foreach (ref DefaultComponent component in _defaultWorld.Get<DefaultComponent>())
             {
                 ++component.Value;
             }

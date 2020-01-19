@@ -20,8 +20,9 @@ added minEntityCountByRunnerIndex parameter to AEntitySystem constructors
 added minComponentCountByRunnerIndex parameter to AComponentSystem constructor
 added AEntityBufferedSystem type to make structural modification on entities in a safe way
 added World.MaxCapacity property, obsolete MaxEntityCount
-added World.SetComponentMaxCapacity method, obsolete SetMaximumComponentCount
-added World.GetComponentMaxCapacity method, obsolete GetMaximumComponentCount
+added World.SetMaxCapacity method, obsolete SetMaximumComponentCount
+added World.GetMaxCapacity method, obsolete GetMaximumComponentCount
+added World.Get method, obsolete GetAllComponents
 added World.GetEnumerator method, obsolete GetAllEntities
 added EntitySet.World property
 added Components type for fast access to entities component

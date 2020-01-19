@@ -103,7 +103,7 @@ public struct Example
 To reduce memory, it is possible to set a maximum count for a given component type. If nothing is set, then the maximum entity count of the world will be used.
 ```csharp
 int componentMaxCapacity = 42;
-world.SetComponentMaxCapacity<Example>(componentMaxCapacity);
+world.SetMaxCapacity<Example>(componentMaxCapacity);
 ```
 
 It is then possible to add the component to the entity
@@ -187,7 +187,7 @@ EntitySet set = world.GetEntities().With<Example>().With<int>().AsSet();
 EntitySet set = world.GetEntities().WithEither<Example>().Or<int>().AsSet();
 
 // this gives all the component of type Example currently used in the world
-Span<Example> components = world.GetAllComponents<Example>();
+Span<Example> components = world.Get<Example>();
 ```
 
 There is also some special rules which will make the EntitySet react to some events

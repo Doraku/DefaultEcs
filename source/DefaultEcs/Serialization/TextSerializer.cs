@@ -30,7 +30,7 @@ namespace DefaultEcs.Serialization
         {
             #region IOperation
 
-            public void SetMaxCapacity(World world, int maxCapacity) => world.SetComponentMaxCapacity<T>(maxCapacity);
+            public void SetMaxCapacity(World world, int maxCapacity) => world.SetMaxCapacity<T>(maxCapacity);
 
             public void Set(in Entity entity, string line, StreamReader reader)
             {
