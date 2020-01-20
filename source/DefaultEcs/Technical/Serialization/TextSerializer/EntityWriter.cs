@@ -78,7 +78,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
                 _types.Add(typeof(T), typeName);
 
-                _writer.WriteLine($"{nameof(EntryType.ComponentType)} {typeName} {typeof(T).FullName}, {typeof(T).GetTypeInfo().Assembly.GetName().Name}");
+                _writer.WriteLine($"{nameof(EntryType.ComponentType)} {typeName} {TypeNames.Get(typeof(T))}");
             }
 
             Tuple<Entity, Type> componentKey = Tuple.Create(componentOwner, typeof(T));

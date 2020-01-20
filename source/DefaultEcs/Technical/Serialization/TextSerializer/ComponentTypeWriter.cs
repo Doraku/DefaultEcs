@@ -42,7 +42,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
             _types.Add(typeof(T), shortName);
 
-            _writer.WriteLine($"{nameof(EntryType.ComponentType)} {shortName} {typeof(T).FullName}, {typeof(T).GetTypeInfo().Assembly.GetName().Name}");
+            _writer.WriteLine($"{nameof(EntryType.ComponentType)} {shortName} {TypeNames.Get(typeof(T))}");
             if (maxCapacity != _worldMaxCapacity && !typeof(T).GetTypeInfo().IsFlagType())
             {
                 _writer.WriteLine($"{nameof(EntryType.ComponentMaxCapacity)} {shortName} {maxCapacity}");

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NFluent;
@@ -209,7 +210,10 @@ namespace DefaultEcs.Test.Serialization
         public void Should_handle_struct_as_object() => Test<object>(42);
 
         [Fact]
-        public void Should_handle_Type() => Test(typeof(DerivedClass[,,]));
+        public void Should_handle_complex_generic_type_as_object() => Test<object>(new Dictionary<string, DerivedClass[,,]>[0]);
+
+        [Fact]
+        public void Should_handle_Type() => Test(typeof(Dictionary<string, DerivedClass[,,]>[]));
 
 #if !NET452 // unsuported
         [Fact]

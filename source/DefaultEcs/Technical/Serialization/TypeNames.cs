@@ -59,7 +59,9 @@ namespace DefaultEcs.Technical.Serialization
                         builder.Append('[');
                         WriteName(builder, generic, true, true);
                         builder.Append(']');
+                        builder.Append(',');
                     }
+                    --builder.Length;
                     builder.Append(']');
                 }
             }

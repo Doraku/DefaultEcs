@@ -446,7 +446,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             else
             {
                 Type type = value.GetType();
-                writer.WriteLine($"$type {type.FullName}, {type.GetTypeInfo().Assembly.GetName().Name}");
+                writer.WriteLine($"$type {TypeNames.Get(type)}");
                 Converter.GetWriteAction(type)(value, writer, indentation);
             }
         }

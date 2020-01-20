@@ -22,6 +22,8 @@ removed World.SetMaximumComponentCount, obsolete
 removed World.GetMaximumComponentCount, obsolete
 removed World.GetAllComponents, obsolete
 removed World.GetAllEntities, obsolete
+
+fixed BinarySerializer and TextSerializer serialization of multi generic types
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
