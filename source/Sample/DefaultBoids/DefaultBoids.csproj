@@ -17,6 +17,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\resource\square.png" Link="Content\square.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\resource\font.xnb" Link="Content\font.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -28,11 +34,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\DefaultEcs\DefaultEcs.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Content\square.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>

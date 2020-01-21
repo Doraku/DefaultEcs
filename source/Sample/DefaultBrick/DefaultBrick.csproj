@@ -17,6 +17,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\resource\square.png" Link="Content\square.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.2" />
   </ItemGroup>
 
@@ -28,17 +34,21 @@
     <None Update="Content\Jump.wma">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Content\Jump.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Content\Slap.wma">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Content\Slap.xnb">
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Content\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\resource\Jump.xnb" Link="Content\Jump.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Content\square.png">
+    </Content>
+    <Content Include="..\resource\Slap.xnb" Link="Content\Slap.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
 </Project>
