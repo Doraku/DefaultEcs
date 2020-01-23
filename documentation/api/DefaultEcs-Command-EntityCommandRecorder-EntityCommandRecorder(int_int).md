@@ -2,7 +2,7 @@
 ### [DefaultEcs.Command](./DefaultEcs-Command.md 'DefaultEcs.Command').[EntityCommandRecorder](./DefaultEcs-Command-EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder')
 ## EntityCommandRecorder(int, int) Constructor
 Creates an [EntityCommandRecorder](./DefaultEcs-Command-EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder') with a custom default size which can grow to a maximum capacity.  
-```C#
+```csharp
 public EntityCommandRecorder(int capacity, int maxCapacity);
 ```
 #### Parameters

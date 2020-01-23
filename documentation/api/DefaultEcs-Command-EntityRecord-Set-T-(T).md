@@ -4,7 +4,7 @@
 Sets the value of the component of type [T](#DefaultEcs-Command-EntityRecord-Set-T-(T)-T 'DefaultEcs.Command.EntityRecord.Set&lt;T&gt;(T).T') on the corresponding [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').  
 For a blittable component, this command takes 9 bytes + the size of the component.  
 For non blittable component, this command takes 13 bytes and may cause some allocation because of boxing on struct component type.  
-```C#
+```csharp
 public void Set<T>(in T component=default(ref T));
 ```
 #### Type parameters

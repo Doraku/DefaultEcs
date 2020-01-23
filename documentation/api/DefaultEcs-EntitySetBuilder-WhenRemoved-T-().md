@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder')
 ## EntitySetBuilder.WhenRemoved&lt;T&gt;() Method
 Makes a rule to observe [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') when a component of type [T](#DefaultEcs-EntitySetBuilder-WhenRemoved-T-()-T 'DefaultEcs.EntitySetBuilder.WhenRemoved&lt;T&gt;().T') is removed.  
-```C#
+```csharp
 public DefaultEcs.EntitySetBuilder WhenRemoved<T>();
 ```
 #### Type parameters

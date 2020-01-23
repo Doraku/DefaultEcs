@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## World.ToString() Method
 Returns a string representation of this instance.  
-```C#
+```csharp
 public override string ToString();
 ```
 #### Returns

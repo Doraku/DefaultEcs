@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[WithoutAttribute](./DefaultEcs-System-WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute')
 ## WithoutAttribute(System.Type[]) Constructor
 Initialize a new instance of the [WithoutAttribute](./DefaultEcs-System-WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute') type.  
-```C#
+```csharp
 public WithoutAttribute(params System.Type[] componentTypes);
 ```
 #### Parameters

@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## EntitySetBuilderExtension Class
 Provides set of static methods to create more easily rules on a [EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder') instance.  
-```C#
+```csharp
 public static class EntitySetBuilderExtension
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [EntitySetBuilderExtension](./DefaultEcs-EntitySetBuilderExtension.md 'DefaultEcs.EntitySetBuilderExtension')  

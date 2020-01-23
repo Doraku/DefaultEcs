@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySetBuilderExtension](./DefaultEcs-EntitySetBuilderExtension.md 'DefaultEcs.EntitySetBuilderExtension')
 ## EntitySetBuilderExtension.Without(DefaultEcs.EntitySetBuilder, System.Type[]) Method
 Makes a rule to ignore [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') with at least one component of the given types.  
-```C#
+```csharp
 public static DefaultEcs.EntitySetBuilder Without(this DefaultEcs.EntitySetBuilder builder, params System.Type[] componentTypes);
 ```
 #### Parameters

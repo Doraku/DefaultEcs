@@ -2,7 +2,7 @@
 ### [DefaultEcs.Serialization](./DefaultEcs-Serialization.md 'DefaultEcs.Serialization').[IComponentTypeReader](./DefaultEcs-Serialization-IComponentTypeReader.md 'DefaultEcs.Serialization.IComponentTypeReader')
 ## IComponentTypeReader.OnRead&lt;T&gt;(int) Method
 Processes the maximum number of component of type [T](#DefaultEcs-Serialization-IComponentTypeReader-OnRead-T-(int)-T 'DefaultEcs.Serialization.IComponentTypeReader.OnRead&lt;T&gt;(int).T').  
-```C#
+```csharp
 void OnRead<T>(int maxCapacity);
 ```
 #### Type parameters

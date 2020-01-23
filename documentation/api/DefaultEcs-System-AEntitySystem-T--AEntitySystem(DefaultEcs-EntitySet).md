@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;')
 ## AEntitySystem(DefaultEcs.EntitySet) Constructor
 Initialise a new instance of the [AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;') class with the given [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet').  
-```C#
+```csharp
 protected AEntitySystem(DefaultEcs.EntitySet set);
 ```
 #### Parameters

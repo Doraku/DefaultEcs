@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Entity.Set&lt;T&gt;(T) Method
 Sets the value of the component of type [T](#DefaultEcs-Entity-Set-T-(T)-T 'DefaultEcs.Entity.Set&lt;T&gt;(T).T') on the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').  
-```C#
+```csharp
 public void Set<T>(in T component=default(ref T));
 ```
 #### Type parameters

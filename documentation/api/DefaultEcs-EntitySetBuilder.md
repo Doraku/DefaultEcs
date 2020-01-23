@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## EntitySetBuilder Class
 Represent an helper object to create an [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') to retrieve specific subset of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').  
-```C#
+```csharp
 public sealed class EntitySetBuilder
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder')  

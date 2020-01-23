@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## World.GetMaxCapacity&lt;T&gt;() Method
 Gets the maximum number of [T](#DefaultEcs-World-GetMaxCapacity-T-()-T 'DefaultEcs.World.GetMaxCapacity&lt;T&gt;().T') components this [World](./DefaultEcs-World.md 'DefaultEcs.World') can create.  
-```C#
+```csharp
 public int GetMaxCapacity<T>();
 ```
 #### Type parameters

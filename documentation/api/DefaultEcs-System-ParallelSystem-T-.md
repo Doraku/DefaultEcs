@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
 ## ParallelSystem&lt;T&gt; Class
 Represents a collection of [ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;') to update in parallel.  
-```C#
+```csharp
 public sealed class ParallelSystem<T> :
 ISystem<T>,
 IDisposable

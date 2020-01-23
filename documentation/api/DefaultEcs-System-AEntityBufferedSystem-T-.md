@@ -4,7 +4,7 @@
 Represents a base class to process updates on a given [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') instance.  
 [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances are buffered in a rented array from [System.Buffers.ArrayPool&lt;&gt;.Shared](https://docs.microsoft.com/en-us/dotnet/api/System.Buffers.ArrayPool-1.Shared 'System.Buffers.ArrayPool`1.Shared') so structural modification are possible without the use of a [EntityCommandRecorder](./DefaultEcs-Command-EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder').  
 The updates are single threaded, all [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') operations are safe.  
-```C#
+```csharp
 public abstract class AEntityBufferedSystem<T> :
 ISystem<T>,
 IDisposable

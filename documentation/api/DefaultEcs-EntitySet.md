@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## EntitySet Class
 Represents a sub-selection of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances from a [World](./DefaultEcs-EntitySet-World.md 'DefaultEcs.EntitySet.World').  
-```C#
+```csharp
 public sealed class EntitySet :
 IDisposable
 ```

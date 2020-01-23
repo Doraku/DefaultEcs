@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder')
 ## EntitySetBuilder.WhenChanged&lt;T&gt;() Method
 Makes a rule to observe [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') when a component of type [T](#DefaultEcs-EntitySetBuilder-WhenChanged-T-()-T 'DefaultEcs.EntitySetBuilder.WhenChanged&lt;T&gt;().T') is changed.  
-```C#
+```csharp
 public DefaultEcs.EntitySetBuilder WhenChanged<T>();
 ```
 #### Type parameters

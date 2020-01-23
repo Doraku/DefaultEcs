@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[SequentialSystem&lt;T&gt;](./DefaultEcs-System-SequentialSystem-T-.md 'DefaultEcs.System.SequentialSystem&lt;T&gt;')
 ## SequentialSystem(System.Collections.Generic.IEnumerable&lt;DefaultEcs.System.ISystem&lt;T&gt;&gt;) Constructor
 Initialises a new instance of the [SequentialSystem&lt;T&gt;](./DefaultEcs-System-SequentialSystem-T-.md 'DefaultEcs.System.SequentialSystem&lt;T&gt;') class.  
-```C#
+```csharp
 public SequentialSystem(System.Collections.Generic.IEnumerable<DefaultEcs.System.ISystem<T>> systems);
 ```
 #### Parameters

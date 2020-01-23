@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Entity.Get&lt;T&gt;() Method
 Gets the component of type [T](#DefaultEcs-Entity-Get-T-()-T 'DefaultEcs.Entity.Get&lt;T&gt;().T') on the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').  
-```C#
+```csharp
 public ref T Get<T>();
 ```
 #### Type parameters

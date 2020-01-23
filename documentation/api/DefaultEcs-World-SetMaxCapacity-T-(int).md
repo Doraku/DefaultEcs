@@ -3,7 +3,7 @@
 ## World.SetMaxCapacity&lt;T&gt;(int) Method
 Sets up the current [World](./DefaultEcs-World.md 'DefaultEcs.World') to handle component of type [T](#DefaultEcs-World-SetMaxCapacity-T-(int)-T 'DefaultEcs.World.SetMaxCapacity&lt;T&gt;(int).T') with a different maximum count than [MaxCapacity](./DefaultEcs-World-MaxCapacity.md 'DefaultEcs.World.MaxCapacity').  
 If the type of component is already handled by the current [World](./DefaultEcs-World.md 'DefaultEcs.World'), does nothing.  
-```C#
+```csharp
 public bool SetMaxCapacity<T>(int maxCapacity);
 ```
 #### Type parameters

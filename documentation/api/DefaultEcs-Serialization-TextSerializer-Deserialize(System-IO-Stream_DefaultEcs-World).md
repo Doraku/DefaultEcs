@@ -2,7 +2,7 @@
 ### [DefaultEcs.Serialization](./DefaultEcs-Serialization.md 'DefaultEcs.Serialization').[TextSerializer](./DefaultEcs-Serialization-TextSerializer.md 'DefaultEcs.Serialization.TextSerializer')
 ## TextSerializer.Deserialize(System.IO.Stream, DefaultEcs.World) Method
 Deserializes [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances with their components from the given [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream') into the given [World](./DefaultEcs-World.md 'DefaultEcs.World').  
-```C#
+```csharp
 public System.Collections.Generic.ICollection<DefaultEcs.Entity> Deserialize(System.IO.Stream stream, DefaultEcs.World world);
 ```
 #### Parameters

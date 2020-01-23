@@ -3,7 +3,7 @@
 ## EntityRecord.Remove&lt;T&gt;() Method
 Removes the component of type [T](#DefaultEcs-Command-EntityRecord-Remove-T-()-T 'DefaultEcs.Command.EntityRecord.Remove&lt;T&gt;().T') on the corresponding [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').  
 This command takes 9 bytes.  
-```C#
+```csharp
 public void Remove<T>();
 ```
 #### Type parameters

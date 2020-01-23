@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;')
 ## AEntitySystem&lt;T&gt;.Update(T, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;) Method
 Update the given [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances once.  
-```C#
+```csharp
 protected virtual void Update(T state, System.ReadOnlySpan<DefaultEcs.Entity> entities);
 ```
 #### Parameters

@@ -3,7 +3,7 @@
 ## AEntityBufferedSystem&lt;T&gt;.Update(T) Method
 Updates the system once.  
 Does nothing if [IsEnabled](./DefaultEcs-System-AEntityBufferedSystem-T--IsEnabled.md 'DefaultEcs.System.AEntityBufferedSystem&lt;T&gt;.IsEnabled') is false or if the inner [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') is empty.  
-```C#
+```csharp
 public void Update(T state);
 ```
 #### Parameters

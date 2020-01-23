@@ -2,7 +2,7 @@
 ### [DefaultEcs.Threading](./DefaultEcs-Threading.md 'DefaultEcs.Threading').[IParallelRunner](./DefaultEcs-Threading-IParallelRunner.md 'DefaultEcs.Threading.IParallelRunner')
 ## IParallelRunner.Run(DefaultEcs.Threading.IParallelRunnable) Method
 Runs the provided [IParallelRunnable](./DefaultEcs-Threading-IParallelRunnable.md 'DefaultEcs.Threading.IParallelRunnable').  
-```C#
+```csharp
 void Run(DefaultEcs.Threading.IParallelRunnable runnable);
 ```
 #### Parameters

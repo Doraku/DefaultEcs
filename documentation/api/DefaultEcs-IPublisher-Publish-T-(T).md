@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher')
 ## IPublisher.Publish&lt;T&gt;(T) Method
 Publishes a [T](#DefaultEcs-IPublisher-Publish-T-(T)-T 'DefaultEcs.IPublisher.Publish&lt;T&gt;(T).T') object.  
-```C#
+```csharp
 void Publish<T>(in T message);
 ```
 #### Type parameters

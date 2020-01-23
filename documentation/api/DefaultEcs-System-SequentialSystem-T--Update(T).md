@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[SequentialSystem&lt;T&gt;](./DefaultEcs-System-SequentialSystem-T-.md 'DefaultEcs.System.SequentialSystem&lt;T&gt;')
 ## SequentialSystem&lt;T&gt;.Update(T) Method
 Updates all the systems once sequentially.  
-```C#
+```csharp
 public void Update(T state);
 ```
 #### Parameters

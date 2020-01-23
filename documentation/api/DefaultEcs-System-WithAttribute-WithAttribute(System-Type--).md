@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[WithAttribute](./DefaultEcs-System-WithAttribute.md 'DefaultEcs.System.WithAttribute')
 ## WithAttribute(System.Type[]) Constructor
 Initialize a new instance of the [WithAttribute](./DefaultEcs-System-WithAttribute.md 'DefaultEcs.System.WithAttribute') type.  
-```C#
+```csharp
 public WithAttribute(params System.Type[] componentTypes);
 ```
 #### Parameters

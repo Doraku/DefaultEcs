@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Entity.IsEnabled&lt;T&gt;() Method
 Gets whether the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') component of type [T](#DefaultEcs-Entity-IsEnabled-T-()-T 'DefaultEcs.Entity.IsEnabled&lt;T&gt;().T') is enabled or not.  
-```C#
+```csharp
 public bool IsEnabled<T>();
 ```
 #### Type parameters

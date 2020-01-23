@@ -3,7 +3,7 @@
 ## World.ReadAllComponentTypes(DefaultEcs.Serialization.IComponentTypeReader) Method
 Calls on [reader](#DefaultEcs-World-ReadAllComponentTypes(DefaultEcs-Serialization-IComponentTypeReader)-reader 'DefaultEcs.World.ReadAllComponentTypes(DefaultEcs.Serialization.IComponentTypeReader).reader') with all the maximum number of component of the current [World](./DefaultEcs-World.md 'DefaultEcs.World').  
 This method is primiraly used for serialization purpose and should not be called in game logic.  
-```C#
+```csharp
 public void ReadAllComponentTypes(DefaultEcs.Serialization.IComponentTypeReader reader);
 ```
 #### Parameters

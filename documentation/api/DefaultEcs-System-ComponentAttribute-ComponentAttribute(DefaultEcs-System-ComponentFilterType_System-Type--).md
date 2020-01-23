@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute')
 ## ComponentAttribute(DefaultEcs.System.ComponentFilterType, System.Type[]) Constructor
 Initialize a new instance of the [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') type.  
-```C#
+```csharp
 public ComponentAttribute(DefaultEcs.System.ComponentFilterType filterType, params System.Type[] componentTypes);
 ```
 #### Parameters

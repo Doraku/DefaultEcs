@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySetBuilderExtension](./DefaultEcs-EntitySetBuilderExtension.md 'DefaultEcs.EntitySetBuilderExtension')
 ## EntitySetBuilderExtension.With(DefaultEcs.EntitySetBuilder, System.Type[]) Method
 Makes a rule to obsverve [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') with all component of the given types.  
-```C#
+```csharp
 public static DefaultEcs.EntitySetBuilder With(this DefaultEcs.EntitySetBuilder builder, params System.Type[] componentTypes);
 ```
 #### Parameters

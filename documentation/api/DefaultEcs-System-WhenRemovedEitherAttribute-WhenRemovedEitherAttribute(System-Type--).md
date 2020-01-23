@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[WhenRemovedEitherAttribute](./DefaultEcs-System-WhenRemovedEitherAttribute.md 'DefaultEcs.System.WhenRemovedEitherAttribute')
 ## WhenRemovedEitherAttribute(System.Type[]) Constructor
 Initialize a new instance of the [WithEitherAttribute](./DefaultEcs-System-WithEitherAttribute.md 'DefaultEcs.System.WithEitherAttribute') type.  
-```C#
+```csharp
 public WhenRemovedEitherAttribute(params System.Type[] componentTypes);
 ```
 #### Parameters

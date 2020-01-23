@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[WhenChangedAttribute](./DefaultEcs-System-WhenChangedAttribute.md 'DefaultEcs.System.WhenChangedAttribute')
 ## WhenChangedAttribute(System.Type[]) Constructor
 Initialize a new instance of the [WhenChangedAttribute](./DefaultEcs-System-WhenChangedAttribute.md 'DefaultEcs.System.WhenChangedAttribute') type.  
-```C#
+```csharp
 public WhenChangedAttribute(params System.Type[] componentTypes);
 ```
 #### Parameters

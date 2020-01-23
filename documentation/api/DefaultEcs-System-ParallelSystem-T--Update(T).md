@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[ParallelSystem&lt;T&gt;](./DefaultEcs-System-ParallelSystem-T-.md 'DefaultEcs.System.ParallelSystem&lt;T&gt;')
 ## ParallelSystem&lt;T&gt;.Update(T) Method
 Updates the system once.  
-```C#
+```csharp
 public void Update(T state);
 ```
 #### Parameters

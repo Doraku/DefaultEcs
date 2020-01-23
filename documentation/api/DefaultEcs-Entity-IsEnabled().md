@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Entity.IsEnabled() Method
 Gets whether the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') is enabled or not.  
-```C#
+```csharp
 public bool IsEnabled();
 ```
 #### Returns

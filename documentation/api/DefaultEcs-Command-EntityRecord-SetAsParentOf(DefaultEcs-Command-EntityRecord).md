@@ -3,7 +3,7 @@
 ## EntityRecord.SetAsParentOf(DefaultEcs.Command.EntityRecord) Method
 Makes it so when corresponding [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') is disposed, given [EntityRecord](./DefaultEcs-Command-EntityRecord.md 'DefaultEcs.Command.EntityRecord') corresponding [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') will also be disposed.  
 This command takes 9 bytes.  
-```C#
+```csharp
 public void SetAsParentOf(in DefaultEcs.Command.EntityRecord child);
 ```
 #### Parameters

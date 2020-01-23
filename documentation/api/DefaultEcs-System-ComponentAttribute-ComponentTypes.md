@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute')
 ## ComponentAttribute.ComponentTypes Field
 The types of the component.  
-```C#
+```csharp
 public readonly ComponentTypes;
 ```
 #### Field Value

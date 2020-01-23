@@ -3,7 +3,7 @@
 ## ISystem&lt;T&gt;.Update(T) Method
 Updates the system once.  
 Does nothing if [IsEnabled](./DefaultEcs-System-ISystem-T--IsEnabled.md 'DefaultEcs.System.ISystem&lt;T&gt;.IsEnabled') is false.  
-```C#
+```csharp
 void Update(T state);
 ```
 #### Parameters

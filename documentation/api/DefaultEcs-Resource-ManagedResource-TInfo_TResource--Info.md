@@ -2,7 +2,7 @@
 ### [DefaultEcs.Resource](./DefaultEcs-Resource.md 'DefaultEcs.Resource').[ManagedResource&lt;TInfo,TResource&gt;](./DefaultEcs-Resource-ManagedResource-TInfo_TResource-.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;')
 ## ManagedResource&lt;TInfo,TResource&gt;.Info Field
 Gets the info about the resource to load.  
-```C#
+```csharp
 public readonly Info;
 ```
 #### Field Value

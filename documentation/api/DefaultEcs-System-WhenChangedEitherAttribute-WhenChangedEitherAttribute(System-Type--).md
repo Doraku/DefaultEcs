@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[WhenChangedEitherAttribute](./DefaultEcs-System-WhenChangedEitherAttribute.md 'DefaultEcs.System.WhenChangedEitherAttribute')
 ## WhenChangedEitherAttribute(System.Type[]) Constructor
 Initialize a new instance of the [WithEitherAttribute](./DefaultEcs-System-WithEitherAttribute.md 'DefaultEcs.System.WithEitherAttribute') type.  
-```C#
+```csharp
 public WhenChangedEitherAttribute(params System.Type[] componentTypes);
 ```
 #### Parameters

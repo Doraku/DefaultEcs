@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Entity.RemoveFromParentsOf(DefaultEcs.Entity) Method
 Remove the given [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') from current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') children.  
-```C#
+```csharp
 public void RemoveFromParentsOf(in DefaultEcs.Entity child);
 ```
 #### Parameters

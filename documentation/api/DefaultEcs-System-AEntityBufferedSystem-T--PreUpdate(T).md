@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[AEntityBufferedSystem&lt;T&gt;](./DefaultEcs-System-AEntityBufferedSystem-T-.md 'DefaultEcs.System.AEntityBufferedSystem&lt;T&gt;')
 ## AEntityBufferedSystem&lt;T&gt;.PreUpdate(T) Method
 Performs a pre-update treatment.  
-```C#
+```csharp
 protected virtual void PreUpdate(T state);
 ```
 #### Parameters

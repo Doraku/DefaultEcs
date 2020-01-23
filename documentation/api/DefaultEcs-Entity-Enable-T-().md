@@ -3,7 +3,7 @@
 ## Entity.Enable&lt;T&gt;() Method
 Enables the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') component of type [T](#DefaultEcs-Entity-Enable-T-()-T 'DefaultEcs.Entity.Enable&lt;T&gt;().T') so it can appear in [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet').  
 Does nothing if current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') does not have a component of type [T](#DefaultEcs-Entity-Enable-T-()-T 'DefaultEcs.Entity.Enable&lt;T&gt;().T').  
-```C#
+```csharp
 public void Enable<T>();
 ```
 #### Type parameters

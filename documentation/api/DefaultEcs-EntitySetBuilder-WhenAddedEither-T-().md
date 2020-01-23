@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder')
 ## EntitySetBuilder.WhenAddedEither&lt;T&gt;() Method
 Makes a rule to observe [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') when one component of the either group is added.  
-```C#
+```csharp
 public DefaultEcs.EntitySetBuilder.EitherBuilder WhenAddedEither<T>();
 ```
 #### Type parameters

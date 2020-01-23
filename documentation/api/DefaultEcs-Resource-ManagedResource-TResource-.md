@@ -2,7 +2,7 @@
 ### [DefaultEcs.Resource](./DefaultEcs-Resource.md 'DefaultEcs.Resource')
 ## ManagedResource&lt;TResource&gt; Class
 Provides static methods for creating [ManagedResource&lt;TInfo,TResource&gt;](./DefaultEcs-Resource-ManagedResource-TInfo_TResource-.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') object.  
-```C#
+```csharp
 public static class ManagedResource<TResource>
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [ManagedResource&lt;TResource&gt;](./DefaultEcs-Resource-ManagedResource-TResource-.md 'DefaultEcs.Resource.ManagedResource&lt;TResource&gt;')  

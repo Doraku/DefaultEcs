@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[WhenRemovedAttribute](./DefaultEcs-System-WhenRemovedAttribute.md 'DefaultEcs.System.WhenRemovedAttribute')
 ## WhenRemovedAttribute(System.Type[]) Constructor
 Initialize a new instance of the [WhenRemovedAttribute](./DefaultEcs-System-WhenRemovedAttribute.md 'DefaultEcs.System.WhenRemovedAttribute') type.  
-```C#
+```csharp
 public WhenRemovedAttribute(params System.Type[] componentTypes);
 ```
 #### Parameters

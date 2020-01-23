@@ -2,7 +2,7 @@
 ### [DefaultEcs.Threading](./DefaultEcs-Threading.md 'DefaultEcs.Threading')
 ## DefaultParallelRunner Class
 Represents an object used to run an [IParallelRunnable](./DefaultEcs-Threading-IParallelRunnable.md 'DefaultEcs.Threading.IParallelRunnable') by using multiple [System.Threading.Tasks.Task](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task 'System.Threading.Tasks.Task').  
-```C#
+```csharp
 public sealed class DefaultParallelRunner :
 IParallelRunner,
 IDisposable

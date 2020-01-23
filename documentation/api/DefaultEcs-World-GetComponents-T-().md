@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## World.GetComponents&lt;T&gt;() Method
 Gets an [Components&lt;T&gt;](./DefaultEcs-Components-T-.md 'DefaultEcs.Components&lt;T&gt;') to get a fast access to the component of type [T](#DefaultEcs-World-GetComponents-T-()-T 'DefaultEcs.World.GetComponents&lt;T&gt;().T') of this [World](./DefaultEcs-World.md 'DefaultEcs.World') instance [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').  
-```C#
+```csharp
 public DefaultEcs.Components<T> GetComponents<T>();
 ```
 #### Type parameters

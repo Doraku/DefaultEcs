@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
 ## ISystem&lt;T&gt; Interface
 Exposes a method to update a system.  
-```C#
+```csharp
 public interface ISystem<in T> :
 IDisposable
 ```

@@ -2,7 +2,7 @@
 ### [DefaultEcs.Resource](./DefaultEcs-Resource.md 'DefaultEcs.Resource').[AResourceManager&lt;TInfo,TResource&gt;](./DefaultEcs-Resource-AResourceManager-TInfo_TResource-.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;')
 ## AResourceManager&lt;TInfo,TResource&gt;.OnResourceLoaded(DefaultEcs.Entity, TInfo, TResource) Method
 Called when a resource is loaded from a [ManagedResource&lt;TInfo,TResource&gt;](./DefaultEcs-Resource-ManagedResource-TInfo_TResource-.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') component of an [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').  
-```C#
+```csharp
 protected abstract void OnResourceLoaded(in DefaultEcs.Entity entity, TInfo info, TResource resource);
 ```
 #### Parameters

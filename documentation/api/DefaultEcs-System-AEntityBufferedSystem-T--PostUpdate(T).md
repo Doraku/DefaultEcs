@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[AEntityBufferedSystem&lt;T&gt;](./DefaultEcs-System-AEntityBufferedSystem-T-.md 'DefaultEcs.System.AEntityBufferedSystem&lt;T&gt;')
 ## AEntityBufferedSystem&lt;T&gt;.PostUpdate(T) Method
 Performs a post-update treatment.  
-```C#
+```csharp
 protected virtual void PostUpdate(T state);
 ```
 #### Parameters

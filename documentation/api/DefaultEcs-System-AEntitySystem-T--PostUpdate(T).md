@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;')
 ## AEntitySystem&lt;T&gt;.PostUpdate(T) Method
 Performs a post-update treatment.  
-```C#
+```csharp
 protected virtual void PostUpdate(T state);
 ```
 #### Parameters

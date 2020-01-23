@@ -2,7 +2,7 @@
 ### [DefaultEcs.Serialization](./DefaultEcs-Serialization.md 'DefaultEcs.Serialization').[TextSerializer](./DefaultEcs-Serialization-TextSerializer.md 'DefaultEcs.Serialization.TextSerializer')
 ## TextSerializer.Deserialize(System.IO.Stream) Method
 Deserializes a [World](./DefaultEcs-World.md 'DefaultEcs.World') instance from the given [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream').  
-```C#
+```csharp
 public DefaultEcs.World Deserialize(System.IO.Stream stream);
 ```
 #### Parameters

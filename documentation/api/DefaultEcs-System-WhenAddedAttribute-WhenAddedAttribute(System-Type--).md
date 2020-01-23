@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[WhenAddedAttribute](./DefaultEcs-System-WhenAddedAttribute.md 'DefaultEcs.System.WhenAddedAttribute')
 ## WhenAddedAttribute(System.Type[]) Constructor
 Initialize a new instance of the [WhenAddedAttribute](./DefaultEcs-System-WhenAddedAttribute.md 'DefaultEcs.System.WhenAddedAttribute') type.  
-```C#
+```csharp
 public WhenAddedAttribute(params System.Type[] componentTypes);
 ```
 #### Parameters

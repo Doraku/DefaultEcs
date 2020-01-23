@@ -2,7 +2,7 @@
 ### [DefaultEcs.Threading](./DefaultEcs-Threading.md 'DefaultEcs.Threading').[DefaultParallelRunner](./DefaultEcs-Threading-DefaultParallelRunner.md 'DefaultEcs.Threading.DefaultParallelRunner')
 ## DefaultParallelRunner(int) Constructor
 Initialises a new instance of the [DefaultParallelRunner](./DefaultEcs-Threading-DefaultParallelRunner.md 'DefaultEcs.Threading.DefaultParallelRunner') class.  
-```C#
+```csharp
 public DefaultParallelRunner(int degreeOfParallelism);
 ```
 #### Parameters

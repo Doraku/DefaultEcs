@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySetBuilderExtension](./DefaultEcs-EntitySetBuilderExtension.md 'DefaultEcs.EntitySetBuilderExtension')
 ## EntitySetBuilderExtension.WhenChangedEither(DefaultEcs.EntitySetBuilder, System.Type[]) Method
 Makes a rule to observe [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') when one component of the given types is changed.  
-```C#
+```csharp
 public static DefaultEcs.EntitySetBuilder WhenChangedEither(this DefaultEcs.EntitySetBuilder builder, params System.Type[] componentTypes);
 ```
 #### Parameters

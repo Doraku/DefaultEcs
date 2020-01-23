@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder').[EitherBuilder](./DefaultEcs-EntitySetBuilder-EitherBuilder.md 'DefaultEcs.EntitySetBuilder.EitherBuilder')
 ## EitherBuilder.AsSet() Method
 Returns an [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') with the specified rules.  
-```C#
+```csharp
 public DefaultEcs.EntitySet AsSet();
 ```
 #### Returns

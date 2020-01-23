@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## World.Subscribe&lt;T&gt;(DefaultEcs.ActionIn&lt;T&gt;) Method
 Subscribes an [ActionIn&lt;T&gt;(T)](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)') to be called back when a [T](#DefaultEcs-World-Subscribe-T-(DefaultEcs-ActionIn-T-)-T 'DefaultEcs.World.Subscribe&lt;T&gt;(DefaultEcs.ActionIn&lt;T&gt;).T') object is published.  
-```C#
+```csharp
 public System.IDisposable Subscribe<T>(DefaultEcs.ActionIn<T> action);
 ```
 #### Type parameters

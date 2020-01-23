@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[WithoutEitherAttribute](./DefaultEcs-System-WithoutEitherAttribute.md 'DefaultEcs.System.WithoutEitherAttribute')
 ## WithoutEitherAttribute(System.Type[]) Constructor
 Initialize a new instance of the [WithEitherAttribute](./DefaultEcs-System-WithEitherAttribute.md 'DefaultEcs.System.WithEitherAttribute') type.  
-```C#
+```csharp
 public WithoutEitherAttribute(params System.Type[] componentTypes);
 ```
 #### Parameters

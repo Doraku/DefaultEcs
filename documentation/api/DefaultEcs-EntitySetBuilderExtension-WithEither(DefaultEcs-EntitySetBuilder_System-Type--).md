@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySetBuilderExtension](./DefaultEcs-EntitySetBuilderExtension.md 'DefaultEcs.EntitySetBuilderExtension')
 ## EntitySetBuilderExtension.WithEither(DefaultEcs.EntitySetBuilder, System.Type[]) Method
 Makes a rule to obsverve [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') with at least one component of the given types.  
-```C#
+```csharp
 public static DefaultEcs.EntitySetBuilder WithEither(this DefaultEcs.EntitySetBuilder builder, params System.Type[] componentTypes);
 ```
 #### Parameters

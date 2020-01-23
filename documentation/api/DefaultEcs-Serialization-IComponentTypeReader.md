@@ -2,7 +2,7 @@
 ### [DefaultEcs.Serialization](./DefaultEcs-Serialization.md 'DefaultEcs.Serialization')
 ## IComponentTypeReader Interface
 Exposes a method to be called back when getting the maximum number of component of a [World](./DefaultEcs-World.md 'DefaultEcs.World'), primarly used for serialization purpose.  
-```C#
+```csharp
 public interface IComponentTypeReader
 ```
 ### Methods

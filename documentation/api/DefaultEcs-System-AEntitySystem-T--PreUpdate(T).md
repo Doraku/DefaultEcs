@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;')
 ## AEntitySystem&lt;T&gt;.PreUpdate(T) Method
 Performs a pre-update treatment.  
-```C#
+```csharp
 protected virtual void PreUpdate(T state);
 ```
 #### Parameters

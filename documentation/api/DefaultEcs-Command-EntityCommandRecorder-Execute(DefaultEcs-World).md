@@ -2,7 +2,7 @@
 ### [DefaultEcs.Command](./DefaultEcs-Command.md 'DefaultEcs.Command').[EntityCommandRecorder](./DefaultEcs-Command-EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder')
 ## EntityCommandRecorder.Execute(DefaultEcs.World) Method
 Executes all recorded commands and clears those commands.  
-```C#
+```csharp
 public void Execute(DefaultEcs.World world);
 ```
 #### Parameters

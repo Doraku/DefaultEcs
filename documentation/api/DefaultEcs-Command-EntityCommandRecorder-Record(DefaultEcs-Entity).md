@@ -3,7 +3,7 @@
 ## EntityCommandRecorder.Record(DefaultEcs.Entity) Method
 Gives an [EntityRecord](./DefaultEcs-Command-EntityRecord.md 'DefaultEcs.Command.EntityRecord') to record action on the given [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').  
 This command takes 9 bytes.  
-```C#
+```csharp
 public DefaultEcs.Command.EntityRecord Record(in DefaultEcs.Entity entity);
 ```
 #### Parameters

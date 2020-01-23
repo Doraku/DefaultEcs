@@ -2,7 +2,7 @@
 ### [DefaultEcs.Serialization](./DefaultEcs-Serialization.md 'DefaultEcs.Serialization').[TextSerializer](./DefaultEcs-Serialization-TextSerializer.md 'DefaultEcs.Serialization.TextSerializer')
 ## TextSerializer.Read&lt;T&gt;(System.IO.Stream) Method
 Read an object of type [T](#DefaultEcs-Serialization-TextSerializer-Read-T-(System-IO-Stream)-T 'DefaultEcs.Serialization.TextSerializer.Read&lt;T&gt;(System.IO.Stream).T') from the given stream.  
-```C#
+```csharp
 public static T Read<T>(System.IO.Stream stream);
 ```
 #### Type parameters

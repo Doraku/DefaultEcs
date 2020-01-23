@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Entity.SetAsChildOf(DefaultEcs.Entity) Method
 Makes it so when given [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') is disposed, current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') will also be disposed.  
-```C#
+```csharp
 public void SetAsChildOf(in DefaultEcs.Entity parent);
 ```
 #### Parameters

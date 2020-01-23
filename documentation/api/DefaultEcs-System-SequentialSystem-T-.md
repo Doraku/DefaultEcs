@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
 ## SequentialSystem&lt;T&gt; Class
 Represents a collection of [ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;') to update sequentially.  
-```C#
+```csharp
 public sealed class SequentialSystem<T> :
 ISystem<T>,
 IDisposable

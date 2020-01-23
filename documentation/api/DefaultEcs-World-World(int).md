@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## World(int) Constructor
 Initializes a new instance of the [World](./DefaultEcs-World.md 'DefaultEcs.World') class.  
-```C#
+```csharp
 public World(int maxCapacity);
 ```
 #### Parameters

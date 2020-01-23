@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Entity.Equals(object) Method
 Indicates whether this instance and a specified object are equal.  
-```C#
+```csharp
 public override bool Equals(object obj);
 ```
 #### Parameters

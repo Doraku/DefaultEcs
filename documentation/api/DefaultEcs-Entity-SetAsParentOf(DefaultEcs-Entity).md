@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Entity.SetAsParentOf(DefaultEcs.Entity) Method
 Makes it so when current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') is disposed, given [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') will also be disposed.  
-```C#
+```csharp
 public void SetAsParentOf(in DefaultEcs.Entity child);
 ```
 #### Parameters

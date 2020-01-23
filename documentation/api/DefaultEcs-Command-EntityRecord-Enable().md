@@ -3,7 +3,7 @@
 ## EntityRecord.Enable() Method
 Enables the corresponding [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') so it can appear in [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet').  
 This command takes 5 bytes.  
-```C#
+```csharp
 public void Enable();
 ```
 #### Exceptions

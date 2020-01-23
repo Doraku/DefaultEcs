@@ -2,7 +2,7 @@
 ### [DefaultEcs.Serialization](./DefaultEcs-Serialization.md 'DefaultEcs.Serialization').[ISerializerExtension](./DefaultEcs-Serialization-ISerializerExtension.md 'DefaultEcs.Serialization.ISerializerExtension')
 ## ISerializerExtension.Serialize(DefaultEcs.Serialization.ISerializer, System.IO.Stream, DefaultEcs.Entity[]) Method
 Serializes the given [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances with their components into the provided [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream').  
-```C#
+```csharp
 public static void Serialize(this DefaultEcs.Serialization.ISerializer serializer, System.IO.Stream stream, params DefaultEcs.Entity[] entities);
 ```
 #### Parameters

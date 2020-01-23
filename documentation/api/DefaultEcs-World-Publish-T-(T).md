@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## World.Publish&lt;T&gt;(T) Method
 Publishes a [T](#DefaultEcs-World-Publish-T-(T)-T 'DefaultEcs.World.Publish&lt;T&gt;(T).T') object.  
-```C#
+```csharp
 public void Publish<T>(in T message);
 ```
 #### Type parameters

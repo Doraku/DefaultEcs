@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
 ## AComponentSystem&lt;TState,TComponent&gt; Class
 Represents a base class to process updates on a given [World](./DefaultEcs-World.md 'DefaultEcs.World') instance to all its components of type [TComponent](#DefaultEcs-System-AComponentSystem-TState_TComponent--TComponent 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.TComponent').  
-```C#
+```csharp
 public abstract class AComponentSystem<TState,TComponent> :
 ISystem<TState>,
 IDisposable

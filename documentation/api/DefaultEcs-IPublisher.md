@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## IPublisher Interface
 Exposes methods to subscribe to [ActionIn&lt;T&gt;(T)](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)') and publish message to callback those subscriptions.  
-```C#
+```csharp
 public interface IPublisher :
 IDisposable
 ```

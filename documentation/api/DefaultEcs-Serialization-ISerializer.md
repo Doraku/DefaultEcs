@@ -2,7 +2,7 @@
 ### [DefaultEcs.Serialization](./DefaultEcs-Serialization.md 'DefaultEcs.Serialization')
 ## ISerializer Interface
 Provides a set of methods to save and load DefaultEcs objects.  
-```C#
+```csharp
 public interface ISerializer
 ```
 ### Methods

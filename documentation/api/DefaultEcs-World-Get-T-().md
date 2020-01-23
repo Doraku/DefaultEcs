@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## World.Get&lt;T&gt;() Method
 Gets all the component of a given type [T](#DefaultEcs-World-Get-T-()-T 'DefaultEcs.World.Get&lt;T&gt;().T').  
-```C#
+```csharp
 public System.Span<T> Get<T>();
 ```
 #### Type parameters

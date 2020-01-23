@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[ActionSystem&lt;T&gt;](./DefaultEcs-System-ActionSystem-T-.md 'DefaultEcs.System.ActionSystem&lt;T&gt;')
 ## ActionSystem&lt;T&gt;.Update(T) Method
 Updates the system once.  
-```C#
+```csharp
 public void Update(T state);
 ```
 #### Parameters

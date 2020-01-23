@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet')
 ## EntitySet.EntityRemoved Event
 Event called when an [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') is removed from the [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet').  
-```C#
+```csharp
 public event EntityRemoved;
 ```
 #### Event type

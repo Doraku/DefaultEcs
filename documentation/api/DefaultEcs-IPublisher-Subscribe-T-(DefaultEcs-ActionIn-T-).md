@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher')
 ## IPublisher.Subscribe&lt;T&gt;(DefaultEcs.ActionIn&lt;T&gt;) Method
 Subscribes an [ActionIn&lt;T&gt;(T)](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)') to be called back when a [T](#DefaultEcs-IPublisher-Subscribe-T-(DefaultEcs-ActionIn-T-)-T 'DefaultEcs.IPublisher.Subscribe&lt;T&gt;(DefaultEcs.ActionIn&lt;T&gt;).T') object is published.  
-```C#
+```csharp
 System.IDisposable Subscribe<T>(DefaultEcs.ActionIn<T> action);
 ```
 #### Type parameters

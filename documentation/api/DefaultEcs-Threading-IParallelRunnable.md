@@ -2,7 +2,7 @@
 ### [DefaultEcs.Threading](./DefaultEcs-Threading.md 'DefaultEcs.Threading')
 ## IParallelRunnable Interface
 Exposes a method to run a process in parallel.  
-```C#
+```csharp
 public interface IParallelRunnable
 ```
 ### Methods

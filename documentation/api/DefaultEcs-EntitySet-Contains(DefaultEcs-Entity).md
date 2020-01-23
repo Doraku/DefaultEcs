@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet')
 ## EntitySet.Contains(DefaultEcs.Entity) Method
 Determines whether an [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') is in the [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet').  
-```C#
+```csharp
 public bool Contains(in DefaultEcs.Entity entity);
 ```
 #### Parameters

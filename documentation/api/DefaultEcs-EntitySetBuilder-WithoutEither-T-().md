@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder')
 ## EntitySetBuilder.WithoutEither&lt;T&gt;() Method
 Makes a rule to obsverve [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') without at least one component of the either group.  
-```C#
+```csharp
 public DefaultEcs.EntitySetBuilder.EitherBuilder WithoutEither<T>();
 ```
 #### Type parameters

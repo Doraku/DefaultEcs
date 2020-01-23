@@ -3,7 +3,7 @@
 ## AComponentSystem&lt;TState,TComponent&gt;.Update(TState) Method
 Updates the system once.  
 Does nothing if [IsEnabled](./DefaultEcs-System-AComponentSystem-TState_TComponent--IsEnabled.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.IsEnabled') is false or if there is no component of type [TComponent](./DefaultEcs-System-AComponentSystem-TState_TComponent-.md#DefaultEcs-System-AComponentSystem-TState_TComponent--TComponent 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.TComponent') in the [World](./DefaultEcs-World.md 'DefaultEcs.World').  
-```C#
+```csharp
 public void Update(TState state);
 ```
 #### Parameters

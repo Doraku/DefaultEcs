@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Entity.SetSameAs&lt;T&gt;(DefaultEcs.Entity) Method
 Sets the value of the component of type [T](#DefaultEcs-Entity-SetSameAs-T-(DefaultEcs-Entity)-T 'DefaultEcs.Entity.SetSameAs&lt;T&gt;(DefaultEcs.Entity).T') on the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') to the same instance of an other [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').  
-```C#
+```csharp
 public void SetSameAs<T>(in DefaultEcs.Entity reference);
 ```
 #### Type parameters

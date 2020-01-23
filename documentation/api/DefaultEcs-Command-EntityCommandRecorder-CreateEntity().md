@@ -3,7 +3,7 @@
 ## EntityCommandRecorder.CreateEntity() Method
 Records the creation of an [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') and returns an [EntityRecord](./DefaultEcs-Command-EntityRecord.md 'DefaultEcs.Command.EntityRecord') to record action on it.  
 This command takes 9 bytes.  
-```C#
+```csharp
 public DefaultEcs.Command.EntityRecord CreateEntity();
 ```
 #### Returns

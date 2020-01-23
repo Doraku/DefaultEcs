@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder')
 ## EntitySetBuilder.WhenRemovedEither&lt;T&gt;() Method
 Makes a rule to observe [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') when one component of the either group is removed.  
-```C#
+```csharp
 public DefaultEcs.EntitySetBuilder.EitherBuilder WhenRemovedEither<T>();
 ```
 #### Type parameters

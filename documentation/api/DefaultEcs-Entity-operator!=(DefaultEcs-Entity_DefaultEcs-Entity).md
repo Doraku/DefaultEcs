@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Entity.operator !=(DefaultEcs.Entity, DefaultEcs.Entity) Operator
 Determines whether two specified entities are not the same.  
-```C#
+```csharp
 public static bool operator !=(DefaultEcs.Entity a, DefaultEcs.Entity b);
 ```
 #### Parameters

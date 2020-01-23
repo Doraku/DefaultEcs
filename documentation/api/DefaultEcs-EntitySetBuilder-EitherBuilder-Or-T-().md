@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder').[EitherBuilder](./DefaultEcs-EntitySetBuilder-EitherBuilder.md 'DefaultEcs.EntitySetBuilder.EitherBuilder')
 ## EitherBuilder.Or&lt;T&gt;() Method
 Add the type [T](#DefaultEcs-EntitySetBuilder-EitherBuilder-Or-T-()-T 'DefaultEcs.EntitySetBuilder.EitherBuilder.Or&lt;T&gt;().T') to current either group.  
-```C#
+```csharp
 public DefaultEcs.EntitySetBuilder.EitherBuilder Or<T>();
 ```
 #### Type parameters

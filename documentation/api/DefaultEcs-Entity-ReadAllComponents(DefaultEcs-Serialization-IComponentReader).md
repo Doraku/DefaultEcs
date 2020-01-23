@@ -3,7 +3,7 @@
 ## Entity.ReadAllComponents(DefaultEcs.Serialization.IComponentReader) Method
 Calls on [reader](#DefaultEcs-Entity-ReadAllComponents(DefaultEcs-Serialization-IComponentReader)-reader 'DefaultEcs.Entity.ReadAllComponents(DefaultEcs.Serialization.IComponentReader).reader') with all the component of the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').  
 This method is primiraly used for serialization purpose and should not be called in game logic.  
-```C#
+```csharp
 public void ReadAllComponents(DefaultEcs.Serialization.IComponentReader reader);
 ```
 #### Parameters

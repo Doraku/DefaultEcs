@@ -2,7 +2,7 @@
 ### [DefaultEcs.Serialization](./DefaultEcs-Serialization.md 'DefaultEcs.Serialization').[BinarySerializer](./DefaultEcs-Serialization-BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer')
 ## BinarySerializer.Write&lt;T&gt;(System.IO.Stream, T) Method
 Writes an object of type [T](#DefaultEcs-Serialization-BinarySerializer-Write-T-(System-IO-Stream_T)-T 'DefaultEcs.Serialization.BinarySerializer.Write&lt;T&gt;(System.IO.Stream, T).T') on the given stream.  
-```C#
+```csharp
 public static void Write<T>(System.IO.Stream stream, in T obj);
 ```
 #### Type parameters

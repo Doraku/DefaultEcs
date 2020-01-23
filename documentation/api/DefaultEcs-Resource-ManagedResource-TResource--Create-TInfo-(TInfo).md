@@ -2,7 +2,7 @@
 ### [DefaultEcs.Resource](./DefaultEcs-Resource.md 'DefaultEcs.Resource').[ManagedResource&lt;TResource&gt;](./DefaultEcs-Resource-ManagedResource-TResource-.md 'DefaultEcs.Resource.ManagedResource&lt;TResource&gt;')
 ## ManagedResource&lt;TResource&gt;.Create&lt;TInfo&gt;(TInfo) Method
 Create a [ManagedResource&lt;TInfo,TResource&gt;](./DefaultEcs-Resource-ManagedResource-TInfo_TResource-.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') object  
-```C#
+```csharp
 public static DefaultEcs.Resource.ManagedResource<TInfo,TResource> Create<TInfo>(TInfo info);
 ```
 #### Type parameters

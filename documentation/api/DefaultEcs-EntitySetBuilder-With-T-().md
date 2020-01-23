@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[EntitySetBuilder](./DefaultEcs-EntitySetBuilder.md 'DefaultEcs.EntitySetBuilder')
 ## EntitySetBuilder.With&lt;T&gt;() Method
 Makes a rule to observe [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') with a component of type [T](#DefaultEcs-EntitySetBuilder-With-T-()-T 'DefaultEcs.EntitySetBuilder.With&lt;T&gt;().T').  
-```C#
+```csharp
 public DefaultEcs.EntitySetBuilder With<T>();
 ```
 #### Type parameters

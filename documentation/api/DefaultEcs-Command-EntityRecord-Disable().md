@@ -3,7 +3,7 @@
 ## EntityRecord.Disable() Method
 Disables the corresponding [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') so it does not appear in [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet').  
 This command takes 5 bytes.  
-```C#
+```csharp
 public void Disable();
 ```
 #### Exceptions

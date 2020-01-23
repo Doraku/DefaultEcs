@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
 ## ActionSystem&lt;T&gt; Class
 Represents a class to set up easily a custom action as a system update.  
-```C#
+```csharp
 public sealed class ActionSystem<T> :
 ISystem<T>,
 IDisposable

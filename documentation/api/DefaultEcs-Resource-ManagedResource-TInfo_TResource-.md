@@ -2,7 +2,7 @@
 ### [DefaultEcs.Resource](./DefaultEcs-Resource.md 'DefaultEcs.Resource')
 ## ManagedResource&lt;TInfo,TResource&gt; Struct
 Component type used to load managed resource with a [AResourceManager&lt;TInfo,TResource&gt;](./DefaultEcs-Resource-AResourceManager-TInfo_TResource-.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;').  
-```C#
+```csharp
 public readonly struct ManagedResource<TInfo,TResource>
 ```
 #### Type parameters

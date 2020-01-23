@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 ## Entity.Has&lt;T&gt;() Method
 Returns whether the current [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') has a component of type [T](#DefaultEcs-Entity-Has-T-()-T 'DefaultEcs.Entity.Has&lt;T&gt;().T').  
-```C#
+```csharp
 public bool Has<T>();
 ```
 #### Type parameters

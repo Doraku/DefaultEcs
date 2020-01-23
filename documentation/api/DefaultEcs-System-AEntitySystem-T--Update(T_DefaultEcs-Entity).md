@@ -2,7 +2,7 @@
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System').[AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;')
 ## AEntitySystem&lt;T&gt;.Update(T, DefaultEcs.Entity) Method
 Update the given [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instance once.  
-```C#
+```csharp
 protected virtual void Update(T state, in DefaultEcs.Entity entity);
 ```
 #### Parameters

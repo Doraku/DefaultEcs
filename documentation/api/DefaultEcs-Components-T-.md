@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## Components&lt;T&gt; Struct
 Provides a fast access to the components of type [T](#DefaultEcs-Components-T--T 'DefaultEcs.Components&lt;T&gt;.T').  
-```C#
+```csharp
 public readonly ref struct Components<T>
 ```
 #### Type parameters

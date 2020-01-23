@@ -2,7 +2,7 @@
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## World.GetEnumerator() Method
 Returns an enumerator that iterates through the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') of the current [World](./DefaultEcs-World.md 'DefaultEcs.World') instance.  
-```C#
+```csharp
 public System.Collections.Generic.IEnumerator<DefaultEcs.Entity> GetEnumerator();
 ```
 #### Returns
