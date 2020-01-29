@@ -1,9 +1,9 @@
 ﻿namespace DefaultEcs
 {
-    ///// <summary>
-    ///// This is the full API documentation of DefaultEcs.
-    ///// </summary>
-    //internal static class AssemblyDoc { }
+    /// <summary>
+    /// This is the full API documentation of DefaultEcs.
+    /// </summary>
+    internal static class AssemblyDoc { }
 
     /// <summary>
     /// The <see cref="DefaultEcs"/> namespace contains types to put in place the Entity Component System pattern.

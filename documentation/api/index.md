@@ -1,4 +1,5 @@
 #### [DefaultEcs](./index.md 'index')
+This is the full API documentation of DefaultEcs.  
 ### Namespaces
 - [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 - [DefaultEcs.Command](./DefaultEcs-Command.md 'DefaultEcs.Command')
