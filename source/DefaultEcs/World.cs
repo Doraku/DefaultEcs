@@ -292,13 +292,14 @@ namespace DefaultEcs
         /// </summary>
         public void Dispose()
         {
+            Publish(new ManagedResourceReleaseAllMessage());
+            Publisher.Publish(0, new WorldDisposedMessage(WorldId));
+
             lock (_lockObject)
             {
                 Worlds[WorldId] = null;
             }
 
-            Publish(new ManagedResourceReleaseAllMessage());
-            Publisher.Publish(0, new WorldDisposedMessage(WorldId));
             _worldIdDispenser.ReleaseInt(WorldId);
 
             GC.SuppressFinalize(this);
