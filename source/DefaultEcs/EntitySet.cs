@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Debug;
 using DefaultEcs.Technical.Helper;
@@ -15,7 +16,7 @@ namespace DefaultEcs
     /// </summary>
     [DebuggerTypeProxy(typeof(EntitySetDebugView))]
     [DebuggerDisplay("EntitySet[{Count}]")]
-    public sealed class EntitySet : IDisposable
+    public sealed class EntitySet : IOptimizable, IDisposable
     {
         #region Fields
 
@@ -28,6 +29,7 @@ namespace DefaultEcs
         private int[] _mapping;
         private Entity[] _entities;
         private event ActionIn<Entity> EntityAddedEvent;
+        private int _sortedIndex;
 
         /// <summary>
         /// Event called when an <see cref="Entity"/> is added to the <see cref="EntitySet"/>.
@@ -107,6 +109,9 @@ namespace DefaultEcs
                     }
                 }
             }
+
+            _sortedIndex = Math.Max(0, Count - 1);
+            world.Add(this);
         }
 
         #endregion
@@ -121,6 +126,11 @@ namespace DefaultEcs
             ref int index = ref _mapping[entityId];
             if (index == -1)
             {
+                if (_sortedIndex >= Count || _entities[_sortedIndex].EntityId > entityId)
+                {
+                    _sortedIndex = 0;
+                }
+
                 index = Count++;
 
                 ArrayExtension.EnsureLength(ref _entities, index, _worldMaxCapacity);
@@ -145,6 +155,8 @@ namespace DefaultEcs
                     {
                         _entities[index] = _entities[Count];
                         _mapping[_entities[Count].EntityId] = index;
+
+                        _sortedIndex = Math.Min(_sortedIndex, index);
                     }
 
                     index = -1;
@@ -243,6 +255,7 @@ namespace DefaultEcs
             {
                 Count = 0;
                 _mapping.Fill(-1);
+                _sortedIndex = 0;
             }
         }
 
@@ -255,12 +268,48 @@ namespace DefaultEcs
 
         #endregion
 
+        #region IOptimizable
+
+        void IOptimizable.Optimize(ref bool shouldContinue)
+        {
+            for (; _sortedIndex < Count - 1 && Volatile.Read(ref shouldContinue); ++_sortedIndex)
+            {
+                int minIndex = _sortedIndex;
+                int minEntityId = _entities[_sortedIndex].EntityId;
+                for (int i = _sortedIndex + 1; i < Count; ++i)
+                {
+                    if (_entities[i].EntityId < minEntityId)
+                    {
+                        minEntityId = _entities[i].EntityId;
+                        minIndex = i;
+                    }
+                }
+
+                if (minIndex != _sortedIndex)
+                {
+                    Entity tempEntity = _entities[_sortedIndex];
+
+                    _entities[_sortedIndex] = _entities[minIndex];
+                    _entities[minIndex] = tempEntity;
+
+                    _mapping[minEntityId] = _sortedIndex;
+                    _mapping[tempEntity.EntityId] = minIndex;
+                }
+            }
+        }
+
+        #endregion
+
         #region IDisposable
 
         /// <summary>
         /// Releases current <see cref="EntitySet"/> of its subscriptions, stopping it to get modifications on the <see cref="World"/>'s <see cref="Entity"/>.
         /// </summary>
-        public void Dispose() => _subscriptions.Dispose();
+        public void Dispose()
+        {
+            _subscriptions.Dispose();
+            World.Worlds[_worldId]?.Remove(this);
+        }
 
         #endregion
     }

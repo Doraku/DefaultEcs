@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using DefaultEcs.Serialization;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Debug;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
+using DefaultEcs.Threading;
 
 namespace DefaultEcs
 {
@@ -17,6 +19,61 @@ namespace DefaultEcs
     [DebuggerTypeProxy(typeof(WorldDebugView))]
     public sealed class World : IEnumerable<Entity>, IPublisher, IDisposable
     {
+        #region Types
+
+        private class Optimizer : IParallelRunnable
+        {
+            private readonly List<IOptimizable> _items;
+
+            private Action _mainAction;
+            private bool shouldContinue;
+            private int _lastIndex;
+
+            public Optimizer()
+            {
+                _items = new List<IOptimizable>();
+            }
+
+            public void Add(IOptimizable item)
+            {
+                lock (this)
+                {
+                    _items.Add(item);
+                }
+            }
+
+            public void Remove(IOptimizable item)
+            {
+                lock (this)
+                {
+                    _items.Remove(item);
+                }
+            }
+
+            public void PrepareForRun(Action mainAction)
+            {
+                _mainAction = mainAction;
+                Volatile.Write(ref shouldContinue, true);
+                Interlocked.Exchange(ref _lastIndex, -1);
+            }
+
+            public void Run(int index, int maxIndex)
+            {
+                if (index == maxIndex && _mainAction != null)
+                {
+                    _mainAction();
+                    Volatile.Write(ref shouldContinue, false);
+                }
+
+                while (Volatile.Read(ref shouldContinue) && (index = Interlocked.Increment(ref _lastIndex)) < _items.Count)
+                {
+                    _items[index].Optimize(ref shouldContinue);
+                }
+            }
+        }
+
+        #endregion
+
         #region Fields
 
         private static readonly object _lockObject;
@@ -28,6 +85,7 @@ namespace DefaultEcs
         internal static World[] Worlds;
 
         private readonly IntDispenser _entityIdDispenser;
+        private readonly Optimizer _optimizer;
 
         internal readonly short WorldId;
 
@@ -78,6 +136,7 @@ namespace DefaultEcs
             }
 
             _entityIdDispenser = new IntDispenser(-1);
+            _optimizer = new Optimizer();
             WorldId = (short)_worldIdDispenser.GetFreeInt();
 
             MaxCapacity = maxCapacity;
@@ -138,6 +197,10 @@ namespace DefaultEcs
         #endregion
 
         #region Methods
+
+        internal void Add(IOptimizable optimizable) => _optimizer.Add(optimizable);
+
+        internal void Remove(IOptimizable optimizable) => _optimizer.Remove(optimizable);
 
         internal Entity CreateDisabledEntity()
         {
@@ -239,6 +302,38 @@ namespace DefaultEcs
         /// </summary>
         /// <param name="reader">The <see cref="IComponentTypeReader"/> instance to be used as callback with the current <see cref="World"/> maximum number of component.</param>
         public void ReadAllComponentTypes(IComponentTypeReader reader) => Publish(new ComponentTypeReadMessage(reader ?? throw new ArgumentNullException(nameof(reader))));
+
+        /// <summary>
+        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> always move forward in memory.
+        /// This method will return once <paramref name="mainAction"/> is executed even if the optimization process has not finished.
+        /// </summary>
+        /// <param name="runner">The <see cref="IParallelRunner"/> to process this operation in parallel.</param>
+        /// <param name="mainAction">An <see cref="Action"/> to execute on the main thread while the optimization is in process.</param>
+        public void Optimize(IParallelRunner runner, Action mainAction)
+        {
+            if (runner is null) throw new ArgumentNullException(nameof(runner));
+            if (mainAction is null) throw new ArgumentNullException(nameof(mainAction));
+
+            _optimizer.PrepareForRun(mainAction);
+            runner.Run(_optimizer);
+        }
+
+        /// <summary>
+        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> always move forward in memory.
+        /// </summary>
+        /// <param name="runner">The <see cref="IParallelRunner"/> to process this operation in parallel.</param>
+        public void Optimize(IParallelRunner runner)
+        {
+            if (runner is null) throw new ArgumentNullException(nameof(runner));
+
+            _optimizer.PrepareForRun(null);
+            runner.Run(_optimizer);
+        }
+
+        /// <summary>
+        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> always move forward in memory.
+        /// </summary>
+        public void Optimize() => Optimize(DefaultParallelRunner.Default);
 
         #endregion
 

@@ -26,6 +26,7 @@ removed World.GetAllEntities, obsolete
 fixed BinarySerializer and TextSerializer serialization of multi generic types
 
 added AoTHelper to help the generic code generation for AoT compilation
+added World.Optimize to sort entities and their components so accessing them through EntitySet always move forward in memory
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

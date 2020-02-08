@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using DefaultEcs.Resource;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs.Technical
 {
-    internal sealed class ComponentPool<T>
+    internal sealed class ComponentPool<T> : IOptimizable
     {
         #region Fields
 
@@ -22,6 +23,7 @@ namespace DefaultEcs.Technical
         private ComponentLink[] _links;
         private T[] _components;
         private int _lastComponentIndex;
+        private int _sortedIndex;
 
         #endregion
 
@@ -56,6 +58,7 @@ namespace DefaultEcs.Technical
             _links = EmptyArray<ComponentLink>.Value;
             _components = EmptyArray<T>.Value;
             _lastComponentIndex = -1;
+            _sortedIndex = 0;
 
             Publisher<ComponentTypeReadMessage>.Subscribe(_worldId, On);
             Publisher<EntityDisposedMessage>.Subscribe(_worldId, On);
@@ -66,6 +69,8 @@ namespace DefaultEcs.Technical
             {
                 Publisher<ManagedResourceReleaseAllMessage>.Subscribe(_worldId, On);
             }
+
+            World.Worlds[_worldId].Add(this);
         }
 
         #endregion
@@ -145,6 +150,11 @@ namespace DefaultEcs.Technical
                 }
 
                 ThrowMaxNumberOfComponentReached();
+            }
+
+            if (_sortedIndex >= _lastComponentIndex || _links[_sortedIndex].EntityId > entityId)
+            {
+                _sortedIndex = 0;
             }
 
             componentIndex = ++_lastComponentIndex;
@@ -235,6 +245,8 @@ namespace DefaultEcs.Technical
                             }
                         }
                     }
+
+                    _sortedIndex = Math.Min(_sortedIndex, componentIndex);
                 }
 
                 if (_isReferenceType)
@@ -251,6 +263,7 @@ namespace DefaultEcs.Technical
                     if (_mapping[i] == linkIndex && i != entityId)
                     {
                         link.EntityId = i;
+                        _sortedIndex = Math.Min(_sortedIndex, linkIndex);
                         break;
                     }
                 }
@@ -269,6 +282,61 @@ namespace DefaultEcs.Technical
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Components<T> AsComponents() => new Components<T>(_mapping, _components);
+
+        #endregion
+
+        #region IOptimizable
+
+        void IOptimizable.Optimize(ref bool shouldContinue)
+        {
+            for (; _sortedIndex < _lastComponentIndex && Volatile.Read(ref shouldContinue); ++_sortedIndex)
+            {
+                int minIndex = _sortedIndex;
+                int minEntityId = _links[_sortedIndex].EntityId;
+                for (int i = _sortedIndex + 1; i <= _lastComponentIndex; ++i)
+                {
+                    if (_links[i].EntityId < minEntityId)
+                    {
+                        minEntityId = _links[i].EntityId;
+                        minIndex = i;
+                    }
+                }
+
+                if (minIndex != _sortedIndex)
+                {
+                    T tempComponent = _components[_sortedIndex];
+
+                    _components[_sortedIndex] = _components[minIndex];
+                    _components[minIndex] = tempComponent;
+
+                    ComponentLink tempLink = _links[_sortedIndex];
+
+                    _links[_sortedIndex] = _links[minIndex];
+                    _links[minIndex] = tempLink;
+
+                    if (_links[_sortedIndex].ReferenceCount > 1
+                        || tempLink.ReferenceCount > 1)
+                    {
+                        for (int i = 0; i < _mapping.Length; ++i)
+                        {
+                            if (_mapping[i] == minEntityId)
+                            {
+                                _mapping[i] = _sortedIndex;
+                            }
+                            else if (_mapping[i] == tempLink.EntityId)
+                            {
+                                _mapping[i] = minIndex;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _mapping[minEntityId] = _sortedIndex;
+                        _mapping[tempLink.EntityId] = minIndex;
+                    }
+                }
+            }
+        }
 
         #endregion
     }

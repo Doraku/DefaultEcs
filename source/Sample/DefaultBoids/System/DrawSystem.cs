@@ -2,6 +2,7 @@
 using DefaultBoids.Component;
 using DefaultEcs;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,12 +12,16 @@ namespace DefaultBoids.System
     {
         private readonly SpriteBatch _batch;
         private readonly Texture2D _square;
+        private readonly World _world;
+        private readonly IParallelRunner _runner;
 
-        public DrawSystem(SpriteBatch batch, Texture2D square, World world)
+        public DrawSystem(SpriteBatch batch, Texture2D square, World world, IParallelRunner runner)
             : base(world)
         {
             _batch = batch;
             _square = square;
+            _world = world;
+            _runner = runner;
         }
 
         protected override void PreUpdate(float state) => _batch.Begin();
@@ -29,6 +34,6 @@ namespace DefaultBoids.System
             }
         }
 
-        protected override void PostUpdate(float state) => _batch.End();
+        protected override void PostUpdate(float state) => _world.Optimize(_runner, _batch.End);
     }
 }

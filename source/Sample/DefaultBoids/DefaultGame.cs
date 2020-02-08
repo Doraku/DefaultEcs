@@ -75,7 +75,7 @@ namespace DefaultBoids
                 new BoidsSystem(_world, _runner, grid),
                 new MoveSystem(_world, _runner, grid));
 
-            _drawSystem = new DrawSystem(_batch, _square, _world);
+            _drawSystem = new DrawSystem(_batch, _square, _world, _runner);
 
             Random random = new Random();
 

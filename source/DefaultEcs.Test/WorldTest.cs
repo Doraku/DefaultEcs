@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using DefaultEcs.Serialization;
+using DefaultEcs.Threading;
 using NFluent;
 using NSubstitute;
 using Xunit;
@@ -264,6 +267,55 @@ namespace DefaultEcs.Test
             entity.Dispose();
 
             Check.That(disposedEntity).IsEqualTo(entity);
+        }
+
+        [Fact]
+        public void Optimize_Should_sort_inner_storages()
+        {
+            using World world = new World();
+            using EntitySet set = world.GetEntities().With<int>().AsSet();
+
+            Entity e1 = world.CreateEntity();
+            Entity e2 = world.CreateEntity();
+            Entity e3 = world.CreateEntity();
+            Entity e4 = world.CreateEntity();
+
+            e4.Set(4);
+            e3.Set(3);
+            e2.Set(2);
+            e1.Set(1);
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(e4, e3, e2, e1);
+            Check.That(world.Get<int>().ToArray()).ContainsExactly(4, 3, 2, 1);
+
+            world.Optimize();
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(e1, e2, e3, e4);
+            Check.That(world.Get<int>().ToArray()).ContainsExactly(1, 2, 3, 4);
+        }
+
+        [Fact]
+        public void Optimize_Should_return_When_mainAction_is_done()
+        {
+            using World world = new World();
+            using EntitySet set = world.GetEntities().With<int>().AsSet();
+            using DefaultParallelRunner runner = new DefaultParallelRunner(Environment.ProcessorCount);
+
+            List<Entity> entities = Enumerable.Repeat(world, 100000).Select(w => w.CreateEntity()).ToList();
+
+            int value = entities.Count;
+            foreach (Entity entity in entities.AsEnumerable().Reverse())
+            {
+                entity.Set(value--);
+            }
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(entities.AsEnumerable().Reverse());
+            Check.That(world.Get<int>().ToArray()).ContainsExactly(Enumerable.Range(1, entities.Count).Reverse());
+
+            world.Optimize(runner, () => Thread.Sleep(1));
+
+            Check.That(set.GetEntities().ToArray().Select((e, i) => (i, e)).Any(t => entities[t.i] != t.e)).IsTrue();
+            Check.That(world.Get<int>().ToArray().Select((v, i) => (i, v)).Any(t => t.i != t.v)).IsTrue();
         }
 
         #endregion
