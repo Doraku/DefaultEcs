@@ -8,6 +8,17 @@ namespace DefaultEcs
     public static class AoTHelper
     {
         /// <summary>
+        /// Registers the type <typeparamref name="T"/> so <see cref="SubscribeAttribute"/> can freely be used on method like the delegate <see cref="ActionIn{T}"/> to automatically subscribe when using <see cref="IPublisherExtension"/> on a <see cref="World"/> instance.
+        /// </summary>
+        /// <typeparam name="T">The type of message.</typeparam>
+        public static void RegisterMessage<T>()
+        {
+            using World world = new World();
+
+            world.Subscribe(default(ActionIn<T>));
+        }
+
+        /// <summary>
         /// Registers the type <typeparamref name="T"/> so it can freely be used in <see cref="System.ComponentAttribute"/>.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
@@ -22,7 +33,7 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Registers the type <typeparamref name="T"/> so it can freely be used in <see cref="System.ComponentAttribute"/> and by <see cref="Command.EntityRecord.Set{T}(in T)"/>.
+        /// Registers the unmanaged type <typeparamref name="T"/> so it can freely be used in <see cref="System.ComponentAttribute"/> and by <see cref="Command.EntityRecord.Set{T}(in T)"/>.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
         public static void RegisterUnmanagedComponent<T>()
@@ -30,10 +41,16 @@ namespace DefaultEcs
         {
             RegisterComponent<T>();
 
+            using World world = new World();
+
+            Entity entity = world.CreateEntity();
+
             unsafe
             {
-                UnmanagedComponentCommand<T>.WriteComponent(default, default, default);
-                UnmanagedComponentCommand<T>.SetComponent(default, default, default);
+                T value;
+
+                UnmanagedComponentCommand<T>.WriteComponent(default, (byte*)&value, default);
+                UnmanagedComponentCommand<T>.SetComponent(entity, default, (byte*)&value);
             }
         }
     }

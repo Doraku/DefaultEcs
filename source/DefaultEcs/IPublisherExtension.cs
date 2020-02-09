@@ -18,17 +18,15 @@ namespace DefaultEcs
     /// </summary>
     public static class IPublisherExtension
     {
-        #region Fields
-
-        private static readonly MethodInfo _subscribeMethod = typeof(IPublisher).GetTypeInfo().GetDeclaredMethod(nameof(IPublisher.Subscribe));
-
-        #endregion
-
         #region Methods
 
         private static IDisposable Subscribe(IPublisher publisher, Type type, object target)
         {
             List<IDisposable> subscriptions = new List<IDisposable>();
+
+            MethodInfo subscribeMethod = publisher.GetType().GetTypeInfo()
+                .GetDeclaredMethods(nameof(IPublisher.Subscribe))
+                .First(m => m.IsGenericMethodDefinition && m.ReturnType == typeof(IDisposable) && m.GetParameters().Length == 1);
 
             try
             {
@@ -47,7 +45,7 @@ namespace DefaultEcs
                         }
 
                         Type argType = parameters[0].ParameterType.GetElementType();
-                        subscriptions.Add((IDisposable)_subscribeMethod.MakeGenericMethod(argType).Invoke(
+                        subscriptions.Add((IDisposable)subscribeMethod.MakeGenericMethod(argType).Invoke(
                             publisher,
                             new object[]
                             {
