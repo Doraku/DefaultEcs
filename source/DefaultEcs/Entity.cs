@@ -46,7 +46,7 @@ namespace DefaultEcs
         #region Properties
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private ref ComponentEnum Components => ref World.EntityInfos[EntityId].Components;
+        internal ref ComponentEnum Components => ref World.EntityInfos[EntityId].Components;
 
         /// <summary>
         /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="Entity"/> originate. 

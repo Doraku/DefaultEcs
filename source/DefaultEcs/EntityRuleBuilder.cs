@@ -7,9 +7,9 @@ using DefaultEcs.Technical.Message;
 namespace DefaultEcs
 {
     /// <summary>
-    /// Represent an helper object to create an <see cref="EntitySet"/> to retrieve specific subset of <see cref="Entity"/>.
+    /// Represent an helper object to create rules to retrieve a specific subset of <see cref="Entity"/>.
     /// </summary>
-    public sealed class EntitySetBuilder
+    public sealed class EntityRuleBuilder
     {
         #region Types
 
@@ -23,13 +23,13 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Represents an helper object to create an either group for the construction of an <see cref="EntitySet"/> containing a specific subset of <see cref="Entity"/>.
+        /// Represents an helper object to create an either group rule to retrieve a specific subset of <see cref="Entity"/>.
         /// </summary>
         public sealed class EitherBuilder
         {
             #region Fields
 
-            private readonly EntitySetBuilder _builder;
+            private readonly EntityRuleBuilder _builder;
             private readonly EitherType _type;
 
             private ComponentEnum _eitherFilter;
@@ -38,7 +38,7 @@ namespace DefaultEcs
 
             #region Initialisation
 
-            internal EitherBuilder(EntitySetBuilder builder, EitherType type)
+            internal EitherBuilder(EntityRuleBuilder builder, EitherType type)
             {
                 _builder = builder;
                 _type = type;
@@ -123,7 +123,7 @@ namespace DefaultEcs
                 return OrWithout<T>();
             }
 
-            internal EntitySetBuilder Commit()
+            internal EntityRuleBuilder Commit()
             {
                 if (_type == EitherType.Without || _type == EitherType.WhenRemoved)
                 {
@@ -157,36 +157,36 @@ namespace DefaultEcs
             /// Makes a rule to observe <see cref="Entity"/> with a component of type <typeparamref name="T"/>.
             /// </summary>
             /// <typeparam name="T">The type of component.</typeparam>
-            /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-            public EntitySetBuilder With<T>() => Commit().With<T>();
+            /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
+            public EntityRuleBuilder With<T>() => Commit().With<T>();
 
             /// <summary>
             /// Makes a rule to ignore <see cref="Entity"/> with a component of type <typeparamref name="T"/>.
             /// </summary>
             /// <typeparam name="T">The type of component.</typeparam>
-            /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-            public EntitySetBuilder Without<T>() => Commit().Without<T>();
+            /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
+            public EntityRuleBuilder Without<T>() => Commit().Without<T>();
 
             /// <summary>
             /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is added.
             /// </summary>
             /// <typeparam name="T">The type of component.</typeparam>
-            /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-            public EntitySetBuilder WhenAdded<T>() => Commit().WhenAdded<T>();
+            /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
+            public EntityRuleBuilder WhenAdded<T>() => Commit().WhenAdded<T>();
 
             /// <summary>
             /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is changed.
             /// </summary>
             /// <typeparam name="T">The type of component.</typeparam>
-            /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-            public EntitySetBuilder WhenChanged<T>() => Commit().WhenChanged<T>();
+            /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
+            public EntityRuleBuilder WhenChanged<T>() => Commit().WhenChanged<T>();
 
             /// <summary>
             /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is removed.
             /// </summary>
             /// <typeparam name="T">The type of component.</typeparam>
-            /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-            public EntitySetBuilder WhenRemoved<T>() => Commit().WhenRemoved<T>();
+            /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
+            public EntityRuleBuilder WhenRemoved<T>() => Commit().WhenRemoved<T>();
 
             /// <summary>
             /// Makes a rule to obsverve <see cref="Entity"/> with at least one component of the either group.
@@ -255,7 +255,7 @@ namespace DefaultEcs
 
         #region Initialisation
 
-        internal EntitySetBuilder(World world, bool withEnabledEntities)
+        internal EntityRuleBuilder(World world, bool withEnabledEntities)
         {
             _world = world;
 
@@ -303,8 +303,8 @@ namespace DefaultEcs
         /// Makes a rule to observe <see cref="Entity"/> with a component of type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
-        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        public EntitySetBuilder With<T>()
+        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
+        public EntityRuleBuilder With<T>()
         {
             _addCreated = false;
 
@@ -324,8 +324,8 @@ namespace DefaultEcs
         /// Makes a rule to ignore <see cref="Entity"/> with a component of type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
-        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        public EntitySetBuilder Without<T>()
+        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
+        public EntityRuleBuilder Without<T>()
         {
             if (!_withoutFilter[ComponentManager<T>.Flag])
             {
@@ -343,8 +343,8 @@ namespace DefaultEcs
         /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is added.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
-        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        public EntitySetBuilder WhenAdded<T>()
+        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
+        public EntityRuleBuilder WhenAdded<T>()
         {
             if (!_whenAddedFilter[ComponentManager<T>.Flag])
             {
@@ -360,8 +360,8 @@ namespace DefaultEcs
         /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is changed.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
-        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        public EntitySetBuilder WhenChanged<T>()
+        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
+        public EntityRuleBuilder WhenChanged<T>()
         {
             if (!_whenChangedFilter[ComponentManager<T>.Flag])
             {
@@ -376,8 +376,8 @@ namespace DefaultEcs
         /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is removed.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
-        /// <returns>The current <see cref="EntitySetBuilder"/>.</returns>
-        public EntitySetBuilder WhenRemoved<T>()
+        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
+        public EntityRuleBuilder WhenRemoved<T>()
         {
             if (!_whenRemovedFilter[ComponentManager<T>.Flag])
             {
@@ -423,6 +423,17 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of component to add to the either group.</typeparam>
         /// <returns>A <see cref="EitherBuilder"/> to create a either group.</returns>
         public EitherBuilder WhenRemovedEither<T>() => new EitherBuilder(this, EitherType.WhenRemoved).Or<T>();
+
+        /// <summary>
+        /// Returns a <see cref="Predicate{T}"/> representing the specified rules.
+        /// </summary>
+        /// <returns>The <see cref="Predicate{T}"/>.</returns>
+        public Predicate<Entity> AsPredicate()
+        {
+            Predicate<ComponentEnum> filter = EntityRuleFilterFactory.GetFilter(_withFilter, _withoutFilter, _withEitherFilters, _withoutEitherFilters);
+
+            return e => filter(e.Components);
+        }
 
         /// <summary>
         /// Returns an <see cref="EntitySet"/> with the specified rules.

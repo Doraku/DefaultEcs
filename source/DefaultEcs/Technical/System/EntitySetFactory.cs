@@ -28,7 +28,7 @@ namespace DefaultEcs.Technical.System
         {
             TypeInfo typeInfo = type.GetTypeInfo();
 
-            Func<EntitySetBuilder, EntitySetBuilder> builderAction = b => b;
+            Func<EntityRuleBuilder, EntityRuleBuilder> builderAction = b => b;
 
             foreach (ComponentAttribute attribute in typeInfo.GetCustomAttributes<ComponentAttribute>(true))
             {

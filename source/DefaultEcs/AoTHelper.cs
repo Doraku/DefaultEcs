@@ -24,7 +24,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of component.</typeparam>
         public static void RegisterComponent<T>()
         {
-            new EntitySetBuilder(default, default)
+            new EntityRuleBuilder(default, default)
                 .With<T>().WithEither<T>().Or<T>().WithEither<T>().With<T>()
                 .Without<T>().WithoutEither<T>().Or<T>().WithoutEither<T>().Without<T>()
                 .WhenAdded<T>().WhenAddedEither<T>().Or<T>().WhenAddedEither<T>().WhenAdded<T>()

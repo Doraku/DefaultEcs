@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NFluent;
 using Xunit;
 
 namespace DefaultEcs.Test
 {
-    public sealed class EntitySetBuilderTest
+    public sealed class EntityRuleBuilderTest
     {
         #region Tests
 
         [Fact]
-        public void Build_Should_return_EntitySet_with_all_Entity()
+        public void AsSet_Should_return_EntitySet_with_all_Entity()
         {
             using World world = new World(4);
             using EntitySet set = world.GetEntities().AsSet();
@@ -31,7 +32,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Build_With_T_Should_return_EntitySet_with_all_Entity_with_component_T()
+        public void AsSet_With_T_Should_return_EntitySet_with_all_Entity_with_component_T()
         {
             using World world = new World(4);
             using EntitySet set = world.GetEntities().With<bool>().AsSet();
@@ -57,10 +58,20 @@ namespace DefaultEcs.Test
             entities.RemoveAt(2);
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+            Entity temp = entities[2];
+            temp.Disable<bool>();
+            entities.Remove(temp);
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+            temp.Enable<bool>();
+            entities.Add(temp);
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
         }
 
         [Fact]
-        public void Build_With_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_T2()
+        public void AsSet_With_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_T2()
         {
             using World world = new World(4);
             using EntitySet set = world.GetEntities().With<bool>().With<int>().AsSet();
@@ -102,7 +113,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Build_WithEither_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_or_T2()
+        public void AsSet_WithEither_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_or_T2()
         {
             using World world = new World(4);
             using EntitySet set = world.GetEntities().WithEither<bool>().Or<int>().AsSet();
@@ -143,7 +154,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Build_Without_T_Should_return_EntitySet_with_all_Entity_without_component_T()
+        public void AsSet_Without_T_Should_return_EntitySet_with_all_Entity_without_component_T()
         {
             using World world = new World(4);
             using EntitySet set = world.GetEntities().Without<int>().AsSet();
@@ -166,13 +177,21 @@ namespace DefaultEcs.Test
             Check.That(set.GetEntities().ToArray()).IsEmpty();
 
             Entity temp = entities[2];
+            temp.Disable<int>();
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(temp);
+
+            temp.Enable<int>();
+
+            Check.That(set.GetEntities().ToArray()).IsEmpty();
+
             temp.Remove<int>();
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(temp);
         }
 
         [Fact]
-        public void Build_WithoutEither_T1_T2_Should_return_EntitySet_with_all_Entity_without_component_T1_or_T2()
+        public void AsSet_WithoutEither_T1_T2_Should_return_EntitySet_with_all_Entity_without_component_T1_or_T2()
         {
             using World world = new World(4);
             using EntitySet set = world.GetEntities().WithoutEither<bool>().Or<int>().AsSet();
@@ -210,7 +229,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Build_WhenAdded_T_Should_return_EntitySet_with_all_Entity_when_component_T_is_added()
+        public void AsSet_WhenAdded_T_Should_return_EntitySet_with_all_Entity_when_component_T_is_added()
         {
             using World world = new World(4);
             using EntitySet set = world.GetEntities().WhenAdded<bool>().AsSet();
@@ -259,7 +278,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Build_WhenAddedEither_T1_T2_Should_return_EntitySet_with_all_Entity_when_component_T1_or_T2_is_added()
+        public void AsSet_WhenAddedEither_T1_T2_Should_return_EntitySet_with_all_Entity_when_component_T1_or_T2_is_added()
         {
             using World world = new World(4);
             using EntitySet set = world.GetEntities().WhenAddedEither<bool>().Or<int>().AsSet();
@@ -299,7 +318,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Build_WhenChanged_T_Should_return_EntitySet_with_all_Entity_when_component_T_is_added_and_changed()
+        public void AsSet_WhenChanged_T_Should_return_EntitySet_with_all_Entity_when_component_T_is_added_and_changed()
         {
             using World world = new World(4);
             using EntitySet set = world.GetEntities().WhenChanged<bool>().AsSet();
@@ -334,7 +353,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Build_WhenChangedEither_T1_T2_Should_return_EntitySet_with_all_Entity_when_component_T1_or_T2_is_changed()
+        public void AsSet_WhenChangedEither_T1_T2_Should_return_EntitySet_with_all_Entity_when_component_T1_or_T2_is_changed()
         {
             using World world = new World(4);
             using EntitySet set = world.GetEntities().WhenChangedEither<bool>().Or<int>().AsSet();
@@ -375,7 +394,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Build_WhenRemoved_T_Should_return_EntitySet_with_all_Entity_when_component_T_is_removed()
+        public void AsSet_WhenRemoved_T_Should_return_EntitySet_with_all_Entity_when_component_T_is_removed()
         {
             using World world = new World(4);
             using EntitySet set = world.GetEntities().WhenRemoved<bool>().AsSet();
@@ -420,7 +439,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Build_WhenRemovedEither_T1_T2_Should_return_EntitySet_with_all_Entity_when_component_T1_or_T2_is_changed()
+        public void AsSet_WhenRemovedEither_T1_T2_Should_return_EntitySet_with_all_Entity_when_component_T1_or_T2_is_changed()
         {
             using World world = new World(4);
             using EntitySet set = world.GetEntities().WhenRemovedEither<bool>().Or<int>().AsSet();
@@ -458,6 +477,34 @@ namespace DefaultEcs.Test
             }
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+        }
+
+        [Fact]
+        public void AsPredicate_With_T_Should_return_true_When_entity_has_component_T()
+        {
+            using World world = new World(4);
+
+            Entity entity = world.CreateEntity();
+
+            Predicate<Entity> predicate = world.GetEntities().With<bool>().AsPredicate();
+
+            Check.That(predicate(entity)).IsFalse();
+
+            entity.Set(true);
+
+            Check.That(predicate(entity)).IsTrue();
+
+            entity.Disable<bool>();
+
+            Check.That(predicate(entity)).IsFalse();
+
+            entity.Enable<bool>();
+
+            Check.That(predicate(entity)).IsTrue();
+
+            entity.Remove<bool>();
+
+            Check.That(predicate(entity)).IsFalse();
         }
 
         #endregion

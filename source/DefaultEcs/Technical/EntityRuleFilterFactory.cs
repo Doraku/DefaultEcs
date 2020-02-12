@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DefaultEcs.Technical
 {
-    internal static class EntitySetFilterFactory
+    internal static class EntityRuleFilterFactory
     {
         #region Fields
 
@@ -14,7 +14,7 @@ namespace DefaultEcs.Technical
 
         #region Initialisation
 
-        static EntitySetFilterFactory()
+        static EntityRuleFilterFactory()
         {
             _filters = new Dictionary<string, Predicate<ComponentEnum>>();
         }
@@ -25,6 +25,11 @@ namespace DefaultEcs.Technical
 
         public static Predicate<ComponentEnum> GetFilter(ComponentEnum withFilter, ComponentEnum withoutFilter, List<ComponentEnum> withEitherFilters, List<ComponentEnum> withoutEitherFilters)
         {
+            withFilter = withFilter.Copy();
+            withoutFilter = withoutFilter.Copy();
+            withEitherFilters = withEitherFilters?.ToList();
+            withoutEitherFilters = withoutEitherFilters?.ToList();
+
             string key = $"{withFilter} {withoutFilter} {string.Join(" ", withEitherFilters ?? Enumerable.Empty<ComponentEnum>())} {string.Join(" ", withoutEitherFilters ?? Enumerable.Empty<ComponentEnum>())}";
             Predicate<ComponentEnum> filter;
 

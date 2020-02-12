@@ -91,7 +91,7 @@ namespace DefaultEcs
             _worldId = world.WorldId;
             _worldMaxCapacity = world.MaxCapacity;
 
-            _filter = EntitySetFilterFactory.GetFilter(withFilter.Copy(), withoutFilter.Copy(), withEitherFilters?.ToList(), withoutEitherFilters?.ToList());
+            _filter = EntityRuleFilterFactory.GetFilter(withFilter, withoutFilter, withEitherFilters, withoutEitherFilters);
 
             _subscriptions = subscriptions.Select(s => s(this, world)).Merge();
 
@@ -281,7 +281,7 @@ namespace DefaultEcs
         public ReadOnlySpan<Entity> GetEntities() => GetEntities(0, Count);
 
         /// <summary>
-        /// Clears current instance of its entities if it was created with some reactive filter (<seealso cref="EntitySetBuilder.WhenAdded{T}"/>, <see cref="EntitySetBuilder.WhenChanged{T}"/> or <see cref="EntitySetBuilder.WhenRemoved{T}"/>).
+        /// Clears current instance of its entities if it was created with some reactive filter (<seealso cref="EntityRuleBuilder.WhenAdded{T}"/>, <see cref="EntityRuleBuilder.WhenChanged{T}"/> or <see cref="EntityRuleBuilder.WhenRemoved{T}"/>).
         /// Does nothing if it was created from a static filter.
         /// This method need to be called after current instance content has been processed in a update cycle.
         /// </summary>
