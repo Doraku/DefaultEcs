@@ -1,16 +1,14 @@
 ﻿namespace DefaultEcs.Technical.Message
 {
-    internal readonly struct ComponentRemovedMessage<T>
+    internal readonly struct ComponentDisabledMessage<T>
     {
         public readonly int EntityId;
         public readonly ComponentEnum Components;
-        public readonly T OldValue;
 
-        public ComponentRemovedMessage(int entityId, ComponentEnum components, in T oldValue)
+        public ComponentDisabledMessage(int entityId, ComponentEnum components)
         {
             EntityId = entityId;
             Components = components;
-            OldValue = oldValue;
         }
     }
 }

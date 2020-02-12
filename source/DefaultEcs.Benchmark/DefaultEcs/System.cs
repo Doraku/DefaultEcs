@@ -140,7 +140,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private ISystem<float> _bufferedSystem;
         private ISystem<float> _systemTPL;
 
-        [Params(100, 1000, 10000, 100000, 1000000)]
+        [Params(100, 1000, 10000, 100000)]
         public int EntityCount { get; set; }
 
         [IterationSetup]

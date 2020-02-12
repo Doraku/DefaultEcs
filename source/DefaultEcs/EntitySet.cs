@@ -208,15 +208,43 @@ namespace DefaultEcs
             }
         }
 
-        internal void Remove(in EntityDisposingMessage message) => Remove(message.EntityId);
+        internal void CheckedAdd<T>(in ComponentEnabledMessage<T> message)
+        {
+            if (_filter(message.Components))
+            {
+                Add(message.EntityId);
+            }
+        }
 
-        internal void Remove(in EntityDisabledMessage message) => Remove(message.EntityId);
+        internal void CheckedAdd<T>(in ComponentDisabledMessage<T> message)
+        {
+            if (_filter(message.Components))
+            {
+                Add(message.EntityId);
+            }
+        }
+
+        internal void Remove(in EntityDisposingMessage message) => Remove(message.EntityId);
 
         internal void Remove(in EntityEnabledMessage message) => Remove(message.EntityId);
 
-        internal void Remove<T>(in ComponentRemovedMessage<T> message) => Remove(message.EntityId);
+        internal void Remove(in EntityDisabledMessage message) => Remove(message.EntityId);
 
         internal void Remove<T>(in ComponentAddedMessage<T> message) => Remove(message.EntityId);
+
+        internal void Remove<T>(in ComponentRemovedMessage<T> message) => Remove(message.EntityId);
+
+        internal void Remove<T>(in ComponentEnabledMessage<T> message) => Remove(message.EntityId);
+
+        internal void Remove<T>(in ComponentDisabledMessage<T> message) => Remove(message.EntityId);
+
+        internal void CheckedRemove<T>(in ComponentAddedMessage<T> message)
+        {
+            if (!_filter(message.Components))
+            {
+                Remove(message.EntityId);
+            }
+        }
 
         internal void CheckedRemove<T>(in ComponentRemovedMessage<T> message)
         {
@@ -226,7 +254,15 @@ namespace DefaultEcs
             }
         }
 
-        internal void CheckedRemove<T>(in ComponentAddedMessage<T> message)
+        internal void CheckedRemove<T>(in ComponentEnabledMessage<T> message)
+        {
+            if (!_filter(message.Components))
+            {
+                Remove(message.EntityId);
+            }
+        }
+
+        internal void CheckedRemove<T>(in ComponentDisabledMessage<T> message)
         {
             if (!_filter(message.Components))
             {

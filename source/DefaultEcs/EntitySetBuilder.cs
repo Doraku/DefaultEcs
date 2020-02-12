@@ -60,7 +60,9 @@ namespace DefaultEcs
                     {
                         _builder._withEitherFilter[flag] = true;
                         _builder._nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
+                        _builder._nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentEnabledMessage<T>>(s.CheckedAdd));
                         _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedRemove));
+                        _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentDisabledMessage<T>>(s.CheckedRemove));
                     }
                 }
 
@@ -77,7 +79,9 @@ namespace DefaultEcs
                     {
                         _builder._withoutEitherFilter[flag] = true;
                         _builder._nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
+                        _builder._nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentDisabledMessage<T>>(s.CheckedAdd));
                         _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedRemove));
+                        _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentEnabledMessage<T>>(s.CheckedRemove));
                     }
                 }
 
@@ -90,6 +94,7 @@ namespace DefaultEcs
                 {
                     _builder._whenAddedFilter[ComponentManager<T>.Flag] = true;
                     _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
+                    _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentEnabledMessage<T>>(s.CheckedAdd));
                 }
 
                 return OrWith<T>();
@@ -112,6 +117,7 @@ namespace DefaultEcs
                 {
                     _builder._whenRemovedFilter[ComponentManager<T>.Flag] = true;
                     _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
+                    _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentDisabledMessage<T>>(s.CheckedAdd));
                 }
 
                 return OrWithout<T>();
@@ -306,7 +312,9 @@ namespace DefaultEcs
             {
                 _withFilter[ComponentManager<T>.Flag] = true;
                 _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
+                _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentEnabledMessage<T>>(s.CheckedAdd));
                 _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.Remove));
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentDisabledMessage<T>>(s.Remove));
             }
 
             return this;
@@ -323,7 +331,9 @@ namespace DefaultEcs
             {
                 _withoutFilter[ComponentManager<T>.Flag] = true;
                 _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
+                _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentDisabledMessage<T>>(s.CheckedAdd));
                 _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.Remove));
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentEnabledMessage<T>>(s.Remove));
             }
 
             return this;
@@ -340,6 +350,7 @@ namespace DefaultEcs
             {
                 _whenAddedFilter[ComponentManager<T>.Flag] = true;
                 _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentEnabledMessage<T>>(s.CheckedAdd));
             }
 
             return With<T>();
@@ -372,6 +383,7 @@ namespace DefaultEcs
             {
                 _whenRemovedFilter[ComponentManager<T>.Flag] = true;
                 _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentDisabledMessage<T>>(s.CheckedAdd));
             }
 
             return Without<T>();

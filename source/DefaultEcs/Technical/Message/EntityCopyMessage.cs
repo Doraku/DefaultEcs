@@ -4,11 +4,13 @@
     {
         public readonly int EntityId;
         public readonly Entity Copy;
+        public readonly ComponentEnum Components;
 
-        public EntityCopyMessage(int entityId, in Entity copy)
+        public EntityCopyMessage(int entityId, in Entity copy, in ComponentEnum components)
         {
             EntityId = entityId;
             Copy = copy;
+            Components = components;
         }
     }
 }

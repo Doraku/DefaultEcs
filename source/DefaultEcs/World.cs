@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using DefaultEcs.Serialization;
@@ -202,24 +203,6 @@ namespace DefaultEcs
 
         internal void Remove(IOptimizable optimizable) => _optimizer.Remove(optimizable);
 
-        internal Entity CreateDisabledEntity()
-        {
-            int entityId = _entityIdDispenser.GetFreeInt();
-
-            if (entityId >= MaxCapacity)
-            {
-                throw new InvalidOperationException("Max number of Entity reached");
-            }
-
-            ArrayExtension.EnsureLength(ref EntityInfos, entityId, MaxCapacity);
-
-            ref ComponentEnum components = ref EntityInfos[entityId].Components;
-            components[IsAliveFlag] = true;
-            Publish(new EntityDisabledMessage(entityId, components));
-
-            return new Entity(WorldId, entityId);
-        }
-
         /// <summary>
         /// Creates a new instance of the <see cref="Entity"/> struct.
         /// </summary>
@@ -335,6 +318,42 @@ namespace DefaultEcs
         /// </summary>
         public void Optimize() => Optimize(DefaultParallelRunner.Default);
 
+        /// <summary>
+        /// Subscribes an <see cref="IComponentObserver{T}"/> on the current <see cref="World"/> for the events of components of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of component events to subscribe to.</typeparam>
+        /// <param name="observer">The <see cref="IComponentObserver{T}"/> to use when events occur.</param>
+        /// <returns>An <see cref="IDisposable"/> used to unsubscribe.</returns>
+        public IDisposable SubscribeObserver<T>(IComponentObserver<T> observer)
+        {
+            IEnumerable<IDisposable> GetSubscriptions(IComponentObserver<T> o)
+            {
+                yield return Subscribe((in ComponentAddedMessage<T> message) => o.OnAdded(new Entity(WorldId, message.EntityId), ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
+                yield return Subscribe((in ComponentChangedMessage<T> message) => o.OnChanged(new Entity(WorldId, message.EntityId), message.OldValue, ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
+                yield return Subscribe((in ComponentRemovedMessage<T> message) => o.OnRemoved(new Entity(WorldId, message.EntityId), message.OldValue));
+                yield return Subscribe((in ComponentEnabledMessage<T> message) => o.OnEnabled(new Entity(WorldId, message.EntityId)));
+                yield return Subscribe((in ComponentDisabledMessage<T> message) => o.OnDisabled(new Entity(WorldId, message.EntityId)));
+                yield return Subscribe((in EntityDisposingMessage message) =>
+                {
+                    ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
+                    if (pool?.Has(message.EntityId) is true)
+                    {
+                        o.OnRemoved(new Entity(WorldId, message.EntityId), pool.Get(message.EntityId));
+                    }
+                });
+                yield return Subscribe((in WorldDisposedMessage _) =>
+                {
+                    ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
+                    foreach (Entity entity in pool?.GetEntities() ?? Enumerable.Empty<Entity>())
+                    {
+                        o.OnRemoved(entity, pool.Get(entity.EntityId));
+                    }
+                });
+            }
+
+            return GetSubscriptions(observer).Merge();
+        }
+
         #endregion
 
         #region IEnumerable
@@ -387,7 +406,7 @@ namespace DefaultEcs
         /// </summary>
         public void Dispose()
         {
-            Publish(new ManagedResourceReleaseAllMessage());
+            Publish(new WorldDisposedMessage(WorldId));
             Publisher.Publish(0, new WorldDisposedMessage(WorldId));
 
             lock (_lockObject)

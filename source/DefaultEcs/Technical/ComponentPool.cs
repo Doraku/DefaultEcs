@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using DefaultEcs.Resource;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
 
@@ -14,7 +14,6 @@ namespace DefaultEcs.Technical
 
         private static readonly bool _isReferenceType;
         private static readonly bool _isFlagType;
-        private static readonly bool _isManagedResourceType;
 
         private readonly short _worldId;
         private readonly int _worldMaxCapacity;
@@ -45,7 +44,6 @@ namespace DefaultEcs.Technical
 
             _isReferenceType = !typeInfo.IsValueType;
             _isFlagType = typeInfo.IsFlagType();
-            _isManagedResourceType = typeInfo.GenericTypeArguments.Length > 0 && typeInfo.GetGenericTypeDefinition() == typeof(ManagedResource<,>);
         }
 
         public ComponentPool(short worldId, int worldMaxCapacity, int maxCapacity)
@@ -65,11 +63,6 @@ namespace DefaultEcs.Technical
             Publisher<EntityCopyMessage>.Subscribe(_worldId, On);
             Publisher<ComponentReadMessage>.Subscribe(_worldId, On);
 
-            if (_isManagedResourceType)
-            {
-                Publisher<ManagedResourceReleaseAllMessage>.Subscribe(_worldId, On);
-            }
-
             World.Worlds[_worldId].Add(this);
         }
 
@@ -79,13 +72,17 @@ namespace DefaultEcs.Technical
 
         private void On(in ComponentTypeReadMessage message) => message.Reader.OnRead<T>(MaxCapacity);
 
-        private void On(in EntityDisposedMessage message) => Remove(message.EntityId);
+        private void On(in EntityDisposedMessage message) => Remove(message.EntityId, out T _);
 
         private void On(in EntityCopyMessage message)
         {
             if (Has(message.EntityId))
             {
-                message.Copy.SetDisabled(Get(message.EntityId));
+                message.Copy.Set(Get(message.EntityId));
+                if (!message.Components[ComponentManager<T>.Flag])
+                {
+                    message.Copy.Disable<T>();
+                }
             }
         }
 
@@ -95,17 +92,6 @@ namespace DefaultEcs.Technical
             if (componentIndex != -1)
             {
                 message.Reader.OnRead(ref _components[componentIndex], new Entity(_worldId, _links[componentIndex].EntityId));
-            }
-        }
-
-        private void On(in ManagedResourceReleaseAllMessage message)
-        {
-            for (int i = 0; i <= _lastComponentIndex; ++i)
-            {
-                for (int j = 0; j < _links[i].ReferenceCount; ++j)
-                {
-                    Publisher.Publish(_worldId, new ManagedResourceReleaseMessage<T>(_components[i]));
-                }
             }
         }
 
@@ -120,24 +106,15 @@ namespace DefaultEcs.Technical
         public bool Has(int entityId) => entityId < _mapping.Length && _mapping[entityId] != -1;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Set(int entityId, in T component)
+        public bool Set(int entityId, in T component, out T oldValue)
         {
             ArrayExtension.EnsureLength(ref _mapping, entityId, _worldMaxCapacity, -1);
 
             ref int componentIndex = ref _mapping[entityId];
             if (componentIndex != -1)
             {
-                if (_isManagedResourceType)
-                {
-                    Publisher.Publish(_worldId, new ManagedResourceReleaseMessage<T>(_components[componentIndex]));
-                }
-
+                oldValue = _components[componentIndex];
                 _components[componentIndex] = component;
-
-                if (_isManagedResourceType)
-                {
-                    Publisher.Publish(_worldId, new ManagedResourceRequestMessage<T>(new Entity(_worldId, entityId), component));
-                }
 
                 return false;
             }
@@ -146,7 +123,7 @@ namespace DefaultEcs.Technical
             {
                 if (_isFlagType)
                 {
-                    return SetSameAs(entityId, _links[0].EntityId);
+                    return SetSameAs(entityId, _links[0].EntityId, out oldValue);
                 }
 
                 ThrowMaxNumberOfComponentReached();
@@ -164,17 +141,13 @@ namespace DefaultEcs.Technical
 
             _components[_lastComponentIndex] = component;
             _links[_lastComponentIndex] = new ComponentLink(entityId);
-
-            if (_isManagedResourceType)
-            {
-                Publisher.Publish(_worldId, new ManagedResourceRequestMessage<T>(new Entity(_worldId, entityId), component));
-            }
+            oldValue = default;
 
             return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool SetSameAs(int entityId, int referenceEntityId)
+        public bool SetSameAs(int entityId, int referenceEntityId, out T oldValue)
         {
             ArrayExtension.EnsureLength(ref _mapping, entityId, _worldMaxCapacity, -1);
 
@@ -184,45 +157,37 @@ namespace DefaultEcs.Technical
             ref int componentIndex = ref _mapping[entityId];
             if (componentIndex != -1)
             {
-                if (componentIndex == referenceComponentIndex)
-                {
-                    return false;
-                }
-
-                Remove(entityId);
+                Remove(entityId, out oldValue);
                 isNew = false;
+            }
+            else
+            {
+                oldValue = default;
             }
 
             ++_links[referenceComponentIndex].ReferenceCount;
             componentIndex = referenceComponentIndex;
 
-            if (_isManagedResourceType)
-            {
-                Publisher.Publish(_worldId, new ManagedResourceRequestMessage<T>(new Entity(_worldId, entityId), _components[componentIndex]));
-            }
-
             return isNew;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Remove(int entityId)
+        public bool Remove(int entityId, out T oldValue)
         {
             if (entityId >= _mapping.Length)
             {
+                oldValue = default;
                 return false;
             }
 
             ref int componentIndex = ref _mapping[entityId];
             if (componentIndex == -1)
             {
+                oldValue = default;
                 return false;
             }
 
-            if (_isManagedResourceType)
-            {
-                Publisher.Publish(_worldId, new ManagedResourceReleaseMessage<T>(_components[componentIndex]));
-            }
-
+            oldValue = _components[componentIndex];
             ref ComponentLink link = ref _links[componentIndex];
             if (--link.ReferenceCount == 0)
             {
@@ -282,6 +247,17 @@ namespace DefaultEcs.Technical
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Components<T> AsComponents() => new Components<T>(_mapping, _components);
+
+        public IEnumerable<Entity> GetEntities()
+        {
+            for (int i = 0; i < _mapping.Length; ++i)
+            {
+                if (_mapping[i] >= 0)
+                {
+                    yield return new Entity(_worldId, i);
+                }
+            }
+        }
 
         #endregion
 

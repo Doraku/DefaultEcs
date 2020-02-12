@@ -50,7 +50,8 @@ namespace DefaultEcs.Serialization
             {
                 try
                 {
-                    entity.SetDisabled(Converter<T>.Read(line, reader));
+                    entity.Set(Converter<T>.Read(line, reader));
+                    entity.Disable<T>();
                 }
                 catch (Exception exception)
                 {
@@ -58,7 +59,11 @@ namespace DefaultEcs.Serialization
                 }
             }
 
-            public void SetDisabledSameAs(in Entity entity, in Entity reference) => entity.SetSameAsDisabled<T>(reference);
+            public void SetDisabledSameAs(in Entity entity, in Entity reference)
+            {
+                entity.SetSameAs<T>(reference);
+                entity.Disable<T>();
+            }
 
             #endregion
         }
@@ -107,7 +112,8 @@ namespace DefaultEcs.Serialization
                         {
                             world ??= new World();
 
-                            currentEntity = world.CreateDisabledEntity();
+                            currentEntity = world.CreateEntity();
+                            currentEntity.Disable();
                             if (lineParts.Length > 1)
                             {
                                 entities.Add(lineParts[1], currentEntity);

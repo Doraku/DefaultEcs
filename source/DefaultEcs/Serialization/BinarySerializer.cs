@@ -33,9 +33,17 @@ namespace DefaultEcs.Serialization
 
             public void SetSameAs(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
 
-            public void SetDisabled(in Entity entity, in StreamReaderWrapper reader) => entity.SetDisabled(Converter<T>.Read(reader));
+            public void SetDisabled(in Entity entity, in StreamReaderWrapper reader)
+            {
+                entity.Set(Converter<T>.Read(reader));
+                entity.Disable<T>();
+            }
 
-            public void SetDisabledSameAs(in Entity entity, in Entity reference) => entity.SetSameAsDisabled<T>(reference);
+            public void SetDisabledSameAs(in Entity entity, in Entity reference)
+            {
+                entity.SetSameAs<T>(reference);
+                entity.Disable<T>();
+            }
 
             #endregion
         }
@@ -100,7 +108,9 @@ namespace DefaultEcs.Serialization
                                 break;
 
                             case EntryType.DisabledEntity:
-                                entities.Add(currentEntity = world.CreateDisabledEntity());
+                                currentEntity = world.CreateEntity();
+                                currentEntity.Disable();
+                                entities.Add(currentEntity);
                                 break;
 
                             case EntryType.DisabledComponent:
