@@ -32,12 +32,14 @@
         /// Occurs when a component of type <typeparamref name="T"/> is enabled on an <see cref="Entity"/>.
         /// </summary>
         /// <param name="entity">The <see cref="Entity"/> on which the component was enabled.</param>
-        void OnEnabled(in Entity entity);
+        /// <param name="value">The value of the component.</param>
+        void OnEnabled(in Entity entity, in T value);
 
         /// <summary>
         /// Occurs when a component of type <typeparamref name="T"/> is disabled on an <see cref="Entity"/>.
         /// </summary>
         /// <param name="entity">The <see cref="Entity"/> on which the component was disabled.</param>
-        void OnDisabled(in Entity entity);
+        /// <param name="value">The value of the component.</param>
+        void OnDisabled(in Entity entity, in T value);
     }
 }

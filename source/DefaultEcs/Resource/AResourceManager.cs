@@ -51,9 +51,9 @@ namespace DefaultEcs.Resource
                 _manager.Remove(oldValue.Info);
             }
 
-            public void OnDisabled(in Entity entity) { }
+            public void OnDisabled(in Entity entity, in ManagedResource<TInfo, TResource> value) { }
 
-            public void OnEnabled(in Entity entity) { }
+            public void OnEnabled(in Entity entity, in ManagedResource<TInfo, TResource> value) { }
 
             public void OnRemoved(in Entity entity, in ManagedResource<TInfo, TResource> value) => _manager.Remove(value.Info);
         }
@@ -87,9 +87,9 @@ namespace DefaultEcs.Resource
                 }
             }
 
-            public void OnDisabled(in Entity entity) { }
+            public void OnDisabled(in Entity entity, in ManagedResource<TInfo[], TResource> value) { }
 
-            public void OnEnabled(in Entity entity) { }
+            public void OnEnabled(in Entity entity, in ManagedResource<TInfo[], TResource> value) { }
 
             public void OnRemoved(in Entity entity, in ManagedResource<TInfo[], TResource> value)
             {

@@ -331,8 +331,8 @@ namespace DefaultEcs
                 yield return Subscribe((in ComponentAddedMessage<T> message) => o.OnAdded(new Entity(WorldId, message.EntityId), ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
                 yield return Subscribe((in ComponentChangedMessage<T> message) => o.OnChanged(new Entity(WorldId, message.EntityId), message.OldValue, ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
                 yield return Subscribe((in ComponentRemovedMessage<T> message) => o.OnRemoved(new Entity(WorldId, message.EntityId), message.OldValue));
-                yield return Subscribe((in ComponentEnabledMessage<T> message) => o.OnEnabled(new Entity(WorldId, message.EntityId)));
-                yield return Subscribe((in ComponentDisabledMessage<T> message) => o.OnDisabled(new Entity(WorldId, message.EntityId)));
+                yield return Subscribe((in ComponentEnabledMessage<T> message) => o.OnEnabled(new Entity(WorldId, message.EntityId), ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
+                yield return Subscribe((in ComponentDisabledMessage<T> message) => o.OnDisabled(new Entity(WorldId, message.EntityId), ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
                 yield return Subscribe((in EntityDisposingMessage message) =>
                 {
                     ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);

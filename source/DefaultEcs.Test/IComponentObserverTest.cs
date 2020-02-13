@@ -40,16 +40,18 @@ namespace DefaultEcs.Test
                 IsOk = true;
             }
 
-            public void OnDisabled(in Entity entity)
+            public void OnDisabled(in Entity entity, in T value)
             {
                 Check.That(entity).IsEqualTo(_expectedEntity);
+                Check.That(value).IsEqualTo(_expectedNewValue);
 
                 IsOk = true;
             }
 
-            public void OnEnabled(in Entity entity)
+            public void OnEnabled(in Entity entity, in T value)
             {
                 Check.That(entity).IsEqualTo(_expectedEntity);
+                Check.That(value).IsEqualTo(_expectedNewValue);
 
                 IsOk = true;
             }
