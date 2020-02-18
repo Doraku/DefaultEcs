@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -10,6 +11,77 @@ namespace DefaultEcs.Technical
 {
     internal sealed class ComponentPool<T> : IOptimizable
     {
+        #region Types
+
+        public readonly struct Enumerable : IEnumerable<Entity>
+        {
+            private readonly ComponentPool<T> _pool;
+
+            public Enumerable(ComponentPool<T> pool)
+            {
+                _pool = pool;
+            }
+
+            #region IEnumerable
+
+            public IEnumerator<Entity> GetEnumerator() => new Enumerator(_pool);
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+            #endregion
+        }
+
+        public struct Enumerator : IEnumerator<Entity>
+        {
+            private readonly short _worldId;
+            private readonly int[] _mapping;
+
+            private int _index;
+
+            public Enumerator(ComponentPool<T> pool)
+            {
+                _worldId = pool._worldId;
+                _mapping = pool._mapping;
+
+                _index = -1;
+            }
+
+            #region IEnumerator
+
+            public Entity Current => new Entity(_worldId, _index);
+
+            object IEnumerator.Current => Current;
+
+            public bool MoveNext()
+            {
+                while (++_index < _mapping.Length)
+                {
+                    if (_mapping[_index] >= 0)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            public void Reset()
+            {
+                _index = -1;
+            }
+
+            #endregion
+
+            #region IDisposable
+
+            public void Dispose()
+            { }
+
+            #endregion
+        }
+
+        #endregion
+
         #region Fields
 
         private static readonly bool _isReferenceType;
@@ -239,16 +311,7 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Components<T> AsComponents() => new Components<T>(_mapping, _components);
 
-        public IEnumerable<Entity> GetEntities()
-        {
-            for (int i = 0; i < _mapping.Length; ++i)
-            {
-                if (_mapping[i] >= 0)
-                {
-                    yield return new Entity(_worldId, i);
-                }
-            }
-        }
+        public Enumerable GetEntities() => new Enumerable(this);
 
         #endregion
 

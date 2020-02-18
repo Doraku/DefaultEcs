@@ -72,6 +72,64 @@ namespace DefaultEcs
             }
         }
 
+        /// <summary>Enumerates the <see cref="Entity"/> of a <see cref="World" />.</summary>
+        public struct Enumerator : IEnumerator<Entity>
+        {
+            private readonly short _worldId;
+            private readonly EntityInfo[] _entityInfos;
+            private readonly int _maxIndex;
+
+            private int _index;
+
+            internal Enumerator(World world)
+            {
+                _worldId = world.WorldId;
+                _entityInfos = world.EntityInfos;
+                _maxIndex = Math.Min(_entityInfos.Length, world.LastEntityId + 1);
+
+                _index = -1;
+            }
+
+            #region IEnumerator
+
+            /// <summary>Gets the <see cref="Entity"/> at the current position of the enumerator.</summary>
+            /// <returns>The <see cref="Entity"/> in the <see cref="World" /> at the current position of the enumerator.</returns>
+            public Entity Current => new Entity(_worldId, _index);
+
+            object IEnumerator.Current => Current;
+
+            /// <summary>Advances the enumerator to the next <see cref="Entity"/> of the <see cref="World" />.</summary>
+            /// <returns>true if the enumerator was successfully advanced to the next <see cref="Entity"/>; false if the enumerator has passed the end of the collection.</returns>
+            public bool MoveNext()
+            {
+                while (++_index < _maxIndex)
+                {
+                    if (_entityInfos[_index].Components[IsAliveFlag])
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            /// <summary>Sets the enumerator to its initial position, which is before the first <see cref="Entity"/> in the collection.</summary>
+            public void Reset()
+            {
+                _index = -1;
+            }
+
+            #endregion
+
+            #region IDisposable
+
+            /// <summary>Releases all resources used by the <see cref="Enumerator" />.</summary>
+            public void Dispose()
+            { }
+
+            #endregion
+        }
+
         #endregion
 
         #region Fields
@@ -486,16 +544,9 @@ namespace DefaultEcs
         /// Returns an enumerator that iterates through the <see cref="Entity"/> of the current <see cref="World"/> instance.
         /// </summary>
         /// <returns>An enumerator that can be used to iterate through the <see cref="Entity"/>.</returns>
-        public IEnumerator<Entity> GetEnumerator()
-        {
-            for (int i = 0; i <= Math.Min(EntityInfos.Length, LastEntityId); ++i)
-            {
-                if (EntityInfos[i].Components[IsAliveFlag])
-                {
-                    yield return new Entity(WorldId, i);
-                }
-            }
-        }
+        public Enumerator GetEnumerator() => new Enumerator(this);
+
+        IEnumerator<Entity> IEnumerable<Entity>.GetEnumerator() => GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
