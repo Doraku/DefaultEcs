@@ -72,7 +72,7 @@ namespace DefaultEcs.Technical
 
         private void On(in ComponentTypeReadMessage message) => message.Reader.OnRead<T>(MaxCapacity);
 
-        private void On(in EntityDisposedMessage message) => Remove(message.EntityId, out T _);
+        private void On(in EntityDisposedMessage message) => Remove(message.EntityId);
 
         private void On(in EntityCopyMessage message)
         {
@@ -106,14 +106,13 @@ namespace DefaultEcs.Technical
         public bool Has(int entityId) => entityId < _mapping.Length && _mapping[entityId] != -1;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Set(int entityId, in T component, out T oldValue)
+        public bool Set(int entityId, in T component)
         {
             ArrayExtension.EnsureLength(ref _mapping, entityId, _worldMaxCapacity, -1);
 
             ref int componentIndex = ref _mapping[entityId];
             if (componentIndex != -1)
             {
-                oldValue = _components[componentIndex];
                 _components[componentIndex] = component;
 
                 return false;
@@ -123,7 +122,7 @@ namespace DefaultEcs.Technical
             {
                 if (_isFlagType)
                 {
-                    return SetSameAs(entityId, _links[0].EntityId, out oldValue);
+                    return SetSameAs(entityId, _links[0].EntityId);
                 }
 
                 ThrowMaxNumberOfComponentReached();
@@ -141,13 +140,12 @@ namespace DefaultEcs.Technical
 
             _components[_lastComponentIndex] = component;
             _links[_lastComponentIndex] = new ComponentLink(entityId);
-            oldValue = default;
 
             return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool SetSameAs(int entityId, int referenceEntityId, out T oldValue)
+        public bool SetSameAs(int entityId, int referenceEntityId)
         {
             ArrayExtension.EnsureLength(ref _mapping, entityId, _worldMaxCapacity, -1);
 
@@ -157,12 +155,8 @@ namespace DefaultEcs.Technical
             ref int componentIndex = ref _mapping[entityId];
             if (componentIndex != -1)
             {
-                Remove(entityId, out oldValue);
+                Remove(entityId);
                 isNew = false;
-            }
-            else
-            {
-                oldValue = default;
             }
 
             ++_links[referenceComponentIndex].ReferenceCount;
@@ -172,22 +166,19 @@ namespace DefaultEcs.Technical
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Remove(int entityId, out T oldValue)
+        public bool Remove(int entityId)
         {
             if (entityId >= _mapping.Length)
             {
-                oldValue = default;
                 return false;
             }
 
             ref int componentIndex = ref _mapping[entityId];
             if (componentIndex == -1)
             {
-                oldValue = default;
                 return false;
             }
 
-            oldValue = _components[componentIndex];
             ref ComponentLink link = ref _links[componentIndex];
             if (--link.ReferenceCount == 0)
             {

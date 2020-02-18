@@ -86,6 +86,14 @@ namespace DefaultEcs.Command
         public void Remove<T>() => _recorder.WriteCommand(new EntityOffsetComponentCommand(CommandType.Remove, ComponentCommands.ComponentCommand<T>.Index, _offset));
 
         /// <summary>
+        /// Notifies the value of the component of type <typeparamref name="T"/> has changed on the corresponding <see cref="Entity"/>.
+        /// This command takes 9 bytes.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
+        public void NotifyChanged<T>() => _recorder.WriteCommand(new EntityOffsetComponentCommand(CommandType.NotifyChanged, ComponentCommands.ComponentCommand<T>.Index, _offset));
+
+        /// <summary>
         /// Makes it so when given <see cref="EntityRecord"/> corresponding <see cref="Entity"/> is disposed, corresponding <see cref="Entity"/> will also be disposed.
         /// This command takes 9 bytes.
         /// </summary>

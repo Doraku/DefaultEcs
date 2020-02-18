@@ -224,10 +224,18 @@ namespace DefaultEcs
             public EitherBuilder WhenRemovedEither<T>() => Commit().WhenRemovedEither<T>();
 
             /// <summary>
+            /// Returns a <see cref="Predicate{T}"/> representing the specified rules.
+            /// </summary>
+            /// <returns>The <see cref="Predicate{T}"/>.</returns>
+            public Predicate<Entity> AsPredicate() => Commit().AsPredicate();
+
+            /// <summary>
             /// Returns an <see cref="EntitySet"/> with the specified rules.
             /// </summary>
             /// <returns>The <see cref="EntitySet"/>.</returns>
             public EntitySet AsSet() => Commit().AsSet();
+
+            //public EntityMap<TKey> AsMap<TKey>() => Commit().AsMap<TKey>();
 
             #endregion
         }
@@ -237,8 +245,8 @@ namespace DefaultEcs
         #region Fields
 
         private readonly World _world;
-        private readonly List<Func<EntitySet, World, IDisposable>> _subscriptions;
-        private readonly List<Func<EntitySet, World, IDisposable>> _nonReactSubscriptions;
+        private readonly List<Func<EntityContainerWatcher, World, IDisposable>> _subscriptions;
+        private readonly List<Func<EntityContainerWatcher, World, IDisposable>> _nonReactSubscriptions;
 
         private bool _addCreated;
         private ComponentEnum _withFilter;
@@ -259,8 +267,8 @@ namespace DefaultEcs
         {
             _world = world;
 
-            _subscriptions = new List<Func<EntitySet, World, IDisposable>>();
-            _nonReactSubscriptions = new List<Func<EntitySet, World, IDisposable>>();
+            _subscriptions = new List<Func<EntityContainerWatcher, World, IDisposable>>();
+            _nonReactSubscriptions = new List<Func<EntityContainerWatcher, World, IDisposable>>();
 
             _addCreated = withEnabledEntities;
             _subscriptions.Add((s, w) => w.Subscribe<EntityDisposingMessage>(s.Remove));
@@ -282,6 +290,25 @@ namespace DefaultEcs
         #endregion
 
         #region Methods
+
+        private Predicate<ComponentEnum> GetFilter() => EntityRuleFilterFactory.GetFilter(_withFilter, _withoutFilter, _withEitherFilters, _withoutEitherFilters);
+
+        private bool GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions)
+        {
+            subscriptions = _subscriptions.ToList();
+            bool hasWhenFilter = !_whenAddedFilter.IsNull || !_whenChangedFilter.IsNull || !_whenRemovedFilter.IsNull;
+            if (!hasWhenFilter)
+            {
+                subscriptions.AddRange(_nonReactSubscriptions);
+            }
+
+            if (_addCreated && !hasWhenFilter)
+            {
+                subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Add));
+            }
+
+            return hasWhenFilter;
+        }
 
         private void AddWithEitherFilter(ComponentEnum filter)
         {
@@ -430,7 +457,7 @@ namespace DefaultEcs
         /// <returns>The <see cref="Predicate{T}"/>.</returns>
         public Predicate<Entity> AsPredicate()
         {
-            Predicate<ComponentEnum> filter = EntityRuleFilterFactory.GetFilter(_withFilter, _withoutFilter, _withEitherFilters, _withoutEitherFilters);
+            Predicate<ComponentEnum> filter = GetFilter();
 
             return e => filter(e.Components);
         }
@@ -439,22 +466,22 @@ namespace DefaultEcs
         /// Returns an <see cref="EntitySet"/> with the specified rules.
         /// </summary>
         /// <returns>The <see cref="EntitySet"/>.</returns>
-        public EntitySet AsSet()
-        {
-            List<Func<EntitySet, World, IDisposable>> subscriptions = _subscriptions.ToList();
-            bool hasWhenFilter = !_whenAddedFilter.IsNull || !_whenChangedFilter.IsNull || !_whenRemovedFilter.IsNull;
-            if (!hasWhenFilter)
-            {
-                subscriptions.AddRange(_nonReactSubscriptions);
-            }
+        public EntitySet AsSet() => new EntitySet(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), subscriptions);
 
-            if (_addCreated && !hasWhenFilter)
-            {
-                subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Add));
-            }
+        //public EntityMap<TKey> AsMap<TKey>()
+        //{
+        //    With<TKey>();
 
-            return new EntitySet(hasWhenFilter, _world, _withFilter, _withoutFilter, _withEitherFilters, _withoutEitherFilters, subscriptions);
-        }
+        //    return new EntityMap<TKey>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), subscriptions);
+        //}
+
+        //public EntityMap<TKey, TEntities> AsMap<TKey, TEntities>()
+        //    where TEntities : ICollection<Entity>, new()
+        //{
+        //    With<TKey>();
+
+        //    return new EntityMap<TKey, TEntities>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), subscriptions);
+        //}
 
         #endregion
     }

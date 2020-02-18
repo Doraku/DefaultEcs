@@ -256,20 +256,6 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Should_call_EntityDisposed_When_entity_disposed()
-        {
-            using World world = new World(4);
-
-            Entity disposedEntity = default;
-            world.EntityDisposed += (in Entity e) => disposedEntity = e;
-
-            Entity entity = world.CreateEntity();
-            entity.Dispose();
-
-            Check.That(disposedEntity).IsEqualTo(entity);
-        }
-
-        [Fact]
         public void Optimize_Should_sort_inner_storages()
         {
             using World world = new World();
@@ -316,6 +302,312 @@ namespace DefaultEcs.Test
 
             Check.That(set.GetEntities().ToArray().Select((e, i) => (i, e)).Any(t => entities[t.i] != t.e)).IsTrue();
             Check.That(world.Get<int>().ToArray().Select((v, i) => (i, v)).Any(t => t.i != t.v)).IsTrue();
+        }
+
+        [Fact]
+        public void SubscribeEntityCreated_Should_throw_When_action_is_null()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => world.SubscribeEntityCreated(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void SubscribeEntityEnabled_Should_throw_When_action_is_null()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => world.SubscribeEntityEnabled(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void SubscribeEntityDisabled_Should_throw_When_action_is_null()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => world.SubscribeEntityDisabled(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void SubscribeEntityDisposed_Should_throw_When_action_is_null()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => world.SubscribeEntityDisposed(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void SubscribeEntityCreated_Should_call_handler_When_entity_created()
+        {
+            using World world = new World();
+
+            Entity result = default;
+            using IDisposable subscription = world.SubscribeEntityCreated((in Entity e) => result = e);
+
+            Entity entity = world.CreateEntity();
+            Check.That(result).IsEqualTo(entity);
+        }
+
+        [Fact]
+        public void SubscribeEntityEnabled_Should_call_handler_When_entity_enabled()
+        {
+            using World world = new World();
+
+            Entity entity = world.CreateEntity();
+            Entity result = default;
+            entity.Disable();
+            using IDisposable subscription = world.SubscribeEntityEnabled((in Entity e) => result = e);
+
+            entity.Enable();
+            Check.That(result).IsEqualTo(entity);
+        }
+
+        [Fact]
+        public void SubscribeEntityDisabled_Should_call_handler_When_entity_disabled()
+        {
+            using World world = new World();
+
+            Entity entity = world.CreateEntity();
+            Entity result = default;
+            using IDisposable subscription = world.SubscribeEntityDisabled((in Entity e) => result = e);
+
+            entity.Disable();
+            Check.That(result).IsEqualTo(entity);
+        }
+
+        [Fact]
+        public void SubscribeEntityDisposed_Should_call_handler_When_entity_disposed()
+        {
+            using World world = new World();
+
+            Entity entity = world.CreateEntity();
+            Entity result = default;
+            using IDisposable subscription = world.SubscribeEntityDisposed((in Entity e) => result = e);
+
+            entity.Dispose();
+            Check.That(result).IsEqualTo(entity);
+        }
+
+        [Fact]
+        public void SubscribeEntityDisposed_Should_call_handler_When_world_disposed()
+        {
+            World world = new World();
+
+            Entity entity = world.CreateEntity();
+            Entity result = default;
+            using IDisposable subscription = world.SubscribeEntityDisposed((in Entity e) => result = e);
+
+            world.Dispose();
+            Check.That(result).IsEqualTo(entity);
+        }
+
+        [Fact]
+        public void SubscribeComponentAdded_Should_throw_When_action_is_null()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => world.SubscribeComponentAdded<bool>(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void SubscribeComponentChanged_Should_throw_When_action_is_null()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => world.SubscribeComponentChanged<bool>(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void SubscribeComponentRemoved_Should_throw_When_action_is_null()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => world.SubscribeComponentRemoved<bool>(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void SubscribeComponentEnabled_Should_throw_When_action_is_null()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => world.SubscribeComponentEnabled<bool>(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void SubscribeComponentDisabled_Should_throw_When_action_is_null()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => world.SubscribeComponentDisabled<bool>(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void SubscribeComponentAdded_Should_call_handler_When_component_added()
+        {
+            using World world = new World();
+            Entity entity = world.CreateEntity();
+            bool called = false;
+            using IDisposable subscription = world.SubscribeComponentAdded((in Entity e, in bool v) =>
+            {
+                Check.That(e).IsEqualTo(entity);
+                Check.That(v).IsTrue();
+                called = true;
+            });
+
+            entity.Set(true);
+            Check.That(called).IsTrue();
+        }
+
+        [Fact]
+        public void SubscribeComponentEnabled_Should_call_handler_When_component_enabled()
+        {
+            using World world = new World();
+            Entity entity = world.CreateEntity();
+            entity.Set(true);
+            entity.Disable<bool>();
+            bool called = false;
+            using IDisposable subscription = world.SubscribeComponentEnabled((in Entity e, in bool v) =>
+            {
+                Check.That(e).IsEqualTo(entity);
+                Check.That(v).IsTrue();
+                called = true;
+            });
+
+            entity.Enable<bool>();
+            Check.That(called).IsTrue();
+        }
+
+        [Fact]
+        public void SubscribeComponentDisabled_Should_call_handler_When_component_disabled()
+        {
+            using World world = new World();
+            Entity entity = world.CreateEntity();
+            entity.Set(true);
+            bool called = false;
+            using IDisposable subscription = world.SubscribeComponentDisabled((in Entity e, in bool v) =>
+            {
+                Check.That(e).IsEqualTo(entity);
+                Check.That(v).IsTrue();
+                called = true;
+            });
+
+            entity.Disable<bool>();
+            Check.That(called).IsTrue();
+        }
+
+        [Fact]
+        public void SubscribeComponentRemoved_Should_call_handler_When_component_removed()
+        {
+            using World world = new World();
+            Entity entity = world.CreateEntity();
+            entity.Set(true);
+            bool called = false;
+            using IDisposable subscription = world.SubscribeComponentRemoved((in Entity e, in bool v) =>
+            {
+                Check.That(e).IsEqualTo(entity);
+                Check.That(v).IsTrue();
+                called = true;
+            });
+
+            entity.Remove<bool>();
+            Check.That(called).IsTrue();
+        }
+
+        [Fact]
+        public void SubscribeComponentRemoved_Should_call_handler_When_entity_disposed()
+        {
+            using World world = new World();
+            Entity entity = world.CreateEntity();
+            entity.Set(true);
+            bool called = false;
+            using IDisposable subscription = world.SubscribeComponentRemoved((in Entity e, in bool v) =>
+            {
+                Check.That(e).IsEqualTo(entity);
+                Check.That(v).IsTrue();
+                called = true;
+            });
+
+            entity.Dispose();
+            Check.That(called).IsTrue();
+        }
+
+        [Fact]
+        public void SubscribeComponentRemoved_Should_call_handler_When_world_disposed()
+        {
+            World world = new World();
+            Entity entity = world.CreateEntity();
+            entity.Set(true);
+            bool called = false;
+            using IDisposable subscription = world.SubscribeComponentRemoved((in Entity e, in bool v) =>
+            {
+                Check.That(e).IsEqualTo(entity);
+                Check.That(v).IsTrue();
+                called = true;
+            });
+
+            world.Dispose();
+            Check.That(called).IsTrue();
+        }
+
+        [Fact]
+        public void SubscribeComponentChanged_Should_call_handler_When_component_changed()
+        {
+            using World world = new World();
+            Entity entity = world.CreateEntity();
+            entity.Set(false);
+            bool called = false;
+            using IDisposable subscription = world.SubscribeComponentChanged((in Entity e, in bool ov, in bool nv) =>
+            {
+                Check.That(e).IsEqualTo(entity);
+                Check.That(ov).IsFalse();
+                Check.That(nv).IsTrue();
+                called = true;
+            });
+
+            entity.Set(true);
+            Check.That(called).IsTrue();
+        }
+
+        [Fact]
+        public void SubscribeComponent_Should_do_nothing_When_entity_disposed_without_component()
+        {
+            using World world = new World();
+            Entity entity = world.CreateEntity();
+            using IDisposable added = world.SubscribeComponentAdded((in Entity _, in bool __) => throw new Exception());
+            using IDisposable changed = world.SubscribeComponentChanged((in Entity _, in bool __, in bool ___) => throw new Exception());
+            using IDisposable removed = world.SubscribeComponentRemoved((in Entity _, in bool __) => throw new Exception());
+            using IDisposable enabled = world.SubscribeComponentEnabled((in Entity _, in bool __) => throw new Exception());
+            using IDisposable disabled = world.SubscribeComponentDisabled((in Entity _, in bool __) => throw new Exception());
+
+            Check.ThatCode(entity.Dispose).DoesNotThrow();
+        }
+
+        [Fact]
+        public void SubscribeComponent_Should_do_nothing_When_world_disposed_without_component()
+        {
+            World world = new World();
+            Entity entity = world.CreateEntity();
+            using IDisposable added = world.SubscribeComponentAdded((in Entity _, in bool __) => throw new Exception());
+            using IDisposable changed = world.SubscribeComponentChanged((in Entity _, in bool __, in bool ___) => throw new Exception());
+            using IDisposable removed = world.SubscribeComponentRemoved((in Entity _, in bool __) => throw new Exception());
+            using IDisposable enabled = world.SubscribeComponentEnabled((in Entity _, in bool __) => throw new Exception());
+            using IDisposable disabled = world.SubscribeComponentDisabled((in Entity _, in bool __) => throw new Exception());
+
+            Check.ThatCode(world.Dispose).DoesNotThrow();
+        }
+
+        [Fact]
+        public void SubscribeComponent_Should_do_nothing_When_subscription_disposed()
+        {
+            using World world = new World();
+            Entity entity = world.CreateEntity();
+            world.SubscribeComponentAdded((in Entity _, in bool __) => throw new Exception()).Dispose();
+            world.SubscribeComponentChanged((in Entity _, in bool __, in bool ___) => throw new Exception()).Dispose();
+            world.SubscribeComponentRemoved((in Entity _, in bool __) => throw new Exception()).Dispose();
+            world.SubscribeComponentEnabled((in Entity _, in bool __) => throw new Exception()).Dispose();
+            world.SubscribeComponentDisabled((in Entity _, in bool __) => throw new Exception()).Dispose();
+
+            Check.ThatCode(() => entity.Set(true)).DoesNotThrow();
         }
 
         #endregion

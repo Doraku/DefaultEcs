@@ -8,14 +8,14 @@ namespace DefaultEcs
     public static class AoTHelper
     {
         /// <summary>
-        /// Registers the type <typeparamref name="T"/> so <see cref="SubscribeAttribute"/> can freely be used on method like the delegate <see cref="ActionIn{T}"/> to automatically subscribe when using <see cref="IPublisherExtension"/> on a <see cref="World"/> instance.
+        /// Registers the type <typeparamref name="T"/> so <see cref="SubscribeAttribute"/> can freely be used on method like the delegate <see cref="MessageHandler{T}"/> to automatically subscribe when using <see cref="IPublisherExtension"/> on a <see cref="World"/> instance.
         /// </summary>
         /// <typeparam name="T">The type of message.</typeparam>
         public static void RegisterMessage<T>()
         {
             using World world = new World();
 
-            world.Subscribe(default(ActionIn<T>));
+            world.Subscribe(default(MessageHandler<T>));
         }
 
         /// <summary>

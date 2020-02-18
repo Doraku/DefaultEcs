@@ -20,13 +20,13 @@ namespace DefaultEcs.Technical
             #region Fields
 
             private readonly int _worldId;
-            private readonly ActionIn<T> _action;
+            private readonly MessageHandler<T> _action;
 
             #endregion
 
             #region Initialisation
 
-            public Subscription(int worldId, ActionIn<T> action)
+            public Subscription(int worldId, MessageHandler<T> action)
             {
                 _worldId = worldId;
                 _action = action;
@@ -53,7 +53,7 @@ namespace DefaultEcs.Technical
 
         private static readonly object _lockObject;
 
-        public static ActionIn<T>[] Actions;
+        public static MessageHandler<T>[] Actions;
 
         #endregion
 
@@ -63,7 +63,7 @@ namespace DefaultEcs.Technical
         {
             _lockObject = new object();
 
-            Actions = new ActionIn<T>[2];
+            Actions = new MessageHandler<T>[2];
 
             Publisher<WorldDisposedMessage>.Subscribe(0, On);
         }
@@ -88,7 +88,7 @@ namespace DefaultEcs.Technical
         #region Methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IDisposable Subscribe(int worldId, ActionIn<T> action)
+        public static IDisposable Subscribe(int worldId, MessageHandler<T> action)
         {
             lock (_lockObject)
             {

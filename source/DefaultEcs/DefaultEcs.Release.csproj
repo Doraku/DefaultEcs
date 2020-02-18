@@ -22,16 +22,27 @@ removed World.SetMaximumComponentCount, obsolete
 removed World.GetMaximumComponentCount, obsolete
 removed World.GetAllComponents, obsolete
 removed World.GetAllEntities, obsolete
+removed World.EntityDisposed
 renamed EntitySetBuilder to EntityRuleBuilder
 renamed EntitySetBuilderExtension to EntityRuleBuilderExtension
+renamed ActionIn to MessageHandler
 
 fixed BinarySerializer and TextSerializer serialization of multi generic types
 
 added AoTHelper to help the generic code generation for AoT compilation
-added IComponentObserver to observe component events on worlds
 added World.Optimize to sort entities and their components so accessing them through EntitySet always move forward in memory
-added World.SubscribeObserver
+added World.SubscribeEntityCreated
+added World.SubscribeEntityEnabled
+added World.SubscribeEntityDisabled
+added World.SubscribeEntityDisposed
+added World.SubscribeComponentAdded
+added World.SubscribeComponentChanged
+added World.SubscribeComponentRemoved
+added World.SubscribeComponentEnabled
+added World.SubscribeComponentDisabled
 added EntityRuleBuilder.AsPredicate
+added Entity.NotifyChanged
+added EntityRecord.NotifyChanged
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

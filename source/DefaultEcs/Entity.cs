@@ -166,15 +166,17 @@ namespace DefaultEcs
             if (WorldId == 0) Throw("Entity was not created from a World");
 
             ref ComponentEnum components = ref Components;
-            if (ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component, out T oldValue))
+            if (ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component))
             {
                 components[ComponentManager<T>.Flag] = true;
                 Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
             }
             else
             {
-                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components, oldValue));
+                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
             }
+
+            ComponentManager<T>.GetPrevious(WorldId)?.Set(EntityId, component);
         }
 
         /// <summary>
@@ -193,15 +195,17 @@ namespace DefaultEcs
             if (!(pool?.Has(reference.EntityId) ?? false)) Throw($"Reference Entity does not have a component of type {nameof(T)}");
 
             ref ComponentEnum components = ref Components;
-            if (pool.SetSameAs(EntityId, reference.EntityId, out T oldValue))
+            if (pool.SetSameAs(EntityId, reference.EntityId))
             {
                 components[ComponentManager<T>.Flag] = true;
                 Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
             }
             else
             {
-                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components, oldValue));
+                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
             }
+
+            ComponentManager<T>.GetPrevious(WorldId)?.Set(EntityId, Get<T>());
         }
 
         /// <summary>
@@ -210,13 +214,28 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         public void Remove<T>()
         {
-            ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
-            if (pool != null && pool.Remove(EntityId, out T oldValue))
+            if (ComponentManager<T>.Get(WorldId)?.Remove(EntityId) == true)
             {
                 ref ComponentEnum components = ref Components;
                 components[ComponentManager<T>.Flag] = false;
-                Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components, oldValue));
+                Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
+                ComponentManager<T>.GetPrevious(WorldId)?.Remove(EntityId);
             }
+        }
+
+        /// <summary>
+        /// Notifies the value of the component of type <typeparamref name="T"/> has changed.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
+        public void NotifyChanged<T>()
+        {
+            if (WorldId == 0) Throw("Entity was not created from a World");
+            if (!Has<T>()) Throw($"Entity does not have a component of type {nameof(T)}");
+
+            Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, Components));
+            ComponentManager<T>.GetPrevious(WorldId)?.Set(EntityId, Get<T>());
         }
 
         /// <summary>

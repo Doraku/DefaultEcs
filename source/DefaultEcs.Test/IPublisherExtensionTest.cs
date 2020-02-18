@@ -14,7 +14,7 @@ namespace DefaultEcs.Test
 
             public Delegate Action { get; private set; }
 
-            public IDisposable Subscribe<T>(ActionIn<T> action)
+            public IDisposable Subscribe<T>(MessageHandler<T> action)
             {
                 Action = action;
                 ++SubscribeCount;
@@ -166,7 +166,7 @@ namespace DefaultEcs.Test
 
             publisher.Subscribe<StaticMethod>();
 
-            Check.That(publisher.Action).IsEqualTo(new ActionIn<object>(StaticMethod.Method));
+            Check.That(publisher.Action).IsEqualTo(new MessageHandler<object>(StaticMethod.Method));
         }
 
         [Fact]
@@ -199,7 +199,7 @@ namespace DefaultEcs.Test
 
             publisher.Subscribe(target);
 
-            Check.That(publisher.Action).IsEqualTo(new ActionIn<object>(target.Method));
+            Check.That(publisher.Action).IsEqualTo(new MessageHandler<object>(target.Method));
         }
 
         [Fact]
@@ -210,7 +210,7 @@ namespace DefaultEcs.Test
 
             publisher.Subscribe(target);
 
-            Check.That(publisher.Action).IsEqualTo(new ActionIn<object>(target.Method));
+            Check.That(publisher.Action).IsEqualTo(new MessageHandler<object>(target.Method));
         }
 
         [Fact]
@@ -221,7 +221,7 @@ namespace DefaultEcs.Test
 
             publisher.Subscribe(target);
 
-            Check.That(publisher.Action).IsEqualTo(new ActionIn<object>(target.Method));
+            Check.That(publisher.Action).IsEqualTo(new MessageHandler<object>(target.Method));
         }
 
         [Fact]
@@ -232,7 +232,7 @@ namespace DefaultEcs.Test
 
             publisher.Subscribe(target);
 
-            Check.That(publisher.Action).IsEqualTo(new ActionIn<object>(target.Method));
+            Check.That(publisher.Action).IsEqualTo(new MessageHandler<object>(target.Method));
         }
 
         [Fact]

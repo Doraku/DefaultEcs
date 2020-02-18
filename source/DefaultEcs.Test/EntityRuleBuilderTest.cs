@@ -507,6 +507,38 @@ namespace DefaultEcs.Test
             Check.That(predicate(entity)).IsFalse();
         }
 
+        [Fact]
+        public void AsPredicate_WithEither_T1_T2_Should_return_true_When_entity_has_component_T1()
+        {
+            using World world = new World(4);
+
+            Entity entity = world.CreateEntity();
+
+            Predicate<Entity> predicate = world.GetEntities().WithEither<bool>().Or<int>().AsPredicate();
+
+            Check.That(predicate(entity)).IsFalse();
+
+            entity.Set(true);
+
+            Check.That(predicate(entity)).IsTrue();
+
+            entity.Disable<bool>();
+
+            Check.That(predicate(entity)).IsFalse();
+
+            entity.Enable<bool>();
+
+            Check.That(predicate(entity)).IsTrue();
+
+            entity.Remove<bool>();
+
+            Check.That(predicate(entity)).IsFalse();
+
+            entity.Set(42);
+
+            Check.That(predicate(entity)).IsTrue();
+        }
+
         #endregion
     }
 }

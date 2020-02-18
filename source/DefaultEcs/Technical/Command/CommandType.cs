@@ -11,8 +11,9 @@
         Set = 6,
         SetSameAs = 7,
         Remove = 8,
-        SetAsChildOf = 9,
-        RemoveFromChildrenOf = 10,
-        Dispose = 11
+        NotifyChanged = 9,
+        SetAsChildOf = 10,
+        RemoveFromChildrenOf = 11,
+        Dispose = 12
     }
 }

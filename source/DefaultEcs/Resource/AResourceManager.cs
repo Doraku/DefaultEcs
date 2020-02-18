@@ -34,80 +34,12 @@ namespace DefaultEcs.Resource
             public bool RemoveReference() => --_referencesCount == 0;
         }
 
-        private sealed class SingleObserver : IComponentObserver<ManagedResource<TInfo, TResource>>
-        {
-            private readonly AResourceManager<TInfo, TResource> _manager;
-
-            public SingleObserver(AResourceManager<TInfo, TResource> manager)
-            {
-                _manager = manager;
-            }
-
-            public void OnAdded(in Entity entity, in ManagedResource<TInfo, TResource> value) => _manager.Add(entity, value.Info);
-
-            public void OnChanged(in Entity entity, in ManagedResource<TInfo, TResource> oldValue, in ManagedResource<TInfo, TResource> newValue)
-            {
-                _manager.Add(entity, newValue.Info);
-                _manager.Remove(oldValue.Info);
-            }
-
-            public void OnDisabled(in Entity entity, in ManagedResource<TInfo, TResource> value) { }
-
-            public void OnEnabled(in Entity entity, in ManagedResource<TInfo, TResource> value) { }
-
-            public void OnRemoved(in Entity entity, in ManagedResource<TInfo, TResource> value) => _manager.Remove(value.Info);
-        }
-
-        private sealed class ArrayObserver : IComponentObserver<ManagedResource<TInfo[], TResource>>
-        {
-            private readonly AResourceManager<TInfo, TResource> _manager;
-
-            public ArrayObserver(AResourceManager<TInfo, TResource> manager)
-            {
-                _manager = manager;
-            }
-
-            public void OnAdded(in Entity entity, in ManagedResource<TInfo[], TResource> value)
-            {
-                foreach (TInfo info in value.Info)
-                {
-                    _manager.Add(entity, info);
-                }
-            }
-
-            public void OnChanged(in Entity entity, in ManagedResource<TInfo[], TResource> oldValue, in ManagedResource<TInfo[], TResource> newValue)
-            {
-                foreach (TInfo info in newValue.Info)
-                {
-                    _manager.Add(entity, info);
-                }
-                foreach (TInfo info in oldValue.Info)
-                {
-                    _manager.Remove(info);
-                }
-            }
-
-            public void OnDisabled(in Entity entity, in ManagedResource<TInfo[], TResource> value) { }
-
-            public void OnEnabled(in Entity entity, in ManagedResource<TInfo[], TResource> value) { }
-
-            public void OnRemoved(in Entity entity, in ManagedResource<TInfo[], TResource> value)
-            {
-                foreach (TInfo info in value.Info)
-                {
-                    _manager.Remove(info);
-                }
-            }
-        }
-
         #endregion
 
         #region Fields
 
         private readonly object _lockObject;
         private readonly Dictionary<TInfo, Resource> _resources;
-        private readonly SingleObserver _singleObserver;
-        private readonly ArrayObserver _arrayObserver;
 
         #endregion
 
@@ -120,8 +52,48 @@ namespace DefaultEcs.Resource
         {
             _lockObject = new object();
             _resources = new Dictionary<TInfo, Resource>();
-            _singleObserver = new SingleObserver(this);
-            _arrayObserver = new ArrayObserver(this);
+        }
+
+        #endregion
+
+        #region Callbacks
+
+        private void OnAdded(in Entity entity, in ManagedResource<TInfo, TResource> value) => Add(entity, value.Info);
+
+        private void OnChanged(in Entity entity, in ManagedResource<TInfo, TResource> oldValue, in ManagedResource<TInfo, TResource> newValue)
+        {
+            Add(entity, newValue.Info);
+            Remove(oldValue.Info);
+        }
+
+        private void OnRemoved(in Entity entity, in ManagedResource<TInfo, TResource> value) => Remove(value.Info);
+
+        private void OnAdded(in Entity entity, in ManagedResource<TInfo[], TResource> value)
+        {
+            foreach (TInfo info in value.Info)
+            {
+                Add(entity, info);
+            }
+        }
+
+        private void OnChanged(in Entity entity, in ManagedResource<TInfo[], TResource> oldValue, in ManagedResource<TInfo[], TResource> newValue)
+        {
+            foreach (TInfo info in newValue.Info)
+            {
+                Add(entity, info);
+            }
+            foreach (TInfo info in oldValue.Info)
+            {
+                Remove(info);
+            }
+        }
+
+        private void OnRemoved(in Entity entity, in ManagedResource<TInfo[], TResource> value)
+        {
+            foreach (TInfo info in value.Info)
+            {
+                Remove(info);
+            }
         }
 
         #endregion
@@ -183,8 +155,12 @@ namespace DefaultEcs.Resource
         {
             IEnumerable<IDisposable> GetSubscriptions(World w)
             {
-                yield return w.SubscribeObserver(_singleObserver);
-                yield return w.SubscribeObserver(_arrayObserver);
+                yield return w.SubscribeComponentAdded<ManagedResource<TInfo, TResource>>(OnAdded);
+                yield return w.SubscribeComponentChanged<ManagedResource<TInfo, TResource>>(OnChanged);
+                yield return w.SubscribeComponentRemoved<ManagedResource<TInfo, TResource>>(OnRemoved);
+                yield return w.SubscribeComponentAdded<ManagedResource<TInfo[], TResource>>(OnAdded);
+                yield return w.SubscribeComponentChanged<ManagedResource<TInfo[], TResource>>(OnChanged);
+                yield return w.SubscribeComponentRemoved<ManagedResource<TInfo[], TResource>>(OnRemoved);
             }
 
             ComponentPool<ManagedResource<TInfo, TResource>> singleComponents = ComponentManager<ManagedResource<TInfo, TResource>>.Get(world.WorldId);
@@ -192,7 +168,7 @@ namespace DefaultEcs.Resource
             {
                 foreach (Entity entity in singleComponents.GetEntities())
                 {
-                    _singleObserver.OnAdded(entity, singleComponents.Get(entity.EntityId));
+                    OnAdded(entity, singleComponents.Get(entity.EntityId));
                 }
             }
 
@@ -201,7 +177,7 @@ namespace DefaultEcs.Resource
             {
                 foreach (Entity entity in arrayComponents.GetEntities())
                 {
-                    _arrayObserver.OnAdded(entity, arrayComponents.Get(entity.EntityId));
+                    OnAdded(entity, arrayComponents.Get(entity.EntityId));
                 }
             }
 

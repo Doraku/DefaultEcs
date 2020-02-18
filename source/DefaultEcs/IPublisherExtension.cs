@@ -7,14 +7,14 @@ using DefaultEcs.Technical.Helper;
 namespace DefaultEcs
 {    /// <summary>
      /// Specifies that the method should be automatically subscribed when its parent type or instance is called with <see cref="IPublisherExtension"/>.
-     /// The decorated method should be of the type <see cref="ActionIn{T}"/>.
+     /// The decorated method should be of the type <see cref="MessageHandler{T}"/>.
      /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class SubscribeAttribute : Attribute
     { }
 
     /// <summary>
-    /// Provides set of static methods to automatically subscribe <see cref="ActionIn{T}"/> methods marked with the <see cref="SubscribeAttribute"/> on a <see cref="IPublisher"/> instance.
+    /// Provides set of static methods to automatically subscribe <see cref="MessageHandler{T}"/> methods marked with the <see cref="SubscribeAttribute"/> on a <see cref="IPublisher"/> instance.
     /// </summary>
     public static class IPublisherExtension
     {
@@ -41,7 +41,7 @@ namespace DefaultEcs
                             || !parameters[0].ParameterType.IsByRef
                             || method.ReturnType != typeof(void))
                         {
-                            throw new NotSupportedException($"Can't apply {nameof(SubscribeAttribute)} to \"{method.Name}\": method is not of type {nameof(ActionIn<object>)}.");
+                            throw new NotSupportedException($"Can't apply {nameof(SubscribeAttribute)} to \"{method.Name}\": method is not of type {nameof(MessageHandler<object>)}.");
                         }
 
                         Type argType = parameters[0].ParameterType.GetElementType();
@@ -50,8 +50,8 @@ namespace DefaultEcs
                             new object[]
                             {
                             method.IsStatic
-                                ? method.CreateDelegate(typeof(ActionIn<>).MakeGenericType(argType))
-                                : method.CreateDelegate(typeof(ActionIn<>).MakeGenericType(argType), target)
+                                ? method.CreateDelegate(typeof(MessageHandler<>).MakeGenericType(argType))
+                                : method.CreateDelegate(typeof(MessageHandler<>).MakeGenericType(argType), target)
                             }));
                     }
 

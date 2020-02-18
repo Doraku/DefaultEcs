@@ -4,13 +4,11 @@
     {
         public readonly int EntityId;
         public readonly ComponentEnum Components;
-        public readonly T OldValue;
 
-        public ComponentChangedMessage(int entityId, ComponentEnum components, in T oldValue)
+        public ComponentChangedMessage(int entityId, ComponentEnum components)
         {
             EntityId = entityId;
             Components = components;
-            OldValue = oldValue;
         }
     }
 }

@@ -297,6 +297,44 @@ namespace DefaultEcs.Test.Command
         }
 
         [Fact]
+        public void NotifyChanged_Should_change_component_on_recorded_entity()
+        {
+            Entity result = default;
+
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
+
+            Entity entity = world.CreateEntity();
+            entity.Set(true);
+
+            using IDisposable changed = world.SubscribeComponentChanged((in Entity e, in bool _, in bool __) => result = e);
+
+            recorder.Record(entity).NotifyChanged<bool>();
+
+            recorder.Execute(world);
+
+            Check.That(result).IsEqualTo(world.Single());
+        }
+
+        [Fact]
+        public void NotifyChanged_Should_change_component_on_created_entity()
+        {
+            Entity result = default;
+
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+            using World world = new World();
+            using IDisposable changed = world.SubscribeComponentChanged((in Entity e, in bool _, in bool __) => result = e);
+
+            EntityRecord record = recorder.CreateEntity();
+            record.Set(true);
+            record.NotifyChanged<bool>();
+
+            recorder.Execute(world);
+
+            Check.That(result).IsEqualTo(world.Single());
+        }
+
+        [Fact]
         public void Dispose_Should_dispose_recorded_entity()
         {
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);

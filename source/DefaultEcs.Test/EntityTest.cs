@@ -462,6 +462,20 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void NotifyChanged_Should_throw_When_Entity_not_created_from_a_World()
+        {
+            Check.ThatCode(() => default(Entity).NotifyChanged<bool>()).Throws<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void NotifyChanged_Should_throw_When_Entity_does_not_have_component()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => world.CreateEntity().NotifyChanged<bool>()).Throws<InvalidOperationException>();
+        }
+
+        [Fact]
         public void Get_Should_throw_When_Entity_not_created_from_World()
         {
             Entity entity = default;

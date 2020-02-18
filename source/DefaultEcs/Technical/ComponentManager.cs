@@ -10,6 +10,8 @@ namespace DefaultEcs.Technical
 
         private static readonly object _lockObject;
 
+        private static ComponentPool<T>[] _previousPools;
+
         public static readonly ComponentFlag Flag;
 
         public static ComponentPool<T>[] Pools;
@@ -21,6 +23,8 @@ namespace DefaultEcs.Technical
         static ComponentManager()
         {
             _lockObject = new object();
+
+            _previousPools = EmptyArray<ComponentPool<T>>.Value;
 
             Flag = ComponentFlag.GetNextFlag();
 
@@ -40,6 +44,10 @@ namespace DefaultEcs.Technical
                 if (message.WorldId < Pools.Length)
                 {
                     Pools[message.WorldId] = null;
+                }
+                if (message.WorldId < _previousPools.Length)
+                {
+                    _previousPools[message.WorldId] = null;
                 }
             }
         }
@@ -62,6 +70,29 @@ namespace DefaultEcs.Technical
             }
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ComponentPool<T> AddPrevious(short worldId, int worldMaxCapacity)
+        {
+            lock (_lockObject)
+            {
+                ArrayExtension.EnsureLength(ref _previousPools, worldId);
+
+                ref ComponentPool<T> previousPool = ref _previousPools[worldId];
+                previousPool ??= new ComponentPool<T>(worldId, worldMaxCapacity, worldMaxCapacity);
+
+                ComponentPool<T> pool = Get(worldId);
+                if (pool != null)
+                {
+                    foreach (Entity entity in pool.GetEntities())
+                    {
+                        previousPool.Set(entity.EntityId, pool.Get(entity.EntityId));
+                    }
+                }
+
+                return previousPool;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComponentPool<T> Get(short worldId) => worldId < Pools.Length ? Pools[worldId] : null;
 
@@ -70,6 +101,10 @@ namespace DefaultEcs.Technical
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComponentPool<T> GetOrCreate(short worldId) => Get(worldId) ?? Add(worldId, World.Worlds[worldId].MaxCapacity, World.Worlds[worldId].MaxCapacity);
+
+        public static ComponentPool<T> GetPrevious(short worldId) => worldId < _previousPools.Length ? _previousPools[worldId] : null;
+
+        public static ComponentPool<T> GetOrCreatePrevious(short worldId) => GetPrevious(worldId) ?? AddPrevious(worldId, World.Worlds[worldId].MaxCapacity);
 
         #endregion
     }

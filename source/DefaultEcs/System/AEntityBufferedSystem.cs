@@ -19,7 +19,7 @@ namespace DefaultEcs.System
         /// <summary>
         /// Event called when an <see cref="Entity"/> is added to the inner <see cref="EntitySet"/>.
         /// </summary>
-        public event ActionIn<Entity> EntityAdded
+        public event MessageHandler<Entity> EntityAdded
         {
             add => _set.EntityAdded += value;
             remove => _set.EntityAdded -= value;
@@ -28,7 +28,7 @@ namespace DefaultEcs.System
         /// <summary>
         /// Event called when an <see cref="Entity"/> is removed from the inner <see cref="EntitySet"/>.
         /// </summary>
-        public event ActionIn<Entity> EntityRemoved
+        public event MessageHandler<Entity> EntityRemoved
         {
             add => _set.EntityRemoved += value;
             remove => _set.EntityRemoved -= value;

@@ -78,6 +78,8 @@ namespace DefaultEcs.Technical.Command
 
             public void Remove(in Entity entity) => entity.Remove<T>();
 
+            public void NotifyChanged(in Entity entity) => entity.NotifyChanged<T>();
+
             #endregion
         }
 

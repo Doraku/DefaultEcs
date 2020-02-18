@@ -66,6 +66,12 @@ namespace DefaultEcs.Technical.Command
                             commandSize = sizeof(EntityOffsetComponentCommand);
                             break;
 
+                        case CommandType.NotifyChanged:
+                            componentCommand = (EntityOffsetComponentCommand*)commands;
+                            ComponentCommands.GetCommand((*componentCommand).ComponentIndex).NotifyChanged(*(Entity*)(memoryP + (*componentCommand).EntityOffset));
+                            commandSize = sizeof(EntityOffsetComponentCommand);
+                            break;
+
                         case CommandType.SetAsChildOf:
                             ChildParentOffsetCommand* childParent = (ChildParentOffsetCommand*)commands;
                             (*(Entity*)(memoryP + (*childParent).ChildOffset)).SetAsChildOf(*(Entity*)(memoryP + (*childParent).ParentOffset));

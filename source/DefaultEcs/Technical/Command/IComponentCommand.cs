@@ -9,5 +9,6 @@ namespace DefaultEcs.Technical.Command
         int Set(in Entity entity, List<object> objects, byte* memory);
         void SetSameAs(in Entity entity, in Entity reference);
         void Remove(in Entity entity);
+        void NotifyChanged(in Entity entity);
     }
 }
