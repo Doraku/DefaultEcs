@@ -27,32 +27,7 @@ namespace DefaultEcs
 
         private int[] _mapping;
         private Entity[] _entities;
-        private event MessageHandler<Entity> EntityAddedEvent;
         private int _sortedIndex;
-
-        /// <summary>
-        /// Event called when an <see cref="Entity"/> is added to the <see cref="EntitySet"/>.
-        /// </summary>
-        public event MessageHandler<Entity> EntityAdded
-        {
-            add
-            {
-                if (value != null)
-                {
-                    foreach (ref readonly Entity entity in GetEntities())
-                    {
-                        value(entity);
-                    }
-                }
-                EntityAddedEvent += value;
-            }
-            remove => EntityAddedEvent -= value;
-        }
-
-        /// <summary>
-        /// Event called when an <see cref="Entity"/> is removed from the <see cref="EntitySet"/>.
-        /// </summary>
-        public event MessageHandler<Entity> EntityRemoved;
 
         #endregion
 
@@ -166,7 +141,6 @@ namespace DefaultEcs
                 ArrayExtension.EnsureLength(ref _entities, index, _worldMaxCapacity);
 
                 _entities[index] = new Entity(_worldId, entityId);
-                EntityAddedEvent?.Invoke(_entities[index]);
             }
         }
 
@@ -177,7 +151,6 @@ namespace DefaultEcs
                 ref int index = ref _mapping[entityId];
                 if (index != -1)
                 {
-                    Entity entity = _entities[index];
                     --Count;
 
                     if (index != Count)
@@ -189,8 +162,6 @@ namespace DefaultEcs
                     }
 
                     index = -1;
-
-                    EntityRemoved?.Invoke(entity);
                 }
             }
         }

@@ -143,52 +143,6 @@ namespace DefaultEcs.Test
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities.Skip(1));
         }
 
-        [Fact]
-        public void Should_call_EntityAdded_When_entity_added()
-        {
-            using World world = new World(4);
-            using EntitySet set = world.GetEntities().With<bool>().AsSet();
-
-            Entity addedEntity = default;
-            set.EntityAdded += (in Entity e) => addedEntity = e;
-
-            Entity entity = world.CreateEntity();
-            entity.Set<bool>();
-
-            Check.That(addedEntity).IsEqualTo(entity);
-        }
-
-        [Fact]
-        public void Should_call_EntityAdded_When_entity_already_present()
-        {
-            using World world = new World(4);
-            using EntitySet set = world.GetEntities().With<bool>().AsSet();
-
-            Entity entity = world.CreateEntity();
-            entity.Set<bool>();
-
-            Entity addedEntity = default;
-            set.EntityAdded += (in Entity e) => addedEntity = e;
-
-            Check.That(addedEntity).IsEqualTo(entity);
-        }
-
-        [Fact]
-        public void Should_call_EntityRemoved_When_entity_removed()
-        {
-            using World world = new World(4);
-            using EntitySet set = world.GetEntities().With<bool>().AsSet();
-
-            Entity removedEntity = default;
-            set.EntityRemoved += (in Entity e) => removedEntity = e;
-
-            Entity entity = world.CreateEntity();
-            entity.Set<bool>();
-            entity.Remove<bool>();
-
-            Check.That(removedEntity).IsEqualTo(entity);
-        }
-
         #endregion
     }
 }

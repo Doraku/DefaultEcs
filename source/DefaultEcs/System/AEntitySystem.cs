@@ -42,24 +42,6 @@ namespace DefaultEcs.System
         private readonly EntitySet _set;
         private readonly int _minEntityCountByRunnerIndex;
 
-        /// <summary>
-        /// Event called when an <see cref="Entity"/> is added to the inner <see cref="EntitySet"/>.
-        /// </summary>
-        public event MessageHandler<Entity> EntityAdded
-        {
-            add => _set.EntityAdded += value;
-            remove => _set.EntityAdded -= value;
-        }
-
-        /// <summary>
-        /// Event called when an <see cref="Entity"/> is removed from the inner <see cref="EntitySet"/>.
-        /// </summary>
-        public event MessageHandler<Entity> EntityRemoved
-        {
-            add => _set.EntityRemoved += value;
-            remove => _set.EntityRemoved -= value;
-        }
-
         #endregion
 
         #region Initialisation

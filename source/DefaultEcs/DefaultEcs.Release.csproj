@@ -23,6 +23,12 @@ removed World.GetMaximumComponentCount, obsolete
 removed World.GetAllComponents, obsolete
 removed World.GetAllEntities, obsolete
 removed World.EntityDisposed
+removed EntitySet.EntityAdded
+removed EntitySet.EntityRemoved
+removed AEntityBufferedSystem.EntityAdded
+removed AEntityBufferedSystem.EntityRemoved
+removed AEntitySystem.EntityAdded
+removed AEntitySystem.EntityRemoved
 renamed EntitySetBuilder to EntityRuleBuilder
 renamed EntitySetBuilderExtension to EntityRuleBuilderExtension
 renamed ActionIn to MessageHandler
