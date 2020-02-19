@@ -147,6 +147,8 @@ namespace DefaultEcs
 
         internal readonly short WorldId;
 
+        private volatile bool _isDisposed;
+
         internal EntityInfo[] EntityInfos;
 
         #endregion
@@ -202,6 +204,8 @@ namespace DefaultEcs
             }
 
             Subscribe<EntityDisposedMessage>(On);
+
+            _isDisposed = false;
         }
 
         /// <summary>
@@ -581,17 +585,22 @@ namespace DefaultEcs
         /// </summary>
         public void Dispose()
         {
-            Publish(new WorldDisposedMessage(WorldId));
-            Publisher.Publish(0, new WorldDisposedMessage(WorldId));
-
-            lock (_lockObject)
+            if (!_isDisposed)
             {
-                Worlds[WorldId] = null;
+                _isDisposed = true;
+
+                Publish(new WorldDisposedMessage(WorldId));
+                Publisher.Publish(0, new WorldDisposedMessage(WorldId));
+
+                lock (_lockObject)
+                {
+                    Worlds[WorldId] = null;
+                }
+
+                _worldIdDispenser.ReleaseInt(WorldId);
+
+                GC.SuppressFinalize(this);
             }
-
-            _worldIdDispenser.ReleaseInt(WorldId);
-
-            GC.SuppressFinalize(this);
         }
 
         #endregion
