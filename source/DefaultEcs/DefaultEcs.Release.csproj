@@ -38,21 +38,21 @@ fixed World multi Dispose
 
 added AoTHelper to help the generic code generation for AoT compilation
 added World.Optimize to sort entities and their components so accessing them through EntitySet always move forward in memory
-added World.SubscribeEntityCreated
-added World.SubscribeEntityEnabled
-added World.SubscribeEntityDisabled
-added World.SubscribeEntityDisposed
-added World.SubscribeComponentAdded
-added World.SubscribeComponentChanged
-added World.SubscribeComponentRemoved
-added World.SubscribeComponentEnabled
-added World.SubscribeComponentDisabled
-added EntityRuleBuilder.AsPredicate
-added EntityRuleBuilder.AsMap
-added Entity.NotifyChanged
-added EntityRecord.NotifyChanged
-added EntityMap
-added EntitiesMap
+added World.SubscribeEntityCreated to be called back when an entity is created
+added World.SubscribeEntityEnabled to be called back when an entity is enabled
+added World.SubscribeEntityDisabled to be called back when an entity is disabled
+added World.SubscribeEntityDisposed to be called back when an entity is disposed
+added World.SubscribeComponentAdded to be called back when a component is added on an entity
+added World.SubscribeComponentChanged to be called back when a component is changed on an entity
+added World.SubscribeComponentRemoved to be called back when a component is removed from an entity
+added World.SubscribeComponentEnabled to be called back when a component is enabled on an entity
+added World.SubscribeComponentDisabled to be called back when a component is disabled on an entity
+added EntityRuleBuilder.AsPredicate to get a predicate to validate the composition of an entity
+added EntityRuleBuilder.AsMap to get a mapping of entities by their component value
+added Entity.NotifyChanged to defer the notification that a component has changed
+added EntityRecord.NotifyChanged to defer the notification that a component has changed
+added EntityMap to have a one for one mapping between a component value and an entity
+added EntitiesMap to have a one to many mapping between a component value and entities
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
