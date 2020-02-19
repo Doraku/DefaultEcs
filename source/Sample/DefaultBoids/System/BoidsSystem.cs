@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using DefaultBoids.Component;
 using DefaultEcs;
 using DefaultEcs.System;
@@ -8,21 +7,17 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBoids.System
 {
-    [With(typeof(DrawInfo), typeof(Acceleration), typeof(Velocity), typeof(Grid))]
+    [With(typeof(DrawInfo), typeof(Acceleration), typeof(Velocity), typeof(GridId))]
     public sealed class BoidsSystem : AEntitySystem<float>
     {
-        private readonly float _maxDistance;
-        private readonly float _maxDistanceSquared;
         private readonly World _world;
-        private readonly Grid _grid;
+        private readonly EntityMap<GridId> _grid;
 
-        public BoidsSystem(World world, IParallelRunner runner, Grid grid)
+        public BoidsSystem(World world, IParallelRunner runner)
             : base(world, runner)
         {
-            _maxDistance = DefaultGame.NeighborRange;
-            _maxDistanceSquared = MathF.Pow(_maxDistance, 2);
             _world = world;
-            _grid = grid;
+            _grid = world.GetEntities().With<Behavior>().AsMap<GridId>();
         }
 
         protected override void Update(float state, ReadOnlySpan<Entity> entities)
@@ -30,6 +25,8 @@ namespace DefaultBoids.System
             Components<DrawInfo> drawInfos = _world.GetComponents<DrawInfo>();
             Components<Velocity> velocities = _world.GetComponents<Velocity>();
             Components<Acceleration> accelerations = _world.GetComponents<Acceleration>();
+            Components<GridId> gridIds = _world.GetComponents<GridId>();
+            Components<Behavior> behaviors = _world.GetComponents<Behavior>();
 
             foreach (ref readonly Entity entity in entities)
             {
@@ -39,36 +36,26 @@ namespace DefaultBoids.System
                 Vector2 cohesion = Vector2.Zero;
                 int neighborCount = 0;
 
-                foreach (List<Entity> neighbors in _grid.GetEnumerator(position))
+                foreach (GridId neighbor in gridIds[entity].GetNeighbors())
                 {
-                    foreach (Entity neighbor in neighbors)
+                    Behavior behavior = behaviors[_grid[neighbor]];
+
+                    if (behavior.Count > 0)
                     {
-                        if (entity == neighbor)
-                        {
-                            continue;
-                        }
-
-                        Vector2 otherPosition = drawInfos[neighbor].Position;
-
-                        Vector2 offset = position - otherPosition;
-
-                        if (offset.LengthSquared() < _maxDistanceSquared)
+                        Vector2 offset = (position * behavior.Count) - behavior.Center;
+                        if (offset != Vector2.Zero)
                         {
                             separation += Vector2.Normalize(offset);
-
-                            alignment += velocities[neighbor].Value;
-
-                            cohesion += otherPosition;
-
-                            ++neighborCount;
                         }
                     }
+                    alignment += behavior.Direction;
+                    cohesion += behavior.Center;
+                    neighborCount += behavior.Count;
                 }
 
-                if (neighborCount > 0)
+                if (neighborCount > 1)
                 {
                     alignment = (alignment / neighborCount) - velocities[entity].Value;
-
                     cohesion = position - (cohesion / neighborCount);
                 }
 

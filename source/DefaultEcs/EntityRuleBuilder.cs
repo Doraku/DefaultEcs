@@ -235,7 +235,56 @@ namespace DefaultEcs
             /// <returns>The <see cref="EntitySet"/>.</returns>
             public EntitySet AsSet() => Commit().AsSet();
 
-            //public EntityMap<TKey> AsMap<TKey>() => Commit().AsMap<TKey>();
+            /// <summary>
+            /// Returns an <see cref="EntityMap{TKey}"/> with the specified rules.
+            /// </summary>
+            /// <typeparam name="TKey">The component type to use as key.</typeparam>
+            /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the key.</param>
+            /// <returns>The <see cref="EntityMap{TKey}"/>.</returns>
+            public EntityMap<TKey> AsMap<TKey>(IEqualityComparer<TKey> comparer) => Commit().AsMap(comparer);
+
+            /// <summary>
+            /// Returns an <see cref="EntityMap{TKey}"/> with the specified rules.
+            /// </summary>
+            /// <typeparam name="TKey">The component type to use as key.</typeparam>
+            /// <returns>The <see cref="EntityMap{TKey}"/>.</returns>
+            public EntityMap<TKey> AsMap<TKey>() => Commit().AsMap<TKey>();
+
+            /// <summary>
+            /// Returns an <see cref="EntitiesMap{TKey, TEntities}"/> with the specified rules.
+            /// </summary>
+            /// <typeparam name="TKey">The component type to use as key.</typeparam>
+            /// <typeparam name="TEntities">The collection type used to store <see cref="Entity"/> sharing the same key.</typeparam>
+            /// <param name="factory">The factory used to create the <see cref="Entity"/> collection <typeparamref name="TEntities"/>.</param>
+            /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the key.</param>
+            /// <returns>The <see cref="EntitiesMap{TKey, TEntities}"/>.</returns>
+            public EntitiesMap<TKey, TEntities> AsMap<TKey, TEntities>(Func<TEntities> factory, IEqualityComparer<TKey> comparer) where TEntities : class, ICollection<Entity> => Commit().AsMap(factory, comparer);
+
+            /// <summary>
+            /// Returns an <see cref="EntitiesMap{TKey, TEntities}"/> with the specified rules.
+            /// </summary>
+            /// <typeparam name="TKey">The component type to use as key.</typeparam>
+            /// <typeparam name="TEntities">The collection type used to store <see cref="Entity"/> sharing the same key.</typeparam>
+            /// <param name="factory">The factory used to create the <see cref="Entity"/> collection <typeparamref name="TEntities"/>.</param>
+            /// <returns>The <see cref="EntitiesMap{TKey, TEntities}"/>.</returns>
+            public EntitiesMap<TKey, TEntities> AsMap<TKey, TEntities>(Func<TEntities> factory) where TEntities : class, ICollection<Entity> => Commit().AsMap<TKey, TEntities>(factory);
+
+            /// <summary>
+            /// Returns an <see cref="EntitiesMap{TKey, TEntities}"/> with the specified rules.
+            /// </summary>
+            /// <typeparam name="TKey">The component type to use as key.</typeparam>
+            /// <typeparam name="TEntities">The collection type used to store <see cref="Entity"/> sharing the same key.</typeparam>
+            /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the key.</param>
+            /// <returns>The <see cref="EntitiesMap{TKey, TEntities}"/>.</returns>
+            public EntitiesMap<TKey, TEntities> AsMap<TKey, TEntities>(IEqualityComparer<TKey> comparer) where TEntities : class, ICollection<Entity>, new() => Commit().AsMap<TKey, TEntities>(comparer);
+
+            /// <summary>
+            /// Returns an <see cref="EntitiesMap{TKey, TEntities}"/> with the specified rules.
+            /// </summary>
+            /// <typeparam name="TKey">The component type to use as key.</typeparam>
+            /// <typeparam name="TEntities">The collection type used to store <see cref="Entity"/> sharing the same key.</typeparam>
+            /// <returns>The <see cref="EntitiesMap{TKey, TEntities}"/>.</returns>
+            public EntitiesMap<TKey, TEntities> AsMap<TKey, TEntities>() where TEntities : class, ICollection<Entity>, new() => Commit().AsMap<TKey, TEntities>();
 
             #endregion
         }
@@ -468,20 +517,69 @@ namespace DefaultEcs
         /// <returns>The <see cref="EntitySet"/>.</returns>
         public EntitySet AsSet() => new EntitySet(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), subscriptions);
 
-        //public EntityMap<TKey> AsMap<TKey>()
-        //{
-        //    With<TKey>();
+        /// <summary>
+        /// Returns an <see cref="EntityMap{TKey}"/> with the specified rules.
+        /// </summary>
+        /// <typeparam name="TKey">The component type to use as key.</typeparam>
+        /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the key.</param>
+        /// <returns>The <see cref="EntityMap{TKey}"/>.</returns>
+        public EntityMap<TKey> AsMap<TKey>(IEqualityComparer<TKey> comparer)
+        {
+            With<TKey>();
 
-        //    return new EntityMap<TKey>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), subscriptions);
-        //}
+            return new EntityMap<TKey>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), subscriptions, comparer);
+        }
 
-        //public EntityMap<TKey, TEntities> AsMap<TKey, TEntities>()
-        //    where TEntities : ICollection<Entity>, new()
-        //{
-        //    With<TKey>();
+        /// <summary>
+        /// Returns an <see cref="EntityMap{TKey}"/> with the specified rules.
+        /// </summary>
+        /// <typeparam name="TKey">The component type to use as key.</typeparam>
+        /// <returns>The <see cref="EntityMap{TKey}"/>.</returns>
+        public EntityMap<TKey> AsMap<TKey>() => AsMap<TKey>(default);
 
-        //    return new EntityMap<TKey, TEntities>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), subscriptions);
-        //}
+        /// <summary>
+        /// Returns an <see cref="EntitiesMap{TKey, TEntities}"/> with the specified rules.
+        /// </summary>
+        /// <typeparam name="TKey">The component type to use as key.</typeparam>
+        /// <typeparam name="TEntities">The collection type used to store <see cref="Entity"/> sharing the same key.</typeparam>
+        /// <param name="factory">The factory used to create the <see cref="Entity"/> collection <typeparamref name="TEntities"/>.</param>
+        /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the key.</param>
+        /// <returns>The <see cref="EntitiesMap{TKey, TEntities}"/>.</returns>
+        public EntitiesMap<TKey, TEntities> AsMap<TKey, TEntities>(Func<TEntities> factory, IEqualityComparer<TKey> comparer)
+            where TEntities : class, ICollection<Entity>
+        {
+            if (factory is null) throw new ArgumentNullException(nameof(factory));
+
+            With<TKey>();
+
+            return new EntitiesMap<TKey, TEntities>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), subscriptions, factory, comparer);
+        }
+
+        /// <summary>
+        /// Returns an <see cref="EntitiesMap{TKey, TEntities}"/> with the specified rules.
+        /// </summary>
+        /// <typeparam name="TKey">The component type to use as key.</typeparam>
+        /// <typeparam name="TEntities">The collection type used to store <see cref="Entity"/> sharing the same key.</typeparam>
+        /// <param name="factory">The factory used to create the <see cref="Entity"/> collection <typeparamref name="TEntities"/>.</param>
+        /// <returns>The <see cref="EntitiesMap{TKey, TEntities}"/>.</returns>
+        public EntitiesMap<TKey, TEntities> AsMap<TKey, TEntities>(Func<TEntities> factory) where TEntities : class, ICollection<Entity> => AsMap<TKey, TEntities>(factory, default);
+
+        /// <summary>
+        /// Returns an <see cref="EntitiesMap{TKey, TEntities}"/> with the specified rules.
+        /// </summary>
+        /// <typeparam name="TKey">The component type to use as key.</typeparam>
+        /// <typeparam name="TEntities">The collection type used to store <see cref="Entity"/> sharing the same key.</typeparam>
+        /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the key.</param>
+        /// <returns>The <see cref="EntitiesMap{TKey, TEntities}"/>.</returns>
+        public EntitiesMap<TKey, TEntities> AsMap<TKey, TEntities>(IEqualityComparer<TKey> comparer) where TEntities : class, ICollection<Entity>, new() => AsMap(() => new TEntities(), comparer);
+
+        /// <summary>
+        /// Returns an <see cref="EntitiesMap{TKey, TEntities}"/> with the specified rules.
+        /// </summary>
+        /// <typeparam name="TKey">The component type to use as key.</typeparam>
+        /// <typeparam name="TEntities">The collection type used to store <see cref="Entity"/> sharing the same key.</typeparam>
+        /// <returns>The <see cref="EntitiesMap{TKey, TEntities}"/>.</returns>
+        public EntitiesMap<TKey, TEntities> AsMap<TKey, TEntities>() where TEntities : class, ICollection<Entity>, new() => AsMap<TKey, TEntities>(() => new TEntities());
 
         #endregion
     }

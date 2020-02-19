@@ -1,23 +1,24 @@
 ﻿using System;
 using DefaultBoids.Component;
 using DefaultEcs;
+using DefaultEcs.Command;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
 using Microsoft.Xna.Framework;
 
 namespace DefaultBoids.System
 {
-    [With(typeof(DrawInfo), typeof(Velocity), typeof(Acceleration), typeof(Grid))]
+    [With(typeof(DrawInfo), typeof(Velocity), typeof(Acceleration), typeof(GridId))]
     public sealed class MoveSystem : AEntitySystem<float>
     {
         private readonly World _world;
-        private readonly Grid _grid;
+        private readonly EntityCommandRecorder _recorder;
 
-        public MoveSystem(World world, IParallelRunner runner, Grid grid)
+        public MoveSystem(World world, IParallelRunner runner)
             : base(world, runner)
         {
             _world = world;
-            _grid = grid;
+            _recorder = new EntityCommandRecorder();
         }
 
         protected override void Update(float state, ReadOnlySpan<Entity> entities)
@@ -25,6 +26,7 @@ namespace DefaultBoids.System
             Components<DrawInfo> drawInfos = _world.GetComponents<DrawInfo>();
             Components<Velocity> velocities = _world.GetComponents<Velocity>();
             Components<Acceleration> accelerations = _world.GetComponents<Acceleration>();
+            Components<GridId> gridIds = _world.GetComponents<GridId>();
 
             foreach (ref readonly Entity entity in entities)
             {
@@ -39,7 +41,13 @@ namespace DefaultBoids.System
 
                 ref DrawInfo drawInfo = ref drawInfos[entity];
                 Vector2 newPosition = drawInfo.Position + (velocity * state);
-                _grid.Update(entity, drawInfo.Position, newPosition);
+
+                GridId newId = newPosition.ToGridId();
+                if (!newId.Equals(gridIds[entity]))
+                {
+                    entity.Get<GridId>() = newId;
+                    _recorder.Record(entity).NotifyChanged<GridId>();
+                }
                 drawInfo.Position = newPosition;
 
                 if ((drawInfo.Position.X < 0 && velocity.X < 0)
@@ -55,6 +63,15 @@ namespace DefaultBoids.System
 
                 drawInfo.Rotation = MathF.Atan2(velocity.X, -velocity.Y);
             }
+        }
+
+        protected override void PostUpdate(float state) => _recorder.Execute(_world);
+
+        public override void Dispose()
+        {
+            _recorder.Dispose();
+
+            base.Dispose();
         }
     }
 }

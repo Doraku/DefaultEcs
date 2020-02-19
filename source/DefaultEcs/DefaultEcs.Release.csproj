@@ -47,8 +47,11 @@ added World.SubscribeComponentRemoved
 added World.SubscribeComponentEnabled
 added World.SubscribeComponentDisabled
 added EntityRuleBuilder.AsPredicate
+added EntityRuleBuilder.AsMap
 added Entity.NotifyChanged
 added EntityRecord.NotifyChanged
+added EntityMap
+added EntitiesMap
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

@@ -43,13 +43,13 @@ namespace DefaultBoids.Component
                 int i = Math.Clamp((int)(position.X / _grid._cellWidth), 0, grid._width);
                 int j = Math.Clamp((int)(position.Y / _grid._cellHeight), 0, grid._height);
 
-                minI = currentI = Math.Max(0, i - 1);
-                minJ = currentJ = Math.Max(0, j - 1);
+                minI = currentI = Math.Max(0, i - 2);
+                minJ = currentJ = Math.Max(0, j - 2);
 
                 --currentI;
 
-                maxI = Math.Min(_grid._width - 1, i + 1);
-                maxJ = Math.Min(_grid._height - 1, j + 1);
+                maxI = Math.Min(_grid._width - 1, i + 2);
+                maxJ = Math.Min(_grid._height - 1, j + 2);
             }
 
             public bool MoveNext()
