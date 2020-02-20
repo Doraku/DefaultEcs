@@ -161,5 +161,17 @@ namespace DefaultEcs.Test
 
             Check.That(map.TryGetEntities(42, out result)).IsFalse();
         }
+
+        [Fact]
+        public void Dispose_Should_not_throw_When_world_already_disposed()
+        {
+            World world = new World(4);
+
+            EntitiesMap<int> set = world.GetEntities().AsMultiMap<int>();
+
+            world.Dispose();
+
+            Check.ThatCode(set.Dispose).DoesNotThrow();
+        }
     }
 }

@@ -288,24 +288,31 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
             using EntitySet set = world.GetEntities().With<int>().AsSet();
+            using EntitiesMap<bool> map = world.GetEntities().With<int>().AsMultiMap<bool>();
 
             Entity e1 = world.CreateEntity();
             Entity e2 = world.CreateEntity();
             Entity e3 = world.CreateEntity();
             Entity e4 = world.CreateEntity();
 
+            e4.Set(true);
             e4.Set(4);
+            e3.Set(true);
             e3.Set(3);
+            e2.Set(true);
             e2.Set(2);
+            e1.Set(true);
             e1.Set(1);
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(e4, e3, e2, e1);
             Check.That(world.Get<int>().ToArray()).ContainsExactly(4, 3, 2, 1);
+            Check.That(map[true].ToArray()).ContainsExactly(e4, e3, e2, e1);
 
             world.Optimize();
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(e1, e2, e3, e4);
             Check.That(world.Get<int>().ToArray()).ContainsExactly(1, 2, 3, 4);
+            Check.That(map[true].ToArray()).ContainsExactly(e1, e2, e3, e4);
         }
 
         [Fact]
