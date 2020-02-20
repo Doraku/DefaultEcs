@@ -10,6 +10,14 @@ namespace DefaultEcs.Test
         #region Tests
 
         [Fact]
+        public void With_Should_throw_When_predicate_is_null()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => world.GetEntities().With<bool>(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
         public void AsSet_Should_return_EntitySet_with_all_Entity()
         {
             using World world = new World(4);
@@ -71,6 +79,41 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void AsSet_With_predicate_T_Should_return_EntitySet_with_all_Entity_with_component_T_and_validate_predicate()
+        {
+            using World world = new World(4);
+            using EntitySet set = world.GetEntities().With<bool>(b => b).AsSet();
+
+            List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+            Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+            foreach (Entity entity in entities)
+            {
+                entity.Set(true);
+            }
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+            Entity temp = entities[2];
+            temp.Set(false);
+            entities.Remove(temp);
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+            temp.Set(true);
+            entities.Add(temp);
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+        }
+
+        [Fact]
         public void AsSet_With_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_T2()
         {
             using World world = new World(4);
@@ -108,6 +151,48 @@ namespace DefaultEcs.Test
 
             temp.Set(true);
             temp.Remove<int>();
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+        }
+
+        [Fact]
+        public void AsSet_With_predicate_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_and_validate_predicate()
+        {
+            using World world = new World(4);
+            using EntitySet set = world.GetEntities().With<bool>(b => b).With<int>(i => i > 100).AsSet();
+
+            List<Entity> entities = new List<Entity>
+                {
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity(),
+                    world.CreateEntity()
+                };
+
+            Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+            foreach (Entity entity in entities)
+            {
+                entity.Set(true);
+            }
+
+            Check.That(set.GetEntities().ToArray()).IsEmpty();
+
+            foreach (Entity entity in entities)
+            {
+                entity.Set(1337);
+            }
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+            Entity temp = entities[2];
+            temp.Set(false);
+            entities.Remove(temp);
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+            temp.Set(true);
+            temp.Set(42);
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
         }
@@ -505,6 +590,59 @@ namespace DefaultEcs.Test
             entity.Remove<bool>();
 
             Check.That(predicate(entity)).IsFalse();
+        }
+
+        [Fact]
+        public void AsPredicate_With_predicate_T_Should_return_true_When_entity_validate_predicate()
+        {
+            using World world = new World(4);
+
+            Entity entity = world.CreateEntity();
+
+            Predicate<Entity> predicate = world.GetEntities().With<bool>(b => b).AsPredicate();
+
+            entity.Set(false);
+
+            Check.That(predicate(entity)).IsFalse();
+
+            entity.Set(true);
+
+            Check.That(predicate(entity)).IsTrue();
+
+            entity.Disable<bool>();
+
+            Check.That(predicate(entity)).IsFalse();
+
+            entity.Enable<bool>();
+
+            Check.That(predicate(entity)).IsTrue();
+
+            entity.Remove<bool>();
+
+            Check.That(predicate(entity)).IsFalse();
+        }
+
+        [Fact]
+        public void AsPredicate_With_predicate_T1_T2_Should_return_true_When_entity_T_validate_predicate()
+        {
+            using World world = new World(4);
+
+            Entity entity = world.CreateEntity();
+
+            Predicate<Entity> predicate = world.GetEntities().With<bool>(b => b).With<int>(i => i == 42).AsPredicate();
+
+            entity.Set(false);
+            entity.Set(1337);
+
+            Check.That(predicate(entity)).IsFalse();
+
+            entity.Set(true);
+
+            Check.That(predicate(entity)).IsFalse();
+
+            entity.Set(42);
+
+            Check.That(predicate(entity)).IsTrue();
         }
 
         [Fact]

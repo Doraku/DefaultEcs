@@ -133,13 +133,14 @@ namespace DefaultEcs
             bool needClearing,
             World world,
             Predicate<ComponentEnum> filter,
+            List<Predicate<int>> predicates,
             List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions,
             IEqualityComparer<TKey> comparer)
         {
             _needClearing = needClearing;
             _worldId = world.WorldId;
             _worldMaxCapacity = world.MaxCapacity;
-            _container = new EntityContainerWatcher(this, filter);
+            _container = new EntityContainerWatcher(this, filter, predicates);
             _subscriptions = Enumerable.Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(OnChange), 1).Concat(subscriptions.Select(s => s(_container, world))).Merge();
 
             _previousComponents = ComponentManager<TKey>.GetOrCreatePrevious(_worldId);

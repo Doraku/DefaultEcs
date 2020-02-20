@@ -47,6 +47,7 @@ added World.SubscribeComponentChanged to be called back when a component is chan
 added World.SubscribeComponentRemoved to be called back when a component is removed from an entity
 added World.SubscribeComponentEnabled to be called back when a component is enabled on an entity
 added World.SubscribeComponentDisabled to be called back when a component is disabled on an entity
+added EntityRuleBuilder.With with a Predicate parameter
 added EntityRuleBuilder.AsPredicate to get a predicate to validate the composition of an entity
 added EntityRuleBuilder.AsMap to get a mapping of entities by their component value
 added EntityRuleBuilder.AsMultiMap to get a mapping of entities by their component value

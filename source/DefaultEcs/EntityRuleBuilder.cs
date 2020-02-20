@@ -161,6 +161,14 @@ namespace DefaultEcs
             public EntityRuleBuilder With<T>() => Commit().With<T>();
 
             /// <summary>
+            /// Makes a rule to observe <see cref="Entity"/> with a component of type <typeparamref name="T"/> validating the given <see cref="Predicate{T}"/>.
+            /// </summary>
+            /// <typeparam name="T">The type of component.</typeparam>
+            /// <param name="predicate">The <see cref="Predicate{T}"/> which needs to be validated.</param>
+            /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
+            public EntityRuleBuilder With<T>(Predicate<T> predicate) => Commit().With(predicate);
+
+            /// <summary>
             /// Makes a rule to ignore <see cref="Entity"/> with a component of type <typeparamref name="T"/>.
             /// </summary>
             /// <typeparam name="T">The type of component.</typeparam>
@@ -277,6 +285,7 @@ namespace DefaultEcs
         private readonly List<Func<EntityContainerWatcher, World, IDisposable>> _nonReactSubscriptions;
 
         private bool _addCreated;
+        private ComponentEnum _predicateFilter;
         private ComponentEnum _withFilter;
         private ComponentEnum _withEitherFilter;
         private ComponentEnum _withoutFilter;
@@ -284,6 +293,7 @@ namespace DefaultEcs
         private ComponentEnum _whenAddedFilter;
         private ComponentEnum _whenChangedFilter;
         private ComponentEnum _whenRemovedFilter;
+        private List<Predicate<int>> _predicates;
         private List<ComponentEnum> _withEitherFilters;
         private List<ComponentEnum> _withoutEitherFilters;
 
@@ -373,6 +383,27 @@ namespace DefaultEcs
             }
 
             return this;
+        }
+
+        /// <summary>
+        /// Makes a rule to observe <see cref="Entity"/> with a component of type <typeparamref name="T"/> validating the given <see cref="Predicate{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of component.</typeparam>
+        /// <param name="predicate">The <see cref="Predicate{T}"/> which needs to be validated.</param>
+        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
+        public EntityRuleBuilder With<T>(Predicate<T> predicate)
+        {
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+
+            if (!_predicateFilter[ComponentManager<T>.Flag])
+            {
+                _predicateFilter[ComponentManager<T>.Flag] = true;
+                _subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.AddOrRemove));
+            }
+
+            (_predicates ?? (_predicates = new List<Predicate<int>>())).Add(i => predicate(ComponentManager<T>.Pools[_world.WorldId].Get(i)));
+
+            return With<T>();
         }
 
         /// <summary>
@@ -487,14 +518,21 @@ namespace DefaultEcs
         {
             Predicate<ComponentEnum> filter = GetFilter();
 
-            return e => filter(e.Components);
+            Predicate<int> singlePredicate = _predicates?.FirstOrDefault();
+
+            return _predicates?.Count switch
+            {
+                null => e => filter(e.Components),
+                1 => e => filter(e.Components) && singlePredicate(e.EntityId),
+                _ => e => filter(e.Components) && _predicates.All(p => p(e.EntityId))
+            };
         }
 
         /// <summary>
         /// Returns an <see cref="EntitySet"/> with the specified rules.
         /// </summary>
         /// <returns>The <see cref="EntitySet"/>.</returns>
-        public EntitySet AsSet() => new EntitySet(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), subscriptions);
+        public EntitySet AsSet() => new EntitySet(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), _predicates, subscriptions);
 
         /// <summary>
         /// Returns an <see cref="EntityMap{TKey}"/> with the specified rules.
@@ -506,7 +544,7 @@ namespace DefaultEcs
         {
             With<TKey>();
 
-            return new EntityMap<TKey>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), subscriptions, comparer);
+            return new EntityMap<TKey>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), _predicates, subscriptions, comparer);
         }
 
         /// <summary>
@@ -526,7 +564,7 @@ namespace DefaultEcs
         {
             With<TKey>();
 
-            return new EntitiesMap<TKey>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), subscriptions, comparer);
+            return new EntitiesMap<TKey>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), _predicates, subscriptions, comparer);
         }
 
         /// <summary>

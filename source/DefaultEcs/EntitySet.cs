@@ -56,12 +56,13 @@ namespace DefaultEcs
             bool needClearing,
             World world,
             Predicate<ComponentEnum> filter,
+            List<Predicate<int>> predicates,
             List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions)
         {
             _needClearing = needClearing;
             _worldId = world.WorldId;
             _worldMaxCapacity = world.MaxCapacity;
-            _container = new EntityContainerWatcher(this, filter);
+            _container = new EntityContainerWatcher(this, filter, predicates);
             _subscriptions = subscriptions.Select(s => s(_container, world)).Merge();
 
             _mapping = EmptyArray<int>.Value;

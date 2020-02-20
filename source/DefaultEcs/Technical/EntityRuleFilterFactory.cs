@@ -23,7 +23,11 @@ namespace DefaultEcs.Technical
 
         #region Methods
 
-        public static Predicate<ComponentEnum> GetFilter(ComponentEnum withFilter, ComponentEnum withoutFilter, List<ComponentEnum> withEitherFilters, List<ComponentEnum> withoutEitherFilters)
+        public static Predicate<ComponentEnum> GetFilter(
+            ComponentEnum withFilter,
+            ComponentEnum withoutFilter,
+            List<ComponentEnum> withEitherFilters,
+            List<ComponentEnum> withoutEitherFilters)
         {
             withFilter = withFilter.Copy();
             withoutFilter = withoutFilter.Copy();

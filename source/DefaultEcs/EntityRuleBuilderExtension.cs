@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 
 namespace DefaultEcs
@@ -29,7 +30,7 @@ namespace DefaultEcs
 
         static EntityRuleBuilderExtension()
         {
-            _with = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.With));
+            _with = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethods(nameof(EntityRuleBuilder.With)).Single(m => m.GetParameters().Length == 0);
             _without = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.Without));
             _whenAdded = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.WhenAdded));
             _whenChanged = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.WhenChanged));

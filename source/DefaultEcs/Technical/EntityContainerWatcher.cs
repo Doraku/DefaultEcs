@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs.Technical
@@ -9,15 +11,25 @@ namespace DefaultEcs.Technical
 
         private readonly IEntityContainer _container;
         private readonly Predicate<ComponentEnum> _filter;
+        private readonly Predicate<int> _predicate;
 
         #endregion
 
         #region Initialisation
 
-        public EntityContainerWatcher(IEntityContainer container, Predicate<ComponentEnum> filter)
+        public EntityContainerWatcher(IEntityContainer container, Predicate<ComponentEnum> filter, List<Predicate<int>> predicates)
         {
+            static bool All(int _) => true;
+
             _container = container;
             _filter = filter;
+
+            _predicate = predicates?.Count switch
+            {
+                null => All,
+                1 => predicates.Single(),
+                _ => i => predicates.All(p => p(i))
+            };
         }
 
         #endregion
@@ -26,9 +38,24 @@ namespace DefaultEcs.Technical
 
         public void Add(in EntityCreatedMessage message) => _container.Add(message.EntityId);
 
-        public void CheckedAdd(in EntityEnabledMessage message)
+        public void AddOrRemove<T>(in ComponentChangedMessage<T> message)
         {
             if (_filter(message.Components))
+            {
+                if (_predicate(message.EntityId))
+                {
+                    _container.Add(message.EntityId);
+                }
+                else
+                {
+                    _container.Remove(message.EntityId);
+                }
+            }
+        }
+
+        public void CheckedAdd(in EntityEnabledMessage message)
+        {
+            if (_filter(message.Components) && _predicate(message.EntityId))
             {
                 _container.Add(message.EntityId);
             }
@@ -36,7 +63,7 @@ namespace DefaultEcs.Technical
 
         public void CheckedAdd(in EntityDisabledMessage message)
         {
-            if (_filter(message.Components))
+            if (_filter(message.Components) && _predicate(message.EntityId))
             {
                 _container.Add(message.EntityId);
             }
@@ -44,7 +71,7 @@ namespace DefaultEcs.Technical
 
         public void CheckedAdd<T>(in ComponentAddedMessage<T> message)
         {
-            if (_filter(message.Components))
+            if (_filter(message.Components) && _predicate(message.EntityId))
             {
                 _container.Add(message.EntityId);
             }
@@ -52,7 +79,7 @@ namespace DefaultEcs.Technical
 
         public void CheckedAdd<T>(in ComponentChangedMessage<T> message)
         {
-            if (_filter(message.Components))
+            if (_filter(message.Components) && _predicate(message.EntityId))
             {
                 _container.Add(message.EntityId);
             }
@@ -60,7 +87,7 @@ namespace DefaultEcs.Technical
 
         public void CheckedAdd<T>(in ComponentRemovedMessage<T> message)
         {
-            if (_filter(message.Components))
+            if (_filter(message.Components) && _predicate(message.EntityId))
             {
                 _container.Add(message.EntityId);
             }
@@ -68,7 +95,7 @@ namespace DefaultEcs.Technical
 
         public void CheckedAdd<T>(in ComponentEnabledMessage<T> message)
         {
-            if (_filter(message.Components))
+            if (_filter(message.Components) && _predicate(message.EntityId))
             {
                 _container.Add(message.EntityId);
             }
@@ -76,7 +103,7 @@ namespace DefaultEcs.Technical
 
         public void CheckedAdd<T>(in ComponentDisabledMessage<T> message)
         {
-            if (_filter(message.Components))
+            if (_filter(message.Components) && _predicate(message.EntityId))
             {
                 _container.Add(message.EntityId);
             }
