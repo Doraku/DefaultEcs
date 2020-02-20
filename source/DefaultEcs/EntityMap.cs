@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,6 +15,81 @@ namespace DefaultEcs
     /// <typeparam name="TKey">The type of the component used as key.</typeparam>
     public sealed class EntityMap<TKey> : IEntityContainer, IDisposable
     {
+        #region Types
+
+        /// <summary>
+        /// Allows to enumerate the <typeparamref name="TKey"/> of a <see cref="EntityMap{TKey}" />.
+        /// </summary>
+        public readonly struct KeyEnumerable : IEnumerable<TKey>
+        {
+            private readonly EntityMap<TKey> _map;
+
+            internal KeyEnumerable(EntityMap<TKey> map)
+            {
+                _map = map;
+            }
+
+            #region IEnumerable
+
+            /// <summary>
+            /// Returns an enumerator that iterates through the collection.
+            /// </summary>
+            /// <returns>An enumerator that can be used to iterate through the collection.</returns>
+            public KeyEnumerator GetEnumerator() => new KeyEnumerator(_map);
+
+            IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator() => GetEnumerator();
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Enumerates the <typeparamref name="TKey"/> of a <see cref="EntityMap{TKey}" />.
+        /// </summary>
+        public struct KeyEnumerator : IEnumerator<TKey>
+        {
+            private readonly EntityMap<TKey> _map;
+
+            private Dictionary<TKey, int>.KeyCollection.Enumerator _enumerator;
+
+            internal KeyEnumerator(EntityMap<TKey> map)
+            {
+                _map = map;
+
+                _enumerator = map._entities.Keys.GetEnumerator();
+            }
+
+            #region IEnumerator
+
+            /// <summary>
+            /// Gets the <typeparamref name="TKey"/> at the current position of the enumerator.
+            /// </summary>
+            /// <returns>The <typeparamref name="TKey"/> at the current position of the enumerator.</returns>
+            public TKey Current => _enumerator.Current;
+
+            object IEnumerator.Current => Current;
+
+            /// <summary>Advances the enumerator to the next <typeparamref name="TKey"/> of the <see cref="EntityMap{TKey}" />.</summary>
+            /// <returns>true if the enumerator was successfully advanced to the next <typeparamref name="TKey"/>; false if the enumerator has passed the end of the collection.</returns>
+            public bool MoveNext() => _enumerator.MoveNext();
+
+            void IEnumerator.Reset() => _enumerator = _map._entities.Keys.GetEnumerator();
+
+            #endregion
+
+            #region IDisposable
+
+            /// <summary>
+            /// Releases all resources used by the <see cref="KeyEnumerator" />.
+            /// </summary>
+            public void Dispose() => _enumerator.Dispose();
+
+            #endregion
+        }
+
+        #endregion
+
         #region Fields
 
         private readonly bool _needClearing;
@@ -40,7 +116,7 @@ namespace DefaultEcs
         /// <summary>
         /// Gets the keys contained in the <see cref="EntityMap{TKey}"/>.
         /// </summary>
-        public IEnumerable<TKey> Keys => _entities.Keys;
+        public KeyEnumerable Keys => new KeyEnumerable(this);
 
         /// <summary>
         /// Gets the <see cref="Entity"/> associated with the specified key.

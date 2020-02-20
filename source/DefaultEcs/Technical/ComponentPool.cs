@@ -13,32 +13,34 @@ namespace DefaultEcs.Technical
     {
         #region Types
 
-        public readonly struct Enumerable : IEnumerable<Entity>
+        public readonly struct EntityEnumerable : IEnumerable<Entity>
         {
             private readonly ComponentPool<T> _pool;
 
-            public Enumerable(ComponentPool<T> pool)
+            public EntityEnumerable(ComponentPool<T> pool)
             {
                 _pool = pool;
             }
 
             #region IEnumerable
 
-            public IEnumerator<Entity> GetEnumerator() => new Enumerator(_pool);
+            public EntityEnumerator GetEnumerator() => new EntityEnumerator(_pool);
+
+            IEnumerator<Entity> IEnumerable<Entity>.GetEnumerator() => GetEnumerator();
 
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
             #endregion
         }
 
-        public struct Enumerator : IEnumerator<Entity>
+        public struct EntityEnumerator : IEnumerator<Entity>
         {
             private readonly short _worldId;
             private readonly int[] _mapping;
 
             private int _index;
 
-            public Enumerator(ComponentPool<T> pool)
+            public EntityEnumerator(ComponentPool<T> pool)
             {
                 _worldId = pool._worldId;
                 _mapping = pool._mapping;
@@ -311,7 +313,7 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Components<T> AsComponents() => new Components<T>(_mapping, _components);
 
-        public Enumerable GetEntities() => new Enumerable(this);
+        public EntityEnumerable GetEntities() => new EntityEnumerable(this);
 
         #endregion
 

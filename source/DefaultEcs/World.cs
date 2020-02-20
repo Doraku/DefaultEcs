@@ -72,7 +72,9 @@ namespace DefaultEcs
             }
         }
 
-        /// <summary>Enumerates the <see cref="Entity"/> of a <see cref="World" />.</summary>
+        /// <summary>
+        /// Enumerates the <see cref="Entity"/> of a <see cref="World" />.
+        /// </summary>
         public struct Enumerator : IEnumerator<Entity>
         {
             private readonly short _worldId;
@@ -92,13 +94,17 @@ namespace DefaultEcs
 
             #region IEnumerator
 
-            /// <summary>Gets the <see cref="Entity"/> at the current position of the enumerator.</summary>
+            /// <summary>
+            /// Gets the <see cref="Entity"/> at the current position of the enumerator.
+            /// </summary>
             /// <returns>The <see cref="Entity"/> in the <see cref="World" /> at the current position of the enumerator.</returns>
             public Entity Current => new Entity(_worldId, _index);
 
             object IEnumerator.Current => Current;
 
-            /// <summary>Advances the enumerator to the next <see cref="Entity"/> of the <see cref="World" />.</summary>
+            /// <summary>
+            /// Advances the enumerator to the next <see cref="Entity"/> of the <see cref="World" />.
+            /// </summary>
             /// <returns>true if the enumerator was successfully advanced to the next <see cref="Entity"/>; false if the enumerator has passed the end of the collection.</returns>
             public bool MoveNext()
             {
@@ -113,7 +119,9 @@ namespace DefaultEcs
                 return false;
             }
 
-            /// <summary>Sets the enumerator to its initial position, which is before the first <see cref="Entity"/> in the collection.</summary>
+            /// <summary>
+            /// Sets the enumerator to its initial position, which is before the first <see cref="Entity"/> in the collection.
+            /// </summary>
             public void Reset()
             {
                 _index = -1;
@@ -123,7 +131,9 @@ namespace DefaultEcs
 
             #region IDisposable
 
-            /// <summary>Releases all resources used by the <see cref="Enumerator" />.</summary>
+            /// <summary>
+            /// Releases all resources used by the <see cref="Enumerator" />.
+            /// </summary>
             public void Dispose()
             { }
 
