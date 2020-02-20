@@ -24,9 +24,9 @@ namespace DefaultBoids
         public const float BehaviorAlignmentWeight = 4;
         public const float BehaviorCohesionWeight = 1;
 
-        public const float NeighborRange = 100;
+        public const float NeighborRange = 150;
 
-        public const float MinVelocity = 260;
+        public const float MinVelocity = 290;
         public const float MaxVelocity = 300;
 
         private readonly GraphicsDeviceManager _deviceManager;
@@ -88,7 +88,7 @@ namespace DefaultBoids
                 {
                     Color = new Color((float)random.NextDouble(), (float)random.NextDouble(), (float)random.NextDouble(), 1f),
                     Position = new Vector2((float)random.NextDouble() * _deviceManager.PreferredBackBufferWidth, (float)random.NextDouble() * _deviceManager.PreferredBackBufferHeight),
-                    Size = new Vector2(random.Next(3, 6), random.Next(10, 15)),
+                    Size = new Vector2(random.Next(10, 15), random.Next(20, 30)),
                 });
 
                 Vector2 velocity = new Vector2((float)random.NextDouble() - .5f, (float)random.NextDouble() - .5f);
@@ -101,6 +101,8 @@ namespace DefaultBoids
                 entity.Set<Acceleration>();
                 entity.Set(entity.Get<DrawInfo>().Position.ToGridId());
             }
+
+            _world.Optimize();
 
             _watch = Stopwatch.StartNew();
         }

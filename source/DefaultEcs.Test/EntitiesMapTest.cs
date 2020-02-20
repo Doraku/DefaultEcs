@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using NFluent;
 using Xunit;
 
@@ -11,7 +11,7 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
 
-            using EntitiesMap<int, List<Entity>> map = world.GetEntities().AsMap<int, List<Entity>>();
+            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Entity entity = world.CreateEntity();
 
@@ -39,7 +39,7 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
 
-            using EntitiesMap<int, List<Entity>> map = world.GetEntities().AsMap<int, List<Entity>>();
+            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Entity entity = world.CreateEntity();
 
@@ -55,12 +55,12 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
 
-            using EntitiesMap<int, List<Entity>> map = world.GetEntities().AsMap<int, List<Entity>>();
+            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Entity entity = world.CreateEntity();
             entity.Set(42);
 
-            Check.That(map[42]).ContainsExactly(entity);
+            Check.That(map[42].ToArray()).ContainsExactly(entity);
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
 
-            using EntityMap<int> map = world.GetEntities().AsMap<int>();
+            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Entity entity = world.CreateEntity();
             entity.Set(42);
@@ -81,31 +81,29 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
 
-            using EntitiesMap<int, List<Entity>> map = world.GetEntities().AsMap<int, List<Entity>>();
+            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Entity entity = world.CreateEntity();
 
-            Check.That(map.TryGetEntities(42, out List<Entity> result)).IsFalse();
+            Check.That(map.TryGetEntities(42, out ReadOnlySpan<Entity> result)).IsFalse();
 
             entity.Set(42);
 
             Check.That(map.TryGetEntities(42, out result)).IsTrue();
-            Check.That(result).ContainsExactly(entity);
+            Check.That(result.ToArray()).ContainsExactly(entity);
 
             entity.Disable<int>();
 
-            Check.That(map.TryGetEntities(42, out result)).IsTrue();
-            Check.That(result).IsEmpty();
+            Check.That(map.TryGetEntities(42, out result)).IsFalse();
 
             entity.Enable<int>();
 
             Check.That(map.TryGetEntities(42, out result)).IsTrue();
-            Check.That(result).ContainsExactly(entity);
+            Check.That(result.ToArray()).ContainsExactly(entity);
 
             entity.Remove<int>();
 
-            Check.That(map.TryGetEntities(42, out result)).IsTrue();
-            Check.That(result).IsEmpty();
+            Check.That(map.TryGetEntities(42, out result)).IsFalse();
         }
 
         [Fact]
@@ -113,28 +111,26 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
 
-            using EntitiesMap<int, List<Entity>> map = world.GetEntities().AsMap<int, List<Entity>>();
+            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Entity entity = world.CreateEntity();
             entity.Set(42);
 
-            Check.That(map.TryGetEntities(42, out List<Entity> result)).IsTrue();
-            Check.That(result).ContainsExactly(entity);
+            Check.That(map.TryGetEntities(42, out ReadOnlySpan<Entity> result)).IsTrue();
+            Check.That(result.ToArray()).ContainsExactly(entity);
 
             entity.Set(1337);
 
-            Check.That(map.TryGetEntities(42, out result)).IsTrue();
-            Check.That(result).IsEmpty();
+            Check.That(map.TryGetEntities(42, out result)).IsFalse();
             Check.That(map.TryGetEntities(1337, out result)).IsTrue();
-            Check.That(result).ContainsExactly(entity);
+            Check.That(result.ToArray()).ContainsExactly(entity);
 
             entity.Get<int>() = 42;
             entity.NotifyChanged<int>();
 
-            Check.That(map.TryGetEntities(1337, out result)).IsTrue();
-            Check.That(result).IsEmpty();
+            Check.That(map.TryGetEntities(1337, out result)).IsFalse();
             Check.That(map.TryGetEntities(42, out result)).IsTrue();
-            Check.That(result).ContainsExactly(entity);
+            Check.That(result.ToArray()).ContainsExactly(entity);
         }
     }
 }

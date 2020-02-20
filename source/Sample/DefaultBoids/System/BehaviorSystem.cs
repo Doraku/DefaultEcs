@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using DefaultBoids.Component;
 using DefaultEcs;
 using DefaultEcs.System;
@@ -12,12 +11,12 @@ namespace DefaultBoids.System
     public sealed class BehaviorSystem : AEntitySystem<float>
     {
         private readonly World _world;
-        private readonly EntitiesMap<GridId, List<Entity>> _grid;
+        private readonly EntitiesMap<GridId> _grid;
 
         public BehaviorSystem(World world, IParallelRunner runner) : base(world, runner)
         {
             _world = world;
-            _grid = world.GetEntities().With<GridId>().With<Velocity>().With<DrawInfo>().AsMap<GridId, List<Entity>>();
+            _grid = world.GetEntities().With<GridId>().With<Velocity>().With<DrawInfo>().AsMultiMap<GridId>();
         }
 
         protected override void Update(float state, ReadOnlySpan<Entity> entities)
@@ -33,15 +32,15 @@ namespace DefaultBoids.System
                 Vector2 direction = Vector2.Zero;
                 int count = 0;
 
-                if (_grid.TryGetEntities(gridIds[entity], out List<Entity> neighbors))
+                if (_grid.TryGetEntities(gridIds[entity], out ReadOnlySpan<Entity> neighbors))
                 {
-                    foreach (Entity neighbor in neighbors)
+                    foreach (ref readonly Entity neighbor in neighbors)
                     {
                         center += drawInfos[neighbor].Position;
                         direction += velocities[neighbor].Value;
                     }
 
-                    count = neighbors.Count;
+                    count = neighbors.Length;
                 }
 
                 behaviors[entity] = new Behavior(center, direction, count);

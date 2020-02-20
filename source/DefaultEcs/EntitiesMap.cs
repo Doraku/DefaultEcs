@@ -9,13 +9,66 @@ using DefaultEcs.Technical.Message;
 namespace DefaultEcs
 {
     /// <summary>
-    /// Represents a collection of <typeparamref name="TEntities"/> mapped to a <typeparamref name="TKey"/> component. Multiple <see cref="Entity"/> can be associated with a given <typeparamref name="TKey"/>.
+    /// Represents a collection of <see cref="Entity"/> mapped to a <typeparamref name="TKey"/> component. Multiple <see cref="Entity"/> can be associated with a given <typeparamref name="TKey"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the component used as key.</typeparam>
-    /// <typeparam name="TEntities">The collection used to store <see cref="Entity"/> with the same key.</typeparam>
-    public sealed class EntitiesMap<TKey, TEntities> : IEntityContainer, IDisposable
-        where TEntities : class, ICollection<Entity>
+    public sealed class EntitiesMap<TKey> : IEntityContainer, IDisposable
     {
+        #region Types
+
+        private class Entities
+        {
+            private Entity[] _entities;
+            private int _sortedIndex;
+
+            public int Count { get; private set; }
+
+            public Entities()
+            {
+                _entities = EmptyArray<Entity>.Value;
+            }
+
+            public ReadOnlySpan<Entity> GetEntities() => new ReadOnlySpan<Entity>(_entities, 0, Count);
+
+            public int Add(in Entity entity, int worldMaxCapacity)
+            {
+                if (_sortedIndex >= Count || _entities[_sortedIndex].EntityId > entity.EntityId)
+                {
+                    _sortedIndex = 0;
+                }
+
+                int index = Count++;
+
+                ArrayExtension.EnsureLength(ref _entities, index, worldMaxCapacity);
+
+                _entities[index] = entity;
+
+                return index;
+            }
+
+            public int Remove(int index)
+            {
+                --Count;
+
+                if (index != Count)
+                {
+                    _entities[index] = _entities[Count];
+
+                    _sortedIndex = Math.Min(_sortedIndex, index);
+                }
+
+                return _entities[index].EntityId;
+            }
+        }
+
+        private struct Mapping
+        {
+            public Entities Entities;
+            public int ItemIndex;
+        }
+
+        #endregion
+
         #region Fields
 
         private readonly bool _needClearing;
@@ -24,32 +77,31 @@ namespace DefaultEcs
         private readonly EntityContainerWatcher _container;
         private readonly IDisposable _subscriptions;
         private readonly ComponentPool<TKey> _components;
-        private readonly Dictionary<TKey, TEntities> _entities;
-        private readonly Func<TEntities> _factory;
+        private readonly Dictionary<TKey, Entities> _entities;
 
-        private TEntities[] _idsToEntities;
+        private Mapping[] _mapping;
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="EntitiesMap{TKey, TEntities}"/> originate. 
+        /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="EntitiesMap{TKey}"/> originate. 
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public World World => World.Worlds[_worldId];
 
         /// <summary>
-        /// Gets the keys contained in the <see cref="EntitiesMap{TKey, TEntities}"/>.
+        /// Gets the keys contained in the <see cref="EntitiesMap{TKey}"/>.
         /// </summary>
         public IEnumerable<TKey> Keys => _entities.Keys;
 
         /// <summary>
-        /// Gets the <typeparamref name="TEntities"/> associated with the specified key.
+        /// Gets the <see cref="Entity"/> instances associated with the specified key.
         /// </summary>
-        /// <param name="key">The key of the <typeparamref name="TEntities"/> to get.</param>
-        /// <returns>The <typeparamref name="TEntities"/> associated with the specified key.</returns>
-        public TEntities this[TKey key] => _entities[key];
+        /// <param name="key">The key of the <see cref="Entity"/> instances to get.</param>
+        /// <returns>The <see cref="Entity"/> instances associated with the specified key.</returns>
+        public ReadOnlySpan<Entity> this[TKey key] => _entities[key].GetEntities();
 
         #endregion
 
@@ -60,7 +112,6 @@ namespace DefaultEcs
             World world,
             Predicate<ComponentEnum> filter,
             List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions,
-            Func<TEntities> factory,
             IEqualityComparer<TKey> comparer)
         {
             _needClearing = needClearing;
@@ -68,12 +119,11 @@ namespace DefaultEcs
             _worldMaxCapacity = world.MaxCapacity;
             _container = new EntityContainerWatcher(this, filter);
             _subscriptions = Enumerable.Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(OnChange), 1).Concat(subscriptions.Select(s => s(_container, world))).Merge();
-            _factory = factory;
 
             _components = ComponentManager<TKey>.GetOrCreate(_worldId);
-            _entities = new Dictionary<TKey, TEntities>(comparer);
+            _entities = new Dictionary<TKey, Entities>(comparer);
 
-            _idsToEntities = EmptyArray<TEntities>.Value;
+            _mapping = EmptyArray<Mapping>.Value;
 
             if (!_needClearing)
             {
@@ -94,23 +144,25 @@ namespace DefaultEcs
 
         private void OnChange(in ComponentChangedMessage<TKey> message)
         {
-            if (message.EntityId < _idsToEntities.Length)
+            if (message.EntityId < _mapping.Length)
             {
-                ref TEntities entities = ref _idsToEntities[message.EntityId];
-                if (entities != null)
+                ref Mapping mapping = ref _mapping[message.EntityId];
+                if (mapping.Entities != null)
                 {
-                    Entity entity = new Entity(_worldId, message.EntityId);
-
                     ref TKey newKey = ref _components.Get(message.EntityId);
-                    entities.Remove(entity);
-
-                    if (!_entities.TryGetValue(newKey, out entities))
+                    int newId = mapping.Entities.Remove(mapping.ItemIndex);
+                    if (newId != message.EntityId)
                     {
-                        entities = _factory();
-                        _entities.Add(newKey, entities);
+                        _mapping[newId].ItemIndex = mapping.ItemIndex;
                     }
 
-                    entities.Add(entity);
+                    if (!_entities.TryGetValue(newKey, out mapping.Entities))
+                    {
+                        mapping.Entities = new Entities();
+                        _entities.Add(newKey, mapping.Entities);
+                    }
+
+                    mapping.ItemIndex = mapping.Entities.Add(new Entity(_worldId, message.EntityId), _worldMaxCapacity);
                 }
             }
         }
@@ -120,26 +172,30 @@ namespace DefaultEcs
         #region Methods
 
         /// <summary>
-        /// Determines whether the <see cref="EntitiesMap{TKey, TEntities}"/> contains a specific <see cref="Entity"/>.
+        /// Determines whether the <see cref="EntitiesMap{TKey}"/> contains a specific <see cref="Entity"/>.
         /// </summary>
-        /// <param name="entity">The <see cref="Entity"/> to locate in the <see cref="EntitiesMap{TKey, TEntities}"/>.</param>
-        /// <returns>true if the <see cref="EntitiesMap{TKey, TEntities}"/> contains the specified <see cref="Entity"/>; otherwise, false.</returns>
-        public bool ContainsEntity(Entity entity) => entity.EntityId < _idsToEntities.Length && _idsToEntities[entity.EntityId] != null;
+        /// <param name="entity">The <see cref="Entity"/> to locate in the <see cref="EntitiesMap{TKey}"/>.</param>
+        /// <returns>true if the <see cref="EntitiesMap{TKey}"/> contains the specified <see cref="Entity"/>; otherwise, false.</returns>
+        public bool ContainsEntity(Entity entity) => entity.EntityId < _mapping.Length && _mapping[entity.EntityId].Entities != null;
 
         /// <summary>
-        /// Determines whether the <see cref="EntitiesMap{TKey, TEntities}"/> contains the specified key.
+        /// Determines whether the <see cref="EntitiesMap{TKey}"/> contains the specified key.
         /// </summary>
-        /// <param name="key">The key to locate in the <see cref="EntitiesMap{TKey, TEntities}"/>.</param>
-        /// <returns>true if the <see cref="EntitiesMap{TKey, TEntities}"/> contains the specified key; otherwise, false.</returns>
-        public bool ContainsKey(TKey key) => _entities.ContainsKey(key);
+        /// <param name="key">The key to locate in the <see cref="EntitiesMap{TKey}"/>.</param>
+        /// <returns>true if the <see cref="EntitiesMap{TKey}"/> contains the specified key; otherwise, false.</returns>
+        public bool ContainsKey(TKey key) => _entities.TryGetValue(key, out Entities entities) && entities.Count > 0;
 
         /// <summary>
-        /// Gets the <typeparamref name="TEntities"/> associated with the specified key.
+        /// Gets the <see cref="Entity"/> instances associated with the specified key.
         /// </summary>
-        /// <param name="key">The key of the <typeparamref name="TEntities"/> to get.</param>
-        /// <param name="entities">When this method returns, contains the <typeparamref name="TEntities"/> associated with the specified key, if the key is found; otherwise, the type default value. This parameter is passed uninitialized.</param>
-        /// <returns>true if the <see cref="EntitiesMap{TKey, TEntities}"/> contains an <typeparamref name="TEntities"/> with the specified key; otherwise, false.</returns>
-        public bool TryGetEntities(TKey key, out TEntities entities) => _entities.TryGetValue(key, out entities);
+        /// <param name="key">The key of the <see cref="Entity"/> instances to get.</param>
+        /// <param name="entities">When this method returns, contains the <see cref="Entity"/> instances associated with the specified key, if the key is found; otherwise, the type default value. This parameter is passed uninitialized.</param>
+        /// <returns>true if the <see cref="EntitiesMap{TKey}"/> contains <see cref="Entity"/> instances with the specified key; otherwise, false.</returns>
+        public bool TryGetEntities(TKey key, out ReadOnlySpan<Entity> entities)
+        {
+            entities = _entities.TryGetValue(key, out Entities e) ? e.GetEntities() : default;
+            return entities.Length > 0;
+        }
 
         /// <summary>
         /// Clears current instance of its entities if it was created with some reactive filter (<seealso cref="EntityRuleBuilder.WhenAdded{T}"/>, <see cref="EntityRuleBuilder.WhenChanged{T}"/> or <see cref="EntityRuleBuilder.WhenRemoved{T}"/>).
@@ -150,7 +206,7 @@ namespace DefaultEcs
         {
             if (_needClearing)
             {
-                _idsToEntities.Fill(null);
+                _mapping.Fill(default);
                 _entities.Clear();
             }
         }
@@ -161,32 +217,36 @@ namespace DefaultEcs
 
         void IEntityContainer.Add(int entityId)
         {
-            ArrayExtension.EnsureLength(ref _idsToEntities, entityId, _worldMaxCapacity);
+            ArrayExtension.EnsureLength(ref _mapping, entityId, _worldMaxCapacity);
 
-            ref TEntities entities = ref _idsToEntities[entityId];
-            if (entities is null)
+            ref Mapping mapping = ref _mapping[entityId];
+            if (mapping.Entities is null)
             {
                 ref TKey key = ref _components.Get(entityId);
 
-                if (!_entities.TryGetValue(key, out entities))
+                if (!_entities.TryGetValue(key, out mapping.Entities))
                 {
-                    entities = _factory();
-                    _entities.Add(key, entities);
+                    mapping.Entities = new Entities();
+                    _entities.Add(key, mapping.Entities);
                 }
 
-                entities.Add(new Entity(_worldId, entityId));
+                mapping.ItemIndex = mapping.Entities.Add(new Entity(_worldId, entityId), _worldMaxCapacity);
             }
         }
 
         void IEntityContainer.Remove(int entityId)
         {
-            if (entityId < _idsToEntities.Length)
+            if (entityId < _mapping.Length)
             {
-                ref TEntities entities = ref _idsToEntities[entityId];
-                if (entities != null)
+                ref Mapping mapping = ref _mapping[entityId];
+                if (mapping.Entities != null)
                 {
-                    entities.Remove(new Entity(_worldId, entityId));
-                    entities = null;
+                    int newId = mapping.Entities.Remove(mapping.ItemIndex);
+                    if (newId != entityId)
+                    {
+                        _mapping[newId].ItemIndex = mapping.ItemIndex;
+                    }
+                    mapping = default;
                 }
             }
         }

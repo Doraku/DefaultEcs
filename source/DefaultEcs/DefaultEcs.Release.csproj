@@ -49,6 +49,7 @@ added World.SubscribeComponentEnabled to be called back when a component is enab
 added World.SubscribeComponentDisabled to be called back when a component is disabled on an entity
 added EntityRuleBuilder.AsPredicate to get a predicate to validate the composition of an entity
 added EntityRuleBuilder.AsMap to get a mapping of entities by their component value
+added EntityRuleBuilder.AsMultiMap to get a mapping of entities by their component value
 added Entity.NotifyChanged to defer the notification that a component has changed
 added EntityRecord.NotifyChanged to defer the notification that a component has changed
 added EntityMap to have a one for one mapping between a component value and an entity

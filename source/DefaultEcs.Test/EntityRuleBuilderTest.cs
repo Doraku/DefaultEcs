@@ -539,16 +539,6 @@ namespace DefaultEcs.Test
             Check.That(predicate(entity)).IsTrue();
         }
 
-        [Fact]
-        public void AsMap_Should_throw_When_factory_is_null()
-        {
-            using World world = new World();
-
-            Check.ThatCode(() => world.GetEntities().AsMap<bool, List<Entity>>(default(Func<List<Entity>>))).Throws<ArgumentNullException>();
-
-            Check.ThatCode(() => world.GetEntities().AsMap<bool, List<Entity>>(default, default)).Throws<ArgumentNullException>();
-        }
-
         #endregion
     }
 }
