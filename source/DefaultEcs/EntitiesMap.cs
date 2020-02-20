@@ -91,6 +91,12 @@ namespace DefaultEcs
             }
 
             public void SetAsSorted() => _sortedIndex = Count;
+
+            public void Clear()
+            {
+                Count = 0;
+                _sortedIndex = 0;
+            }
         }
 
         private struct Mapping
@@ -331,7 +337,10 @@ namespace DefaultEcs
             if (_needClearing)
             {
                 _mapping.Fill(default);
-                _entities.Clear();
+                foreach (Entities entities in _entities.Values)
+                {
+                    entities.Clear();
+                }
             }
         }
 
