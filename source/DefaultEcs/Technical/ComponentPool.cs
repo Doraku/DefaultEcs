@@ -9,7 +9,7 @@ using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs.Technical
 {
-    internal sealed class ComponentPool<T> : IOptimizable
+    internal sealed class ComponentPool<T> : ISortable
     {
         #region Types
 
@@ -317,7 +317,7 @@ namespace DefaultEcs.Technical
 
         #region IOptimizable
 
-        void IOptimizable.Optimize(ref bool shouldContinue)
+        void ISortable.Sort(ref bool shouldContinue)
         {
             for (; _sortedIndex < _lastComponentIndex && Volatile.Read(ref shouldContinue); ++_sortedIndex)
             {

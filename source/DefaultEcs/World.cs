@@ -23,7 +23,7 @@ namespace DefaultEcs
 
         private class Optimizer : IParallelRunnable
         {
-            private readonly List<IOptimizable> _items;
+            private readonly List<ISortable> _items;
 
             private Action _mainAction;
             private bool shouldContinue;
@@ -31,10 +31,10 @@ namespace DefaultEcs
 
             public Optimizer()
             {
-                _items = new List<IOptimizable>();
+                _items = new List<ISortable>();
             }
 
-            public void Add(IOptimizable item)
+            public void Add(ISortable item)
             {
                 lock (this)
                 {
@@ -42,7 +42,7 @@ namespace DefaultEcs
                 }
             }
 
-            public void Remove(IOptimizable item)
+            public void Remove(ISortable item)
             {
                 lock (this)
                 {
@@ -67,7 +67,7 @@ namespace DefaultEcs
 
                 while (Volatile.Read(ref shouldContinue) && (index = Interlocked.Increment(ref _lastIndex)) < _items.Count)
                 {
-                    _items[index].Optimize(ref shouldContinue);
+                    _items[index].Sort(ref shouldContinue);
                 }
             }
         }
@@ -248,9 +248,9 @@ namespace DefaultEcs
 
         #region Methods
 
-        internal void Add(IOptimizable optimizable) => _optimizer.Add(optimizable);
+        internal void Add(ISortable optimizable) => _optimizer.Add(optimizable);
 
-        internal void Remove(IOptimizable optimizable) => _optimizer.Remove(optimizable);
+        internal void Remove(ISortable optimizable) => _optimizer.Remove(optimizable);
 
         /// <summary>
         /// Creates a new instance of the <see cref="Entity"/> struct.
@@ -336,7 +336,7 @@ namespace DefaultEcs
         public void ReadAllComponentTypes(IComponentTypeReader reader) => Publish(new ComponentTypeReadMessage(reader ?? throw new ArgumentNullException(nameof(reader))));
 
         /// <summary>
-        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> always move forward in memory.
+        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntitiesMap{TKey}"/> always move forward in memory.
         /// This method will return once <paramref name="mainAction"/> is executed even if the optimization process has not finished.
         /// </summary>
         /// <param name="runner">The <see cref="IParallelRunner"/> to process this operation in parallel.</param>
@@ -351,7 +351,7 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> always move forward in memory.
+        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntitiesMap{TKey}"/> always move forward in memory.
         /// </summary>
         /// <param name="runner">The <see cref="IParallelRunner"/> to process this operation in parallel.</param>
         public void Optimize(IParallelRunner runner)
@@ -363,7 +363,7 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> always move forward in memory.
+        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntitiesMap{TKey}"/> always move forward in memory.
         /// </summary>
         public void Optimize() => Optimize(DefaultParallelRunner.Default);
 

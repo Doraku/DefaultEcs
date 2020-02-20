@@ -15,7 +15,7 @@ namespace DefaultEcs
     /// </summary>
     [DebuggerTypeProxy(typeof(EntitySetDebugView))]
     [DebuggerDisplay("EntitySet[{Count}]")]
-    public sealed class EntitySet : IEntityContainer, IOptimizable, IDisposable
+    public sealed class EntitySet : IEntityContainer, ISortable, IDisposable
     {
         #region Fields
 
@@ -170,7 +170,7 @@ namespace DefaultEcs
 
         #region IOptimizable
 
-        void IOptimizable.Optimize(ref bool shouldContinue)
+        void ISortable.Sort(ref bool shouldContinue)
         {
             for (; _sortedIndex < Count - 1 && Volatile.Read(ref shouldContinue); ++_sortedIndex)
             {

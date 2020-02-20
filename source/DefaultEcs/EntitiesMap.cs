@@ -13,7 +13,7 @@ namespace DefaultEcs
     /// Represents a collection of <see cref="Entity"/> mapped to a <typeparamref name="TKey"/> component. Multiple <see cref="Entity"/> can be associated with a given <typeparamref name="TKey"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the component used as key.</typeparam>
-    public sealed class EntitiesMap<TKey> : IEntityContainer, IOptimizable, IDisposable
+    public sealed class EntitiesMap<TKey> : IEntityContainer, ISortable, IDisposable
     {
         #region Types
 
@@ -61,7 +61,7 @@ namespace DefaultEcs
                 return _entities[index].EntityId;
             }
 
-            public void Optimize(Mapping[] mappings, ref bool shouldContinue)
+            public void Sort(Mapping[] mappings, ref bool shouldContinue)
             {
                 for (; _sortedIndex < Count - 1 && Volatile.Read(ref shouldContinue); ++_sortedIndex)
                 {
@@ -293,13 +293,13 @@ namespace DefaultEcs
 
         #region IOptimizable
 
-        void IOptimizable.Optimize(ref bool shouldContinue)
+        void ISortable.Sort(ref bool shouldContinue)
         {
             using Dictionary<TKey, Entities>.ValueCollection.Enumerator enumerable = _entities.Values.GetEnumerator();
 
             while (Volatile.Read(ref shouldContinue) && enumerable.MoveNext())
             {
-                enumerable.Current.Optimize(_mapping, ref shouldContinue);
+                enumerable.Current.Sort(_mapping, ref shouldContinue);
             }
         }
 
