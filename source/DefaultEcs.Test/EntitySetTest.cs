@@ -143,6 +143,18 @@ namespace DefaultEcs.Test
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities.Skip(1));
         }
 
+        [Fact]
+        public void Dispose_Should_not_throw_When_world_already_disposed()
+        {
+            World world = new World(4);
+
+            EntitySet set = world.GetEntities().AsSet();
+
+            world.Dispose();
+
+            Check.ThatCode(set.Dispose).DoesNotThrow();
+        }
+
         #endregion
     }
 }

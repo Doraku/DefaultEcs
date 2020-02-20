@@ -7,17 +7,24 @@ namespace DefaultEcs.Test
     public sealed class EntitiesMapTest
     {
         [Fact]
-        public void ContainsEntity_Should_return_weither_an_entity_is_in_or_not()
+        public void World_Should_return_world()
         {
             using World world = new World();
 
             using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
 
+            Check.That(map.World).IsEqualTo(world);
+        }
+
+        [Fact]
+        public void ContainsEntity_Should_return_weither_an_entity_is_in_or_not()
+        {
+            using World world = new World();
+
             Entity entity = world.CreateEntity();
-
-            Check.That(map.ContainsEntity(entity)).IsFalse();
-
             entity.Set(42);
+
+            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Check.That(map.ContainsEntity(entity)).IsTrue();
 
@@ -131,6 +138,28 @@ namespace DefaultEcs.Test
             Check.That(map.TryGetEntities(1337, out result)).IsFalse();
             Check.That(map.TryGetEntities(42, out result)).IsTrue();
             Check.That(result.ToArray()).ContainsExactly(entity);
+        }
+
+        [Fact]
+        public void Complete_Should_empty_When_reative()
+        {
+            using World world = new World();
+
+            using EntitiesMap<int> map = world.GetEntities().WhenAddedEither<int>().AsMultiMap<int>();
+
+            Entity entity = world.CreateEntity();
+            entity.Set(42);
+
+            Check.That(map.TryGetEntities(42, out ReadOnlySpan<Entity> result)).IsTrue();
+            Check.That(result.ToArray()).ContainsExactly(entity);
+
+            map.Complete();
+
+            Check.That(map.TryGetEntities(42, out result)).IsFalse();
+
+            entity.Set(1337);
+
+            Check.That(map.TryGetEntities(42, out result)).IsFalse();
         }
     }
 }

@@ -248,7 +248,7 @@ namespace DefaultEcs
             /// </summary>
             /// <typeparam name="TKey">The component type to use as key.</typeparam>
             /// <returns>The <see cref="EntityMap{TKey}"/>.</returns>
-            public EntityMap<TKey> AsMap<TKey>() => Commit().AsMap<TKey>();
+            public EntityMap<TKey> AsMap<TKey>() => AsMap<TKey>(default);
 
             /// <summary>
             /// Returns an <see cref="EntitiesMap{TKey}"/> with the specified rules.
@@ -263,7 +263,7 @@ namespace DefaultEcs
             /// </summary>
             /// <typeparam name="TKey">The component type to use as key.</typeparam>
             /// <returns>The <see cref="EntitiesMap{TKey}"/>.</returns>
-            public EntitiesMap<TKey> AsMultiMap<TKey>() => Commit().AsMultiMap<TKey>();
+            public EntitiesMap<TKey> AsMultiMap<TKey>() => AsMultiMap<TKey>(default);
 
             #endregion
         }

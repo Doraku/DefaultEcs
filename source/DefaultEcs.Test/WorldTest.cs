@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using DefaultEcs.Serialization;
 using DefaultEcs.Threading;
@@ -15,6 +16,14 @@ namespace DefaultEcs.Test
         private struct FlagType { }
 
         #region Tests
+
+        [Fact]
+        public void ToString_Should_return_id()
+        {
+            using World world = new World();
+
+            Check.That(Regex.IsMatch(world.ToString(), "^World \\d*$")).IsTrue();
+        }
 
         [Fact]
         public void World_Should_throw_When_maxCapacity_is_inferior_to_0()
@@ -253,6 +262,25 @@ namespace DefaultEcs.Test
             Check.That(intIsOk).IsTrue();
             Check.That(longIsOk).IsTrue();
             Check.That(floatIsOk).IsTrue();
+        }
+
+        [Fact]
+        public void Optimize_Should_throw_When_runner_is_null()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => world.Optimize(null)).Throws<ArgumentNullException>();
+
+            Check.ThatCode(() => world.Optimize(null, () => { })).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Optimize_Should_throw_When_action_is_null()
+        {
+            using World world = new World();
+            using DefaultParallelRunner runner = new DefaultParallelRunner(Environment.ProcessorCount);
+
+            Check.ThatCode(() => world.Optimize(runner, null)).Throws<ArgumentNullException>();
         }
 
         [Fact]

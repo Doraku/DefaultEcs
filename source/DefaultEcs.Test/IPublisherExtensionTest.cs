@@ -80,6 +80,10 @@ namespace DefaultEcs.Test
         {
             public override void Method(in object arg)
             { }
+
+            [Subscribe]
+            public void NewMethod(in int _)
+            { }
         }
 
         private abstract class AbstractNonDecoratedMethod
@@ -243,7 +247,7 @@ namespace DefaultEcs.Test
 
             publisher.Subscribe(target);
 
-            Check.That(publisher.SubscribeCount).IsEqualTo(1);
+            Check.That(publisher.SubscribeCount).IsEqualTo(2);
         }
 
         [Fact]

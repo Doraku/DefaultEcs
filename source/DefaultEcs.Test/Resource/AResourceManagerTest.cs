@@ -48,10 +48,16 @@ namespace DefaultEcs.Test.Resource
             Check.That(entity.Get<string>()).IsEqualTo("dummy");
             Check.That(entity.Get<int>()).IsEqualTo(1);
 
-            entity.Set(new ManagedResource<string, IDisposable>("dummy2"));
+            entity.Set(ManagedResource<IDisposable>.Create("dummy2"));
 
             Check.That(entity.Get<string>()).IsEqualTo("dummy2");
             Check.That(entity.Get<int>()).IsEqualTo(2);
+
+            entity.Set(ManagedResource<IDisposable>.Create("dummy3, dummy4"));
+            Check.That(entity.Get<int>()).IsEqualTo(4);
+
+            entity.Set(ManagedResource<IDisposable>.Create("dummy5, dummy6"));
+            Check.That(entity.Get<int>()).IsEqualTo(6);
         }
 
         [Fact]
