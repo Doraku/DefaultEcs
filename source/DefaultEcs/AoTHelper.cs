@@ -24,8 +24,10 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of component.</typeparam>
         public static void RegisterComponent<T>()
         {
+            static bool Filter(in T _) => true;
+
             new EntityRuleBuilder(default, default)
-                .With<T>().WithEither<T>().Or<T>().WithEither<T>().With<T>()
+                .With<T>().WithEither<T>().Or<T>().WithEither<T>().With<T>().With<T>(Filter).WithEither<T>().With<T>(Filter)
                 .Without<T>().WithoutEither<T>().Or<T>().WithoutEither<T>().Without<T>()
                 .WhenAdded<T>().WhenAddedEither<T>().Or<T>().WhenAddedEither<T>().WhenAdded<T>()
                 .WhenChanged<T>().WhenChangedEither<T>().Or<T>().WhenChangedEither<T>().WhenChanged<T>()

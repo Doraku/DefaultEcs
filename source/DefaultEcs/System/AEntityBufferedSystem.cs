@@ -38,7 +38,7 @@ namespace DefaultEcs.System
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntityBufferedSystem(World world)
         {
-            _set = EntitySetFactory.Create(GetType())(world ?? throw new ArgumentNullException(nameof(world)));
+            _set = EntitySetFactory.Create(GetType())(this, world ?? throw new ArgumentNullException(nameof(world)));
         }
 
         #endregion

@@ -36,7 +36,6 @@ renamed ActionIn to MessageHandler
 fixed BinarySerializer and TextSerializer serialization of multi generic types
 fixed World multi Dispose
 
-added AoTHelper to help the generic code generation for AoT compilation
 added World.Optimize to sort entities and their components so accessing them through EntitySet always move forward in memory
 added World.SubscribeEntityCreated to be called back when an entity is created
 added World.SubscribeEntityEnabled to be called back when an entity is enabled
@@ -53,8 +52,10 @@ added EntityRuleBuilder.AsMap to get a mapping of entities by their component va
 added EntityRuleBuilder.AsMultiMap to get a mapping of entities by their component value
 added Entity.NotifyChanged to defer the notification that a component has changed
 added EntityRecord.NotifyChanged to defer the notification that a component has changed
+added AoTHelper to help the generic code generation for AoT compilation
 added EntityMap to have a one for one mapping between a component value and an entity
 added EntitiesMap to have a one to many mapping between a component value and entities
+added WithPredicateAttribute attribute to decorate ComponentPredicate methods in AEntitySystem and AEntityBufferedSystem to automatically build the underlying EntitySet with the predicate
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

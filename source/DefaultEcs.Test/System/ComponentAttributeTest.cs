@@ -17,6 +17,38 @@ namespace DefaultEcs.Test.System
             protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
         }
 
+        private sealed class WithPredicateSystem : AEntitySystem<int>
+        {
+            public WithPredicateSystem(World world)
+                : base(world)
+            { }
+
+#pragma warning disable IDE0051 // Remove unused private members
+            [WithPredicate]
+            private static bool boolPredicate(in bool _) => true;
+
+            [WithPredicate]
+            private bool intPredicate(in int value) => value == 42;
+#pragma warning restore IDE0051 // Remove unused private members
+
+            protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
+        }
+
+        private sealed class InvalidWithPredicateSystem : AEntitySystem<int>
+        {
+            public InvalidWithPredicateSystem(World world)
+                : base(world)
+            { }
+
+#pragma warning disable IDE0051 // Remove unused private members
+            [WithPredicate]
+            private static void Predicate(in bool _)
+            { }
+#pragma warning restore IDE0051 // Remove unused private members
+
+            protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
+        }
+
         [WithEither(typeof(bool), typeof(int))]
         [WithEither(typeof(bool), typeof(string))]
         private sealed class WithEitherSystem : AEntitySystem<int>
@@ -133,6 +165,35 @@ namespace DefaultEcs.Test.System
             system.Update(0);
 
             Check.That(entity.Get<bool>()).IsTrue();
+        }
+
+        [Fact]
+        public void WithPredicateAttribute_Should_create_correct_EntitySet()
+        {
+            using World world = new World();
+            using ISystem<int> system = new WithPredicateSystem(world);
+
+            Entity entity = world.CreateEntity();
+            entity.Set<bool>();
+            entity.Set(1337);
+
+            system.Update(0);
+
+            Check.That(entity.Get<bool>()).IsFalse();
+
+            entity.Set(42);
+
+            system.Update(0);
+
+            Check.That(entity.Get<bool>()).IsTrue();
+        }
+
+        [Fact]
+        public void WithPredicateAttribute_Should_throw_When_incorrect_method()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => new InvalidWithPredicateSystem(world)).Throws<NotSupportedException>();
         }
 
         [Fact]

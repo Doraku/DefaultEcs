@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Reflection;
 using DefaultEcs.System;
 
@@ -9,7 +10,8 @@ namespace DefaultEcs.Technical.System
     {
         #region Fields
 
-        private static readonly ConcurrentDictionary<Type, Func<World, EntitySet>> _entitySetFactories;
+        private static readonly MethodInfo _withPredicate;
+        private static readonly ConcurrentDictionary<Type, Func<object, World, EntitySet>> _entitySetFactories;
 
         #endregion
 
@@ -17,43 +19,72 @@ namespace DefaultEcs.Technical.System
 
         static EntitySetFactory()
         {
-            _entitySetFactories = new ConcurrentDictionary<Type, Func<World, EntitySet>>();
+            _withPredicate = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethods(nameof(EntityRuleBuilder.With)).Single(m => m.GetParameters().Length == 1);
+            _entitySetFactories = new ConcurrentDictionary<Type, Func<object, World, EntitySet>>();
         }
 
         #endregion
 
         #region Methods
 
-        private static Func<World, EntitySet> GetEntitySetFactory(Type type)
+        private static Func<object, World, EntitySet> GetEntitySetFactory(Type type)
         {
             TypeInfo typeInfo = type.GetTypeInfo();
 
-            Func<EntityRuleBuilder, EntityRuleBuilder> builderAction = b => b;
+            Func<object, EntityRuleBuilder, EntityRuleBuilder> builderAction = (_, b) => b;
 
             foreach (ComponentAttribute attribute in typeInfo.GetCustomAttributes<ComponentAttribute>(true))
             {
                 builderAction += attribute.FilterType switch
                 {
-                    ComponentFilterType.With => b => b.With(attribute.ComponentTypes),
-                    ComponentFilterType.WithEither => b => b.WithEither(attribute.ComponentTypes),
-                    ComponentFilterType.Without => b => b.Without(attribute.ComponentTypes),
-                    ComponentFilterType.WithoutEither => b => b.WithoutEither(attribute.ComponentTypes),
-                    ComponentFilterType.WhenAdded => b => b.WhenAdded(attribute.ComponentTypes),
-                    ComponentFilterType.WhenAddedEither => b => b.WhenAddedEither(attribute.ComponentTypes),
-                    ComponentFilterType.WhenChanged => b => b.WhenChanged(attribute.ComponentTypes),
-                    ComponentFilterType.WhenChangedEither => b => b.WhenChangedEither(attribute.ComponentTypes),
-                    ComponentFilterType.WhenRemoved => b => b.WhenRemoved(attribute.ComponentTypes),
-                    ComponentFilterType.WhenRemovedEither => b => b.WhenRemovedEither(attribute.ComponentTypes),
+                    ComponentFilterType.With => (_, b) => b.With(attribute.ComponentTypes),
+                    ComponentFilterType.WithEither => (_, b) => b.WithEither(attribute.ComponentTypes),
+                    ComponentFilterType.Without => (_, b) => b.Without(attribute.ComponentTypes),
+                    ComponentFilterType.WithoutEither => (_, b) => b.WithoutEither(attribute.ComponentTypes),
+                    ComponentFilterType.WhenAdded => (_, b) => b.WhenAdded(attribute.ComponentTypes),
+                    ComponentFilterType.WhenAddedEither => (_, b) => b.WhenAddedEither(attribute.ComponentTypes),
+                    ComponentFilterType.WhenChanged => (_, b) => b.WhenChanged(attribute.ComponentTypes),
+                    ComponentFilterType.WhenChangedEither => (_, b) => b.WhenChangedEither(attribute.ComponentTypes),
+                    ComponentFilterType.WhenRemoved => (_, b) => b.WhenRemoved(attribute.ComponentTypes),
+                    ComponentFilterType.WhenRemovedEither => (_, b) => b.WhenRemovedEither(attribute.ComponentTypes),
                     _ => null
                 };
             }
 
+            while (type != null)
+            {
+                foreach (MethodInfo method in type.GetTypeInfo().DeclaredMethods.Where(m => m.GetCustomAttribute<WithPredicate>(false) != null))
+                {
+                    ParameterInfo[] parameters = method.GetParameters();
+
+                    if (parameters.Length != 1
+                        || !parameters[0].ParameterType.IsByRef
+                        || method.ReturnType != typeof(bool))
+                    {
+                        throw new NotSupportedException($"Can't apply {nameof(WithPredicate)} to \"{method.Name}\": method is not of type {nameof(ComponentPredicate<object>)}.");
+                    }
+
+                    Type argType = parameters[0].ParameterType.GetElementType();
+
+                    builderAction += (o, b) => (EntityRuleBuilder)_withPredicate.MakeGenericMethod(argType).Invoke(
+                        b,
+                        new object[]
+                        {
+                            method.IsStatic
+                                ? method.CreateDelegate(typeof(ComponentPredicate<>).MakeGenericType(argType))
+                                : method.CreateDelegate(typeof(ComponentPredicate<>).MakeGenericType(argType), o)
+                        });
+                }
+
+                type = type.GetTypeInfo().BaseType;
+            }
+
             bool enabled = typeInfo.GetCustomAttribute<DisabledAttribute>() is null;
 
-            return w => builderAction(enabled ? w.GetEntities() : w.GetDisabledEntities()).AsSet();
+            return (o, w) => builderAction(o, enabled ? w.GetEntities() : w.GetDisabledEntities()).AsSet();
         }
 
-        public static Func<World, EntitySet> Create(Type type) => _entitySetFactories.GetOrAdd(type, GetEntitySetFactory);
+        public static Func<object, World, EntitySet> Create(Type type) => _entitySetFactories.GetOrAdd(type, GetEntitySetFactory);
 
         #endregion
     }
