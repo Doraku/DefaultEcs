@@ -559,9 +559,9 @@ Some sample projects are available to give a better picture on how to use Defaul
 
 [DefaultBoids](https://github.com/Doraku/DefaultEcs/tree/master/source/Sample/DefaultBoids)
 
-![](https://github.com/Doraku/DefaultEcs/raw/master/image/defaultboids.gif)
+[![DefaultBoids](https://img.youtube.com/vi/yEdcqOTCteY/0.jpg)](https://youtu.be/yEdcqOTCteY)
 
-A really simple implementation of a [boids simulation](https://en.wikipedia.org/wiki/Boids), here displaying 10k boids with an old Intel Core i5-3570K CPU 3.40GHz at ~100fps.
+A really simple implementation of a [boids simulation](https://en.wikipedia.org/wiki/Boids), here displaying 30k boids with an old Intel Core i5-3570K CPU 3.40GHz at ~70fps.
 
 [DefaultBrick](https://github.com/Doraku/DefaultEcs/tree/master/source/Sample/DefaultBrick)
 [win10-x64](https://github.com/Doraku/DefaultEcs/releases/download/v0.9.0/DefaultBrick_win10-x64.zip)
