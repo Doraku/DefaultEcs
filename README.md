@@ -54,7 +54,7 @@ This is the current strategy used to version DefaultEcs: v0.major.minor
 <a name='Overview_World'></a>
 ## World
 The World class act as a manager to create entity, get a selection of specific entities, get a family of component or publish and subscribe to messages that can be used to communicate in a decoupled way between the different elements.  
-Multiple World objects can be used in parallel, each instance being thread-safe from one an other but operations performed on a single instance and all of its created items should be thought as non thread-safe but depending on what is done, it is still possible to process operations concurrently to optimise performance.
+Multiple World objects can be used in parallel, each instance being thread-safe from one another but operations performed on a single instance and all of its created items should be thought as non thread-safe. Depending on what is done, it is still possible to process operations concurrently to optimise performance.
 
 Worlds are created as such
 ```csharp

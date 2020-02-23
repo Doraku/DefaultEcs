@@ -20,6 +20,7 @@ The [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System') namespace co
 - [WithEitherAttribute](./DefaultEcs-System-WithEitherAttribute.md 'DefaultEcs.System.WithEitherAttribute')
 - [WithoutAttribute](./DefaultEcs-System-WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute')
 - [WithoutEitherAttribute](./DefaultEcs-System-WithoutEitherAttribute.md 'DefaultEcs.System.WithoutEitherAttribute')
+- [WithPredicate](./DefaultEcs-System-WithPredicate.md 'DefaultEcs.System.WithPredicate')
 ### Interfaces
 - [ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;')
 ### Enums

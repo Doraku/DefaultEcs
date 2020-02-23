@@ -1,3 +1,47 @@
+## DefaultEcs 0.14.0
+breaking change:  
+removed World.MaxEntityCount, obsolete  
+removed World.SetMaximumComponentCount, obsolete  
+removed World.GetMaximumComponentCount, obsolete  
+removed World.GetAllComponents, obsolete  
+removed World.GetAllEntities, obsolete  
+removed World.EntityDisposed  
+removed EntitySet.EntityAdded  
+removed EntitySet.EntityRemoved  
+removed AEntityBufferedSystem.EntityAdded  
+removed AEntityBufferedSystem.EntityRemoved  
+removed AEntitySystem.EntityAdded  
+removed AEntitySystem.EntityRemoved  
+renamed EntitySetBuilder to EntityRuleBuilder  
+renamed EntitySetBuilderExtension to EntityRuleBuilderExtension  
+renamed ActionIn to MessageHandler  
+
+fixed BinarySerializer and TextSerializer serialization of multi generic types  
+fixed World multi Dispose  
+
+added World.Optimize to sort entities and their components so accessing them through EntitySet always move forward in memory  
+added World.SubscribeEntityCreated to be called back when an entity is created  
+added World.SubscribeEntityEnabled to be called back when an entity is enabled  
+added World.SubscribeEntityDisabled to be called back when an entity is disabled  
+added World.SubscribeEntityDisposed to be called back when an entity is disposed  
+added World.SubscribeComponentAdded to be called back when a component is added on an entity  
+added World.SubscribeComponentChanged to be called back when a component is changed on an entity  
+added World.SubscribeComponentRemoved to be called back when a component is removed from an entity  
+added World.SubscribeComponentEnabled to be called back when a component is enabled on an entity  
+added World.SubscribeComponentDisabled to be called back when a component is disabled on an entity  
+added EntityRuleBuilder.With with a Predicate parameter  
+added EntityRuleBuilder.AsPredicate to get a predicate to validate the composition of an entity  
+added EntityRuleBuilder.AsMap to get a mapping of entities by their component value  
+added EntityRuleBuilder.AsMultiMap to get a mapping of entities by their component value  
+added Entity.NotifyChanged to defer the notification that a component has changed  
+added EntityRecord.NotifyChanged to defer the notification that a component has changed  
+added AoTHelper to help the generic code generation for AoT compilation  
+added EntityMap to have a one for one mapping between a component value and an entity  
+added EntitiesMap to have a one to many mapping between a component value and entities  
+added WithPredicateAttribute attribute to decorate ComponentPredicate methods in AEntitySystem and AEntityBufferedSystem to automatically build the underlying EntitySet with the predicate  
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.14.0)
+
 ## DefaultEcs 0.13.1
 added minEntityCountByRunnerIndex parameter to AEntitySystem constructors  
 added minComponentCountByRunnerIndex parameter to AComponentSystem constructor  

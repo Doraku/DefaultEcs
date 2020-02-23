@@ -1,7 +1,7 @@
 #### [DefaultEcs](./index.md 'index')
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs')
 ## IPublisher Interface
-Exposes methods to subscribe to [ActionIn&lt;T&gt;(T)](./DefaultEcs-ActionIn-T-(T).md 'DefaultEcs.ActionIn&lt;T&gt;(T)') and publish message to callback those subscriptions.  
+Exposes methods to subscribe to [MessageHandler&lt;T&gt;(T)](./DefaultEcs-MessageHandler-T-(T).md 'DefaultEcs.MessageHandler&lt;T&gt;(T)') and publish message to callback those subscriptions.  
 ```csharp
 public interface IPublisher :
 IDisposable
@@ -9,4 +9,4 @@ IDisposable
 Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 ### Methods
 - [Publish&lt;T&gt;(T)](./DefaultEcs-IPublisher-Publish-T-(T).md 'DefaultEcs.IPublisher.Publish&lt;T&gt;(T)')
-- [Subscribe&lt;T&gt;(DefaultEcs.ActionIn&lt;T&gt;)](./DefaultEcs-IPublisher-Subscribe-T-(DefaultEcs-ActionIn-T-).md 'DefaultEcs.IPublisher.Subscribe&lt;T&gt;(DefaultEcs.ActionIn&lt;T&gt;)')
+- [Subscribe&lt;T&gt;(DefaultEcs.MessageHandler&lt;T&gt;)](./DefaultEcs-IPublisher-Subscribe-T-(DefaultEcs-MessageHandler-T-).md 'DefaultEcs.IPublisher.Subscribe&lt;T&gt;(DefaultEcs.MessageHandler&lt;T&gt;)')

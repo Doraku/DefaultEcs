@@ -3,8 +3,8 @@
 ## World.GetEnumerator() Method
 Returns an enumerator that iterates through the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') of the current [World](./DefaultEcs-World.md 'DefaultEcs.World') instance.  
 ```csharp
-public System.Collections.Generic.IEnumerator<DefaultEcs.Entity> GetEnumerator();
+public DefaultEcs.World.Enumerator GetEnumerator();
 ```
 #### Returns
-[System.Collections.Generic.IEnumerator&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerator-1 'System.Collections.Generic.IEnumerator`1')[Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.Generic.IEnumerator-1 'System.Collections.Generic.IEnumerator`1')  
+[World.Enumerator](./DefaultEcs-World-Enumerator.md 'DefaultEcs.World.Enumerator')  
 An enumerator that can be used to iterate through the [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity').  

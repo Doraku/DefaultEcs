@@ -17,6 +17,3 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 - [Contains(DefaultEcs.Entity)](./DefaultEcs-EntitySet-Contains(DefaultEcs-Entity).md 'DefaultEcs.EntitySet.Contains(DefaultEcs.Entity)')
 - [Dispose()](./DefaultEcs-EntitySet-Dispose().md 'DefaultEcs.EntitySet.Dispose()')
 - [GetEntities()](./DefaultEcs-EntitySet-GetEntities().md 'DefaultEcs.EntitySet.GetEntities()')
-### Events
-- [EntityAdded](./DefaultEcs-EntitySet-EntityAdded.md 'DefaultEcs.EntitySet.EntityAdded')
-- [EntityRemoved](./DefaultEcs-EntitySet-EntityRemoved.md 'DefaultEcs.EntitySet.EntityRemoved')

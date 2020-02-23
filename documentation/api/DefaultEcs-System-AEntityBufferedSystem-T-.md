@@ -29,6 +29,3 @@ The type of the object used as state to update the system.
 - [Update(T)](./DefaultEcs-System-AEntityBufferedSystem-T--Update(T).md 'DefaultEcs.System.AEntityBufferedSystem&lt;T&gt;.Update(T)')
 - [Update(T, DefaultEcs.Entity)](./DefaultEcs-System-AEntityBufferedSystem-T--Update(T_DefaultEcs-Entity).md 'DefaultEcs.System.AEntityBufferedSystem&lt;T&gt;.Update(T, DefaultEcs.Entity)')
 - [Update(T, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;)](./DefaultEcs-System-AEntityBufferedSystem-T--Update(T_System-ReadOnlySpan-DefaultEcs-Entity-).md 'DefaultEcs.System.AEntityBufferedSystem&lt;T&gt;.Update(T, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;)')
-### Events
-- [EntityAdded](./DefaultEcs-System-AEntityBufferedSystem-T--EntityAdded.md 'DefaultEcs.System.AEntityBufferedSystem&lt;T&gt;.EntityAdded')
-- [EntityRemoved](./DefaultEcs-System-AEntityBufferedSystem-T--EntityRemoved.md 'DefaultEcs.System.AEntityBufferedSystem&lt;T&gt;.EntityRemoved')

@@ -27,6 +27,7 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 - [Has&lt;T&gt;()](./DefaultEcs-Entity-Has-T-().md 'DefaultEcs.Entity.Has&lt;T&gt;()')
 - [IsEnabled()](./DefaultEcs-Entity-IsEnabled().md 'DefaultEcs.Entity.IsEnabled()')
 - [IsEnabled&lt;T&gt;()](./DefaultEcs-Entity-IsEnabled-T-().md 'DefaultEcs.Entity.IsEnabled&lt;T&gt;()')
+- [NotifyChanged&lt;T&gt;()](./DefaultEcs-Entity-NotifyChanged-T-().md 'DefaultEcs.Entity.NotifyChanged&lt;T&gt;()')
 - [ReadAllComponents(DefaultEcs.Serialization.IComponentReader)](./DefaultEcs-Entity-ReadAllComponents(DefaultEcs-Serialization-IComponentReader).md 'DefaultEcs.Entity.ReadAllComponents(DefaultEcs.Serialization.IComponentReader)')
 - [Remove&lt;T&gt;()](./DefaultEcs-Entity-Remove-T-().md 'DefaultEcs.Entity.Remove&lt;T&gt;()')
 - [RemoveFromChildrenOf(DefaultEcs.Entity)](./DefaultEcs-Entity-RemoveFromChildrenOf(DefaultEcs-Entity).md 'DefaultEcs.Entity.RemoveFromChildrenOf(DefaultEcs.Entity)')
