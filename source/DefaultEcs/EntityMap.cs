@@ -51,7 +51,7 @@ namespace DefaultEcs
         {
             private readonly EntityMap<TKey> _map;
 
-            private Dictionary<TKey, int>.KeyCollection.Enumerator _enumerator;
+            private Dictionary<TKey, Entity>.KeyCollection.Enumerator _enumerator;
 
             internal KeyEnumerator(EntityMap<TKey> map)
             {
@@ -99,7 +99,7 @@ namespace DefaultEcs
         private readonly IDisposable _subscriptions;
         private readonly ComponentPool<TKey> _previousComponents;
         private readonly ComponentPool<TKey> _components;
-        private readonly Dictionary<TKey, int> _entities;
+        private readonly Dictionary<TKey, Entity> _entities;
 
         private bool[] _entityIds;
 
@@ -123,7 +123,7 @@ namespace DefaultEcs
         /// </summary>
         /// <param name="key">The key of the <see cref="Entity"/> to get.</param>
         /// <returns>The <see cref="Entity"/> associated with the specified key.</returns>
-        public Entity this[TKey key] => new Entity(_worldId, _entities[key]);
+        public Entity this[TKey key] => _entities[key];
 
         #endregion
 
@@ -145,7 +145,7 @@ namespace DefaultEcs
 
             _previousComponents = ComponentManager<TKey>.GetOrCreatePrevious(_worldId);
             _components = ComponentManager<TKey>.GetOrCreate(_worldId);
-            _entities = new Dictionary<TKey, int>(comparer);
+            _entities = new Dictionary<TKey, Entity>(comparer);
 
             _entityIds = EmptyArray<bool>.Value;
 
@@ -170,7 +170,7 @@ namespace DefaultEcs
         {
             if (message.EntityId < _entityIds.Length && _entityIds[message.EntityId] && _entities.Remove(_previousComponents.Get(message.EntityId)))
             {
-                _entities.Add(_components.Get(message.EntityId), message.EntityId);
+                _entities.Add(_components.Get(message.EntityId), new Entity(_worldId, message.EntityId));
             }
         }
 
@@ -198,7 +198,7 @@ namespace DefaultEcs
         /// <param name="key">The key of the <see cref="Entity"/> to get.</param>
         /// <param name="entity">When this method returns, contains the <see cref="Entity"/> associated with the specified key, if the key is found; otherwise, an invalid <see cref="Entity"/>. This parameter is passed uninitialized.</param>
         /// <returns>true if the <see cref="EntityMap{TKey}"/> contains an <see cref="Entity"/> with the specified key; otherwise, false.</returns>
-        public bool TryGetEntity(TKey key, out Entity entity) => (entity = _entities.TryGetValue(key, out int id) ? new Entity(_worldId, id) : default).WorldId != 0;
+        public bool TryGetEntity(TKey key, out Entity entity) => _entities.TryGetValue(key, out entity);
 
         /// <summary>
         /// Clears current instance of its entities if it was created with some reactive filter (<seealso cref="EntityRuleBuilder.WhenAdded{T}"/>, <see cref="EntityRuleBuilder.WhenChanged{T}"/> or <see cref="EntityRuleBuilder.WhenRemoved{T}"/>).
@@ -225,7 +225,7 @@ namespace DefaultEcs
             if (!_entityIds[entityId])
             {
                 _entityIds[entityId] = true;
-                _entities.Add(_components.Get(entityId), entityId);
+                _entities.Add(_components.Get(entityId), new Entity(_worldId, entityId));
             }
         }
 

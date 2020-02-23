@@ -77,14 +77,6 @@ namespace DefaultEcs.Technical
             }
         }
 
-        public void CheckedAdd<T>(in ComponentChangedMessage<T> message)
-        {
-            if (_filter(message.Components) && _predicate(message.EntityId))
-            {
-                _container.Add(message.EntityId);
-            }
-        }
-
         public void CheckedAdd<T>(in ComponentRemovedMessage<T> message)
         {
             if (_filter(message.Components) && _predicate(message.EntityId))

@@ -71,4 +71,12 @@
     /// <param name="entity">The <see cref="Entity"/> on which the component was disabled.</param>
     /// <param name="value">The value of the component.</param>
     public delegate void ComponentDisabledHandler<T>(in Entity entity, in T value);
+
+    /// <summary>
+    /// Represents the method that defines a set of criteria and determines whether the specified component meets those criteria.
+    /// </summary>
+    /// <typeparam name="T">The type of the component to compare.</typeparam>
+    /// <param name="value">The component value.</param>
+    /// <returns>true if the component meets the criteria; otherwise, false.</returns>
+    public delegate bool ComponentPredicate<T>(in T value);
 }

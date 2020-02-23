@@ -105,7 +105,10 @@ namespace DefaultEcs
                 if (!_builder._whenChangedFilter[ComponentManager<T>.Flag])
                 {
                     _builder._whenChangedFilter[ComponentManager<T>.Flag] = true;
-                    _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.CheckedAdd));
+                    if (!_builder._predicateFilter[ComponentManager<T>.Flag])
+                    {
+                        _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.AddOrRemove));
+                    }
                 }
 
                 return OrWith<T>();
@@ -161,12 +164,12 @@ namespace DefaultEcs
             public EntityRuleBuilder With<T>() => Commit().With<T>();
 
             /// <summary>
-            /// Makes a rule to observe <see cref="Entity"/> with a component of type <typeparamref name="T"/> validating the given <see cref="Predicate{T}"/>.
+            /// Makes a rule to observe <see cref="Entity"/> with a component of type <typeparamref name="T"/> validating the given <see cref="ComponentPredicate{T}"/>.
             /// </summary>
             /// <typeparam name="T">The type of component.</typeparam>
-            /// <param name="predicate">The <see cref="Predicate{T}"/> which needs to be validated.</param>
+            /// <param name="predicate">The <see cref="ComponentPredicate{T}"/> which needs to be validated.</param>
             /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
-            public EntityRuleBuilder With<T>(Predicate<T> predicate) => Commit().With(predicate);
+            public EntityRuleBuilder With<T>(ComponentPredicate<T> predicate) => Commit().With(predicate);
 
             /// <summary>
             /// Makes a rule to ignore <see cref="Entity"/> with a component of type <typeparamref name="T"/>.
@@ -386,19 +389,22 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Makes a rule to observe <see cref="Entity"/> with a component of type <typeparamref name="T"/> validating the given <see cref="Predicate{T}"/>.
+        /// Makes a rule to observe <see cref="Entity"/> with a component of type <typeparamref name="T"/> validating the given <see cref="ComponentPredicate{T}"/>.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
-        /// <param name="predicate">The <see cref="Predicate{T}"/> which needs to be validated.</param>
+        /// <param name="predicate">The <see cref="ComponentPredicate{T}"/> which needs to be validated.</param>
         /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
-        public EntityRuleBuilder With<T>(Predicate<T> predicate)
+        public EntityRuleBuilder With<T>(ComponentPredicate<T> predicate)
         {
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
 
             if (!_predicateFilter[ComponentManager<T>.Flag])
             {
                 _predicateFilter[ComponentManager<T>.Flag] = true;
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.AddOrRemove));
+                if (!_whenChangedFilter[ComponentManager<T>.Flag])
+                {
+                    _subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.AddOrRemove));
+                }
             }
 
             (_predicates ?? (_predicates = new List<Predicate<int>>())).Add(i => predicate(ComponentManager<T>.Pools[_world.WorldId].Get(i)));
@@ -452,7 +458,10 @@ namespace DefaultEcs
             if (!_whenChangedFilter[ComponentManager<T>.Flag])
             {
                 _whenChangedFilter[ComponentManager<T>.Flag] = true;
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.CheckedAdd));
+                if (!_predicateFilter[ComponentManager<T>.Flag])
+                {
+                    _subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.AddOrRemove));
+                }
             }
 
             return With<T>();

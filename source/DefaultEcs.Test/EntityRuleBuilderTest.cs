@@ -82,7 +82,7 @@ namespace DefaultEcs.Test
         public void AsSet_With_predicate_T_Should_return_EntitySet_with_all_Entity_with_component_T_and_validate_predicate()
         {
             using World world = new World(4);
-            using EntitySet set = world.GetEntities().With<bool>(b => b).AsSet();
+            using EntitySet set = world.GetEntities().With((in bool b) => b).AsSet();
 
             List<Entity> entities = new List<Entity>
                 {
@@ -159,7 +159,7 @@ namespace DefaultEcs.Test
         public void AsSet_With_predicate_T1_T2_Should_return_EntitySet_with_all_Entity_with_component_T1_T2_and_validate_predicate()
         {
             using World world = new World(4);
-            using EntitySet set = world.GetEntities().With<bool>(b => b).With<int>(i => i > 100).AsSet();
+            using EntitySet set = world.GetEntities().With((in bool b) => b).With((in int i) => i > 100).AsSet();
 
             List<Entity> entities = new List<Entity>
                 {
@@ -599,7 +599,7 @@ namespace DefaultEcs.Test
 
             Entity entity = world.CreateEntity();
 
-            Predicate<Entity> predicate = world.GetEntities().With<bool>(b => b).AsPredicate();
+            Predicate<Entity> predicate = world.GetEntities().WithEither<bool>().With((in bool b) => b).AsPredicate();
 
             entity.Set(false);
 
@@ -629,7 +629,7 @@ namespace DefaultEcs.Test
 
             Entity entity = world.CreateEntity();
 
-            Predicate<Entity> predicate = world.GetEntities().With<bool>(b => b).With<int>(i => i == 42).AsPredicate();
+            Predicate<Entity> predicate = world.GetEntities().With((in bool b) => b).With((in int i) => i == 42).AsPredicate();
 
             entity.Set(false);
             entity.Set(1337);
