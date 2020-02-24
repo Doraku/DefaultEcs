@@ -53,7 +53,7 @@ namespace DefaultEcs.Technical.System
 
             while (type != null)
             {
-                foreach (MethodInfo method in type.GetTypeInfo().DeclaredMethods.Where(m => m.GetCustomAttribute<WithPredicate>(false) != null))
+                foreach (MethodInfo method in type.GetTypeInfo().DeclaredMethods.Where(m => m.GetCustomAttribute<WithPredicateAttribute>(false) != null))
                 {
                     ParameterInfo[] parameters = method.GetParameters();
 
@@ -61,7 +61,7 @@ namespace DefaultEcs.Technical.System
                         || !parameters[0].ParameterType.IsByRef
                         || method.ReturnType != typeof(bool))
                     {
-                        throw new NotSupportedException($"Can't apply {nameof(WithPredicate)} to \"{method.Name}\": method is not of type {nameof(ComponentPredicate<object>)}.");
+                        throw new NotSupportedException($"Can't apply {nameof(WithPredicateAttribute)} to \"{method.Name}\": method is not of type {nameof(ComponentPredicate<object>)}.");
                     }
 
                     Type argType = parameters[0].ParameterType.GetElementType();

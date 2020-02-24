@@ -14,7 +14,7 @@ namespace DefaultEcs.System
     /// The decorated method should be of the type <see cref="ComponentPredicate{T}"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    public sealed class WithPredicate : Attribute
+    public sealed class WithPredicateAttribute : Attribute
     { }
 
     /// <summary>
