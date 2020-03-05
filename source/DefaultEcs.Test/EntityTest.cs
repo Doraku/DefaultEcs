@@ -11,12 +11,15 @@ namespace DefaultEcs.Test
 
         private class ComponentReader : IComponentReader
         {
+            public int ComponentCount;
             public int? IntValue;
             public long? LongValue;
             public float? FloatValue;
 
             public void OnRead<T>(ref T component, in Entity componentOwner)
             {
+                ++ComponentCount;
+
                 if (typeof(T) == typeof(int))
                 {
                     IntValue = (int)(object)component;
@@ -784,9 +787,28 @@ namespace DefaultEcs.Test
 
             entity.ReadAllComponents(reader);
 
+            Check.That(reader.ComponentCount).IsEqualTo(2);
             Check.That(reader.IntValue).IsEqualTo(42);
             Check.That(reader.LongValue).IsEqualTo(1337L);
             Check.That(reader.FloatValue.HasValue).IsFalse();
+        }
+
+
+        [Fact]
+        public void ReadAllComponents_Should_not_return_previous_value_components()
+        {
+            using World world = new World();
+            using EntityMap<int> map = world.GetEntities().AsMap<int>();
+
+            Entity entity = world.CreateEntity();
+            entity.Set(42);
+
+            ComponentReader reader = new ComponentReader();
+
+            entity.ReadAllComponents(reader);
+
+            Check.That(reader.ComponentCount).IsEqualTo(1);
+            Check.That(reader.IntValue).IsEqualTo(42);
         }
 
         [Fact]

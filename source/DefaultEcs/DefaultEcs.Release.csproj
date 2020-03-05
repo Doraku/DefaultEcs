@@ -16,6 +16,7 @@
   <PropertyGroup Label="Package">
     <Version>0.14.1</Version>
     <PackageReleaseNotes>
+fixed Entity.ReadAllComponents accessing previous value component used by map
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

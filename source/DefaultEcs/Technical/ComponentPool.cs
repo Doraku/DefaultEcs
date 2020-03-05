@@ -120,7 +120,7 @@ namespace DefaultEcs.Technical
             _isFlagType = typeInfo.IsFlagType();
         }
 
-        public ComponentPool(short worldId, int worldMaxCapacity, int maxCapacity)
+        public ComponentPool(short worldId, int worldMaxCapacity, int maxCapacity, bool isPrevious)
         {
             _worldId = worldId;
             _worldMaxCapacity = worldMaxCapacity;
@@ -134,8 +134,11 @@ namespace DefaultEcs.Technical
 
             Publisher<ComponentTypeReadMessage>.Subscribe(_worldId, On);
             Publisher<EntityDisposedMessage>.Subscribe(_worldId, On);
-            Publisher<EntityCopyMessage>.Subscribe(_worldId, On);
-            Publisher<ComponentReadMessage>.Subscribe(_worldId, On);
+            if (!isPrevious)
+            {
+                Publisher<EntityCopyMessage>.Subscribe(_worldId, On);
+                Publisher<ComponentReadMessage>.Subscribe(_worldId, On);
+            }
 
             World.Worlds[_worldId].Add(this);
         }

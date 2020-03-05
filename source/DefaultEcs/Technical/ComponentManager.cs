@@ -64,7 +64,7 @@ namespace DefaultEcs.Technical
                 ArrayExtension.EnsureLength(ref Pools, worldId);
 
                 ref ComponentPool<T> pool = ref Pools[worldId];
-                pool ??= new ComponentPool<T>(worldId, worldMaxCapacity, maxCapacity);
+                pool ??= new ComponentPool<T>(worldId, worldMaxCapacity, maxCapacity, false);
 
                 return pool;
             }
@@ -78,7 +78,7 @@ namespace DefaultEcs.Technical
                 ArrayExtension.EnsureLength(ref _previousPools, worldId);
 
                 ref ComponentPool<T> previousPool = ref _previousPools[worldId];
-                previousPool ??= new ComponentPool<T>(worldId, worldMaxCapacity, worldMaxCapacity);
+                previousPool ??= new ComponentPool<T>(worldId, worldMaxCapacity, worldMaxCapacity, true);
 
                 ComponentPool<T> pool = Get(worldId);
                 if (pool != null)
