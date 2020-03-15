@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using DefaultEcs.System;
 using NFluent;
 using Xunit;
@@ -23,13 +24,11 @@ namespace DefaultEcs.Test.System
                 : base(world)
             { }
 
-#pragma warning disable IDE0051 // Remove unused private members
             [WithPredicate]
-            private static bool boolPredicate(in bool _) => true;
+            private static bool BoolPredicate(in bool _) => true;
 
             [WithPredicate]
-            private bool intPredicate(in int value) => value == 42;
-#pragma warning restore IDE0051 // Remove unused private members
+            private bool IntPredicate(in int value) => value == 42;
 
             protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
         }
@@ -40,11 +39,10 @@ namespace DefaultEcs.Test.System
                 : base(world)
             { }
 
-#pragma warning disable IDE0051 // Remove unused private members
             [WithPredicate]
+            [SuppressMessage("Runtime Error", "DEA0002:WithPredicateAttribute used on an invalid method")]
             private static void Predicate(in bool _)
             { }
-#pragma warning restore IDE0051 // Remove unused private members
 
             protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
         }

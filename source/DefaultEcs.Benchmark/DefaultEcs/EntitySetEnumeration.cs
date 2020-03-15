@@ -10,9 +10,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
     {
         private World _world;
         private EntitySet _set;
-#pragma warning disable IDE0052 // Remove unread private members
         private int _count;
-#pragma warning restore IDE0052 // Remove unread private members
 
         [Params(1000, 100000)]
         public int EntityCount { get; set; }

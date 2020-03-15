@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
@@ -145,7 +146,7 @@ namespace DefaultEcs
             /// </summary>
             /// <typeparam name="T">The type of component to add to the either group.</typeparam>
             /// <returns>The current <see cref="EitherBuilder"/>.</returns>
-#pragma warning disable CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
+            [SuppressMessage("Compiler", "CS8509:The switch expression does not handle all possible values of its input type(it is not exhaustive).")]
             public EitherBuilder Or<T>() => _type switch
             {
                 EitherType.With => OrWith<T>(),
@@ -154,7 +155,6 @@ namespace DefaultEcs
                 EitherType.WhenChanged => OrWhenChanged<T>(),
                 EitherType.WhenRemoved => OrWhenRemoved<T>()
             };
-#pragma warning restore CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
 
             /// <summary>
             /// Makes a rule to observe <see cref="Entity"/> with a component of type <typeparamref name="T"/>.

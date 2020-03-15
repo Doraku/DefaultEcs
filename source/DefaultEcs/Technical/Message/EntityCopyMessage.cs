@@ -6,7 +6,7 @@
         public readonly Entity Copy;
         public readonly ComponentEnum Components;
 
-        public EntityCopyMessage(int entityId, in Entity copy, in ComponentEnum components)
+        public EntityCopyMessage(int entityId, in Entity copy, ComponentEnum components)
         {
             EntityId = entityId;
             Copy = copy;

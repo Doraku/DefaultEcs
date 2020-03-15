@@ -793,7 +793,6 @@ namespace DefaultEcs.Test
             Check.That(reader.FloatValue.HasValue).IsFalse();
         }
 
-
         [Fact]
         public void ReadAllComponents_Should_not_return_previous_value_components()
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -418,6 +419,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         private static void StreamWriterWriteLine(StreamWriter writer, string line) => writer.WriteLine(line);
 
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         private static void WriteArray(in T[] values, StreamWriter writer, int indentation)
         {
             writer.WriteLine(_arrayBegin);
@@ -433,6 +435,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             writer.WriteLine(_arrayEnd);
         }
 
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void Write(in T value, StreamWriter writer, int indentation)
         {
             if (value is null)
@@ -472,6 +475,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             }
         }
 
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void WrapperWrite(in object value, StreamWriter writer, int indentation) => Write((T)value, writer, indentation);
 
         #endregion

@@ -34,7 +34,7 @@ namespace DefaultEcs
         #region Properties
 
         /// <summary>
-        /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="EntitySet"/> originate. 
+        /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="EntitySet"/> originate.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public World World => World.Worlds[_worldId];

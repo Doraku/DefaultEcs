@@ -71,7 +71,6 @@ namespace DefaultBrick
         #endregion
 
         #region Callbacks
-#pragma warning disable IDE0051 // Remove unused private members
 
         [Subscribe]
         private void On(in BrickBrokenMessage _) => _breakSound.Play();
@@ -79,7 +78,6 @@ namespace DefaultBrick
         [Subscribe]
         private void On(in BarBounceMessage _) => _bounceSound.Play();
 
-#pragma warning restore IDE0051 // Remove unused private members
         #endregion
 
         #region Game

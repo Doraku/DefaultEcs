@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
@@ -8,6 +9,7 @@ namespace DefaultEcs.Technical
     internal static class Publisher
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void Publish<T>(int worldId, in T message) => Publisher<T>.Publish(worldId, message);
     }
 
@@ -101,6 +103,7 @@ namespace DefaultEcs.Technical
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void Publish(int worldId, in T message)
         {
             if (worldId < Actions.Length)

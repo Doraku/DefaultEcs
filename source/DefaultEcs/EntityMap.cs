@@ -108,7 +108,7 @@ namespace DefaultEcs
         #region Properties
 
         /// <summary>
-        /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="EntityMap{TKey}"/> originate. 
+        /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="EntityMap{TKey}"/> originate.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public World World => World.Worlds[_worldId];

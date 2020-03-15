@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -9,9 +10,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 {
     internal unsafe readonly struct StreamWriterWrapper : IDisposable
     {
-#pragma warning disable IDE0069 // Disposable fields should be disposed
         private readonly Stream _stream;
-#pragma warning restore IDE0069 // Disposable fields should be disposed
 #if NETSTANDARD1_1 || NETSTANDARD2_0
         private readonly byte[] _buffer;
 #endif
@@ -57,6 +56,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             }
         }
 
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public void Write<T>(in T value)
             where T : unmanaged
         {
@@ -70,7 +70,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             }
         }
 
-        public void WriteArray<T>(in T[] value)
+        public void WriteArray<T>(T[] value)
             where T : unmanaged
         {
             Write(value.Length);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using DefaultEcs.Technical.Serialization;
 using DefaultEcs.Technical.Serialization.BinarySerializer;
@@ -151,6 +152,7 @@ namespace DefaultEcs.Serialization
         /// <param name="stream">The <see cref="Stream"/> instance on which the object is to be serialized.</param>
         /// <param name="obj">The object to serialize.</param>
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void Write<T>(Stream stream, in T obj)
         {
             if (stream is null) throw new ArgumentNullException(nameof(stream));

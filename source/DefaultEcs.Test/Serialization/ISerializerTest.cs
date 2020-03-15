@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using DefaultEcs.Serialization;
@@ -17,19 +18,19 @@ namespace DefaultEcs.Test.Serialization
 
         private struct Test
         {
-#pragma warning disable IDE0052 // Remove unread private members
-#pragma warning disable IDE0044 // Add readonly modifier
-#pragma warning disable RCS1169 // Mark field as read-only.
+            [SuppressMessage("Style", "IDE0044:Add readonly modifier")]
+            [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
+            [SuppressMessage("Design", "RCS1169:Make field read-only.")]
             private int _privateField;
-#pragma warning restore RCS1169 // Mark field as read-only.
-#pragma warning restore IDE0044 // Add readonly modifier
+            [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
             private readonly int _privateReadOnlyField;
 
-#pragma warning disable RCS1170 // Use read-only auto-implemented property.
+            [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
+            [SuppressMessage("Design", "RCS1170:Use read-only auto-implemented property.")]
             private int PrivateProperty { get; set; }
-#pragma warning restore RCS1170 // Use read-only auto-implemented property.
+
+            [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
             private int PrivateReadOnlyProperty { get; }
-#pragma warning restore IDE0052 // Remove unread private members
 
             public int PublicField;
             public readonly int PublicReadOnlyField;

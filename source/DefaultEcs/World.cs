@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using DefaultEcs.Serialization;
@@ -583,6 +584,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the object to publish.</typeparam>
         /// <param name="message">The object to publish.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public void Publish<T>(in T message) => Publisher<T>.Publish(WorldId, message);
 
         #endregion

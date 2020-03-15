@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using NFluent;
@@ -27,11 +28,9 @@ namespace DefaultEcs.Test.Serialization
 
         private class SimpleClass
         {
-#pragma warning disable RCS1169 // Mark field as read-only.
-#pragma warning disable IDE0044 // Add readonly modifier
+            [SuppressMessage("Design", "RCS1169:Make field read-only.")]
+            [SuppressMessage("Style", "IDE0044:Add readonly modifier")]
             private int _1;
-#pragma warning restore IDE0044 // Add readonly modifier
-#pragma warning restore RCS1169 // Mark field as read-only.
             private readonly int _2;
             private int P3 { get; }
 

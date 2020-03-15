@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using NFluent;
 using Xunit;
 
@@ -22,6 +23,7 @@ namespace DefaultEcs.Test
                 return null;
             }
 
+            [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
             public void Publish<T>(in T message)
             { }
 
@@ -32,20 +34,22 @@ namespace DefaultEcs.Test
         private sealed class InvalidNumberOfParameter
         {
             [Subscribe]
-#pragma warning disable IDE0060 // Remove unused parameter
+            [SuppressMessage("Style", "IDE0060:Remove unused parameter")]
+            [SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
             public static void Method(object _, object __) { }
-#pragma warning restore IDE0060 // Remove unused parameter
         }
 
         private sealed class InvalidReturnType
         {
             [Subscribe]
+            [SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
             public static object Method(in object _) { return null; }
         }
 
         private sealed class InvalidByRefParameterType
         {
             [Subscribe]
+            [SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
             public static void Method(object _) { }
         }
 
@@ -106,6 +110,7 @@ namespace DefaultEcs.Test
             public void Valid(in object arg) => Arg = arg;
 
             [Subscribe]
+            [SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
             public object Invalid(in object arg) => Arg = arg;
         }
 

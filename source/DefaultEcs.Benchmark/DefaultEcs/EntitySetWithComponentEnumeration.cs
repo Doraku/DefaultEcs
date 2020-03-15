@@ -1,4 +1,5 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System.Diagnostics.CodeAnalysis;
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnosers;
 
 namespace DefaultEcs.Benchmark.DefaultEcs
@@ -8,11 +9,12 @@ namespace DefaultEcs.Benchmark.DefaultEcs
     {
         private World _world;
         private EntitySet _set;
-#pragma warning disable IDE0052 // Remove unread private members
+        [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
         private int _count;
+        [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
         private uint _uCount;
+        [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
         private long _lCount;
-#pragma warning restore IDE0052 // Remove unread private members
 
         [Params(100, 1000, 10000, 100000)]
         public int EntityCount { get; set; }

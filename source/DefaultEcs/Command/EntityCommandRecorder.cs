@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using DefaultEcs.Technical.Command;
 using DefaultEcs.Technical.Helper;
@@ -7,7 +8,7 @@ using DefaultEcs.Technical.Helper;
 namespace DefaultEcs.Command
 {
     /// <summary>
-    /// Represents a buffer of structural modifications to apply on <see cref="Entity"/> to record as postoned commands. 
+    /// Represents a buffer of structural modifications to apply on <see cref="Entity"/> to record as postoned commands.
     /// </summary>
     public sealed unsafe class EntityCommandRecorder : IDisposable
     {
@@ -43,7 +44,7 @@ namespace DefaultEcs.Command
         #region Initialisation
 
         /// <summary>
-        /// Creates an <see cref="EntityCommandRecorder"/> with a custom default size which can grow to a maximum capacity. 
+        /// Creates an <see cref="EntityCommandRecorder"/> with a custom default size which can grow to a maximum capacity.
         /// </summary>
         /// <param name="capacity">The default size of the <see cref="EntityCommandRecorder"/>.</param>
         /// <param name="maxCapacity">The maximum capacity of the <see cref="EntityCommandRecorder"/>.</param>
@@ -88,6 +89,7 @@ namespace DefaultEcs.Command
 
         #region Methods
 
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         private void WriteCommand<T>(int offset, in T command)
             where T : unmanaged
         {
@@ -139,8 +141,10 @@ namespace DefaultEcs.Command
             return commandOffset;
         }
 
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         internal void WriteCommand<T>(in T command) where T : unmanaged => WriteCommand(ReserveNextCommand(sizeof(T)), command);
 
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         internal void WriteSetCommand<T>(int entityOffset, in T component)
         {
             int offset = ReserveNextCommand(sizeof(EntityOffsetComponentCommand) + ComponentCommands.ComponentCommand<T>.SizeOfT);
@@ -224,7 +228,7 @@ namespace DefaultEcs.Command
         #region IDisposable
 
         /// <summary>
-        /// Releases inner unmanged resources. 
+        /// Releases inner unmanged resources.
         /// </summary>
         public void Dispose()
         {

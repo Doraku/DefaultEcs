@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -49,7 +50,7 @@ namespace DefaultEcs
         internal ref ComponentEnum Components => ref World.EntityInfos[EntityId].Components;
 
         /// <summary>
-        /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="Entity"/> originate. 
+        /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="Entity"/> originate.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public World World => World.Worlds[WorldId];
@@ -161,6 +162,7 @@ namespace DefaultEcs
         /// <param name="component">The value of the component.</param>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public void Set<T>(in T component = default)
         {
             if (WorldId == 0) Throw("Entity was not created from a World");

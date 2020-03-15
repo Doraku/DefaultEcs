@@ -1,4 +1,5 @@
-﻿using DefaultEcs.Technical.Command;
+﻿using System.Diagnostics.CodeAnalysis;
+using DefaultEcs.Technical.Command;
 
 namespace DefaultEcs
 {
@@ -22,6 +23,7 @@ namespace DefaultEcs
         /// Registers the type <typeparamref name="T"/> so it can freely be used in <see cref="System.ComponentAttribute"/>.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void RegisterComponent<T>()
         {
             static bool Filter(in T _) => true;

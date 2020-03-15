@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Serialization.BinarySerializer.ConverterAction;
@@ -136,6 +137,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region Methods
 
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void Write(in StreamWriterWrapper writer, in T value)
         {
             if (_isValue)
@@ -168,6 +170,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             _ => throw StreamReaderWrapper.GetException<T>(),
         };
 
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void WrapperWrite(in StreamWriterWrapper writer, in object value) => WriteAction(writer, (T)value);
 
         #endregion

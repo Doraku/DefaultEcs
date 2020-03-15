@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -183,6 +184,7 @@ namespace DefaultEcs.Technical
         public bool Has(int entityId) => entityId < _mapping.Length && _mapping[entityId] != -1;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public bool Set(int entityId, in T component)
         {
             ArrayExtension.EnsureLength(ref _mapping, entityId, _worldMaxCapacity, -1);

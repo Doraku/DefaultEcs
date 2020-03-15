@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using DefaultEcs.Technical.Helper;
 
@@ -19,10 +20,10 @@ namespace DefaultEcs.Technical.Command
             private static readonly WriteComponent<T> _writeComponentAction;
             private static readonly SetComponent _setAction;
 
-#pragma warning disable RCS1158 // Static member in generic type should use a type parameter.
+            [SuppressMessage("Design", "RCS1158:Static member in generic type should use a type parameter.")]
             public static readonly int Index;
+            [SuppressMessage("Design", "RCS1158:Static member in generic type should use a type parameter.")]
             public static readonly int SizeOfT;
-#pragma warning restore RCS1158 // Static member in generic type should use a type parameter.
 
             #endregion
 
@@ -62,6 +63,7 @@ namespace DefaultEcs.Technical.Command
 
             #region Methods
 
+            [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
             public static void WriteComponent(List<object> objects, byte* memory, in T component) => _writeComponentAction(objects, memory, component);
 
             #endregion
