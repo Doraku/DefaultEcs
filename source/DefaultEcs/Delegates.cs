@@ -43,7 +43,7 @@
     /// Represents the method that will called when a component of type <typeparamref name="T"/> is removed from an <see cref="Entity"/>.
     /// </summary>
     /// <typeparam name="T">The type of the component removed.</typeparam>
-    /// <param name="entity">The <see cref="Entity"/> on which the component was removed.</param>
+    /// <param name="entity">The <see cref="Entity"/> on which the component was changed.</param>
     /// <param name="oldValue">The previous value of the component.</param>
     /// <param name="newValue">The new value of the component.</param>
     public delegate void ComponentChangedHandler<T>(in Entity entity, in T oldValue, in T newValue);
