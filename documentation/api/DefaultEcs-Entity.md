@@ -38,5 +38,5 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 - [SetSameAs&lt;T&gt;(DefaultEcs.Entity)](./DefaultEcs-Entity-SetSameAs-T-(DefaultEcs-Entity).md 'DefaultEcs.Entity.SetSameAs&lt;T&gt;(DefaultEcs.Entity)')
 - [ToString()](./DefaultEcs-Entity-ToString().md 'DefaultEcs.Entity.ToString()')
 ### Operators
-- [operator ==(DefaultEcs.Entity, DefaultEcs.Entity)](./DefaultEcs-Entity-operator==(DefaultEcs-Entity_DefaultEcs-Entity).md 'DefaultEcs.Entity.operator ==(DefaultEcs.Entity, DefaultEcs.Entity)')
-- [operator !=(DefaultEcs.Entity, DefaultEcs.Entity)](./DefaultEcs-Entity-operator!=(DefaultEcs-Entity_DefaultEcs-Entity).md 'DefaultEcs.Entity.operator !=(DefaultEcs.Entity, DefaultEcs.Entity)')
+- [operator ==(DefaultEcs.Entity, DefaultEcs.Entity)](./DefaultEcs-Entity-op_Equality(DefaultEcs-Entity_DefaultEcs-Entity).md 'DefaultEcs.Entity.op_Equality(DefaultEcs.Entity, DefaultEcs.Entity)')
+- [operator !=(DefaultEcs.Entity, DefaultEcs.Entity)](./DefaultEcs-Entity-op_Inequality(DefaultEcs-Entity_DefaultEcs-Entity).md 'DefaultEcs.Entity.op_Inequality(DefaultEcs.Entity, DefaultEcs.Entity)')

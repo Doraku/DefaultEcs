@@ -1,3 +1,8 @@
+## DefaultEcs 0.14.1
+fixed Entity.ReadAllComponents accessing previous value component used by map  
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.14.1)
+
 ## DefaultEcs 0.14.0
 breaking change:  
 removed World.MaxEntityCount, obsolete  

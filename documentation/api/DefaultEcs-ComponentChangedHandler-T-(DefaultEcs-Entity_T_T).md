@@ -13,7 +13,7 @@ The type of the component removed.
 #### Parameters
 <a name='DefaultEcs-ComponentChangedHandler-T-(DefaultEcs-Entity_T_T)-entity'></a>
 `entity` [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')  
-The [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') on which the component was removed.  
+The [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') on which the component was changed.  
   
 <a name='DefaultEcs-ComponentChangedHandler-T-(DefaultEcs-Entity_T_T)-oldValue'></a>
 `oldValue` [T](#DefaultEcs-ComponentChangedHandler-T-(DefaultEcs-Entity_T_T)-T 'DefaultEcs.ComponentChangedHandler&lt;T&gt;(DefaultEcs.Entity, T, T).T')  
