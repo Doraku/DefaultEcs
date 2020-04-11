@@ -10,13 +10,12 @@
     <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
   </PropertyGroup>
   <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="DefaultDocumentation" Version="0.6.0" PrivateAssets="all" />
+    <PackageReference Include="DefaultDocumentation" Version="0.6.1" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup Label="Package">
-    <Version>0.14.1</Version>
+    <Version>0.14.2</Version>
     <PackageReleaseNotes>
-fixed Entity.ReadAllComponents accessing previous value component used by map
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
