@@ -155,8 +155,8 @@ namespace DefaultEcs.Resource
         /// Unloads a resource once it is no longer referenced by a <see cref="ManagedResource{TInfo, TResource}"/>.
         /// By default if <typeparamref name="TResource"/> is <see cref="IDisposable"/>, calls the <see cref="IDisposable.Dispose"/> method.
         /// </summary>
-        /// <param name="info"></param>
-        /// <param name="resource"></param>
+        /// <param name="info">The <typeparamref name="TInfo"/> that was used to load the resource.</param>
+        /// <param name="resource">The <typeparamref name="TResource"/> to unload.</param>
         protected virtual void Unload(TInfo info, TResource resource) => (resource as IDisposable)?.Dispose();
 
         /// <summary>
