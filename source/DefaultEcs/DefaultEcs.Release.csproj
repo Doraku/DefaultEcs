@@ -16,6 +16,9 @@
   <PropertyGroup Label="Package">
     <Version>0.14.2</Version>
     <PackageReleaseNotes>
+removed restriction on ManagedResource TResource to be IDisposable
+
+added AResourceManager.Unload to give the possibility to override the unload action for a resource
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

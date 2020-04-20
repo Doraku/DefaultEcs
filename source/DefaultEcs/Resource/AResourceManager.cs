@@ -8,12 +8,12 @@ namespace DefaultEcs.Resource
     /// <summary>
     /// Base type used to load resources of type <typeparamref name="TResource"/> using info of type <typeparamref name="TInfo"/>.
     /// <typeparamref name="TInfo"/> is used as key if the same resource is requested on multiple <see cref="Entity"/> to only load the <typeparamref name="TResource"/> resource once.
-    /// If no <see cref="Entity"/> contains the <see cref="ManagedResource{TInfo, TResource}"/> component identifying the resource anymore, the <typeparamref name="TResource"/> instance is then disposed automatically.
+    /// If no <see cref="Entity"/> contains the <see cref="ManagedResource{TInfo, TResource}"/> component identifying the resource anymore, the <typeparamref name="TResource"/> instance is then unloaded automatically.
+    /// By default, if <typeparamref name="TResource"/> is <see cref="IDisposable"/>, <see cref="Unload(TInfo, TResource)"/> will call the <see cref="IDisposable.Dispose"/> method of the resource.
     /// </summary>
     /// <typeparam name="TInfo">The type used to identify a resource.</typeparam>
     /// <typeparam name="TResource">The type of the resource.</typeparam>
     public abstract class AResourceManager<TInfo, TResource> : IDisposable
-        where TResource : IDisposable
     {
         #region Types
 
@@ -124,8 +124,14 @@ namespace DefaultEcs.Resource
             {
                 if (_resources.TryGetValue(info, out Resource resource) && resource.RemoveReference())
                 {
-                    resource.Value?.Dispose();
-                    _resources.Remove(info);
+                    try
+                    {
+                        Unload(info, resource.Value);
+                    }
+                    finally
+                    {
+                        _resources.Remove(info);
+                    }
                 }
             }
         }
@@ -144,6 +150,14 @@ namespace DefaultEcs.Resource
         /// <param name="info">The <typeparamref name="TInfo"/> info used to load the resource.</param>
         /// <param name="resource">The <typeparamref name="TResource"/> resource.</param>
         protected abstract void OnResourceLoaded(in Entity entity, TInfo info, TResource resource);
+
+        /// <summary>
+        /// Unloads a resource once it is no longer referenced by a <see cref="ManagedResource{TInfo, TResource}"/>.
+        /// By default if <typeparamref name="TResource"/> is <see cref="IDisposable"/>, calls the <see cref="IDisposable.Dispose"/> method.
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="resource"></param>
+        protected virtual void Unload(TInfo info, TResource resource) => (resource as IDisposable)?.Dispose();
 
         /// <summary>
         /// Sets up current <see cref="AResourceManager{TInfo, TResource}"/> instance to react to <see cref="ManagedResource{TInfo, TResource}"/> components on <see cref="Entity"/> instances of the provided <see cref="World"/>.
@@ -189,13 +203,13 @@ namespace DefaultEcs.Resource
         #region IDisposable
 
         /// <summary>
-        /// Disposes all loaded resources.
+        /// Unloads all loaded resources.
         /// </summary>
         public void Dispose()
         {
-            foreach (Resource resource in _resources.Values)
+            foreach (var pair in _resources)
             {
-                resource.Value?.Dispose();
+                Unload(pair.Key, pair.Value.Value);
             }
 
             _resources.Clear();

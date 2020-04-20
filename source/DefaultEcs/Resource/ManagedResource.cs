@@ -7,7 +7,6 @@ namespace DefaultEcs.Resource
     /// </summary>
     /// <typeparam name="TResource">The type of the resource.</typeparam>
     public static class ManagedResource<TResource>
-        where TResource : IDisposable
     {
         /// <summary>
         /// Create a <see cref="ManagedResource{TInfo, TResource}"/> object
@@ -32,7 +31,6 @@ namespace DefaultEcs.Resource
     /// <typeparam name="TInfo">The type used to identify a resource.</typeparam>
     /// <typeparam name="TResource">The type of the resource.</typeparam>
     public readonly struct ManagedResource<TInfo, TResource>
-        where TResource : IDisposable
     {
         /// <summary>
         /// Gets the info about the resource to load.
