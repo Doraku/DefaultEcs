@@ -297,6 +297,22 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void Set_Should_override_SetSameAs()
+        {
+            using World world = new World();
+
+            Entity reference = world.CreateEntity();
+            Entity entity = world.CreateEntity();
+
+            reference.Set(true);
+            entity.SetSameAs<bool>(reference);
+            entity.Set(false);
+
+            Check.That(reference.Get<bool>()).IsTrue();
+            Check.That(entity.Get<bool>()).IsFalse();
+        }
+
+        [Fact]
         public void SetSameAs_Should_throw_When_Entity_not_created_from_World()
         {
             Entity entity = default;
@@ -365,11 +381,11 @@ namespace DefaultEcs.Test
 
             Check.That(entity.Get<bool>()).IsEqualTo(reference.Get<bool>());
 
-            reference.Set(true);
+            reference.Get<bool>() = true;
 
             Check.That(entity.Get<bool>()).IsEqualTo(reference.Get<bool>());
 
-            entity.Set(false);
+            entity.Get<bool>() = false;
 
             Check.That(reference.Get<bool>()).IsEqualTo(entity.Get<bool>());
         }
@@ -530,7 +546,7 @@ namespace DefaultEcs.Test
 
             Check.That(entity.Get<bool>()).IsTrue();
 
-            reference.Set(false);
+            reference.Get<bool>() = false;
 
             Check.That(entity.Get<bool>()).IsFalse();
         }

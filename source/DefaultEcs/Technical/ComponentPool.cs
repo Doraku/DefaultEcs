@@ -192,9 +192,14 @@ namespace DefaultEcs.Technical
             ref int componentIndex = ref _mapping[entityId];
             if (componentIndex != -1)
             {
-                _components[componentIndex] = component;
+                if (_links[componentIndex].ReferenceCount == 1)
+                {
+                    _components[componentIndex] = component;
 
-                return false;
+                    return false;
+                }
+
+                Remove(entityId);
             }
 
             if (_lastComponentIndex == MaxCapacity - 1)

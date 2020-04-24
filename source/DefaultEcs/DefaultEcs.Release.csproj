@@ -19,6 +19,8 @@
 removed restriction on ManagedResource TResource to be IDisposable
 
 added AResourceManager.Unload to give the possibility to override the unload action for a resource
+
+fixed Entity.Set overriding shared component value
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
