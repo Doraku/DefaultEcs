@@ -1,4 +1,13 @@
 ## DefaultEcs 0.14.1
+removed restriction on ManagedResource TResource to be IDisposable  
+
+added AResourceManager.Unload to give the possibility to override the unload action for a resource  
+
+fixed Entity.Set overriding shared component value  
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.14.2)
+
+## DefaultEcs 0.14.1
 fixed Entity.ReadAllComponents accessing previous value component used by map  
 
 [nuget package](https://www.nuget.org/packages/DefaultEcs/0.14.1)
