@@ -4,8 +4,10 @@ namespace DefaultEcs.Technical.Command
 {
     internal static class Executer
     {
-        public static unsafe void Execute(byte[] memory, int commandLength, List<object> objects, World world)
+        public static unsafe Entity Execute(byte[] memory, int commandLength, List<object> objects, World world)
         {
+            Entity lastEntity = default;
+
             fixed (byte* memoryP = memory)
             {
                 byte* commands = memoryP;
@@ -20,7 +22,7 @@ namespace DefaultEcs.Technical.Command
                             break;
 
                         case CommandType.CreateEntity:
-                            (*(EntityCommand*)commands).Entity = world.CreateEntity();
+                            lastEntity = (*(EntityCommand*)commands).Entity = world.CreateEntity();
                             commandSize = sizeof(EntityCommand);
                             break;
 
@@ -94,6 +96,8 @@ namespace DefaultEcs.Technical.Command
                     commandLength -= commandSize;
                 }
             }
+
+            return lastEntity;
         }
     }
 }
