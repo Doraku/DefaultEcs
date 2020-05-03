@@ -13,19 +13,30 @@ namespace DefaultEcs.Command
 
         private sealed class ComponentReader : IComponentReader
         {
+            private readonly Entity _entity;
             private readonly List<EntityRecordAction> _actions;
 
             public ComponentReader(in Entity entity)
             {
+                _entity = entity;
                 _actions = new List<EntityRecordAction>();
 
-                entity.ReadAllComponents(this);
+                if (!_entity.IsEnabled())
+                {
+                    _actions.Add((in EntityRecord r) => r.Disable());
+                }
+
+                _entity.ReadAllComponents(this);
             }
 
             public void OnRead<T>(ref T component, in Entity componentOwner)
             {
                 T value = component;
                 _actions.Add((in EntityRecord r) => r.Set(value));
+                if (!_entity.IsEnabled<T>())
+                {
+                    _actions.Add((in EntityRecord r) => r.Disable<T>());
+                }
             }
 
             public EntityFactory ToFactory() => Create(_actions.ToArray());
