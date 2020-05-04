@@ -164,8 +164,6 @@ namespace DefaultEcs.Command
             }
         }
 
-        internal EntityFactory ToFactory() => new EntityFactory(_memory.AsSpan(0, _nextCommandOffset), _objects);
-
         /// <summary>
         /// Gives an <see cref="EntityRecord"/> to record action on the given <see cref="Entity"/>.
         /// This command takes 9 bytes.
