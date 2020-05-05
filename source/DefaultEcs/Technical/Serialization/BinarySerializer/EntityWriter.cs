@@ -11,7 +11,8 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         private readonly StreamWriterWrapper _writer;
         private readonly Dictionary<Type, ushort> _types;
         private readonly Dictionary<Entity, int> _entities;
-        private readonly Dictionary<Tuple<Entity, Type>, int> _components;
+        private readonly Dictionary<(Entity, Type), int> _components;
+        private readonly Predicate<Type> _componentFilter;
 
         private ushort _currentType;
         private int _entityCount;
@@ -21,12 +22,13 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region Initialisation
 
-        public EntityWriter(in StreamWriterWrapper writer, Dictionary<Type, ushort> types)
+        public EntityWriter(in StreamWriterWrapper writer, Dictionary<Type, ushort> types, Predicate<Type> componentFilter)
         {
             _writer = writer;
             _types = types;
             _entities = new Dictionary<Entity, int>();
-            _components = new Dictionary<Tuple<Entity, Type>, int>();
+            _components = new Dictionary<(Entity, Type), int>();
+            _componentFilter = componentFilter;
 
             _currentType = (ushort)types.Count;
             _entityCount = -1;
@@ -66,31 +68,34 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         void IComponentReader.OnRead<T>(ref T component, in Entity componentOwner)
         {
-            if (!_types.TryGetValue(typeof(T), out ushort typeId))
+            if (_componentFilter(typeof(T)))
             {
-                typeId = _currentType++;
-                _types.Add(typeof(T), typeId);
+                if (!_types.TryGetValue(typeof(T), out ushort typeId))
+                {
+                    typeId = _currentType++;
+                    _types.Add(typeof(T), typeId);
 
-                _writer.WriteByte((byte)EntryType.ComponentType);
-                _writer.Write(typeId);
-                _writer.WriteString(TypeNames.Get(typeof(T)));
-            }
+                    _writer.WriteByte((byte)EntryType.ComponentType);
+                    _writer.Write(typeId);
+                    _writer.WriteString(TypeNames.Get(typeof(T)));
+                }
 
-            Tuple<Entity, Type> componentKey = Tuple.Create(componentOwner, typeof(T));
-            if (_components.TryGetValue(componentKey, out int key))
-            {
-                _writer.WriteByte((byte)(_currentEntity.IsEnabled<T>() ? EntryType.ComponentSameAs : EntryType.DisabledComponentSameAs));
-                _writer.Write(typeId);
-                _writer.Write(key);
-            }
-            else
-            {
-                _components.Add(componentKey, _entityCount);
+                (Entity, Type) componentKey = (componentOwner, typeof(T));
+                if (_components.TryGetValue(componentKey, out int key))
+                {
+                    _writer.WriteByte((byte)(_currentEntity.IsEnabled<T>() ? EntryType.ComponentSameAs : EntryType.DisabledComponentSameAs));
+                    _writer.Write(typeId);
+                    _writer.Write(key);
+                }
+                else
+                {
+                    _components.Add(componentKey, _entityCount);
 
-                _writer.WriteByte((byte)(_currentEntity.IsEnabled<T>() ? EntryType.Component : EntryType.DisabledComponent));
-                _writer.Write(typeId);
+                    _writer.WriteByte((byte)(_currentEntity.IsEnabled<T>() ? EntryType.Component : EntryType.DisabledComponent));
+                    _writer.Write(typeId);
 
-                Converter<T>.Write(_writer, component);
+                    Converter<T>.Write(_writer, component);
+                }
             }
         }
 

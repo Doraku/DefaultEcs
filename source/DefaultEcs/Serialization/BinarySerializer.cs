@@ -55,6 +55,28 @@ namespace DefaultEcs.Serialization
 
         private static readonly ConcurrentDictionary<Type, IComponentOperation> _componentOperations = new ConcurrentDictionary<Type, IComponentOperation>();
 
+        private readonly Predicate<Type> _componentFilter;
+
+        #endregion
+
+        #region Initialisation
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinarySerializer"/> class.
+        /// </summary>
+        /// <param name="componentFilter">A filter used to check wether a component type should be serialized or not. A <see langword="null"/> value means everything should be serialized.</param>
+        public BinarySerializer(Predicate<Type> componentFilter)
+        {
+            _componentFilter = componentFilter ?? new Predicate<Type>(_ => true);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinarySerializer"/> class.
+        /// </summary>
+        public BinarySerializer()
+            : this(null)
+        { }
+
         #endregion
 
         #region Methods
@@ -66,66 +88,63 @@ namespace DefaultEcs.Serialization
 
             try
             {
-                using (stream)
+                using StreamReaderWrapper reader = new StreamReaderWrapper(stream);
+
+                world ??= new World(reader.Read<int>());
+
+                Entity currentEntity = default;
+                Dictionary<ushort, IComponentOperation> componentOperations = new Dictionary<ushort, IComponentOperation>();
+
+                int entryType;
+                while ((entryType = stream.ReadByte()) >= 0)
                 {
-                    using StreamReaderWrapper reader = new StreamReaderWrapper(stream);
-
-                    world ??= new World(reader.Read<int>());
-
-                    Entity currentEntity = default;
-                    Dictionary<ushort, IComponentOperation> componentOperations = new Dictionary<ushort, IComponentOperation>();
-
-                    int entryType;
-                    while ((entryType = stream.ReadByte()) >= 0)
+                    switch ((EntryType)entryType)
                     {
-                        switch ((EntryType)entryType)
-                        {
-                            case EntryType.ComponentType:
-                                componentOperations.Add(
-                                    reader.Read<ushort>(),
-                                    _componentOperations.GetOrAdd(
-                                        Type.GetType(reader.ReadString(), true),
-                                        t => (IComponentOperation)Activator.CreateInstance(typeof(ComponentOperation<>).MakeGenericType(t))));
-                                break;
+                        case EntryType.ComponentType:
+                            componentOperations.Add(
+                                reader.Read<ushort>(),
+                                _componentOperations.GetOrAdd(
+                                    Type.GetType(reader.ReadString(), true),
+                                    t => (IComponentOperation)Activator.CreateInstance(typeof(ComponentOperation<>).MakeGenericType(t))));
+                            break;
 
-                            case EntryType.ComponentMaxCapacity:
-                                componentOperations[reader.Read<ushort>()].SetMaxCapacity(world, reader.Read<int>());
-                                break;
+                        case EntryType.ComponentMaxCapacity:
+                            componentOperations[reader.Read<ushort>()].SetMaxCapacity(world, reader.Read<int>());
+                            break;
 
-                            case EntryType.Entity:
-                                entities.Add(currentEntity = world.CreateEntity());
-                                break;
+                        case EntryType.Entity:
+                            entities.Add(currentEntity = world.CreateEntity());
+                            break;
 
-                            case EntryType.Component:
-                                componentOperations[reader.Read<ushort>()].Set(currentEntity, reader);
-                                break;
+                        case EntryType.Component:
+                            componentOperations[reader.Read<ushort>()].Set(currentEntity, reader);
+                            break;
 
-                            case EntryType.ComponentSameAs:
-                                componentOperations[reader.Read<ushort>()].SetSameAs(currentEntity, entities[reader.Read<int>()]);
-                                break;
+                        case EntryType.ComponentSameAs:
+                            componentOperations[reader.Read<ushort>()].SetSameAs(currentEntity, entities[reader.Read<int>()]);
+                            break;
 
-                            case EntryType.ParentChild:
-                                entities[reader.Read<int>()].SetAsParentOf(entities[reader.Read<int>()]);
-                                break;
+                        case EntryType.ParentChild:
+                            entities[reader.Read<int>()].SetAsParentOf(entities[reader.Read<int>()]);
+                            break;
 
-                            case EntryType.DisabledEntity:
-                                currentEntity = world.CreateEntity();
-                                currentEntity.Disable();
-                                entities.Add(currentEntity);
-                                break;
+                        case EntryType.DisabledEntity:
+                            currentEntity = world.CreateEntity();
+                            currentEntity.Disable();
+                            entities.Add(currentEntity);
+                            break;
 
-                            case EntryType.DisabledComponent:
-                                componentOperations[reader.Read<ushort>()].SetDisabled(currentEntity, reader);
-                                break;
+                        case EntryType.DisabledComponent:
+                            componentOperations[reader.Read<ushort>()].SetDisabled(currentEntity, reader);
+                            break;
 
-                            case EntryType.DisabledComponentSameAs:
-                                componentOperations[reader.Read<ushort>()].SetDisabledSameAs(currentEntity, entities[reader.Read<int>()]);
-                                break;
-                        }
+                        case EntryType.DisabledComponentSameAs:
+                            componentOperations[reader.Read<ushort>()].SetDisabledSameAs(currentEntity, entities[reader.Read<int>()]);
+                            break;
                     }
-
-                    return entities;
                 }
+
+                return entities;
             }
             catch
             {
@@ -194,18 +213,15 @@ namespace DefaultEcs.Serialization
             if (stream is null) throw new ArgumentNullException(nameof(stream));
             if (world is null) throw new ArgumentNullException(nameof(world));
 
-            using (stream)
-            {
-                using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
+            using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
 
-                writer.Write(world.MaxCapacity);
+            writer.Write(world.MaxCapacity);
 
-                Dictionary<Type, ushort> types = new Dictionary<Type, ushort>();
+            Dictionary<Type, ushort> types = new Dictionary<Type, ushort>();
 
-                world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxCapacity));
+            world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxCapacity, _componentFilter));
 
-                new EntityWriter(writer, types).Write(world);
-            }
+            new EntityWriter(writer, types, _componentFilter).Write(world);
         }
 
         /// <summary>
@@ -234,12 +250,9 @@ namespace DefaultEcs.Serialization
             if (stream is null) throw new ArgumentNullException(nameof(stream));
             if (entities is null) throw new ArgumentNullException(nameof(entities));
 
-            using (stream)
-            {
-                using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
+            using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
 
-                new EntityWriter(writer, new Dictionary<Type, ushort>()).Write(entities);
-            }
+            new EntityWriter(writer, new Dictionary<Type, ushort>(), _componentFilter).Write(entities);
         }
 
         /// <summary>

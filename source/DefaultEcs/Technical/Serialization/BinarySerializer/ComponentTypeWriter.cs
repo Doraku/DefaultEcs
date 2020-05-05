@@ -11,6 +11,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         private readonly StreamWriterWrapper _writer;
         private readonly Dictionary<Type, ushort> _types;
         private readonly int _worldMaxCapacity;
+        private readonly Predicate<Type> _componentFilter;
 
         private ushort _currentType;
 
@@ -18,11 +19,12 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region Initialisation
 
-        public ComponentTypeWriter(in StreamWriterWrapper writer, Dictionary<Type, ushort> types, int worldMaxCapacity)
+        public ComponentTypeWriter(in StreamWriterWrapper writer, Dictionary<Type, ushort> types, int worldMaxCapacity, Predicate<Type> componentFilter)
         {
             _writer = writer;
             _types = types;
             _worldMaxCapacity = worldMaxCapacity;
+            _componentFilter = componentFilter;
         }
 
         #endregion
@@ -31,20 +33,23 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         void IComponentTypeReader.OnRead<T>(int maxCapacity)
         {
-            _types.Add(typeof(T), _currentType);
-
-            _writer.WriteByte((byte)EntryType.ComponentType);
-            _writer.Write(_currentType);
-            _writer.WriteString(TypeNames.Get(typeof(T)));
-
-            if (maxCapacity != _worldMaxCapacity)
+            if (_componentFilter(typeof(T)))
             {
-                _writer.WriteByte((byte)EntryType.ComponentMaxCapacity);
-                _writer.Write(_currentType);
-                _writer.Write(maxCapacity);
-            }
+                _types.Add(typeof(T), _currentType);
 
-            ++_currentType;
+                _writer.WriteByte((byte)EntryType.ComponentType);
+                _writer.Write(_currentType);
+                _writer.WriteString(TypeNames.Get(typeof(T)));
+
+                if (maxCapacity != _worldMaxCapacity)
+                {
+                    _writer.WriteByte((byte)EntryType.ComponentMaxCapacity);
+                    _writer.Write(_currentType);
+                    _writer.Write(maxCapacity);
+                }
+
+                ++_currentType;
+            }
         }
 
         #endregion

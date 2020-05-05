@@ -76,6 +76,28 @@ namespace DefaultEcs.Serialization
         private static readonly char[] _split = new[] { ' ', '\t' };
         private static readonly ConcurrentDictionary<Type, IComponentOperation> _componentOperations = new ConcurrentDictionary<Type, IComponentOperation>();
 
+        private readonly Predicate<Type> _componentFilter;
+
+        #endregion
+
+        #region Initialisation
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextSerializer"/> class.
+        /// </summary>
+        /// <param name="componentFilter">A filter used to check wether a component type should be serialized or not. A <see langword="null"/> value means everything should be serialized.</param>
+        public TextSerializer(Predicate<Type> componentFilter)
+        {
+            _componentFilter = componentFilter ?? new Predicate<Type>(_ => true);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextSerializer"/> class.
+        /// </summary>
+        public TextSerializer()
+            : this(null)
+        { }
+
         #endregion
 
         #region Methods
@@ -87,7 +109,7 @@ namespace DefaultEcs.Serialization
 
             try
             {
-                using StreamReader reader = new StreamReader(stream);
+                using StreamReader reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true);
 
                 Entity currentEntity = default;
                 Dictionary<string, IComponentOperation> componentOperations = new Dictionary<string, IComponentOperation>();
@@ -327,11 +349,6 @@ namespace DefaultEcs.Serialization
             return Converter<T>.Read(null, reader);
         }
 
-        //public static Func<Entity> GetFactory(Stream stream)
-        //{
-
-        //}
-
         #endregion
 
         #region ISerializer
@@ -348,7 +365,7 @@ namespace DefaultEcs.Serialization
             if (stream is null) throw new ArgumentNullException(nameof(stream));
             if (world is null) throw new ArgumentNullException(nameof(world));
 
-            using StreamWriter writer = new StreamWriter(stream);
+            using StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false, true), 1024, true);
 
             Dictionary<Type, string> types = new Dictionary<Type, string>();
 
@@ -357,9 +374,9 @@ namespace DefaultEcs.Serialization
                 writer.WriteLine($"{nameof(EntryType.WorldMaxCapacity)} {world.MaxCapacity}");
             }
 
-            world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxCapacity));
+            world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxCapacity, _componentFilter));
 
-            new EntityWriter(writer, types).Write(world);
+            new EntityWriter(writer, types, _componentFilter).Write(world);
         }
 
         /// <summary>
@@ -390,7 +407,7 @@ namespace DefaultEcs.Serialization
 
             using StreamWriter writer = new StreamWriter(stream);
 
-            new EntityWriter(writer, new Dictionary<Type, string>()).Write(entities);
+            new EntityWriter(writer, new Dictionary<Type, string>(), _componentFilter).Write(entities);
         }
 
         /// <summary>

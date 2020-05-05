@@ -416,6 +416,33 @@ namespace DefaultEcs.Test.Serialization
             }
         }
 
+        [Theory]
+        [MemberData(nameof(SerializerType))]
+        public void Serialize_world_Should_only_serialize_component_type_which_validate_predicate(Type serializerType)
+        {
+            static bool Filter(Type type) => type != typeof(string);
+
+            ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType, new Predicate<Type>(Filter));
+
+            using World world = new World();
+
+            Entity entity = world.CreateEntity();
+            entity.Set(true);
+            entity.Set("kikoo");
+
+            using Stream stream = new MemoryStream();
+
+            serializer.Serialize(stream, world);
+
+            stream.Position = 0;
+
+            World copy = serializer.Deserialize(stream);
+
+            Check.That(copy.Count()).IsEqualTo(world.Count());
+            Check.That(copy.First().Get<bool>()).IsEqualTo(world.First().Get<bool>());
+            Check.That(copy.First().Has<string>()).IsFalse();
+        }
+
         #endregion
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using DefaultEcs.Serialization;
 
 namespace DefaultEcs.Technical.Serialization.TextSerializer
@@ -13,7 +12,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         private readonly StreamWriter _writer;
         private readonly Dictionary<Type, string> _types;
         private readonly Dictionary<Entity, int> _entities;
-        private readonly Dictionary<Tuple<Entity, Type>, int> _components;
+        private readonly Dictionary<(Entity, Type), int> _components;
+        private readonly Predicate<Type> _componentFilter;
 
         private int _entityCount;
         private Entity _currentEntity;
@@ -22,12 +22,13 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         #region Initialisation
 
-        public EntityWriter(StreamWriter writer, Dictionary<Type, string> types)
+        public EntityWriter(StreamWriter writer, Dictionary<Type, string> types, Predicate<Type> componentFilter)
         {
             _writer = writer;
             _types = types;
             _entities = new Dictionary<Entity, int>();
-            _components = new Dictionary<Tuple<Entity, Type>, int>();
+            _components = new Dictionary<(Entity, Type), int>();
+            _componentFilter = componentFilter;
         }
 
         #endregion
@@ -66,33 +67,36 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         void IComponentReader.OnRead<T>(ref T component, in Entity componentOwner)
         {
-            if (!_types.TryGetValue(typeof(T), out _))
+            if (_componentFilter(typeof(T)))
             {
-                string typeName = typeof(T).Name;
-
-                int repeatCount = 1;
-                while (_types.ContainsValue(typeName))
+                if (!_types.TryGetValue(typeof(T), out _))
                 {
-                    typeName = $"{typeof(T).Name}_{repeatCount++}";
+                    string typeName = typeof(T).Name;
+
+                    int repeatCount = 1;
+                    while (_types.ContainsValue(typeName))
+                    {
+                        typeName = $"{typeof(T).Name}_{repeatCount++}";
+                    }
+
+                    _types.Add(typeof(T), typeName);
+
+                    _writer.WriteLine($"{nameof(EntryType.ComponentType)} {typeName} {TypeNames.Get(typeof(T))}");
                 }
 
-                _types.Add(typeof(T), typeName);
-
-                _writer.WriteLine($"{nameof(EntryType.ComponentType)} {typeName} {TypeNames.Get(typeof(T))}");
-            }
-
-            Tuple<Entity, Type> componentKey = Tuple.Create(componentOwner, typeof(T));
-            if (_components.TryGetValue(componentKey, out int key))
-            {
-                string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.ComponentSameAs) : nameof(EntryType.DisabledComponentSameAs);
-                _writer.WriteLine($"{entry} {_types[typeof(T)]} {key}");
-            }
-            else
-            {
-                _components.Add(componentKey, _entityCount);
-                string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.Component) : nameof(EntryType.DisabledComponent);
-                _writer.Write($"{entry} {_types[typeof(T)]} ");
-                Converter<T>.Write(component, _writer, 0);
+                (Entity, Type) componentKey = (componentOwner, typeof(T));
+                if (_components.TryGetValue(componentKey, out int key))
+                {
+                    string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.ComponentSameAs) : nameof(EntryType.DisabledComponentSameAs);
+                    _writer.WriteLine($"{entry} {_types[typeof(T)]} {key}");
+                }
+                else
+                {
+                    _components.Add(componentKey, _entityCount);
+                    string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.Component) : nameof(EntryType.DisabledComponent);
+                    _writer.Write($"{entry} {_types[typeof(T)]} ");
+                    Converter<T>.Write(component, _writer, 0);
+                }
             }
         }
 

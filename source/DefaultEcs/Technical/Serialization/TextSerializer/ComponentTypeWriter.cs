@@ -14,16 +14,18 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         private readonly StreamWriter _writer;
         private readonly Dictionary<Type, string> _types;
         private readonly int _worldMaxCapacity;
+        private readonly Predicate<Type> _componentFilter;
 
         #endregion
 
         #region Initialisation
 
-        public ComponentTypeWriter(StreamWriter writer, Dictionary<Type, string> types, int worldMaxCapacity)
+        public ComponentTypeWriter(StreamWriter writer, Dictionary<Type, string> types, int worldMaxCapacity, Predicate<Type> componentFilter)
         {
             _writer = writer;
             _types = types;
             _worldMaxCapacity = worldMaxCapacity;
+            _componentFilter = componentFilter;
         }
 
         #endregion
@@ -32,20 +34,23 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         void IComponentTypeReader.OnRead<T>(int maxCapacity)
         {
-            string shortName = typeof(T).Name;
-
-            int repeatCount = 1;
-            while (_types.ContainsValue(shortName))
+            if (_componentFilter(typeof(T)))
             {
-                shortName = $"{typeof(T).Name}_{repeatCount++}";
-            }
+                string shortName = typeof(T).Name;
 
-            _types.Add(typeof(T), shortName);
+                int repeatCount = 1;
+                while (_types.ContainsValue(shortName))
+                {
+                    shortName = $"{typeof(T).Name}_{repeatCount++}";
+                }
 
-            _writer.WriteLine($"{nameof(EntryType.ComponentType)} {shortName} {TypeNames.Get(typeof(T))}");
-            if (maxCapacity != _worldMaxCapacity && !typeof(T).GetTypeInfo().IsFlagType())
-            {
-                _writer.WriteLine($"{nameof(EntryType.ComponentMaxCapacity)} {shortName} {maxCapacity}");
+                _types.Add(typeof(T), shortName);
+
+                _writer.WriteLine($"{nameof(EntryType.ComponentType)} {shortName} {TypeNames.Get(typeof(T))}");
+                if (maxCapacity != _worldMaxCapacity && !typeof(T).GetTypeInfo().IsFlagType())
+                {
+                    _writer.WriteLine($"{nameof(EntryType.ComponentMaxCapacity)} {shortName} {maxCapacity}");
+                }
             }
         }
 

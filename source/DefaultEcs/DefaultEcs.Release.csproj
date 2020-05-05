@@ -14,13 +14,11 @@
   </ItemGroup>
 
   <PropertyGroup Label="Package">
-    <Version>0.14.2</Version>
+    <Version>0.14.3</Version>
     <PackageReleaseNotes>
-removed restriction on ManagedResource TResource to be IDisposable
+added componentFilter parameter on BinarySerializer and TextSerializer to apply a filter on which component type should be serialized (fix #32)
 
-added AResourceManager.Unload to give the possibility to override the unload action for a resource
-
-fixed Entity.Set overriding shared component value
+fixed BinarySerializer and TextSerializer closing the stream parameter, it is now left open
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
