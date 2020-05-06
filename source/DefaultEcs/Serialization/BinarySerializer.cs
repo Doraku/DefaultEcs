@@ -49,11 +49,29 @@ namespace DefaultEcs.Serialization
             #endregion
         }
 
+        private sealed class IgnoreComponentOperation<T> : IComponentOperation
+        {
+            #region IOperation
+
+            public void SetMaxCapacity(World world, int maxCapacity) { }
+
+            public void Set(in Entity entity, in StreamReaderWrapper reader) => Converter<T>.Read(reader);
+
+            public void SetSameAs(in Entity entity, in Entity reference) { }
+
+            public void SetDisabled(in Entity entity, in StreamReaderWrapper reader) => Converter<T>.Read(reader);
+
+            public void SetDisabledSameAs(in Entity entity, in Entity reference) { }
+
+            #endregion
+        }
+
         #endregion
 
         #region Fields
 
         private static readonly ConcurrentDictionary<Type, IComponentOperation> _componentOperations = new ConcurrentDictionary<Type, IComponentOperation>();
+        private static readonly ConcurrentDictionary<Type, IComponentOperation> _ignoreComponentOperations = new ConcurrentDictionary<Type, IComponentOperation>();
 
         private readonly Predicate<Type> _componentFilter;
 
@@ -81,7 +99,7 @@ namespace DefaultEcs.Serialization
 
         #region Methods
 
-        private static ICollection<Entity> Deserialize(Stream stream, ref World world)
+        private ICollection<Entity> Deserialize(Stream stream, ref World world)
         {
             bool isNewWorld = world is null;
             List<Entity> entities = new List<Entity>(128);
@@ -101,11 +119,17 @@ namespace DefaultEcs.Serialization
                     switch ((EntryType)entryType)
                     {
                         case EntryType.ComponentType:
+                            ushort operationIndex = reader.Read<ushort>();
+                            Type componentType = Type.GetType(reader.ReadString(), true);
                             componentOperations.Add(
-                                reader.Read<ushort>(),
-                                _componentOperations.GetOrAdd(
-                                    Type.GetType(reader.ReadString(), true),
-                                    t => (IComponentOperation)Activator.CreateInstance(typeof(ComponentOperation<>).MakeGenericType(t))));
+                                operationIndex,
+                                _componentFilter(componentType)
+                                    ? _componentOperations.GetOrAdd(
+                                        componentType,
+                                        t => (IComponentOperation)Activator.CreateInstance(typeof(ComponentOperation<>).MakeGenericType(t)))
+                                    : _ignoreComponentOperations.GetOrAdd(
+                                        componentType,
+                                        t => (IComponentOperation)Activator.CreateInstance(typeof(IgnoreComponentOperation<>).MakeGenericType(t))));
                             break;
 
                         case EntryType.ComponentMaxCapacity:

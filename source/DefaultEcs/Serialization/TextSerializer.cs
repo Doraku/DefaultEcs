@@ -69,12 +69,30 @@ namespace DefaultEcs.Serialization
             #endregion
         }
 
+        private sealed class IgnoreComponentOperation<T> : IComponentOperation
+        {
+            #region IOperation
+
+            public void SetMaxCapacity(World world, int maxCapacity) { }
+
+            public void Set(in Entity entity, string line, StreamReader reader) => Converter<T>.Read(line, reader);
+
+            public void SetSameAs(in Entity entity, in Entity reference) { }
+
+            public void SetDisabled(in Entity entity, string line, StreamReader reader) => Converter<T>.Read(line, reader);
+
+            public void SetDisabledSameAs(in Entity entity, in Entity reference) { }
+
+            #endregion
+        }
+
         #endregion
 
         #region Fields
 
         private static readonly char[] _split = new[] { ' ', '\t' };
         private static readonly ConcurrentDictionary<Type, IComponentOperation> _componentOperations = new ConcurrentDictionary<Type, IComponentOperation>();
+        private static readonly ConcurrentDictionary<Type, IComponentOperation> _ignoreComponentOperations = new ConcurrentDictionary<Type, IComponentOperation>();
 
         private readonly Predicate<Type> _componentFilter;
 
@@ -169,9 +187,13 @@ namespace DefaultEcs.Serialization
 
                                     componentOperations.Add(
                                         componentTypeEntry[0],
-                                        _componentOperations.GetOrAdd(
-                                            type,
-                                            t => (IComponentOperation)Activator.CreateInstance(typeof(ComponentOperation<>).MakeGenericType(t))));
+                                        _componentFilter(type)
+                                            ? _componentOperations.GetOrAdd(
+                                                type,
+                                                t => (IComponentOperation)Activator.CreateInstance(typeof(ComponentOperation<>).MakeGenericType(t)))
+                                            : _ignoreComponentOperations.GetOrAdd(
+                                                type,
+                                                t => (IComponentOperation)Activator.CreateInstance(typeof(IgnoreComponentOperation<>).MakeGenericType(t))));
                                     break;
 
                                 case nameof(EntryType.ComponentMaxCapacity):
