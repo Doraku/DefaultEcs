@@ -226,7 +226,7 @@ namespace DefaultEcs.Command
         #region IDisposable
 
         /// <summary>
-        /// Releases inner unmanged resources.
+        /// Releases inner unmanaged resources.
         /// </summary>
         public void Dispose()
         {

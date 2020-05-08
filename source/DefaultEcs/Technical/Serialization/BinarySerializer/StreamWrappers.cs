@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using DefaultEcs.Serialization;
 using DefaultEcs.Technical.Helper;
 
 namespace DefaultEcs.Technical.Serialization.BinarySerializer
@@ -15,12 +16,16 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         private readonly byte[] _buffer;
 #endif
 
-        public StreamWriterWrapper(Stream stream)
+        public readonly BinarySerializationContext Context;
+
+        public StreamWriterWrapper(Stream stream, BinarySerializationContext context)
         {
             _stream = stream;
 #if NETSTANDARD1_1 || NETSTANDARD2_0
             _buffer = ArrayPool<byte>.Shared.Rent(4096);
 #endif
+
+            Context = context;
         }
 
 #if NETSTANDARD1_1 || NETSTANDARD2_0
@@ -87,6 +92,46 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             }
         }
 
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
+        public void WriteValue<T>(in T value)
+        {
+            if (Context?.TypeMarshalling != null)
+            {
+                WriteByte(2);
+                WriteString(Context.TypeMarshalling);
+                Context.TypeMarshalling = null;
+            }
+
+            if (value is null)
+            {
+                WriteByte(0);
+            }
+            else if (Converter<T>.IsSealed || value.GetType() == typeof(T))
+            {
+                WriteByte(1);
+                Converter<T>.WriteAction(this, value);
+            }
+            else
+            {
+                string typeName = TypeNames.Get(value.GetType());
+                WriteTypeMarshalling(typeName);
+                Converter.GetWriteAction(typeName)(this, value);
+            }
+        }
+
+        public void WriteTypeMarshalling(string typeMarshalling)
+        {
+            if (Context is null)
+            {
+                WriteByte(2);
+                WriteString(typeMarshalling);
+            }
+            else
+            {
+                Context.TypeMarshalling = typeMarshalling;
+            }
+        }
+
         #region IDisposable
 
         public void Dispose()
@@ -108,7 +153,9 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         private readonly byte* _bufferP;
 #endif
 
-        public StreamReaderWrapper(Stream stream)
+        public readonly BinarySerializationContext Context;
+
+        public StreamReaderWrapper(Stream stream, BinarySerializationContext context)
         {
             _stream = stream;
 #if NETSTANDARD1_1 || NETSTANDARD2_0
@@ -116,13 +163,15 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             _handle = GCHandle.Alloc(_buffer, GCHandleType.Pinned);
             _bufferP = (byte*)_handle.AddrOfPinnedObject().ToPointer();
 #endif
+
+            Context = context;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Exception GetException<T>() => new EndOfStreamException($"Could not deserialize type {typeof(T).FullName}");
+        private static Exception GetException<T>() => new EndOfStreamException($"Could not deserialize type {typeof(T).FullName}");
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static bool Throw<T>() => throw GetException<T>();
+        private static bool Throw<T>() => throw GetException<T>();
 
         public int ReadByte() => _stream.ReadByte();
 
@@ -237,6 +286,14 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
             return values;
         }
+
+        public T ReadValue<T>() => ReadByte() switch
+        {
+            0 => default,
+            1 => Converter<T>.ReadAction(this),
+            2 => Converter.GetReadAction<T>(ReadString(), Context)(this),
+            _ => throw GetException<T>(),
+        };
 
         #region IDisposable
 

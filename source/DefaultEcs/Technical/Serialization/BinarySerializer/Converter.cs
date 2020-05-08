@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using DefaultEcs.Serialization;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Serialization.BinarySerializer.ConverterAction;
 
@@ -13,19 +14,19 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         private interface IReadActionWrapper
         {
-            ReadAction<T> Get<T>();
+            ReadAction<T> Get<T>(BinarySerializationContext context);
         }
 
-        private sealed class ClassReadActionWrapper : IReadActionWrapper
+        private sealed class ClassReadActionWrapper<TReal> : IReadActionWrapper
         {
-            private readonly Delegate _readAction;
+            private readonly ReadAction<TReal> _readAction;
 
-            public ClassReadActionWrapper(Delegate readAction)
+            public ClassReadActionWrapper(ReadAction<TReal> readAction)
             {
                 _readAction = readAction;
             }
 
-            public ReadAction<T> Get<T>() => (ReadAction<T>)_readAction;
+            public ReadAction<T> Get<T>(BinarySerializationContext context) => context?.GetValueRead<TReal, T>() ?? (ReadAction<T>)(Delegate)_readAction;
         }
 
         private sealed class StructReadActionWrapper<TReal> : IReadActionWrapper
@@ -38,9 +39,9 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 _readAction = (ReadAction<TReal>)readAction;
             }
 
-            public ReadAction<T> Get<T>() => typeof(TReal) == typeof(T)
+            public ReadAction<T> Get<T>(BinarySerializationContext context) => context?.GetValueRead<TReal, T>() ?? (typeof(TReal) == typeof(T)
                 ? (ReadAction<T>)(Delegate)_readAction
-                : ((in StreamReaderWrapper r) => (T)(object)_readAction(r));
+                : ((in StreamReaderWrapper r) => (T)(object)_readAction(r)));
         }
 
         #endregion
@@ -63,7 +64,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                     if (!_writeActions.ContainsKey(typeName))
                     {
                         writeAction = (WriteAction<object>)typeof(Converter<>).MakeGenericType(Type.GetType(typeName, true)).GetTypeInfo()
-                            .GetDeclaredMethod(nameof(Converter<string>.WrapperWrite))
+                            .GetDeclaredMethod(nameof(Converter<string>.WrappedWrite))
                             .CreateDelegate(typeof(WriteAction<object>));
 
                         _writeActions.AddOrUpdate(typeName, writeAction, (_, d) => d);
@@ -74,7 +75,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             return writeAction;
         }
 
-        public static ReadAction<T> GetReadAction<T>(string typeName)
+        public static ReadAction<T> GetReadAction<T>(string typeName, BinarySerializationContext context)
         {
             if (!_readActions.TryGetValue(typeName, out IReadActionWrapper readAction))
             {
@@ -84,19 +85,19 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                     {
                         Type type = Type.GetType(typeName, true);
 
-                        Delegate action = (Delegate)typeof(Converter<>).MakeGenericType(type).GetTypeInfo()
-                            .GetDeclaredField(nameof(Converter<string>.ReadAction)).GetValue(null);
-
-                        readAction = !type.GetTypeInfo().IsValueType
-                            ? new ClassReadActionWrapper(action)
-                            : (IReadActionWrapper)Activator.CreateInstance(typeof(StructReadActionWrapper<>).MakeGenericType(type), action);
+                        readAction = (IReadActionWrapper)Activator.CreateInstance(
+                            (type.GetTypeInfo().IsValueType ? typeof(StructReadActionWrapper<>) : typeof(ClassReadActionWrapper<>)).MakeGenericType(type),
+                            typeof(Converter<>)
+                                .MakeGenericType(type).GetTypeInfo()
+                                .GetDeclaredMethod(nameof(Converter<string>.Read))
+                                .CreateDelegate(typeof(ReadAction<>).MakeGenericType(type)));
 
                         _readActions.AddOrUpdate(typeName, readAction, (_, d) => d);
                     }
                 }
             }
 
-            return readAction.Get<T>();
+            return readAction.Get<T>(context);
         }
 
         #endregion
@@ -106,9 +107,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
     {
         #region Fields
 
-        private static readonly bool _isValue;
-        private static readonly bool _isSealed;
-
+        public static readonly bool IsSealed;
         public static readonly WriteAction<T> WriteAction;
         public static readonly ReadAction<T> ReadAction;
 
@@ -118,17 +117,16 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         static Converter()
         {
-            _isValue = typeof(T).GetTypeInfo().IsValueType;
-            _isSealed = typeof(T).GetTypeInfo().IsSealed || typeof(T) == typeof(Type);
+            IsSealed = typeof(T).GetTypeInfo().IsSealed || typeof(T) == typeof(Type);
 
             (WriteAction, ReadAction) = typeof(T) switch
             {
                 Type type when type == typeof(Type) => TypeConverter.GetActions<T>(),
-                Type type when type.GetTypeInfo().IsAbstract => (null, null),
                 Type type when type == typeof(string) => StringConverter.GetActions<T>(),
                 Type type when type.IsUnmanaged() => UnmanagedConverter.GetActions<T>(),
                 Type type when type.IsArray && type.GetElementType().IsUnmanaged() => UnmanagedConverter.GetArrayActions<T>(),
                 Type type when type.IsArray => ArrayConverter.GetActions<T>(),
+                Type type when type.GetTypeInfo().IsAbstract => (null, null),
                 _ => ManagedConverter.GetActions<T>()
             };
         }
@@ -140,38 +138,26 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void Write(in StreamWriterWrapper writer, in T value)
         {
-            if (_isValue)
+            WriteAction<T> action = writer.Context?.GetValueWrite<T>();
+            if (action is null)
             {
-                WriteAction(writer, value);
-            }
-            else if (value is null)
-            {
-                writer.WriteByte(0);
-            }
-            else if (_isSealed || value.GetType() == typeof(T))
-            {
-                writer.WriteByte(1);
-                WriteAction(writer, value);
+                writer.WriteValue(value);
             }
             else
             {
-                writer.WriteByte(2);
-                string typeName = TypeNames.Get(value.GetType());
-                writer.WriteString(typeName);
-                Converter.GetWriteAction(typeName)(writer, value);
+                action(writer, value);
             }
         }
 
-        public static T Read(in StreamReaderWrapper reader) => _isValue ? ReadAction(reader) : (reader.ReadByte()) switch
+        public static T Read(in StreamReaderWrapper reader)
         {
-            0 => default,
-            1 => ReadAction(reader),
-            2 => Converter.GetReadAction<T>(reader.ReadString())(reader),
-            _ => throw StreamReaderWrapper.GetException<T>(),
-        };
+            ReadAction<T> action = reader.Context?.GetValueRead<T, T>();
+
+            return action is null ? reader.ReadValue<T>() : action(reader);
+        }
 
         [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
-        public static void WrapperWrite(in StreamWriterWrapper writer, in object value) => WriteAction(writer, (T)value);
+        public static void WrappedWrite(in StreamWriterWrapper writer, in object value) => Write(writer, (T)value);
 
         #endregion
     }

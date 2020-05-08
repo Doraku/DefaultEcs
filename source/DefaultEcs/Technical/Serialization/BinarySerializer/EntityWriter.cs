@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using DefaultEcs.Serialization;
 
 namespace DefaultEcs.Technical.Serialization.BinarySerializer
@@ -62,6 +63,37 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             }
         }
 
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
+        public void WriteComponent<T>(in T component, in Entity componentOwner)
+        {
+            if (!_types.TryGetValue(typeof(T), out ushort typeId))
+            {
+                typeId = _currentType++;
+                _types.Add(typeof(T), typeId);
+
+                _writer.WriteByte((byte)EntryType.ComponentType);
+                _writer.Write(typeId);
+                _writer.WriteString(TypeNames.Get(typeof(T)));
+            }
+
+            (Entity, Type) componentKey = (componentOwner, typeof(T));
+            if (_components.TryGetValue(componentKey, out int key))
+            {
+                _writer.WriteByte((byte)(_currentEntity.IsEnabled<T>() ? EntryType.ComponentSameAs : EntryType.DisabledComponentSameAs));
+                _writer.Write(typeId);
+                _writer.Write(key);
+            }
+            else
+            {
+                _components.Add(componentKey, _entityCount);
+
+                _writer.WriteByte((byte)(_currentEntity.IsEnabled<T>() ? EntryType.Component : EntryType.DisabledComponent));
+                _writer.Write(typeId);
+
+                Converter<T>.Write(_writer, component);
+            }
+        }
+
         #endregion
 
         #region IComponentReader
@@ -70,31 +102,14 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         {
             if (_componentFilter(typeof(T)))
             {
-                if (!_types.TryGetValue(typeof(T), out ushort typeId))
+                Action<EntityWriter, T, Entity> action = _writer.Context?.GetEntityWrite<T>();
+                if (action is null)
                 {
-                    typeId = _currentType++;
-                    _types.Add(typeof(T), typeId);
-
-                    _writer.WriteByte((byte)EntryType.ComponentType);
-                    _writer.Write(typeId);
-                    _writer.WriteString(TypeNames.Get(typeof(T)));
-                }
-
-                (Entity, Type) componentKey = (componentOwner, typeof(T));
-                if (_components.TryGetValue(componentKey, out int key))
-                {
-                    _writer.WriteByte((byte)(_currentEntity.IsEnabled<T>() ? EntryType.ComponentSameAs : EntryType.DisabledComponentSameAs));
-                    _writer.Write(typeId);
-                    _writer.Write(key);
+                    WriteComponent(component, componentOwner);
                 }
                 else
                 {
-                    _components.Add(componentKey, _entityCount);
-
-                    _writer.WriteByte((byte)(_currentEntity.IsEnabled<T>() ? EntryType.Component : EntryType.DisabledComponent));
-                    _writer.Write(typeId);
-
-                    Converter<T>.Write(_writer, component);
+                    action(this, component, componentOwner);
                 }
             }
         }

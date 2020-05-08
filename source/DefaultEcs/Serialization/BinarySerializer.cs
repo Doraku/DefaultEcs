@@ -15,13 +15,14 @@ namespace DefaultEcs.Serialization
     {
         #region Types
 
-        private interface IComponentOperation
+        internal interface IComponentOperation
         {
             void SetMaxCapacity(World world, int maxCapacity);
             void Set(in Entity entity, in StreamReaderWrapper reader);
             void SetSameAs(in Entity entity, in Entity reference);
             void SetDisabled(in Entity entity, in StreamReaderWrapper reader);
             void SetDisabledSameAs(in Entity entity, in Entity reference);
+            IComponentOperation ApplyContext(BinarySerializationContext context);
         }
 
         private sealed class ComponentOperation<T> : IComponentOperation
@@ -46,6 +47,8 @@ namespace DefaultEcs.Serialization
                 entity.Disable<T>();
             }
 
+            public IComponentOperation ApplyContext(BinarySerializationContext context) => context?.GetComponentOperation<T>() ?? this;
+
             #endregion
         }
 
@@ -63,6 +66,8 @@ namespace DefaultEcs.Serialization
 
             public void SetDisabledSameAs(in Entity entity, in Entity reference) { }
 
+            public IComponentOperation ApplyContext(BinarySerializationContext context) => this;
+
             #endregion
         }
 
@@ -74,6 +79,7 @@ namespace DefaultEcs.Serialization
         private static readonly ConcurrentDictionary<Type, IComponentOperation> _ignoreComponentOperations = new ConcurrentDictionary<Type, IComponentOperation>();
 
         private readonly Predicate<Type> _componentFilter;
+        private readonly BinarySerializationContext _context;
 
         #endregion
 
@@ -82,17 +88,35 @@ namespace DefaultEcs.Serialization
         /// <summary>
         /// Initializes a new instance of the <see cref="BinarySerializer"/> class.
         /// </summary>
-        /// <param name="componentFilter">A filter used to check wether a component type should be serialized or not. A <see langword="null"/> value means everything should be serialized.</param>
-        public BinarySerializer(Predicate<Type> componentFilter)
+        /// <param name="componentFilter">A filter used to check wether a component type should be serialized/deserialized or not. A <see langword="null"/> value means everything is taken.</param>
+        /// <param name="context">The <see cref="BinarySerializationContext"/> used to convert type during serialization/deserialization.</param>
+        public BinarySerializer(Predicate<Type> componentFilter, BinarySerializationContext context)
         {
             _componentFilter = componentFilter ?? new Predicate<Type>(_ => true);
+            _context = context;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BinarySerializer"/> class.
         /// </summary>
+        /// <param name="context">The <see cref="BinarySerializationContext"/> used to convert type during serialization/deserialization.</param>
+        public BinarySerializer(BinarySerializationContext context)
+            : this(null, context)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinarySerializer"/> class.
+        /// </summary>
+        /// <param name="componentFilter">A filter used to check wether a component type should be serialized/deserialized or not. A <see langword="null"/> value means everything is taken.</param>
+        public BinarySerializer(Predicate<Type> componentFilter)
+            : this(componentFilter, null)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinarySerializer"/> class.
+        /// </summary>
         public BinarySerializer()
-            : this(null)
+            : this(null, null)
         { }
 
         #endregion
@@ -106,7 +130,7 @@ namespace DefaultEcs.Serialization
 
             try
             {
-                using StreamReaderWrapper reader = new StreamReaderWrapper(stream);
+                using StreamReaderWrapper reader = new StreamReaderWrapper(stream, _context);
 
                 world ??= new World(reader.Read<int>());
 
@@ -123,13 +147,13 @@ namespace DefaultEcs.Serialization
                             Type componentType = Type.GetType(reader.ReadString(), true);
                             componentOperations.Add(
                                 operationIndex,
-                                _componentFilter(componentType)
+                                (_componentFilter(componentType)
                                     ? _componentOperations.GetOrAdd(
                                         componentType,
                                         t => (IComponentOperation)Activator.CreateInstance(typeof(ComponentOperation<>).MakeGenericType(t)))
                                     : _ignoreComponentOperations.GetOrAdd(
                                         componentType,
-                                        t => (IComponentOperation)Activator.CreateInstance(typeof(IgnoreComponentOperation<>).MakeGenericType(t))));
+                                        t => (IComponentOperation)Activator.CreateInstance(typeof(IgnoreComponentOperation<>).MakeGenericType(t)))).ApplyContext(_context));
                             break;
 
                         case EntryType.ComponentMaxCapacity:
@@ -193,16 +217,44 @@ namespace DefaultEcs.Serialization
         /// </summary>
         /// <typeparam name="T">The type of the object serialized.</typeparam>
         /// <param name="stream">The <see cref="Stream"/> instance on which the object is to be serialized.</param>
-        /// <param name="obj">The object to serialize.</param>
+        /// <param name="value">The object to serialize.</param>
+        /// <param name="context">The <see cref="BinarySerializationContext"/> used to convert type during serialization.</param>
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
-        public static void Write<T>(Stream stream, in T obj)
+        public static void Write<T>(Stream stream, in T value, BinarySerializationContext context)
         {
             if (stream is null) throw new ArgumentNullException(nameof(stream));
 
-            using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
+            using StreamWriterWrapper writer = new StreamWriterWrapper(stream, context);
 
-            Converter<T>.Write(writer, obj);
+            Converter<T>.Write(writer, value);
+        }
+
+        /// <summary>
+        /// Writes an object of type <typeparamref name="T"/> on the given stream.
+        /// </summary>
+        /// <typeparam name="T">The type of the object serialized.</typeparam>
+        /// <param name="stream">The <see cref="Stream"/> instance on which the object is to be serialized.</param>
+        /// <param name="value">The object to serialize.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
+        public static void Write<T>(Stream stream, in T value) => Write(stream, value, null);
+
+        /// <summary>
+        /// Read an object of type <typeparamref name="T"/> from the given stream.
+        /// </summary>
+        /// <typeparam name="T">The type of the object deserialized.</typeparam>
+        /// <param name="stream">The <see cref="Stream"/> instance from which the object is to be deserialized.</param>
+        /// <param name="context">The <see cref="BinarySerializationContext"/> used to convert type during deserialization.</param>
+        /// <returns>The object deserialized.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
+        public static T Read<T>(Stream stream, BinarySerializationContext context)
+        {
+            if (stream is null) throw new ArgumentNullException(nameof(stream));
+
+            using StreamReaderWrapper reader = new StreamReaderWrapper(stream, context);
+
+            return Converter<T>.Read(reader);
         }
 
         /// <summary>
@@ -212,14 +264,7 @@ namespace DefaultEcs.Serialization
         /// <param name="stream">The <see cref="Stream"/> instance from which the object is to be deserialized.</param>
         /// <returns>The object deserialized.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
-        public static T Read<T>(Stream stream)
-        {
-            if (stream is null) throw new ArgumentNullException(nameof(stream));
-
-            using StreamReaderWrapper reader = new StreamReaderWrapper(stream);
-
-            return Converter<T>.Read(reader);
-        }
+        public static T Read<T>(Stream stream) => Read<T>(stream, null);
 
         #endregion
 
@@ -237,7 +282,7 @@ namespace DefaultEcs.Serialization
             if (stream is null) throw new ArgumentNullException(nameof(stream));
             if (world is null) throw new ArgumentNullException(nameof(world));
 
-            using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
+            using StreamWriterWrapper writer = new StreamWriterWrapper(stream, _context);
 
             writer.Write(world.MaxCapacity);
 
@@ -274,7 +319,7 @@ namespace DefaultEcs.Serialization
             if (stream is null) throw new ArgumentNullException(nameof(stream));
             if (entities is null) throw new ArgumentNullException(nameof(entities));
 
-            using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
+            using StreamWriterWrapper writer = new StreamWriterWrapper(stream, _context);
 
             new EntityWriter(writer, new Dictionary<Type, ushort>(), _componentFilter).Write(entities);
         }

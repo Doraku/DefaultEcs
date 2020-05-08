@@ -29,26 +29,43 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #endregion
 
+        #region Methods
+
+        public void WriteComponent<T>(int maxCapacity)
+        {
+            _types.Add(typeof(T), _currentType);
+
+            _writer.WriteByte((byte)EntryType.ComponentType);
+            _writer.Write(_currentType);
+            _writer.WriteString(TypeNames.Get(typeof(T)));
+
+            if (maxCapacity != _worldMaxCapacity)
+            {
+                _writer.WriteByte((byte)EntryType.ComponentMaxCapacity);
+                _writer.Write(_currentType);
+                _writer.Write(maxCapacity);
+            }
+
+            ++_currentType;
+        }
+
+        #endregion
+
         #region IComponentTypeReader
 
         void IComponentTypeReader.OnRead<T>(int maxCapacity)
         {
             if (_componentFilter(typeof(T)))
             {
-                _types.Add(typeof(T), _currentType);
-
-                _writer.WriteByte((byte)EntryType.ComponentType);
-                _writer.Write(_currentType);
-                _writer.WriteString(TypeNames.Get(typeof(T)));
-
-                if (maxCapacity != _worldMaxCapacity)
+                Action<ComponentTypeWriter, int> action = _writer.Context?.GetWorldWrite<T>();
+                if (action is null)
                 {
-                    _writer.WriteByte((byte)EntryType.ComponentMaxCapacity);
-                    _writer.Write(_currentType);
-                    _writer.Write(maxCapacity);
+                    WriteComponent<T>(maxCapacity);
                 }
-
-                ++_currentType;
+                else
+                {
+                    action(this, maxCapacity);
+                }
             }
         }
 
