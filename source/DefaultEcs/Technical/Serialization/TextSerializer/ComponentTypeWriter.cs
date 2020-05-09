@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using DefaultEcs.Serialization;
 using DefaultEcs.Technical.Helper;
@@ -11,7 +10,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
     {
         #region Fields
 
-        private readonly StreamWriter _writer;
+        private readonly StreamWriterWrapper _writer;
         private readonly Dictionary<Type, string> _types;
         private readonly int _worldMaxCapacity;
         private readonly Predicate<Type> _componentFilter;
@@ -20,7 +19,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         #region Initialisation
 
-        public ComponentTypeWriter(StreamWriter writer, Dictionary<Type, string> types, int worldMaxCapacity, Predicate<Type> componentFilter)
+        public ComponentTypeWriter(StreamWriterWrapper writer, Dictionary<Type, string> types, int worldMaxCapacity, Predicate<Type> componentFilter)
         {
             _writer = writer;
             _types = types;
@@ -46,10 +45,10 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
                 _types.Add(typeof(T), shortName);
 
-                _writer.WriteLine($"{nameof(EntryType.ComponentType)} {shortName} {TypeNames.Get(typeof(T))}");
+                _writer.Stream.WriteLine($"{nameof(EntryType.ComponentType)} {shortName} {TypeNames.Get(typeof(T))}");
                 if (maxCapacity != _worldMaxCapacity && !typeof(T).GetTypeInfo().IsFlagType())
                 {
-                    _writer.WriteLine($"{nameof(EntryType.ComponentMaxCapacity)} {shortName} {maxCapacity}");
+                    _writer.Stream.WriteLine($"{nameof(EntryType.ComponentMaxCapacity)} {shortName} {maxCapacity}");
                 }
             }
         }

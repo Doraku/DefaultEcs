@@ -170,6 +170,9 @@ namespace DefaultEcs.Test.Serialization
         public void Should_handle_int() => Test(42);
 
         [Fact]
+        public void Should_handle_char() => Test('@');
+
+        [Fact]
         public void Should_handle_null_string() => Test(default(string));
 
         [Fact]
@@ -200,7 +203,7 @@ namespace DefaultEcs.Test.Serialization
         public void Should_handle_derived_class() => Test<SimpleClass>(new DerivedClass(0));
 
         [Fact]
-        public void Should_handle_bigger_than_buffer_string() => Test(new string(Enumerable.Repeat(' ', 2000).ToArray()));
+        public void Should_handle_bigger_than_buffer_string() => Test(new string(Enumerable.Repeat('-', 2000).ToArray()));
 
         [Fact]
         public void Should_handle_bigger_than_buffer_struct() => Test(new BigStruct(0));
