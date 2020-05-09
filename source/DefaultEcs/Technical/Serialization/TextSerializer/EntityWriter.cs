@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics.CodeAnalysis;
 using DefaultEcs.Serialization;
 
 namespace DefaultEcs.Technical.Serialization.TextSerializer
@@ -61,6 +61,39 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             }
         }
 
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
+        public void WriteComponent<T>(in T component, in Entity componentOwner)
+        {
+            if (!_types.TryGetValue(typeof(T), out _))
+            {
+                string typeName = typeof(T).Name;
+
+                int repeatCount = 1;
+                while (_types.ContainsValue(typeName))
+                {
+                    typeName = $"{typeof(T).Name}_{repeatCount++}";
+                }
+
+                _types.Add(typeof(T), typeName);
+
+                _writer.Stream.WriteLine($"{nameof(EntryType.ComponentType)} {typeName} {TypeNames.Get(typeof(T))}");
+            }
+
+            (Entity, Type) componentKey = (componentOwner, typeof(T));
+            if (_components.TryGetValue(componentKey, out int key))
+            {
+                string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.ComponentSameAs) : nameof(EntryType.DisabledComponentSameAs);
+                _writer.Stream.WriteLine($"{entry} {_types[typeof(T)]} {key}");
+            }
+            else
+            {
+                _components.Add(componentKey, _entityCount);
+                string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.Component) : nameof(EntryType.DisabledComponent);
+                _writer.Stream.Write($"{entry} {_types[typeof(T)]} ");
+                Converter<T>.Write(_writer, component);
+            }
+        }
+
         #endregion
 
         #region IComponentReader
@@ -69,33 +102,14 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         {
             if (_componentFilter(typeof(T)))
             {
-                if (!_types.TryGetValue(typeof(T), out _))
+                Action<EntityWriter, T, Entity> action = _writer.Context?.GetEntityWrite<T>();
+                if (action is null)
                 {
-                    string typeName = typeof(T).Name;
-
-                    int repeatCount = 1;
-                    while (_types.ContainsValue(typeName))
-                    {
-                        typeName = $"{typeof(T).Name}_{repeatCount++}";
-                    }
-
-                    _types.Add(typeof(T), typeName);
-
-                    _writer.Stream.WriteLine($"{nameof(EntryType.ComponentType)} {typeName} {TypeNames.Get(typeof(T))}");
-                }
-
-                (Entity, Type) componentKey = (componentOwner, typeof(T));
-                if (_components.TryGetValue(componentKey, out int key))
-                {
-                    string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.ComponentSameAs) : nameof(EntryType.DisabledComponentSameAs);
-                    _writer.Stream.WriteLine($"{entry} {_types[typeof(T)]} {key}");
+                    WriteComponent(component, componentOwner);
                 }
                 else
                 {
-                    _components.Add(componentKey, _entityCount);
-                    string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.Component) : nameof(EntryType.DisabledComponent);
-                    _writer.Stream.Write($"{entry} {_types[typeof(T)]} ");
-                    Converter<T>.Write(_writer, component);
+                    action(this, component, componentOwner);
                 }
             }
         }

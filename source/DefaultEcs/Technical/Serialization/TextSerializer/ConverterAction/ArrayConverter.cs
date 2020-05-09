@@ -35,11 +35,11 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
             }
 
             List<T> value = new List<T>();
-            while (!reader.EndOfStream && reader.PeekValue() != _arrayEnd)
+            while (!reader.EndOfStream && reader.Peek() != _arrayEnd)
             {
-                if (string.IsNullOrEmpty(reader.PeekValue()))
+                if (string.IsNullOrEmpty(reader.Peek()))
                 {
-                    reader.ReadValue();
+                    reader.Read();
                     continue;
                 }
 

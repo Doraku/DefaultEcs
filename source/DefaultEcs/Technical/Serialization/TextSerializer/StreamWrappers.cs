@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using DefaultEcs.Serialization;
 
 namespace DefaultEcs.Technical.Serialization.TextSerializer
 {
@@ -9,13 +11,15 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
     {
         private int _indentation;
 
-        public readonly StreamWriter Stream;
+        public StreamWriter Stream { get; }
+        public TextSerializationContext Context { get; }
 
-        public StreamWriterWrapper(Stream stream)
+        public StreamWriterWrapper(Stream stream, TextSerializationContext context)
         {
             _indentation = 0;
 
             Stream = new StreamWriter(stream, new UTF8Encoding(false, true), 1024, true);
+            Context = context;
         }
 
         public void AddIndentation() => ++_indentation;
@@ -36,6 +40,45 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         public void WriteLine(string value) => Stream.WriteLine(value);
 
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
+        public void WriteValue<T>(in T value)
+        {
+            if (Context?.TypeMarshalling != null)
+            {
+                Stream.Write("$type ");
+                Stream.WriteLine(Context.TypeMarshalling);
+                Context.TypeMarshalling = null;
+            }
+
+            if (value is null)
+            {
+                Stream.WriteLine("null");
+            }
+            else if (Converter<T>.IsSealed || typeof(T) == value.GetType())
+            {
+                Converter<T>.WriteAction(this, value);
+            }
+            else
+            {
+                Type type = value.GetType();
+                WriteTypeMarshalling(TypeNames.Get(type));
+                Converter.GetWriteAction(type)(this, value);
+            }
+        }
+
+        public void WriteTypeMarshalling(string typeMarshalling)
+        {
+            if (Context is null)
+            {
+                Stream.Write("$type ");
+                Stream.WriteLine(typeMarshalling);
+            }
+            else
+            {
+                Context.TypeMarshalling = typeMarshalling;
+            }
+        }
+
         #region IDisposable
 
         public void Dispose() => Stream.Dispose();
@@ -53,12 +96,14 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         public bool EndOfStream => _stream.EndOfStream && _peekedValue is null && string.IsNullOrEmpty(_currentLine);
 
+        public TextSerializationContext Context { get; }
         public int LineNumber { get; private set; }
 
-        public StreamReaderWrapper(Stream stream)
+        public StreamReaderWrapper(Stream stream, TextSerializationContext context)
         {
             _stream = new StreamReader(stream, Encoding.UTF8, true, 1024, true);
 
+            Context = context;
             LineNumber = -1;
         }
 
@@ -97,7 +142,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
             while (!EndOfStream)
             {
-                if (ReadValue() == value)
+                if (Read() == value)
                 {
                     return true;
                 }
@@ -106,9 +151,9 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             return false;
         }
 
-        public string PeekValue() => _peekedValue ?? (_peekedValue = ReadValue());
+        public string Peek() => _peekedValue ?? (_peekedValue = Read());
 
-        public string ReadValue()
+        public string Read()
         {
             if (_peekedValue != null)
             {
@@ -172,7 +217,6 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 }
 
                 _currentLine = null;
-                return string.Empty;
             }
 
             return string.Empty;
@@ -192,9 +236,32 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
                 line = _currentLine.Substring(_currentIndex);
             }
+
             _currentLine = null;
 
             return line;
+        }
+
+        public T ReadValue<T>()
+        {
+            while (!EndOfStream && string.IsNullOrEmpty(Peek()))
+            {
+                Read();
+            }
+
+            switch (Peek())
+            {
+                case "null":
+                    Read();
+                    return default;
+
+                case "$type":
+                    Read();
+                    return Converter.GetReadAction<T>(Type.GetType(ReadLine(), true), Context)(this);
+
+                default:
+                    return Converter<T>.ReadAction(this);
+            }
         }
 
         #region IDisposable

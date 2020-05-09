@@ -106,15 +106,15 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
 
             T value = _isValue ? default : ObjectInitializer<T>.Create();
 
-            while (!reader.EndOfStream && reader.PeekValue() != _objectEnd)
+            while (!reader.EndOfStream && reader.Peek() != _objectEnd)
             {
-                if (string.IsNullOrEmpty(reader.PeekValue()))
+                if (string.IsNullOrEmpty(reader.Peek()))
                 {
-                    reader.ReadValue();
+                    reader.Read();
                     continue;
                 }
 
-                if (_readFieldActions.TryGetValue(reader.ReadValue().ToUpperInvariant(), out ReadFieldAction action))
+                if (_readFieldActions.TryGetValue(reader.Read().ToUpperInvariant(), out ReadFieldAction action))
                 {
                     action(reader, ref value);
                 }
@@ -124,7 +124,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
                 }
             }
 
-            reader.ReadValue();
+            reader.Read();
 
             return value;
         }

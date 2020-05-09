@@ -17,13 +17,14 @@ namespace DefaultEcs.Serialization
     {
         #region Types
 
-        private interface IComponentOperation
+        internal interface IComponentOperation
         {
             void SetMaxCapacity(World world, int maxCapacity);
             void Set(in Entity entity, StreamReaderWrapper reader);
             void SetSameAs(in Entity entity, in Entity reference);
             void SetDisabled(in Entity entity, StreamReaderWrapper reader);
             void SetDisabledSameAs(in Entity entity, in Entity reference);
+            IComponentOperation ApplyContext(TextSerializationContext context);
         }
 
         private sealed class ComponentOperation<T> : IComponentOperation
@@ -32,31 +33,14 @@ namespace DefaultEcs.Serialization
 
             public void SetMaxCapacity(World world, int maxCapacity) => world.SetMaxCapacity<T>(maxCapacity);
 
-            public void Set(in Entity entity, StreamReaderWrapper reader)
-            {
-                try
-                {
-                    entity.Set(Converter<T>.Read(reader));
-                }
-                catch (Exception exception)
-                {
-                    throw new ArgumentException("Error while parsing", exception);
-                }
-            }
+            public void Set(in Entity entity, StreamReaderWrapper reader) => entity.Set(Converter<T>.Read(reader));
 
             public void SetSameAs(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
 
             public void SetDisabled(in Entity entity, StreamReaderWrapper reader)
             {
-                try
-                {
-                    entity.Set(Converter<T>.Read(reader));
-                    entity.Disable<T>();
-                }
-                catch (Exception exception)
-                {
-                    throw new ArgumentException("Error while parsing", exception);
-                }
+                entity.Set(Converter<T>.Read(reader));
+                entity.Disable<T>();
             }
 
             public void SetDisabledSameAs(in Entity entity, in Entity reference)
@@ -64,6 +48,8 @@ namespace DefaultEcs.Serialization
                 entity.SetSameAs<T>(reference);
                 entity.Disable<T>();
             }
+
+            public IComponentOperation ApplyContext(TextSerializationContext context) => context?.GetComponentOperation<T>() ?? this;
 
             #endregion
         }
@@ -82,6 +68,8 @@ namespace DefaultEcs.Serialization
 
             public void SetDisabledSameAs(in Entity entity, in Entity reference) { }
 
+            public IComponentOperation ApplyContext(TextSerializationContext context) => this;
+
             #endregion
         }
 
@@ -93,6 +81,7 @@ namespace DefaultEcs.Serialization
         private static readonly ConcurrentDictionary<Type, IComponentOperation> _ignoreComponentOperations = new ConcurrentDictionary<Type, IComponentOperation>();
 
         private readonly Predicate<Type> _componentFilter;
+        private readonly TextSerializationContext _context;
 
         #endregion
 
@@ -102,16 +91,34 @@ namespace DefaultEcs.Serialization
         /// Initializes a new instance of the <see cref="TextSerializer"/> class.
         /// </summary>
         /// <param name="componentFilter">A filter used to check wether a component type should be serialized/deserialized or not. A <see langword="null"/> value means everything is taken.</param>
-        public TextSerializer(Predicate<Type> componentFilter)
+        /// <param name="context">The <see cref="TextSerializationContext"/> used to convert type during serialization/deserialization.</param>
+        public TextSerializer(Predicate<Type> componentFilter, TextSerializationContext context)
         {
             _componentFilter = componentFilter ?? new Predicate<Type>(_ => true);
+            _context = context;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TextSerializer"/> class.
         /// </summary>
+        /// <param name="context">The <see cref="TextSerializationContext"/> used to convert type during serialization/deserialization.</param>
+        public TextSerializer(TextSerializationContext context)
+            : this(null, context)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextSerializer"/> class.
+        /// </summary>
+        /// <param name="componentFilter">A filter used to check wether a component type should be serialized/deserialized or not. A <see langword="null"/> value means everything is taken.</param>
+        public TextSerializer(Predicate<Type> componentFilter)
+            : this(componentFilter, null)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextSerializer"/> class.
+        /// </summary>
         public TextSerializer()
-            : this(null)
+            : this(null, null)
         { }
 
         #endregion
@@ -122,7 +129,7 @@ namespace DefaultEcs.Serialization
         {
             static IComponentOperation ReadComponentOperation(StreamReaderWrapper reader, Dictionary<string, IComponentOperation> componentOperations)
             {
-                if (!componentOperations.TryGetValue(reader.ReadValue(), out IComponentOperation componentOperation))
+                if (!componentOperations.TryGetValue(reader.Read(), out IComponentOperation componentOperation))
                 {
                     throw new ArgumentException($"Unknown component type used on line {reader.LineNumber}");
                 }
@@ -132,7 +139,7 @@ namespace DefaultEcs.Serialization
 
             static Entity ReadEntity(StreamReaderWrapper reader, Dictionary<string, Entity> entities)
             {
-                if (!entities.TryGetValue(reader.ReadValue(), out Entity entity))
+                if (!entities.TryGetValue(reader.Read(), out Entity entity))
                 {
                     throw new ArgumentException($"Unknown entity on line {reader.LineNumber}");
                 }
@@ -142,7 +149,7 @@ namespace DefaultEcs.Serialization
 
             static int ReadInt(StreamReaderWrapper reader)
             {
-                string value = reader.ReadValue();
+                string value = reader.Read();
                 if (!int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue))
                 {
                     throw new ArgumentException($"Unable to convert '{value}' to a number on line {reader.LineNumber}");
@@ -156,14 +163,14 @@ namespace DefaultEcs.Serialization
 
             try
             {
-                using StreamReaderWrapper reader = new StreamReaderWrapper(stream);
+                using StreamReaderWrapper reader = new StreamReaderWrapper(stream, _context);
 
                 Entity currentEntity = default;
                 Dictionary<string, IComponentOperation> componentOperations = new Dictionary<string, IComponentOperation>();
 
                 while (!reader.EndOfStream)
                 {
-                    switch (reader.ReadValue())
+                    switch (reader.Read())
                     {
                         case nameof(EntryType.WorldMaxCapacity):
                             if (!isNewWorld || world != null) throw new ArgumentException($"Encoutered {nameof(EntryType.WorldMaxCapacity)} on line {reader.LineNumber}");
@@ -176,7 +183,7 @@ namespace DefaultEcs.Serialization
                             world ??= new World();
 
                             currentEntity = world.CreateEntity();
-                            string id = reader.ReadValue();
+                            string id = reader.Read();
                             if (!string.IsNullOrEmpty(id))
                             {
                                 entities.Add(id, currentEntity);
@@ -189,7 +196,7 @@ namespace DefaultEcs.Serialization
 
                             currentEntity = world.CreateEntity();
                             currentEntity.Disable();
-                            id = reader.ReadValue();
+                            id = reader.Read();
                             if (!string.IsNullOrEmpty(id))
                             {
                                 entities.Add(id, currentEntity);
@@ -198,7 +205,7 @@ namespace DefaultEcs.Serialization
                             break;
 
                         case nameof(EntryType.ComponentType):
-                            string componentType = reader.ReadValue();
+                            string componentType = reader.Read();
                             if (string.IsNullOrEmpty(componentType))
                             {
                                 throw new ArgumentException($"No component type identifier on line {reader.LineNumber}");
@@ -208,13 +215,13 @@ namespace DefaultEcs.Serialization
 
                             componentOperations.Add(
                                 componentType,
-                                _componentFilter(type)
+                                (_componentFilter(type)
                                     ? _componentOperations.GetOrAdd(
                                         type,
                                         t => (IComponentOperation)Activator.CreateInstance(typeof(ComponentOperation<>).MakeGenericType(t)))
                                     : _ignoreComponentOperations.GetOrAdd(
                                         type,
-                                        t => (IComponentOperation)Activator.CreateInstance(typeof(IgnoreComponentOperation<>).MakeGenericType(t))));
+                                        t => (IComponentOperation)Activator.CreateInstance(typeof(IgnoreComponentOperation<>).MakeGenericType(t)))).ApplyContext(_context));
                             break;
 
                         case nameof(EntryType.ComponentMaxCapacity):
@@ -286,15 +293,43 @@ namespace DefaultEcs.Serialization
         /// <typeparam name="T">The type of the object serialized.</typeparam>
         /// <param name="stream">The <see cref="Stream"/> instance on which the object is to be serialized.</param>
         /// <param name="value">The object to serialize.</param>
+        /// <param name="context">The <see cref="TextSerializationContext"/> used to convert type during serialization.</param>
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
-        public static void Write<T>(Stream stream, in T value)
+        public static void Write<T>(Stream stream, in T value, TextSerializationContext context)
         {
             if (stream is null) throw new ArgumentNullException(nameof(stream));
 
-            using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
+            using StreamWriterWrapper writer = new StreamWriterWrapper(stream, context);
 
             Converter<T>.Write(writer, value);
+        }
+
+        /// <summary>
+        /// Writes an object of type <typeparamref name="T"/> on the given stream.
+        /// </summary>
+        /// <typeparam name="T">The type of the object serialized.</typeparam>
+        /// <param name="stream">The <see cref="Stream"/> instance on which the object is to be serialized.</param>
+        /// <param name="value">The object to serialize.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
+        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
+        public static void Write<T>(Stream stream, in T value) => Write(stream, value, null);
+
+        /// <summary>
+        /// Read an object of type <typeparamref name="T"/> from the given stream.
+        /// </summary>
+        /// <typeparam name="T">The type of the object deserialized.</typeparam>
+        /// <param name="stream">The <see cref="Stream"/> instance from which the object is to be deserialized.</param>
+        /// <param name="context">The <see cref="TextSerializationContext"/> used to convert type during deserialization.</param>
+        /// <returns>The object deserialized.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
+        public static T Read<T>(Stream stream, TextSerializationContext context)
+        {
+            if (stream is null) throw new ArgumentNullException(nameof(stream));
+
+            using StreamReaderWrapper reader = new StreamReaderWrapper(stream, context);
+
+            return Converter<T>.Read(reader);
         }
 
         /// <summary>
@@ -304,14 +339,7 @@ namespace DefaultEcs.Serialization
         /// <param name="stream">The <see cref="Stream"/> instance from which the object is to be deserialized.</param>
         /// <returns>The object deserialized.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
-        public static T Read<T>(Stream stream)
-        {
-            if (stream is null) throw new ArgumentNullException(nameof(stream));
-
-            using StreamReaderWrapper reader = new StreamReaderWrapper(stream);
-
-            return Converter<T>.Read(reader);
-        }
+        public static T Read<T>(Stream stream) => Read<T>(stream, null);
 
         #endregion
 
@@ -329,7 +357,7 @@ namespace DefaultEcs.Serialization
             if (stream is null) throw new ArgumentNullException(nameof(stream));
             if (world is null) throw new ArgumentNullException(nameof(world));
 
-            using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
+            using StreamWriterWrapper writer = new StreamWriterWrapper(stream, _context);
 
             Dictionary<Type, string> types = new Dictionary<Type, string>();
 
@@ -369,7 +397,7 @@ namespace DefaultEcs.Serialization
             if (stream is null) throw new ArgumentNullException(nameof(stream));
             if (entities is null) throw new ArgumentNullException(nameof(entities));
 
-            using StreamWriterWrapper writer = new StreamWriterWrapper(stream);
+            using StreamWriterWrapper writer = new StreamWriterWrapper(stream, _context);
 
             new EntityWriter(writer, new Dictionary<Type, string>(), _componentFilter).Write(entities);
         }

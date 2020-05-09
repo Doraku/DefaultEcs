@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using DefaultEcs.Serialization;
 using DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction;
 
 namespace DefaultEcs.Technical.Serialization.TextSerializer
@@ -12,22 +13,23 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         private interface IReadActionWrapper
         {
-            ReadAction<T> Get<T>();
+            ReadAction<T> Get<T>(TextSerializationContext context);
         }
 
-        private class ClassReadActionWrapper : IReadActionWrapper
+        private sealed class ClassReadActionWrapper<TReal> : IReadActionWrapper
         {
-            private readonly Delegate _readAction;
+            private readonly ReadAction<TReal> _readAction;
 
-            public ClassReadActionWrapper(Delegate readAction)
+            public ClassReadActionWrapper(ReadAction<TReal> readAction)
             {
                 _readAction = readAction;
             }
 
-            public ReadAction<T> Get<T>() => (ReadAction<T>)_readAction;
+            public ReadAction<T> Get<T>(TextSerializationContext context) => context?.GetValueRead<TReal, T>() ?? (ReadAction<T>)(Delegate)_readAction;
         }
 
-        private class StructReadActionWrapper<TReal> : IReadActionWrapper
+        private sealed class StructReadActionWrapper<TReal> : IReadActionWrapper
+            where TReal : struct
         {
             private readonly ReadAction<TReal> _readAction;
 
@@ -36,9 +38,9 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 _readAction = (ReadAction<TReal>)readAction;
             }
 
-            public ReadAction<T> Get<T>() => typeof(TReal) == typeof(T)
+            public ReadAction<T> Get<T>(TextSerializationContext context) => context?.GetValueRead<TReal, T>() ?? (typeof(TReal) == typeof(T)
                 ? (ReadAction<T>)(Delegate)_readAction
-                : r => (T)(object)_readAction(r);
+                : ((StreamReaderWrapper r) => (T)(object)_readAction(r)));
         }
 
         #endregion
@@ -74,7 +76,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             return writeAction;
         }
 
-        public static ReadAction<T> GetReadAction<T>(Type type)
+        public static ReadAction<T> GetReadAction<T>(Type type, TextSerializationContext context)
         {
             if (!_readActions.TryGetValue(type, out IReadActionWrapper readAction))
             {
@@ -84,25 +86,19 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                     {
                         TypeInfo typeInfo = type.GetTypeInfo();
 
-                        Delegate action = typeof(Converter<>).MakeGenericType(type).GetTypeInfo()
-                            .GetDeclaredMethod(nameof(Converter<string>.Read))
-                            .CreateDelegate(typeof(ReadAction<>).MakeGenericType(type));
-
-                        if (!typeInfo.IsValueType || type == typeof(T))
-                        {
-                            readAction = typeInfo.IsValueType ? (IReadActionWrapper)new StructReadActionWrapper<T>(action) : new ClassReadActionWrapper(action);
-                        }
-                        else
-                        {
-                            readAction = (IReadActionWrapper)Activator.CreateInstance(typeof(StructReadActionWrapper<>).MakeGenericType(type), action);
-                        }
+                        readAction = (IReadActionWrapper)Activator.CreateInstance(
+                            (type.GetTypeInfo().IsValueType ? typeof(StructReadActionWrapper<>) : typeof(ClassReadActionWrapper<>)).MakeGenericType(type),
+                            typeof(Converter<>)
+                                .MakeGenericType(type).GetTypeInfo()
+                                .GetDeclaredMethod(nameof(Converter<string>.Read))
+                                .CreateDelegate(typeof(ReadAction<>).MakeGenericType(type)));
 
                         _readActions.AddOrUpdate(type, readAction, (_, d) => d);
                     }
                 }
             }
 
-            return readAction.Get<T>();
+            return readAction.Get<T>(context);
         }
 
         #endregion
@@ -112,8 +108,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
     {
         #region Fields
 
-        private static readonly bool _isSealed;
-
+        public static readonly bool IsSealed;
         public static readonly WriteAction<T> WriteAction;
         public static readonly ReadAction<T> ReadAction;
 
@@ -123,7 +118,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         static Converter()
         {
-            _isSealed = typeof(T).GetTypeInfo().IsSealed || typeof(T) == typeof(Type);
+            IsSealed = typeof(T).GetTypeInfo().IsSealed || typeof(T) == typeof(Type);
 
             (WriteAction, ReadAction) = typeof(T) switch
             {
@@ -155,42 +150,27 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         private static (WriteAction<T>, ReadAction<T>) GetActions<TReal>(WriteAction<TReal> write, Func<string, TReal> read) => (
             (WriteAction<T>)(Delegate)write,
-            (ReadAction<T>)(Delegate)new ReadAction<TReal>(reader => read(reader.ReadValue())));
+            (ReadAction<T>)(Delegate)new ReadAction<TReal>(reader => read(reader.Read())));
 
         [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void Write(StreamWriterWrapper writer, in T value)
         {
-            if (value is null)
+            WriteAction<T> action = writer.Context?.GetValueWrite<T>();
+            if (action is null)
             {
-                writer.Stream.WriteLine("null");
-            }
-            else if (_isSealed || typeof(T) == value.GetType())
-            {
-                WriteAction(writer, value);
+                writer.WriteValue(value);
             }
             else
             {
-                Type type = value.GetType();
-                writer.Stream.WriteLine($"$type {TypeNames.Get(type)}");
-                Converter.GetWriteAction(type)(writer, value);
+                action(writer, value);
             }
         }
 
         public static T Read(StreamReaderWrapper reader)
         {
-            switch (reader.PeekValue())
-            {
-                case "null":
-                    reader.ReadValue();
-                    return default;
+            ReadAction<T> action = reader.Context?.GetValueRead<T, T>();
 
-                case "$type":
-                    reader.ReadValue();
-                    return Converter.GetReadAction<T>(Type.GetType(reader.ReadLine(), true))(reader);
-
-                default:
-                    return ReadAction(reader);
-            }
+            return action is null ? reader.ReadValue<T>() : action(reader);
         }
 
         [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]

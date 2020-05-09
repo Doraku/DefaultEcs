@@ -10,7 +10,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
         private static T Read<T>(StreamReaderWrapper reader)
             where T : struct
         {
-            return Enum.TryParse(reader.ReadValue(), out T value) ? value : throw StreamReaderWrapper.GetException<T>();
+            return Enum.TryParse(reader.Read(), out T value) ? value : throw StreamReaderWrapper.GetException<T>();
         }
 
         public static (WriteAction<T>, ReadAction<T>) GetActions<T>() => (
