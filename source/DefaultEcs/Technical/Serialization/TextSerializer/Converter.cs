@@ -54,8 +54,6 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         #region Methods
 
-        public static ReadAction<T> ConvertRead<T>(Delegate readAction) => (ReadAction<T>)readAction;
-
         public static WriteAction<object> GetWriteAction(Type type)
         {
             if (!_writeActions.TryGetValue(type, out WriteAction<object> writeAction))

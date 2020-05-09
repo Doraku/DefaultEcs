@@ -7,6 +7,7 @@ namespace DefaultEcs.Serialization
 {
     /// <summary>
     /// Represents a context used by the <see cref="BinarySerializer"/> to convert types during serialization and deserialization operations.
+    /// The context marshalling will not be applied on members of unmanaged type as <see cref="BinarySerializer"/> just past their memory location with no transformation.
     /// </summary>
     public sealed class BinarySerializationContext : IDisposable
     {
