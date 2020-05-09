@@ -211,7 +211,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                     }
                 }
 
-                if (startIndex >= 0)
+                if (length > 0)
                 {
                     return _currentLine.Substring(startIndex, length);
                 }
@@ -229,6 +229,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             if (_peekedValue != null)
             {
                 line = _currentLine.Substring(_currentIndex - _peekedValue.Length);
+                _peekedValue = null;
             }
             else
             {
