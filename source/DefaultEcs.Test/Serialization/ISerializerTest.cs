@@ -474,6 +474,66 @@ namespace DefaultEcs.Test.Serialization
             Check.That(copy.First().Has<string>()).IsFalse();
         }
 
+        [Fact]
+        public void TextSerializer_Should_use_context_marshalling()
+        {
+            using World world = new World();
+
+            Entity entity = world.CreateEntity();
+
+            entity.Set<uint>(42);
+
+            using TextSerializationContext context = new TextSerializationContext()
+                .Marshal<uint, int>(v => (int)v)
+                .Unmarshal<int, string>(v => v.ToString());
+
+            TextSerializer serializer = new TextSerializer(context);
+
+            using Stream stream = new MemoryStream();
+
+            serializer.Serialize(stream, world);
+
+            stream.Position = 0;
+
+            World copy = serializer.Deserialize(stream);
+
+            Check.That(copy.Count()).IsEqualTo(1);
+            Check.That(copy.First().Has<int>()).IsFalse();
+            Check.That(copy.First().Has<uint>()).IsFalse();
+            Check.That(copy.First().Has<string>()).IsTrue();
+            Check.That(copy.First().Get<string>()).IsEqualTo("42");
+        }
+
+        [Fact]
+        public void BinarySerializer_Should_use_context_marshalling()
+        {
+            using World world = new World();
+
+            Entity entity = world.CreateEntity();
+
+            entity.Set<uint>(42);
+
+            using BinarySerializationContext context = new BinarySerializationContext()
+                .Marshal<uint, int>(v => (int)v)
+                .Unmarshal<int, string>(v => v.ToString());
+
+            BinarySerializer serializer = new BinarySerializer(context);
+
+            using Stream stream = new MemoryStream();
+
+            serializer.Serialize(stream, world);
+
+            stream.Position = 0;
+
+            World copy = serializer.Deserialize(stream);
+
+            Check.That(copy.Count()).IsEqualTo(1);
+            Check.That(copy.First().Has<int>()).IsFalse();
+            Check.That(copy.First().Has<uint>()).IsFalse();
+            Check.That(copy.First().Has<string>()).IsTrue();
+            Check.That(copy.First().Get<string>()).IsEqualTo("42");
+        }
+
         #endregion
     }
 }
