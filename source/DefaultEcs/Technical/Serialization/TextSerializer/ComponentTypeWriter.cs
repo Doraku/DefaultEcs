@@ -43,10 +43,18 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
             _types.Add(typeof(T), shortName);
 
-            _writer.Stream.WriteLine($"{nameof(EntryType.ComponentType)} {shortName} {TypeNames.Get(typeof(T))}");
+            _writer.Write(nameof(EntryType.ComponentType));
+            _writer.WriteSpace();
+            _writer.Write(shortName);
+            _writer.WriteSpace();
+            _writer.WriteLine(TypeNames.Get(typeof(T)));
             if (maxCapacity != _worldMaxCapacity && !typeof(T).GetTypeInfo().IsFlagType())
             {
-                _writer.Stream.WriteLine($"{nameof(EntryType.ComponentMaxCapacity)} {shortName} {maxCapacity}");
+                _writer.Write(nameof(EntryType.ComponentMaxCapacity));
+                _writer.WriteSpace();
+                _writer.Write(shortName);
+                _writer.WriteSpace();
+                _writer.Stream.WriteLine(maxCapacity);
             }
         }
 

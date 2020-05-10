@@ -44,7 +44,9 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
                 _writer.Stream.WriteLine();
                 string entry = entity.IsEnabled() ? nameof(EntryType.Entity) : nameof(EntryType.DisabledEntity);
-                _writer.Stream.WriteLine($"{entry} {_entityCount}");
+                _writer.Write(entry);
+                _writer.WriteSpace();
+                _writer.Stream.WriteLine(_entityCount);
 
                 entity.ReadAllComponents(this);
             }
@@ -55,7 +57,11 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 {
                     if (_entities.TryGetValue(child, out int childId))
                     {
-                        _writer.Stream.WriteLine($"{nameof(EntryType.ParentChild)} {pair.Value} {childId}");
+                        _writer.Write(nameof(EntryType.ParentChild));
+                        _writer.WriteSpace();
+                        _writer.Stream.Write(pair.Value);
+                        _writer.WriteSpace();
+                        _writer.Stream.WriteLine(childId);
                     }
                 }
             }
@@ -76,20 +82,33 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
                 _types.Add(typeof(T), typeName);
 
-                _writer.Stream.WriteLine($"{nameof(EntryType.ComponentType)} {typeName} {TypeNames.Get(typeof(T))}");
+                _writer.Write(nameof(EntryType.ComponentType));
+                _writer.WriteSpace();
+                _writer.Write(typeName);
+                _writer.WriteSpace();
+                _writer.WriteLine(TypeNames.Get(typeof(T)));
             }
 
             (Entity, Type) componentKey = (componentOwner, typeof(T));
             if (_components.TryGetValue(componentKey, out int key))
             {
                 string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.ComponentSameAs) : nameof(EntryType.DisabledComponentSameAs);
-                _writer.Stream.WriteLine($"{entry} {_types[typeof(T)]} {key}");
+
+                _writer.Write(entry);
+                _writer.WriteSpace();
+                _writer.Write(_types[typeof(T)]);
+                _writer.WriteSpace();
+                _writer.Stream.WriteLine(key);
             }
             else
             {
                 _components.Add(componentKey, _entityCount);
                 string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.Component) : nameof(EntryType.DisabledComponent);
-                _writer.Stream.Write($"{entry} {_types[typeof(T)]} ");
+
+                _writer.Write(entry);
+                _writer.WriteSpace();
+                _writer.Write(_types[typeof(T)]);
+                _writer.WriteSpace();
                 Converter<T>.Write(_writer, component);
             }
         }

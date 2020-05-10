@@ -363,7 +363,9 @@ namespace DefaultEcs.Serialization
 
             if (world.MaxCapacity != int.MaxValue)
             {
-                writer.Stream.WriteLine($"{nameof(EntryType.WorldMaxCapacity)} {world.MaxCapacity}");
+                writer.Write(nameof(EntryType.WorldMaxCapacity));
+                writer.WriteSpace();
+                writer.Stream.WriteLine(world.MaxCapacity);
             }
 
             world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxCapacity, _componentFilter));
