@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -90,11 +91,13 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
     {
         private readonly StreamReader _stream;
 
-        private string _currentLine;
-        private int _currentIndex;
-        private string _peekedValue;
+        private char[] _buffer;
+        private int _length;
+        private bool _endOfLine;
+        private bool _previouslyEndOfLine;
+        private bool _mayBeComment;
 
-        public bool EndOfStream => _stream.EndOfStream && _peekedValue is null && string.IsNullOrEmpty(_currentLine);
+        public bool EndOfStream => _stream.EndOfStream && _length == 0;
 
         public TextSerializationContext Context { get; }
         public int LineNumber { get; private set; }
@@ -103,26 +106,14 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         {
             _stream = new StreamReader(stream, Encoding.UTF8, true, 1024, true);
 
+            _buffer = ArrayPool<char>.Shared.Rent(4096);
+            _length = 0;
+            _endOfLine = false;
+            _mayBeComment = false;
+            _previouslyEndOfLine = false;
+
             Context = context;
-            LineNumber = -1;
-        }
-
-        private void AdvanceStream()
-        {
-            if (_currentLine is null)
-            {
-                if (_stream.EndOfStream)
-                {
-                    _currentLine = string.Empty;
-                }
-                else
-                {
-                    _currentLine = _stream.ReadLine();
-                    ++LineNumber;
-                }
-
-                _currentIndex = 0;
-            }
+            LineNumber = 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -131,143 +122,181 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static bool Throw<T>() => throw GetException<T>();
 
-        public bool TryReadUntil(string value)
+        private void InnerPeek(bool readLine, bool stayOnLine)
         {
-            if (_peekedValue == value)
+            if ((_length == 0 && (!stayOnLine || !_endOfLine)) || (readLine && !_endOfLine))
             {
-                _peekedValue = null;
-
-                return true;
-            }
-
-            while (!EndOfStream)
-            {
-                if (Read() == value)
+                if (readLine && _length > 0 && !_endOfLine)
                 {
-                    return true;
+                    ++_length;
+                }
+
+                bool skipLine = false;
+                _previouslyEndOfLine = false;
+
+                while (!_stream.EndOfStream)
+                {
+                    int value = _stream.Read();
+                    if (value < 0)
+                    {
+                        break;
+                    }
+
+                    char c = (char)value;
+
+                    if (c == '/')
+                    {
+                        if (_mayBeComment)
+                        {
+                            _length = 0;
+                            skipLine = true;
+                        }
+                        else
+                        {
+                            _mayBeComment = true;
+                        }
+                    }
+
+                    _mayBeComment = false;
+
+                    if (!readLine && (c == ' ' || c == '\t' || c == '=' || c == ':'))
+                    {
+                        if (_length > 0)
+                        {
+                            _buffer[_length] = c;
+                            break;
+                        }
+
+                        continue;
+                    }
+
+                    if (c == '\r' || c == '\n')
+                    {
+                        if (c == '\r' && _stream.Peek() == '\n')
+                        {
+                            _stream.Read();
+                        }
+
+                        _endOfLine = true;
+                        _previouslyEndOfLine = true;
+                        skipLine = false;
+                        ++LineNumber;
+
+                        if (_length > 0 || stayOnLine)
+                        {
+                            break;
+                        }
+
+                        continue;
+                    }
+
+                    if (skipLine)
+                    {
+                        continue;
+                    }
+
+                    if (_buffer.Length < _length)
+                    {
+                        char[] newBuffer = ArrayPool<char>.Shared.Rent(_buffer.Length * 2);
+                        Array.Copy(_buffer, newBuffer, _buffer.Length);
+                        ArrayPool<char>.Shared.Return(_buffer);
+                        _buffer = newBuffer;
+                    }
+
+                    _endOfLine = false;
+                    _buffer[_length++] = c;
                 }
             }
+        }
+
+        public bool TryPeek(string value)
+        {
+            InnerPeek(false, false);
+
+            return new Span<char>(_buffer, 0, _length).SequenceEqual(value.AsSpan());
+        }
+
+        public bool TryReadUntil(string value)
+        {
+            do
+            {
+                if (TryPeek(value))
+                {
+                    _length = 0;
+                    return true;
+                }
+
+                _length = 0;
+            } while (!EndOfStream);
 
             return false;
         }
 
-        public string Peek() => _peekedValue ?? (_peekedValue = Read());
-
         public string Read()
         {
-            if (_peekedValue != null)
-            {
-                string value = _peekedValue;
-                _peekedValue = null;
+            InnerPeek(false, false);
 
-                return value;
-            }
+            int length = _length;
+            _length = 0;
 
-            if (!EndOfStream)
-            {
-                AdvanceStream();
+            return length > 0 ? new string(_buffer, 0, length) : string.Empty;
+        }
 
-                int startIndex = -1;
-                int length = 0;
-                bool _previousWasComment = false;
-                for (; _currentIndex < _currentLine.Length; ++_currentIndex)
-                {
-                    char c = _currentLine[_currentIndex];
-                    if (c == ' ' || c == '\t' || c == '=' || c == ':')
-                    {
-                        if (length > 0)
-                        {
-                            return _currentLine.Substring(startIndex, length);
-                        }
-                    }
-                    else
-                    {
-                        if (length > 0)
-                        {
-                            ++length;
-                        }
-                        else
-                        {
-                            startIndex = _currentIndex;
-                            length = 1;
-                        }
+        public string ReadFromLine()
+        {
+            InnerPeek(false, true);
 
-                        if (c == '/')
-                        {
-                            if (_previousWasComment)
-                            {
-                                _currentLine = null;
-                                return string.Empty;
-                            }
-                            else
-                            {
-                                _previousWasComment = true;
-                            }
-                        }
-                        else
-                        {
-                            _previousWasComment = false;
-                        }
-                    }
-                }
+            int length = _length;
+            _length = 0;
 
-                if (length > 0)
-                {
-                    return _currentLine.Substring(startIndex, length);
-                }
-
-                _currentLine = null;
-            }
-
-            return string.Empty;
+            return length > 0 ? new string(_buffer, 0, length) : string.Empty;
         }
 
         public string ReadLine()
         {
-            string line;
+            InnerPeek(true, true);
 
-            if (_peekedValue != null)
+            int length = _length;
+            _endOfLine = false;
+            _length = 0;
+
+            return length > 0 ? new string(_buffer, 0, length) : string.Empty;
+        }
+
+        public void EndLine()
+        {
+            if (!_previouslyEndOfLine)
             {
-                line = _currentLine.Substring(_currentIndex - _peekedValue.Length);
-                _peekedValue = null;
+                InnerPeek(true, true);
             }
-            else
-            {
-                AdvanceStream();
-
-                line = _currentLine.Substring(_currentIndex);
-            }
-
-            _currentLine = null;
-
-            return line;
+            _endOfLine = false;
+            _length = 0;
         }
 
         public T ReadValue<T>()
         {
-            while (!EndOfStream && string.IsNullOrEmpty(Peek()))
+            if (TryPeek("null"))
             {
-                Read();
+                _length = 0;
+                return default;
             }
 
-            switch (Peek())
+            if (TryPeek("$type"))
             {
-                case "null":
-                    Read();
-                    return default;
-
-                case "$type":
-                    Read();
-                    return Converter.GetReadAction<T>(Type.GetType(ReadLine(), true), Context)(this);
-
-                default:
-                    return Converter<T>.ReadAction(this);
+                _length = 0;
+                return Converter.GetReadAction<T>(Type.GetType(ReadLine(), true), Context)(this);
             }
+
+            return Converter<T>.ReadAction(this);
         }
 
         #region IDisposable
 
-        public void Dispose() => _stream.Dispose();
+        public void Dispose()
+        {
+            ArrayPool<char>.Shared.Return(_buffer);
+            _stream.Dispose();
+        }
 
         #endregion
     }

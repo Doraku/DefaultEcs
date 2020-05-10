@@ -14,7 +14,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
         }
 
         public static (WriteAction<T>, ReadAction<T>) GetActions<T>() => (
-            (StreamWriterWrapper writer, in T value) => writer.Stream.WriteLine(value.ToString()),
+            (StreamWriterWrapper writer, in T value) => writer.WriteLine(value.ToString()),
             (ReadAction<T>)_readMethod.MakeGenericMethod(typeof(T)).CreateDelegate(typeof(ReadAction<T>)));
     }
 }

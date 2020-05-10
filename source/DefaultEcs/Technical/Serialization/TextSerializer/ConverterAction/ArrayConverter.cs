@@ -15,7 +15,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
         [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         private static void Write<T>(StreamWriterWrapper writer, in T[] value)
         {
-            writer.Stream.WriteLine(_arrayBegin);
+            writer.WriteLine(_arrayBegin);
             writer.AddIndentation();
             for (int i = 0; i < value.Length; ++i)
             {
@@ -24,7 +24,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
             }
             writer.RemoveIndentation();
             writer.WriteIndentation();
-            writer.Stream.WriteLine(_arrayEnd);
+            writer.WriteLine(_arrayEnd);
         }
 
         private static T[] Read<T>(StreamReaderWrapper reader)
@@ -35,14 +35,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
             }
 
             List<T> value = new List<T>();
-            while (!reader.EndOfStream && reader.Peek() != _arrayEnd)
+            while (!reader.EndOfStream && !reader.TryPeek(_arrayEnd))
             {
-                if (string.IsNullOrEmpty(reader.Peek()))
-                {
-                    reader.Read();
-                    continue;
-                }
-
                 value.Add(Converter<T>.Read(reader));
             }
 

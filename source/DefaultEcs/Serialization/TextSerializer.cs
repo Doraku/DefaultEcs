@@ -129,7 +129,7 @@ namespace DefaultEcs.Serialization
         {
             static IComponentOperation ReadComponentOperation(StreamReaderWrapper reader, Dictionary<string, IComponentOperation> componentOperations)
             {
-                if (!componentOperations.TryGetValue(reader.Read(), out IComponentOperation componentOperation))
+                if (!componentOperations.TryGetValue(reader.ReadFromLine(), out IComponentOperation componentOperation))
                 {
                     throw new ArgumentException($"Unknown component type used on line {reader.LineNumber}");
                 }
@@ -139,7 +139,7 @@ namespace DefaultEcs.Serialization
 
             static Entity ReadEntity(StreamReaderWrapper reader, Dictionary<string, Entity> entities)
             {
-                if (!entities.TryGetValue(reader.Read(), out Entity entity))
+                if (!entities.TryGetValue(reader.ReadFromLine(), out Entity entity))
                 {
                     throw new ArgumentException($"Unknown entity on line {reader.LineNumber}");
                 }
@@ -149,7 +149,7 @@ namespace DefaultEcs.Serialization
 
             static int ReadInt(StreamReaderWrapper reader)
             {
-                string value = reader.Read();
+                string value = reader.ReadFromLine();
                 if (!int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue))
                 {
                     throw new ArgumentException($"Unable to convert '{value}' to a number on line {reader.LineNumber}");
@@ -170,24 +170,22 @@ namespace DefaultEcs.Serialization
 
                 while (!reader.EndOfStream)
                 {
-                    switch (reader.Read())
+                    switch (reader.ReadFromLine())
                     {
                         case nameof(EntryType.WorldMaxCapacity):
                             if (!isNewWorld || world != null) throw new ArgumentException($"Encoutered {nameof(EntryType.WorldMaxCapacity)} on line {reader.LineNumber}");
 
                             world = new World(ReadInt(reader));
-                            reader.ReadLine();
                             break;
 
                         case nameof(EntryType.Entity):
                             world ??= new World();
 
                             currentEntity = world.CreateEntity();
-                            string id = reader.Read();
+                            string id = reader.ReadFromLine();
                             if (!string.IsNullOrEmpty(id))
                             {
                                 entities.Add(id, currentEntity);
-                                reader.ReadLine();
                             }
                             break;
 
@@ -196,16 +194,15 @@ namespace DefaultEcs.Serialization
 
                             currentEntity = world.CreateEntity();
                             currentEntity.Disable();
-                            id = reader.Read();
+                            id = reader.ReadFromLine();
                             if (!string.IsNullOrEmpty(id))
                             {
                                 entities.Add(id, currentEntity);
-                                reader.ReadLine();
                             }
                             break;
 
                         case nameof(EntryType.ComponentType):
-                            string componentType = reader.Read();
+                            string componentType = reader.ReadFromLine();
                             if (string.IsNullOrEmpty(componentType))
                             {
                                 throw new ArgumentException($"No component type identifier on line {reader.LineNumber}");
@@ -230,7 +227,6 @@ namespace DefaultEcs.Serialization
                             world ??= new World();
 
                             ReadComponentOperation(reader, componentOperations).SetMaxCapacity(world, ReadInt(reader));
-                            reader.ReadLine();
                             break;
 
                         case nameof(EntryType.Component):
@@ -243,28 +239,26 @@ namespace DefaultEcs.Serialization
                             if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
 
                             ReadComponentOperation(reader, componentOperations).SetSameAs(currentEntity, ReadEntity(reader, entities));
-                            reader.ReadLine();
                             break;
 
                         case nameof(EntryType.ParentChild):
                             ReadEntity(reader, entities).SetAsParentOf(ReadEntity(reader, entities));
-                            reader.ReadLine();
                             break;
 
                         case nameof(EntryType.DisabledComponent):
                             if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
 
                             ReadComponentOperation(reader, componentOperations).SetDisabled(currentEntity, reader);
-                            reader.ReadLine();
                             break;
 
                         case nameof(EntryType.DisabledComponentSameAs):
                             if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
 
                             ReadComponentOperation(reader, componentOperations).SetDisabledSameAs(currentEntity, ReadEntity(reader, entities));
-                            reader.ReadLine();
                             break;
                     }
+
+                    reader.EndLine();
                 }
 
                 return isNewWorld ? null : entities.Values.ToArray();

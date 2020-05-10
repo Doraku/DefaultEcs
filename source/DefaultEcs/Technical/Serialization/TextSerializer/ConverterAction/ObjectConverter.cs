@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -106,14 +105,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
 
             T value = _isValue ? default : ObjectInitializer<T>.Create();
 
-            while (!reader.EndOfStream && reader.Peek() != _objectEnd)
+            while (!reader.EndOfStream && !reader.TryPeek(_objectEnd))
             {
-                if (string.IsNullOrEmpty(reader.Peek()))
-                {
-                    reader.Read();
-                    continue;
-                }
-
                 if (_readFieldActions.TryGetValue(reader.Read().ToUpperInvariant(), out ReadFieldAction action))
                 {
                     action(reader, ref value);
