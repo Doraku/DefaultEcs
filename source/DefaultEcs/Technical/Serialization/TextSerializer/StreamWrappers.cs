@@ -156,8 +156,10 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                             _mayBeComment = true;
                         }
                     }
-
-                    _mayBeComment = false;
+                    else
+                    {
+                        _mayBeComment = false;
+                    }
 
                     if (!readLine && (c == ' ' || c == '\t' || c == '=' || c == ':'))
                     {

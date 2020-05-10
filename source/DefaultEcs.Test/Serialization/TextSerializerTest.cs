@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using DefaultEcs.Serialization;
 using NFluent;
 using Xunit;
@@ -35,6 +36,21 @@ namespace DefaultEcs.Test.Serialization
         protected override void Write<T>(Stream stream, T obj) => TextSerializer.Write(stream, obj);
 
         protected override T Read<T>(Stream stream) => TextSerializer.Read<T>(stream);
+
+        [Fact]
+        public void Read_Should_work_When_no_line_return()
+        {
+            const string input =
+@"{ X 42 Y //comment
+1337 }";
+
+            using Stream stream = new MemoryStream(Encoding.ASCII.GetBytes(input));
+
+            Point copy = Read<Point>(stream);
+
+            Check.That(copy.X).IsEqualTo(42);
+            Check.That(copy.Y).IsEqualTo(1337);
+        }
 
         [Fact]
         public void Write_Should_use_context_marshalling()
