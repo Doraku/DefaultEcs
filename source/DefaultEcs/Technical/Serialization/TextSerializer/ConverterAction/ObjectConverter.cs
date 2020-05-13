@@ -83,7 +83,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
                     readGenerator.Emit(OpCodes.Stfld, fieldInfo);
                     readGenerator.Emit(OpCodes.Ret);
 
-                    _readFieldActions.Add(name.ToUpperInvariant(), (ReadFieldAction)readMethod.CreateDelegate(typeof(ReadFieldAction)));
+                    _readFieldActions.Add(name, (ReadFieldAction)readMethod.CreateDelegate(typeof(ReadFieldAction)));
                 }
 
                 typeInfo = typeInfo.BaseType?.GetTypeInfo();
@@ -107,13 +107,19 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
 
             while (!reader.EndOfStream && !reader.TryPeek(_objectEnd))
             {
-                if (_readFieldActions.TryGetValue(reader.Read().ToUpperInvariant(), out ReadFieldAction action))
+                if (_readFieldActions.TryGetValue(
+#if NETSTANDARD1_1 || NETSTANDARD2_0
+                    reader.Read(),
+#else
+                    reader.Read().ToString(),
+#endif
+                    out ReadFieldAction action))
                 {
                     action(reader, ref value);
                 }
                 else
                 {
-                    // todo cleanup object/array
+                    // todo cleanup object/array?
                 }
             }
 

@@ -234,6 +234,17 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             return false;
         }
 
+        public ReadOnlySpan<char> ReadAsSpan()
+        {
+            InnerPeek(false, false);
+
+            int length = _length;
+            _length = 0;
+
+            return new ReadOnlySpan<char>(_buffer, 0, length);
+        }
+
+#if NETSTANDARD1_1 || NETSTANDARD2_0
         public string Read()
         {
             InnerPeek(false, false);
@@ -242,6 +253,19 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             _length = 0;
 
             return length > 0 ? new string(_buffer, 0, length) : string.Empty;
+        }
+#else
+        public ReadOnlySpan<char> Read() => ReadAsSpan();
+#endif
+
+        public ReadOnlySpan<char> ReadFromLineAsSpan()
+        {
+            InnerPeek(false, true);
+
+            int length = _length;
+            _length = 0;
+
+            return new ReadOnlySpan<char>(_buffer, 0, length);
         }
 
         public string ReadFromLine()

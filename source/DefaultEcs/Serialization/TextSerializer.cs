@@ -149,11 +149,19 @@ namespace DefaultEcs.Serialization
 
             static int ReadInt(StreamReaderWrapper reader)
             {
+#if NETSTANDARD1_1 || NETSTANDARD2_0
                 string value = reader.ReadFromLine();
                 if (!int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue))
                 {
                     throw new ArgumentException($"Unable to convert '{value}' to a number on line {reader.LineNumber}");
                 }
+#else
+                ReadOnlySpan<char> value = reader.ReadFromLineAsSpan();
+                if (!int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue))
+                {
+                    throw new ArgumentException($"Unable to convert '{new string(value)}' to a number on line {reader.LineNumber}");
+                }
+#endif
 
                 return intValue;
             }

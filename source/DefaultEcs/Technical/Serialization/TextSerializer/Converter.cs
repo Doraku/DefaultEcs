@@ -123,20 +123,20 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 Type type when type.GetTypeInfo().IsEnum => EnumConverter.GetActions<T>(),
                 Type type when type == typeof(Type) => TypeConverter.GetActions<T>(),
                 Type type when type == typeof(string) => StringConverter.GetActions<T>(),
-                Type type when type == typeof(char) => GetActions((StreamWriterWrapper w, in char v) => w.Stream.WriteLine(v), s => char.TryParse(s, out char value) ? value : throw StreamReaderWrapper.GetException<char>()),
+                Type type when type == typeof(char) => GetActions((StreamWriterWrapper w, in char v) => w.Stream.WriteLine(v), s => s[0]),
                 Type type when type.IsArray => ArrayConverter.GetActions<T>(),
                 Type type when type == typeof(bool) => GetActions((StreamWriterWrapper w, in bool v) => w.Stream.WriteLine(v), bool.Parse),
-                Type type when type == typeof(sbyte) => GetActions((StreamWriterWrapper w, in sbyte v) => w.Stream.WriteLine(v), sbyte.Parse),
-                Type type when type == typeof(byte) => GetActions((StreamWriterWrapper w, in byte v) => w.Stream.WriteLine(v), byte.Parse),
-                Type type when type == typeof(short) => GetActions((StreamWriterWrapper w, in short v) => w.Stream.WriteLine(v), short.Parse),
-                Type type when type == typeof(ushort) => GetActions((StreamWriterWrapper w, in ushort v) => w.Stream.WriteLine(v), ushort.Parse),
-                Type type when type == typeof(int) => GetActions((StreamWriterWrapper w, in int v) => w.Stream.WriteLine(v), int.Parse),
-                Type type when type == typeof(uint) => GetActions((StreamWriterWrapper w, in uint v) => w.Stream.WriteLine(v), uint.Parse),
-                Type type when type == typeof(long) => GetActions((StreamWriterWrapper w, in long v) => w.Stream.WriteLine(v), long.Parse),
-                Type type when type == typeof(ulong) => GetActions((StreamWriterWrapper w, in ulong v) => w.Stream.WriteLine(v), ulong.Parse),
-                Type type when type == typeof(decimal) => GetActions((StreamWriterWrapper w, in decimal v) => w.Stream.WriteLine(v), decimal.Parse),
-                Type type when type == typeof(double) => GetActions((StreamWriterWrapper w, in double v) => w.Stream.WriteLine(v), double.Parse),
-                Type type when type == typeof(float) => GetActions((StreamWriterWrapper w, in float v) => w.Stream.WriteLine(v), float.Parse),
+                Type type when type == typeof(sbyte) => GetActions((StreamWriterWrapper w, in sbyte v) => w.Stream.WriteLine(v), i => sbyte.Parse(i)),
+                Type type when type == typeof(byte) => GetActions((StreamWriterWrapper w, in byte v) => w.Stream.WriteLine(v), i => byte.Parse(i)),
+                Type type when type == typeof(short) => GetActions((StreamWriterWrapper w, in short v) => w.Stream.WriteLine(v), i => short.Parse(i)),
+                Type type when type == typeof(ushort) => GetActions((StreamWriterWrapper w, in ushort v) => w.Stream.WriteLine(v), i => ushort.Parse(i)),
+                Type type when type == typeof(int) => GetActions((StreamWriterWrapper w, in int v) => w.Stream.WriteLine(v), i => int.Parse(i)),
+                Type type when type == typeof(uint) => GetActions((StreamWriterWrapper w, in uint v) => w.Stream.WriteLine(v), i => uint.Parse(i)),
+                Type type when type == typeof(long) => GetActions((StreamWriterWrapper w, in long v) => w.Stream.WriteLine(v), i => long.Parse(i)),
+                Type type when type == typeof(ulong) => GetActions((StreamWriterWrapper w, in ulong v) => w.Stream.WriteLine(v), i => ulong.Parse(i)),
+                Type type when type == typeof(decimal) => GetActions((StreamWriterWrapper w, in decimal v) => w.Stream.WriteLine(v), i => decimal.Parse(i)),
+                Type type when type == typeof(double) => GetActions((StreamWriterWrapper w, in double v) => w.Stream.WriteLine(v), i => double.Parse(i)),
+                Type type when type == typeof(float) => GetActions((StreamWriterWrapper w, in float v) => w.Stream.WriteLine(v), i => float.Parse(i)),
                 Type type when type.GetTypeInfo().IsAbstract => (null, null),
                 _ => ObjectConverter<T>.GetActions()
             };
@@ -146,7 +146,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         #region Methods
 
-        private static (WriteAction<T>, ReadAction<T>) GetActions<TReal>(WriteAction<TReal> write, Func<string, TReal> read) => (
+        private static (WriteAction<T>, ReadAction<T>) GetActions<TReal>(WriteAction<TReal> write, Parse<TReal> read) => (
             (WriteAction<T>)(Delegate)write,
             (ReadAction<T>)(Delegate)new ReadAction<TReal>(reader => read(reader.Read())));
 
