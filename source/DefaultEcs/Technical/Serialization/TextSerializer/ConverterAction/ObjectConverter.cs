@@ -69,6 +69,13 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
                             writer,
                             Expression.Field(value, fieldInfo)));
 
+                    if (!fieldInfo.FieldType.GetTypeInfo().IsValueType)
+                    {
+                        writeField = Expression.IfThen(
+                            Expression.Not(Expression.ReferenceEqual(Expression.Field(value, fieldInfo), Expression.Default(fieldInfo.FieldType))),
+                            writeField);
+                    }
+
                     writeExpressions.Add(writeField);
 
                     DynamicMethod readMethod = new DynamicMethod($"Set_{nameof(T)}_{fieldInfo.Name}", typeof(void), new[] { typeof(StreamReaderWrapper), typeof(T).MakeByRefType() }, typeof(ObjectConverter<T>), true);
