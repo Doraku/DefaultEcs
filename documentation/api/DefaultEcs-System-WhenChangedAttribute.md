@@ -5,6 +5,6 @@ Represents a component type to react to its change when building the inner [Enti
 ```csharp
 public sealed class WhenChangedAttribute : ComponentAttribute
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &gt; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &gt; [WhenChangedAttribute](./DefaultEcs-System-WhenChangedAttribute.md 'DefaultEcs.System.WhenChangedAttribute')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &#129106; WhenChangedAttribute  
 ### Constructors
 - [WhenChangedAttribute(System.Type[])](./DefaultEcs-System-WhenChangedAttribute-WhenChangedAttribute(System-Type--).md 'DefaultEcs.System.WhenChangedAttribute.WhenChangedAttribute(System.Type[])')

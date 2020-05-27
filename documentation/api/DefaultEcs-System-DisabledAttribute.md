@@ -5,4 +5,4 @@ Makes so when building the inner [EntitySet](./DefaultEcs-EntitySet.md 'DefaultE
 ```csharp
 public sealed class DisabledAttribute : Attribute
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &gt; [DisabledAttribute](./DefaultEcs-System-DisabledAttribute.md 'DefaultEcs.System.DisabledAttribute')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; DisabledAttribute  

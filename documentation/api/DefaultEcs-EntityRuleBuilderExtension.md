@@ -5,7 +5,7 @@ Provides set of static methods to create more easily rules on a [EntityRuleBuild
 ```csharp
 public static class EntityRuleBuilderExtension
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [EntityRuleBuilderExtension](./DefaultEcs-EntityRuleBuilderExtension.md 'DefaultEcs.EntityRuleBuilderExtension')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; EntityRuleBuilderExtension  
 ### Methods
 - [WhenAdded(DefaultEcs.EntityRuleBuilder, System.Type[])](./DefaultEcs-EntityRuleBuilderExtension-WhenAdded(DefaultEcs-EntityRuleBuilder_System-Type--).md 'DefaultEcs.EntityRuleBuilderExtension.WhenAdded(DefaultEcs.EntityRuleBuilder, System.Type[])')
 - [WhenAddedEither(DefaultEcs.EntityRuleBuilder, System.Type[])](./DefaultEcs-EntityRuleBuilderExtension-WhenAddedEither(DefaultEcs-EntityRuleBuilder_System-Type--).md 'DefaultEcs.EntityRuleBuilderExtension.WhenAddedEither(DefaultEcs.EntityRuleBuilder, System.Type[])')

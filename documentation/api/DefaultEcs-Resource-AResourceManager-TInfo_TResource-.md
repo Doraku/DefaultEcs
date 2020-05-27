@@ -9,7 +9,7 @@ By default, if [TResource](#DefaultEcs-Resource-AResourceManager-TInfo_TResource
 public abstract class AResourceManager<TInfo,TResource> :
 IDisposable
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [AResourceManager&lt;TInfo,TResource&gt;](./DefaultEcs-Resource-AResourceManager-TInfo_TResource-.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; AResourceManager&lt;TInfo,TResource&gt;  
 
 Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 #### Type parameters

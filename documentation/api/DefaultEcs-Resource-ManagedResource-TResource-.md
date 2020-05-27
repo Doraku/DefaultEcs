@@ -5,7 +5,7 @@ Provides static methods for creating [ManagedResource&lt;TInfo,TResource&gt;](./
 ```csharp
 public static class ManagedResource<TResource>
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [ManagedResource&lt;TResource&gt;](./DefaultEcs-Resource-ManagedResource-TResource-.md 'DefaultEcs.Resource.ManagedResource&lt;TResource&gt;')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; ManagedResource&lt;TResource&gt;  
 #### Type parameters
 <a name='DefaultEcs-Resource-ManagedResource-TResource--TResource'></a>
 `TResource`  

@@ -5,7 +5,7 @@ Provides a set of methods to help the generation of generic code for AoT compila
 ```csharp
 public static class AoTHelper
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [AoTHelper](./DefaultEcs-AoTHelper.md 'DefaultEcs.AoTHelper')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; AoTHelper  
 ### Methods
 - [RegisterComponent&lt;T&gt;()](./DefaultEcs-AoTHelper-RegisterComponent-T-().md 'DefaultEcs.AoTHelper.RegisterComponent&lt;T&gt;()')
 - [RegisterMessage&lt;T&gt;()](./DefaultEcs-AoTHelper-RegisterMessage-T-().md 'DefaultEcs.AoTHelper.RegisterMessage&lt;T&gt;()')

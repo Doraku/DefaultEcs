@@ -502,6 +502,15 @@ using (Stream stream = File.OpenRead(filePath))
     World worldCopy = serializer.Deserialize(stream);
 }
 ```
+Each implementation has its own serialization context which can be used to transform a given type to something else or just change the value at serialization and deserialization time.
+```csharp
+using BinarySerializationContext context = new BinarySerializationContext()
+    .Marshal<string, string>(_ => null) // set every string as null during serialization
+    .Marshal<NonSerializableData, SerializableData>(d => new SerializableData(d)) // transform non serializable data to a serializable type during serialization
+    .Unmarshal<SerializableData, NonSerializableData>(d => Load(d)); // reload non serializable data from serializable data during deserialization
+
+BinarySerializer serializer = new BinarySerializer(context);
+```
 
 <a name='Overview_Serialization_TextSerializer'></a>
 ### TextSerializer

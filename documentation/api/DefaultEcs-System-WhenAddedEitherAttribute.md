@@ -5,6 +5,6 @@ Represents a group of component types to react to at least one of their addition
 ```csharp
 public sealed class WhenAddedEitherAttribute : ComponentAttribute
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &gt; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &gt; [WhenAddedEitherAttribute](./DefaultEcs-System-WhenAddedEitherAttribute.md 'DefaultEcs.System.WhenAddedEitherAttribute')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &#129106; WhenAddedEitherAttribute  
 ### Constructors
 - [WhenAddedEitherAttribute(System.Type[])](./DefaultEcs-System-WhenAddedEitherAttribute-WhenAddedEitherAttribute(System-Type--).md 'DefaultEcs.System.WhenAddedEitherAttribute.WhenAddedEitherAttribute(System.Type[])')

@@ -6,7 +6,19 @@ Do not use this attribute, prefer [WithAttribute](./DefaultEcs-System-WithAttrib
 ```csharp
 public class ComponentAttribute : Attribute
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &gt; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; ComponentAttribute  
+
+Derived  
+&#8627; [WhenAddedAttribute](./DefaultEcs-System-WhenAddedAttribute.md 'DefaultEcs.System.WhenAddedAttribute')  
+&#8627; [WhenAddedEitherAttribute](./DefaultEcs-System-WhenAddedEitherAttribute.md 'DefaultEcs.System.WhenAddedEitherAttribute')  
+&#8627; [WhenChangedAttribute](./DefaultEcs-System-WhenChangedAttribute.md 'DefaultEcs.System.WhenChangedAttribute')  
+&#8627; [WhenChangedEitherAttribute](./DefaultEcs-System-WhenChangedEitherAttribute.md 'DefaultEcs.System.WhenChangedEitherAttribute')  
+&#8627; [WhenRemovedAttribute](./DefaultEcs-System-WhenRemovedAttribute.md 'DefaultEcs.System.WhenRemovedAttribute')  
+&#8627; [WhenRemovedEitherAttribute](./DefaultEcs-System-WhenRemovedEitherAttribute.md 'DefaultEcs.System.WhenRemovedEitherAttribute')  
+&#8627; [WithAttribute](./DefaultEcs-System-WithAttribute.md 'DefaultEcs.System.WithAttribute')  
+&#8627; [WithEitherAttribute](./DefaultEcs-System-WithEitherAttribute.md 'DefaultEcs.System.WithEitherAttribute')  
+&#8627; [WithoutAttribute](./DefaultEcs-System-WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute')  
+&#8627; [WithoutEitherAttribute](./DefaultEcs-System-WithoutEitherAttribute.md 'DefaultEcs.System.WithoutEitherAttribute')  
 ### Constructors
 - [ComponentAttribute(DefaultEcs.System.ComponentFilterType, System.Type[])](./DefaultEcs-System-ComponentAttribute-ComponentAttribute(DefaultEcs-System-ComponentFilterType_System-Type--).md 'DefaultEcs.System.ComponentAttribute.ComponentAttribute(DefaultEcs.System.ComponentFilterType, System.Type[])')
 ### Fields

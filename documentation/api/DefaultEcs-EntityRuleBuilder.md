@@ -5,7 +5,7 @@ Represent an helper object to create rules to retrieve a specific subset of [Ent
 ```csharp
 public sealed class EntityRuleBuilder
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [EntityRuleBuilder](./DefaultEcs-EntityRuleBuilder.md 'DefaultEcs.EntityRuleBuilder')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; EntityRuleBuilder  
 ### Methods
 - [AsMap&lt;TKey&gt;()](./DefaultEcs-EntityRuleBuilder-AsMap-TKey-().md 'DefaultEcs.EntityRuleBuilder.AsMap&lt;TKey&gt;()')
 - [AsMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)](./DefaultEcs-EntityRuleBuilder-AsMap-TKey-(System-Collections-Generic-IEqualityComparer-TKey-).md 'DefaultEcs.EntityRuleBuilder.AsMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)')

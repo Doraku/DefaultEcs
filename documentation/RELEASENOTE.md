@@ -1,4 +1,13 @@
-## DefaultEcs 0.14.1
+## DefaultEcs 0.14.3
+added componentFilter parameter on BinarySerializer and TextSerializer to apply a filter on which component type should be serialized or deserialized  
+added BinarySerializationContext to provide transformation between types when using the BinarySerializer  
+added TextSerializationContext to provide transformation between types when using the TextSerializer  
+
+fixed BinarySerializer and TextSerializer closing the stream parameter, it is now left open  
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.14.3)
+
+## DefaultEcs 0.14.2
 removed restriction on ManagedResource TResource to be IDisposable  
 
 added AResourceManager.Unload to give the possibility to override the unload action for a resource  

@@ -5,6 +5,6 @@ Represents a component type to exclude when building the inner [EntitySet](./Def
 ```csharp
 public sealed class WithoutAttribute : ComponentAttribute
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &gt; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &gt; [WithoutAttribute](./DefaultEcs-System-WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &#129106; WithoutAttribute  
 ### Constructors
 - [WithoutAttribute(System.Type[])](./DefaultEcs-System-WithoutAttribute-WithoutAttribute(System-Type--).md 'DefaultEcs.System.WithoutAttribute.WithoutAttribute(System.Type[])')

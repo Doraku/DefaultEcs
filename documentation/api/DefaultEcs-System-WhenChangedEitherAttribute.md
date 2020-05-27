@@ -5,6 +5,6 @@ Represents a group of component types to react to at least one of their change w
 ```csharp
 public sealed class WhenChangedEitherAttribute : ComponentAttribute
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &gt; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &gt; [WhenChangedEitherAttribute](./DefaultEcs-System-WhenChangedEitherAttribute.md 'DefaultEcs.System.WhenChangedEitherAttribute')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &#129106; WhenChangedEitherAttribute  
 ### Constructors
 - [WhenChangedEitherAttribute(System.Type[])](./DefaultEcs-System-WhenChangedEitherAttribute-WhenChangedEitherAttribute(System-Type--).md 'DefaultEcs.System.WhenChangedEitherAttribute.WhenChangedEitherAttribute(System.Type[])')

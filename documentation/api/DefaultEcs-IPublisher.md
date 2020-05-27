@@ -6,6 +6,9 @@ Exposes methods to subscribe to [MessageHandler&lt;T&gt;(T)](./DefaultEcs-Messag
 public interface IPublisher :
 IDisposable
 ```
+Derived  
+&#8627; [World](./DefaultEcs-World.md 'DefaultEcs.World')  
+
 Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 ### Methods
 - [Publish&lt;T&gt;(T)](./DefaultEcs-IPublisher-Publish-T-(T).md 'DefaultEcs.IPublisher.Publish&lt;T&gt;(T)')

@@ -5,6 +5,6 @@ Represents a component type to react to its addition when building the inner [En
 ```csharp
 public sealed class WhenAddedAttribute : ComponentAttribute
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &gt; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &gt; [WhenAddedAttribute](./DefaultEcs-System-WhenAddedAttribute.md 'DefaultEcs.System.WhenAddedAttribute')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &#129106; WhenAddedAttribute  
 ### Constructors
 - [WhenAddedAttribute(System.Type[])](./DefaultEcs-System-WhenAddedAttribute-WhenAddedAttribute(System-Type--).md 'DefaultEcs.System.WhenAddedAttribute.WhenAddedAttribute(System.Type[])')

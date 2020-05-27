@@ -5,6 +5,6 @@ Represents a group of component types which at least one should not be present w
 ```csharp
 public sealed class WithoutEitherAttribute : ComponentAttribute
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &gt; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &gt; [WithoutEitherAttribute](./DefaultEcs-System-WithoutEitherAttribute.md 'DefaultEcs.System.WithoutEitherAttribute')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &#129106; WithoutEitherAttribute  
 ### Constructors
 - [WithoutEitherAttribute(System.Type[])](./DefaultEcs-System-WithoutEitherAttribute-WithoutEitherAttribute(System-Type--).md 'DefaultEcs.System.WithoutEitherAttribute.WithoutEitherAttribute(System.Type[])')

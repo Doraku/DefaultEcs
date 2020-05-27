@@ -6,7 +6,7 @@ Represents a sub-selection of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity
 public sealed class EntitySet :
 IDisposable
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; EntitySet  
 
 Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 ### Properties

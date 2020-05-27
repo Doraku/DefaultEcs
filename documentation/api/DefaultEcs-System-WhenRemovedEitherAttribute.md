@@ -5,6 +5,6 @@ Represents a group of component types to react to at least one of their deletion
 ```csharp
 public sealed class WhenRemovedEitherAttribute : ComponentAttribute
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &gt; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &gt; [WhenRemovedEitherAttribute](./DefaultEcs-System-WhenRemovedEitherAttribute.md 'DefaultEcs.System.WhenRemovedEitherAttribute')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &#129106; WhenRemovedEitherAttribute  
 ### Constructors
 - [WhenRemovedEitherAttribute(System.Type[])](./DefaultEcs-System-WhenRemovedEitherAttribute-WhenRemovedEitherAttribute(System-Type--).md 'DefaultEcs.System.WhenRemovedEitherAttribute.WhenRemovedEitherAttribute(System.Type[])')

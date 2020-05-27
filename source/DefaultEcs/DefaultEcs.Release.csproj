@@ -10,7 +10,7 @@
     <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
   </PropertyGroup>
   <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="DefaultDocumentation" Version="0.6.3" PrivateAssets="all" />
+    <PackageReference Include="DefaultDocumentation" Version="0.6.5" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup Label="Package">

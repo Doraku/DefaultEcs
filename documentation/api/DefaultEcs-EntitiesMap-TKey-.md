@@ -6,7 +6,7 @@ Represents a collection of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') 
 public sealed class EntitiesMap<TKey> :
 IDisposable
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [EntitiesMap&lt;TKey&gt;](./DefaultEcs-EntitiesMap-TKey-.md 'DefaultEcs.EntitiesMap&lt;TKey&gt;')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; EntitiesMap&lt;TKey&gt;  
 
 Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 #### Type parameters

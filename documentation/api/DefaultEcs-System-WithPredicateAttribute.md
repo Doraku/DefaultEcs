@@ -6,4 +6,4 @@ The decorated method should be of the type [ComponentPredicate&lt;T&gt;(T)](./De
 ```csharp
 public sealed class WithPredicateAttribute : Attribute
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &gt; [WithPredicateAttribute](./DefaultEcs-System-WithPredicateAttribute.md 'DefaultEcs.System.WithPredicateAttribute')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; WithPredicateAttribute  

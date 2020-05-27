@@ -5,7 +5,7 @@ Represents an helper object to create an either group rule to retrieve a specifi
 ```csharp
 public sealed class EntityRuleBuilder.EitherBuilder
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [EntityRuleBuilder.EitherBuilder](./DefaultEcs-EntityRuleBuilder-EitherBuilder.md 'DefaultEcs.EntityRuleBuilder.EitherBuilder')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; EntityRuleBuilder.EitherBuilder  
 ### Methods
 - [AsMap&lt;TKey&gt;()](./DefaultEcs-EntityRuleBuilder-EitherBuilder-AsMap-TKey-().md 'DefaultEcs.EntityRuleBuilder.EitherBuilder.AsMap&lt;TKey&gt;()')
 - [AsMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)](./DefaultEcs-EntityRuleBuilder-EitherBuilder-AsMap-TKey-(System-Collections-Generic-IEqualityComparer-TKey-).md 'DefaultEcs.EntityRuleBuilder.EitherBuilder.AsMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)')

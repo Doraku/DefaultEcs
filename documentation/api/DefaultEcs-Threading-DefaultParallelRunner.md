@@ -7,7 +7,7 @@ public sealed class DefaultParallelRunner :
 IParallelRunner,
 IDisposable
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [DefaultParallelRunner](./DefaultEcs-Threading-DefaultParallelRunner.md 'DefaultEcs.Threading.DefaultParallelRunner')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; DefaultParallelRunner  
 
 Implements [IParallelRunner](./DefaultEcs-Threading-IParallelRunner.md 'DefaultEcs.Threading.IParallelRunner'), [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 ### Constructors

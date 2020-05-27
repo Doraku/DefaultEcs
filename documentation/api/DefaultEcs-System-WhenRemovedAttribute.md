@@ -5,6 +5,6 @@ Represents a component type to react to its deletion when building the inner [En
 ```csharp
 public sealed class WhenRemovedAttribute : ComponentAttribute
 ```
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &gt; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &gt; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &gt; [WhenRemovedAttribute](./DefaultEcs-System-WhenRemovedAttribute.md 'DefaultEcs.System.WhenRemovedAttribute')  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &#129106; WhenRemovedAttribute  
 ### Constructors
 - [WhenRemovedAttribute(System.Type[])](./DefaultEcs-System-WhenRemovedAttribute-WhenRemovedAttribute(System-Type--).md 'DefaultEcs.System.WhenRemovedAttribute.WhenRemovedAttribute(System.Type[])')

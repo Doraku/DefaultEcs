@@ -6,6 +6,14 @@ Exposes a method to update a system.
 public interface ISystem<in T> :
 IDisposable
 ```
+Derived  
+&#8627; [AComponentSystem&lt;TState,TComponent&gt;](./DefaultEcs-System-AComponentSystem-TState_TComponent-.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;')  
+&#8627; [ActionSystem&lt;T&gt;](./DefaultEcs-System-ActionSystem-T-.md 'DefaultEcs.System.ActionSystem&lt;T&gt;')  
+&#8627; [AEntityBufferedSystem&lt;T&gt;](./DefaultEcs-System-AEntityBufferedSystem-T-.md 'DefaultEcs.System.AEntityBufferedSystem&lt;T&gt;')  
+&#8627; [AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;')  
+&#8627; [ParallelSystem&lt;T&gt;](./DefaultEcs-System-ParallelSystem-T-.md 'DefaultEcs.System.ParallelSystem&lt;T&gt;')  
+&#8627; [SequentialSystem&lt;T&gt;](./DefaultEcs-System-SequentialSystem-T-.md 'DefaultEcs.System.SequentialSystem&lt;T&gt;')  
+
 Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 #### Type parameters
 <a name='DefaultEcs-System-ISystem-T--T'></a>

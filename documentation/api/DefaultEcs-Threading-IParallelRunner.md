@@ -6,6 +6,9 @@ Exposes a method to run in parallel a [IParallelRunnable](./DefaultEcs-Threading
 public interface IParallelRunner :
 IDisposable
 ```
+Derived  
+&#8627; [DefaultParallelRunner](./DefaultEcs-Threading-DefaultParallelRunner.md 'DefaultEcs.Threading.DefaultParallelRunner')  
+
 Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
 ### Properties
 - [DegreeOfParallelism](./DefaultEcs-Threading-IParallelRunner-DegreeOfParallelism.md 'DefaultEcs.Threading.IParallelRunner.DegreeOfParallelism')

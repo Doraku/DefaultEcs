@@ -3,7 +3,7 @@
 ## TextSerializer.Write&lt;T&gt;(System.IO.Stream, T) Method
 Writes an object of type [T](#DefaultEcs-Serialization-TextSerializer-Write-T-(System-IO-Stream_T)-T 'DefaultEcs.Serialization.TextSerializer.Write&lt;T&gt;(System.IO.Stream, T).T') on the given stream.  
 ```csharp
-public static void Write<T>(System.IO.Stream stream, in T obj);
+public static void Write<T>(System.IO.Stream stream, in T value);
 ```
 #### Type parameters
 <a name='DefaultEcs-Serialization-TextSerializer-Write-T-(System-IO-Stream_T)-T'></a>
@@ -15,8 +15,8 @@ The type of the object serialized.
 `stream` [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream')  
 The [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream') instance on which the object is to be serialized.  
   
-<a name='DefaultEcs-Serialization-TextSerializer-Write-T-(System-IO-Stream_T)-obj'></a>
-`obj` [T](#DefaultEcs-Serialization-TextSerializer-Write-T-(System-IO-Stream_T)-T 'DefaultEcs.Serialization.TextSerializer.Write&lt;T&gt;(System.IO.Stream, T).T')  
+<a name='DefaultEcs-Serialization-TextSerializer-Write-T-(System-IO-Stream_T)-value'></a>
+`value` [T](#DefaultEcs-Serialization-TextSerializer-Write-T-(System-IO-Stream_T)-T 'DefaultEcs.Serialization.TextSerializer.Write&lt;T&gt;(System.IO.Stream, T).T')  
 The object to serialize.  
   
 #### Exceptions
