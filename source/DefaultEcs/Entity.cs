@@ -74,7 +74,7 @@ namespace DefaultEcs
         /// </summary>
         /// <returns>true if the <see cref="Entity"/> is enabled; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsEnabled() => WorldId == 0 ? false : Components[World.IsEnabledFlag];
+        public bool IsEnabled() => WorldId != 0 && Components[World.IsEnabledFlag];
 
         /// <summary>
         /// Enables the current <see cref="Entity"/> so it can appear in <see cref="EntitySet"/>.
@@ -114,7 +114,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/> enabled; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsEnabled<T>() => WorldId == 0 ? false : Components[ComponentManager<T>.Flag];
+        public bool IsEnabled<T>() => WorldId != 0 && Components[ComponentManager<T>.Flag];
 
         /// <summary>
         /// Enables the current <see cref="Entity"/> component of type <typeparamref name="T"/> so it can appear in <see cref="EntitySet"/>.

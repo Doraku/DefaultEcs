@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Message;
@@ -146,14 +145,13 @@ namespace DefaultEcs
             /// </summary>
             /// <typeparam name="T">The type of component to add to the either group.</typeparam>
             /// <returns>The current <see cref="EitherBuilder"/>.</returns>
-            [SuppressMessage("Compiler", "CS8509:The switch expression does not handle all possible values of its input type(it is not exhaustive).")]
             public EitherBuilder Or<T>() => _type switch
             {
-                EitherType.With => OrWith<T>(),
                 EitherType.Without => OrWithout<T>(),
                 EitherType.WhenAdded => OrWhenAdded<T>(),
                 EitherType.WhenChanged => OrWhenChanged<T>(),
-                EitherType.WhenRemoved => OrWhenRemoved<T>()
+                EitherType.WhenRemoved => OrWhenRemoved<T>(),
+                _ => OrWith<T>()
             };
 
             /// <summary>
@@ -355,7 +353,7 @@ namespace DefaultEcs
         {
             if (!_withEitherFilters?.Select(f => f.ToString()).Contains(filter.ToString()) ?? true)
             {
-                (_withEitherFilters ?? (_withEitherFilters = new List<ComponentEnum>())).Add(filter);
+                (_withEitherFilters ??= new List<ComponentEnum>()).Add(filter);
             }
         }
 
@@ -363,7 +361,7 @@ namespace DefaultEcs
         {
             if (!_withoutEitherFilters?.Select(f => f.ToString()).Contains(filter.ToString()) ?? true)
             {
-                (_withoutEitherFilters ?? (_withoutEitherFilters = new List<ComponentEnum>())).Add(filter);
+                (_withoutEitherFilters ??= new List<ComponentEnum>()).Add(filter);
             }
         }
 
@@ -407,7 +405,7 @@ namespace DefaultEcs
                 }
             }
 
-            (_predicates ?? (_predicates = new List<Predicate<int>>())).Add(i => predicate(ComponentManager<T>.Pools[_world.WorldId].Get(i)));
+            (_predicates ??= new List<Predicate<int>>()).Add(i => predicate(ComponentManager<T>.Pools[_world.WorldId].Get(i)));
 
             return With<T>();
         }
