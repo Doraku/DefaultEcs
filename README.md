@@ -14,6 +14,7 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
 
 - [Requirement](#Requirement)
 - [Versioning](#Versioning)
+- [Analyzer](#Analyzer)
 - [Overview](#Overview)
   - [World](#Overview_World)
   - [Entity](#Overview_Entity)
@@ -48,6 +49,10 @@ This is the current strategy used to version DefaultEcs: v0.major.minor
 - 0: DefaultEcs is still in heavy development and although a lot of care is given to not break the current api, it can still happen
 - major: incremented when there is a breaking change (reset minor number)
 - minor: incremented when there is a new feature or a bug fix
+
+<a name='Analyzer'></a>
+# Analyzer
+To help development with DefaultEcs, there is a roslyn analyzer which provides some warnings against potential bad usages. It can be found [here](https://github.com/Doraku/DefaultEcs.Analyzer).
 
 <a name='Overview'></a>
 # Overview
