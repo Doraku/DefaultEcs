@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DefaultEcs.Analyzer" Version="0.0.9" PrivateAssets="all" />
+    <PackageReference Include="DefaultEcs.Analyzer" Version="0.1.0" PrivateAssets="all" />
     <PackageReference Include="NFluent" Version="2.6.0" />
     <PackageReference Include="NSubstitute" Version="4.2.1" />
     <PackageReference Include="xunit" Version="2.4.1" />

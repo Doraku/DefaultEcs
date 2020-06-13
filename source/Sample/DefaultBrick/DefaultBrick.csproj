@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DefaultEcs.Analyzer" Version="0.0.9" PrivateAssets="all" />
+    <PackageReference Include="DefaultEcs.Analyzer" Version="0.1.0" PrivateAssets="all" />
     <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.13" />
   </ItemGroup>
 
