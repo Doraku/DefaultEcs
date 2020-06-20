@@ -23,6 +23,7 @@ namespace DefaultBrick.System
             _state = Mouse.GetState(_window);
         }
 
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Runtime Error", "DEA0005:Entity modification method '{0}' used inside the Update method of AEntitySystem", Justification = "no multithreading")]
         protected override void Update(float state, in Entity entity)
         {
             int offset = entity.Get<BallStart>().OffSet;

@@ -22,8 +22,6 @@ namespace DefaultBrick.System
 
             position.Value.X += offset.X;
             position.Value.Y += offset.Y;
-
-            entity.Set(position);
         }
     }
 }
