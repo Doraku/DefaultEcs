@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using DefaultEcs.Serialization;
+using DefaultEcs.Technical.Helper;
 
 namespace DefaultEcs.Technical.Serialization.TextSerializer
 {
@@ -125,6 +126,11 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         {
             if ((_length == 0 && !_isQuotedString) || (readString && !_isQuotedString))
             {
+                if (readString && _length > 0 && !_isEndOfLine && !_isQuotedString)
+                {
+                    ++_length;
+                }
+
                 _isEndOfLine = false;
                 bool skipLine = false;
 
@@ -167,6 +173,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                     {
                         if (_length > 0)
                         {
+                            ArrayExtension.EnsureLength(ref _buffer, _length);
+                            _buffer[_length] = c;
                             break;
                         }
 
@@ -197,14 +205,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                         continue;
                     }
 
-                    if (_buffer.Length < _length)
-                    {
-                        char[] newBuffer = ArrayPool<char>.Shared.Rent(_buffer.Length * 2);
-                        Array.Copy(_buffer, newBuffer, _buffer.Length);
-                        ArrayPool<char>.Shared.Return(_buffer);
-                        _buffer = newBuffer;
-                    }
-
+                    ArrayExtension.EnsureLength(ref _buffer, _length);
                     _buffer[_length++] = c;
                 }
             }

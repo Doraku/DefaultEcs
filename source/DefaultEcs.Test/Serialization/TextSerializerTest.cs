@@ -76,6 +76,17 @@ lol""";
         }
 
         [Fact]
+        public void Read_Should_work_When_string_contains_special_chars()
+        {
+            const string input =
+@"kikoo : / = lol";
+
+            using Stream stream = new MemoryStream(Encoding.ASCII.GetBytes(input));
+
+            Check.That(Read<string>(stream)).IsEqualTo("kikoo : / = lol");
+        }
+
+        [Fact]
         public void Write_Should_use_context_marshalling()
         {
             using Stream stream = new MemoryStream();
