@@ -75,6 +75,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             {
                 Stream.Write("$type ");
                 Stream.WriteLine(typeMarshalling);
+                WriteIndentation();
             }
             else
             {
