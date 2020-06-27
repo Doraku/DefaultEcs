@@ -124,7 +124,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         private void InnerPeek(bool readString)
         {
-            if ((_length == 0 && !_isQuotedString) || (readString && !_isQuotedString))
+            if ((_length == 0 && !_isQuotedString) || (readString && !_isQuotedString && !_isEndOfLine))
             {
                 if (readString && _length > 0 && !_isEndOfLine && !_isQuotedString)
                 {
