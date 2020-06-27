@@ -53,6 +53,29 @@ namespace DefaultEcs.Test.Serialization
         }
 
         [Fact]
+        public void Read_Should_work_When_string_is_quoted()
+        {
+            const string input =
+@"""kikoo """"lol""""""";
+
+            using Stream stream = new MemoryStream(Encoding.ASCII.GetBytes(input));
+
+            Check.That(Read<string>(stream)).IsEqualTo("kikoo \"lol\"");
+        }
+
+        [Fact]
+        public void Read_Should_work_When_string_is_multi_line()
+        {
+            const string input =
+@"""kikoo
+lol""";
+
+            using Stream stream = new MemoryStream(Encoding.ASCII.GetBytes(input));
+
+            Check.That(Read<string>(stream)).IsEqualTo("kikoo" + Environment.NewLine + "lol");
+        }
+
+        [Fact]
         public void Write_Should_use_context_marshalling()
         {
             using Stream stream = new MemoryStream();

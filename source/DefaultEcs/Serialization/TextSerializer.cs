@@ -216,7 +216,7 @@ namespace DefaultEcs.Serialization
                                 throw new ArgumentException($"No component type identifier on line {reader.LineNumber}");
                             }
 
-                            Type type = Type.GetType(reader.ReadLine(), false) ?? throw new ArgumentException($"Unable to read type on line {reader.LineNumber}");
+                            Type type = Type.GetType(reader.ReadString(), false) ?? throw new ArgumentException($"Unable to read type on line {reader.LineNumber}");
 
                             componentOperations.Add(
                                 componentType,

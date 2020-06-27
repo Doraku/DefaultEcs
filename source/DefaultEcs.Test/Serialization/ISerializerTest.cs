@@ -199,10 +199,10 @@ namespace DefaultEcs.Test.Serialization
 
             Entity[] entities = new[]
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
             entities[0].Set<Int32>();
             entities[0].Set<bool>(true);
             entities[0].Set<sbyte>(13);
@@ -275,7 +275,7 @@ namespace DefaultEcs.Test.Serialization
                     Check.That(entitiesCopy[0].Get<string>()).IsEqualTo(entities[0].Get<string>());
                     Check.That(entitiesCopy[0].Get<ClassTest>()).IsEqualTo(entities[0].Get<ClassTest>());
 
-                    Check.That(entities[0].Get<Test>()).IsEqualTo(entitiesCopy[0].Get<Test>());
+                    Check.That(entitiesCopy[0].Get<Test>()).IsEqualTo(entities[0].Get<Test>());
 
                     Check.That(entitiesCopy[1].Get<Test>()).IsEqualTo(entities[1].Get<Test>());
                     Check.That(entitiesCopy[1].Get<InnerTest>()).IsEqualTo(entities[1].Get<InnerTest>());
@@ -315,10 +315,10 @@ namespace DefaultEcs.Test.Serialization
 
             Entity[] entities = new[]
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
             entities[0].Set<Int32>();
             entities[0].Set<bool>(true);
             entities[0].Set<sbyte>(13);
@@ -388,7 +388,7 @@ namespace DefaultEcs.Test.Serialization
                 Check.That(entitiesCopy[0].Get<string>()).IsEqualTo(entities[0].Get<string>());
                 Check.That(entitiesCopy[0].Get<ClassTest>()).IsEqualTo(entities[0].Get<ClassTest>());
 
-                Check.That(entities[0].Get<Test>()).IsEqualTo(entitiesCopy[0].Get<Test>());
+                Check.That(entitiesCopy[0].Get<Test>()).IsEqualTo(entities[0].Get<Test>());
 
                 Check.That(entitiesCopy[1].Get<Test>()).IsEqualTo(entities[1].Get<Test>());
                 Check.That(entitiesCopy[1].Get<InnerTest>()).IsEqualTo(entities[1].Get<InnerTest>());

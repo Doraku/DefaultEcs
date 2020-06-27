@@ -48,6 +48,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             {
                 Stream.Write("$type ");
                 Stream.WriteLine(Context.TypeMarshalling);
+                WriteIndentation();
                 Context.TypeMarshalling = null;
             }
 
@@ -93,9 +94,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         private char[] _buffer;
         private int _length;
-        private bool _endOfLine;
-        private bool _previouslyEndOfLine;
-        private bool _mayBeComment;
+        private bool _isQuotedString;
+        private bool _isEndOfLine;
 
         public bool EndOfStream => _stream.EndOfStream && _length == 0;
 
@@ -108,9 +108,8 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
             _buffer = ArrayPool<char>.Shared.Rent(4096);
             _length = 0;
-            _endOfLine = false;
-            _mayBeComment = false;
-            _previouslyEndOfLine = false;
+            _isQuotedString = false;
+            _isEndOfLine = false;
 
             Context = context;
             LineNumber = 0;
@@ -122,17 +121,12 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static bool Throw<T>() => throw GetException<T>();
 
-        private void InnerPeek(bool readLine, bool stayOnLine)
+        private void InnerPeek(bool readString)
         {
-            if ((_length == 0 && (!stayOnLine || !_endOfLine)) || (readLine && !_endOfLine))
+            if ((_length == 0 && !_isQuotedString) || (readString && !_isQuotedString))
             {
-                if (readLine && _length > 0 && !_endOfLine)
-                {
-                    ++_length;
-                }
-
+                _isEndOfLine = false;
                 bool skipLine = false;
-                _previouslyEndOfLine = false;
 
                 while (!_stream.EndOfStream)
                 {
@@ -144,48 +138,54 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
                     char c = (char)value;
 
-                    if (c == '/')
+                    if (c == '"')
                     {
-                        if (_mayBeComment)
+                        if (_length == 0 && !_isQuotedString)
                         {
-                            _length = 0;
-                            skipLine = true;
+                            readString = true;
+                            _isQuotedString = true;
+                            continue;
                         }
-                        else
+
+                        if (_isQuotedString)
                         {
-                            _mayBeComment = true;
+                            if (_stream.Peek() != '"')
+                            {
+                                break;
+                            }
+
+                            _stream.Read();
                         }
-                    }
-                    else
-                    {
-                        _mayBeComment = false;
                     }
 
-                    if (!readLine && (c == ' ' || c == '\t' || c == '=' || c == ':'))
+                    if (c == '/' && !_isQuotedString && _stream.Peek() == '/')
+                    {
+                        skipLine = true;
+                    }
+
+                    if (!readString && (c == ' ' || c == '\t' || c == '=' || c == ':'))
                     {
                         if (_length > 0)
                         {
-                            _buffer[_length] = c;
                             break;
                         }
 
                         continue;
                     }
 
-                    if (c == '\r' || c == '\n')
+                    if ((c == '\r' || c == '\n') && !_isQuotedString)
                     {
                         if (c == '\r' && _stream.Peek() == '\n')
                         {
                             _stream.Read();
                         }
 
-                        _endOfLine = true;
-                        _previouslyEndOfLine = true;
                         skipLine = false;
                         ++LineNumber;
 
-                        if (_length > 0 || stayOnLine)
+                        if (_length > 0)
                         {
+                            _isEndOfLine = true;
                             break;
                         }
 
@@ -205,7 +205,6 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                         _buffer = newBuffer;
                     }
 
-                    _endOfLine = false;
                     _buffer[_length++] = c;
                 }
             }
@@ -213,7 +212,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         public bool TryPeek(string value)
         {
-            InnerPeek(false, false);
+            InnerPeek(false);
 
             return new Span<char>(_buffer, 0, _length).SequenceEqual(value.AsSpan());
         }
@@ -225,21 +224,24 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 if (TryPeek(value))
                 {
                     _length = 0;
+                    _isQuotedString = false;
                     return true;
                 }
 
                 _length = 0;
-            } while (!EndOfStream);
+                _isQuotedString = false;
+            } while (!_stream.EndOfStream);
 
             return false;
         }
 
         public ReadOnlySpan<char> ReadAsSpan()
         {
-            InnerPeek(false, false);
+            InnerPeek(false);
 
             int length = _length;
             _length = 0;
+            _isQuotedString = false;
 
             return new ReadOnlySpan<char>(_buffer, 0, length);
         }
@@ -247,10 +249,11 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 #if NETSTANDARD1_1 || NETSTANDARD2_0
         public string Read()
         {
-            InnerPeek(false, false);
+            InnerPeek(false);
 
             int length = _length;
             _length = 0;
+            _isQuotedString = false;
 
             return length > 0 ? new string(_buffer, 0, length) : string.Empty;
         }
@@ -260,57 +263,69 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         public ReadOnlySpan<char> ReadFromLineAsSpan()
         {
-            InnerPeek(false, true);
+            if (!_isEndOfLine)
+            {
+                InnerPeek(false);
+            }
 
             int length = _length;
             _length = 0;
+            _isQuotedString = false;
 
             return new ReadOnlySpan<char>(_buffer, 0, length);
         }
 
         public string ReadFromLine()
         {
-            InnerPeek(false, true);
+            if (!_isEndOfLine)
+            {
+                InnerPeek(false);
+            }
 
             int length = _length;
             _length = 0;
+            _isQuotedString = false;
 
             return length > 0 ? new string(_buffer, 0, length) : string.Empty;
         }
 
-        public string ReadLine()
+        public string ReadString()
         {
-            InnerPeek(true, true);
+            InnerPeek(true);
 
             int length = _length;
-            _endOfLine = false;
             _length = 0;
+            _isQuotedString = false;
 
             return length > 0 ? new string(_buffer, 0, length) : string.Empty;
         }
 
         public void EndLine()
         {
-            if (!_previouslyEndOfLine)
+            while (!_stream.EndOfStream && !_isEndOfLine)
             {
-                InnerPeek(true, true);
+                _length = 1;
+                _isQuotedString = false;
+                InnerPeek(true);
             }
-            _endOfLine = false;
+
             _length = 0;
+            _isQuotedString = false;
+            _isEndOfLine = false;
         }
 
         public T ReadValue<T>()
         {
-            if (TryPeek("null"))
+            if (TryPeek("null") && !_isQuotedString)
             {
                 _length = 0;
                 return default;
             }
 
-            if (TryPeek("$type"))
+            if (TryPeek("$type") && !_isQuotedString)
             {
                 _length = 0;
-                return Converter.GetReadAction<T>(Type.GetType(ReadLine(), true), Context)(this);
+                return Converter.GetReadAction<T>(Type.GetType(ReadString(), true), Context)(this);
             }
 
             return Converter<T>.ReadAction(this);

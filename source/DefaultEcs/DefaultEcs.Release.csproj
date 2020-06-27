@@ -16,11 +16,7 @@
   <PropertyGroup Label="Package">
     <Version>0.14.3</Version>
     <PackageReleaseNotes>
-added componentFilter parameter on BinarySerializer and TextSerializer to apply a filter on which component type should be serialized or deserialized
-added BinarySerializationContext to provide transformation between types when using the BinarySerializer
-added TextSerializationContext to provide transformation between types when using the TextSerializer
-
-fixed BinarySerializer and TextSerializer closing the stream parameter, it is now left open
+added quote and multiline string support to TextSerialize
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
