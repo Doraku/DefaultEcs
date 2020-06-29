@@ -16,7 +16,7 @@
   <PropertyGroup Label="Package">
     <Version>0.14.3</Version>
     <PackageReleaseNotes>
-added quote and multiline string support to TextSerialize
+added quote and multiline string support to TextSerializer
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
