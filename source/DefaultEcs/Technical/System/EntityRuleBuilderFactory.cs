@@ -6,28 +6,28 @@ using DefaultEcs.System;
 
 namespace DefaultEcs.Technical.System
 {
-    internal static class EntitySetFactory
+    internal static class EntityRuleBuilderFactory
     {
         #region Fields
 
         private static readonly MethodInfo _withPredicate;
-        private static readonly ConcurrentDictionary<Type, Func<object, World, EntitySet>> _entitySetFactories;
+        private static readonly ConcurrentDictionary<Type, Func<object, World, EntityRuleBuilder>> _entityRuleBuilderFactories;
 
         #endregion
 
         #region Initialisation
 
-        static EntitySetFactory()
+        static EntityRuleBuilderFactory()
         {
             _withPredicate = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethods(nameof(EntityRuleBuilder.With)).Single(m => m.GetParameters().Length == 1);
-            _entitySetFactories = new ConcurrentDictionary<Type, Func<object, World, EntitySet>>();
+            _entityRuleBuilderFactories = new ConcurrentDictionary<Type, Func<object, World, EntityRuleBuilder>>();
         }
 
         #endregion
 
         #region Methods
 
-        private static Func<object, World, EntitySet> GetEntitySetFactory(Type type)
+        private static Func<object, World, EntityRuleBuilder> GetEntityRuleBuilderFactory(Type type)
         {
             TypeInfo typeInfo = type.GetTypeInfo();
 
@@ -81,10 +81,10 @@ namespace DefaultEcs.Technical.System
 
             bool enabled = typeInfo.GetCustomAttribute<DisabledAttribute>() is null;
 
-            return (o, w) => builderAction(o, enabled ? w.GetEntities() : w.GetDisabledEntities()).AsSet();
+            return (o, w) => builderAction(o, enabled ? w.GetEntities() : w.GetDisabledEntities());
         }
 
-        public static Func<object, World, EntitySet> Create(Type type) => _entitySetFactories.GetOrAdd(type, GetEntitySetFactory);
+        public static Func<object, World, EntityRuleBuilder> Create(Type type) => _entityRuleBuilderFactories.GetOrAdd(type, GetEntityRuleBuilderFactory);
 
         #endregion
     }

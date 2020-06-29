@@ -79,7 +79,7 @@ lol""";
         public void Read_Should_work_When_string_contains_special_chars()
         {
             const string input =
-@"kikoo : / = lol";
+"kikoo : / = lol";
 
             using Stream stream = new MemoryStream(Encoding.ASCII.GetBytes(input));
 

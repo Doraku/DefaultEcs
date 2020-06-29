@@ -96,7 +96,7 @@ namespace DefaultEcs.System
         protected AEntitySystem(World world, IParallelRunner runner, int minEntityCountByRunnerIndex)
             : this(runner, minEntityCountByRunnerIndex)
         {
-            _set = EntitySetFactory.Create(GetType())(this, world ?? throw new ArgumentNullException(nameof(world)));
+            _set = EntityRuleBuilderFactory.Create(GetType())(this, world ?? throw new ArgumentNullException(nameof(world))).AsSet();
         }
 
         /// <summary>
