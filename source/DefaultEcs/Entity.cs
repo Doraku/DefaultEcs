@@ -28,8 +28,11 @@ namespace DefaultEcs
         [FieldOffset(2)]
         internal readonly short WorldId;
 
+        /// <summary>
+        /// Entity ID
+        /// </summary>
         [FieldOffset(4)]
-        internal readonly int EntityId;
+        public readonly int EntityId;
 
         #endregion
 
