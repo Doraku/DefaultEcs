@@ -287,6 +287,16 @@ namespace DefaultEcs
         }
 
         /// <summary>
+        /// Get an existing entity
+        /// </summary>
+        /// <param name="entityId">entity Id</param>
+        /// <returns>Returns the entity</returns>
+        public Entity GetEntity(int entityId)
+        {
+            return new Entity(WorldId, entityId);
+        }
+
+        /// <summary>
         /// Sets up the current <see cref="World"/> to handle component of type <typeparamref name="T"/> with a different maximum count than <see cref="MaxCapacity"/>.
         /// If the type of component is already handled by the current <see cref="World"/>, does nothing.
         /// </summary>
