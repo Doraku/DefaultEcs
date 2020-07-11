@@ -18,6 +18,7 @@
     <PackageReleaseNotes>
 added quote and multiline string support to TextSerializer
 added EntityRuleBuilder.Copy to duplicate an EntityRuleBuilder
+added EntitiesMap.Count to get the number of entities for a given key
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

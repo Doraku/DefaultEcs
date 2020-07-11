@@ -89,6 +89,22 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void Count_Should_return_the_number_of_entities()
+        {
+            using World world = new World();
+
+            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
+
+            Entity entity = world.CreateEntity();
+
+            Check.That(map.Count(42)).IsZero();
+
+            entity.Set(42);
+
+            Check.That(map.Count(42)).IsEqualTo(1);
+        }
+
+        [Fact]
         public void TryGetEntities_Should_return_weither_a_key_is_in_or_not()
         {
             using World world = new World();

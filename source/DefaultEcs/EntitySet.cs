@@ -40,7 +40,7 @@ namespace DefaultEcs
         public World World => World.Worlds[_worldId];
 
         /// <summary>
-        /// Gets the numbers of <see cref="Entity"/> in the current <see cref="EntitySet"/>.
+        /// Gets the number of <see cref="Entity"/> in the current <see cref="EntitySet"/>.
         /// </summary>
         public int Count
         {

@@ -303,6 +303,13 @@ namespace DefaultEcs
         #region Methods
 
         /// <summary>
+        /// Gets the number of <see cref="Entity"/> in the current <see cref="EntitiesMap{TKey}"/> for the given <typeparamref name="TKey"/>.
+        /// </summary>
+        /// <param name="key">The key to locate in the <see cref="EntitiesMap{TKey}"/>.</param>
+        /// <returns>The number of <see cref="Entity"/> in the current <see cref="EntitiesMap{TKey}"/> for the given <typeparamref name="TKey"/>.</returns>
+        public int Count(TKey key) => _entities.TryGetValue(key, out Entities entities) ? entities.Count : 0;
+
+        /// <summary>
         /// Determines whether the <see cref="EntitiesMap{TKey}"/> contains a specific <see cref="Entity"/>.
         /// </summary>
         /// <param name="entity">The <see cref="Entity"/> to locate in the <see cref="EntitiesMap{TKey}"/>.</param>
