@@ -17,9 +17,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="..\resource\square.png" Link="Content\square.png">
+    <None Include="..\resource\square.png" Link="Content\square.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
+    <None Include="..\resource\Jump.xnb" Link="Content\Jump.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\resource\Slap.xnb" Link="Content\Slap.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -29,27 +35,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\DefaultEcs\DefaultEcs.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Content\Jump.wma">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Content\Slap.wma">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Content\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="..\resource\Jump.xnb" Link="Content\Jump.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\resource\Slap.xnb" Link="Content\Slap.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 </Project>

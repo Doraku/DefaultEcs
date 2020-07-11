@@ -17,12 +17,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="..\resource\square.png" Link="Content\square.png">
+    <None Include="..\resource\square.png" Link="Content\square.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
+    </None>
     <None Include="..\resource\font.xnb" Link="Content\font.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
