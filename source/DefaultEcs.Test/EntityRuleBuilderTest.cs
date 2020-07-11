@@ -18,6 +18,32 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void Copy_Should_return_different_instance()
+        {
+            using World world = new World();
+
+            EntityRuleBuilder builder = world.GetEntities().WithEither<bool>().WithoutEither<double>().With((in bool b) => b);
+            EntityRuleBuilder copy = builder.Copy();
+
+            Check.That(copy).IsNotEqualTo(builder);
+
+            using EntitySet s1 = builder.With<int>().AsSet();
+            using EntitySet s2 = copy.Without<int>().AsSet();
+
+            Entity e = world.CreateEntity();
+            Entity e1 = world.CreateEntity();
+            Entity e2 = world.CreateEntity();
+
+            e.Set(false);
+            e1.Set(true);
+            e1.Set(42);
+            e2.Set(true);
+
+            Check.That(s1.GetEntities().ToArray()).ContainsExactly(e1);
+            Check.That(s2.GetEntities().ToArray()).ContainsExactly(e2);
+        }
+
+        [Fact]
         public void AsSet_Should_return_EntitySet_with_all_Entity()
         {
             using World world = new World(4);

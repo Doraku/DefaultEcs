@@ -134,5 +134,16 @@ namespace DefaultEcs.Test
 
             Check.That(builder.Or<bool>()).IsEqualTo(builder);
         }
+
+        [Fact]
+        public void Copy_Should_return_different_instance()
+        {
+            using World world = new World();
+
+            EntityRuleBuilder builder = world.GetEntities();
+            EntityRuleBuilder copy = builder.WithEither<bool>().Copy();
+
+            Check.That(copy).IsNotEqualTo(builder);
+        }
     }
 }

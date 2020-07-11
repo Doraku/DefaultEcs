@@ -233,6 +233,12 @@ namespace DefaultEcs
             public EitherBuilder WhenRemovedEither<T>() => Commit().WhenRemovedEither<T>();
 
             /// <summary>
+            /// Copies all the rules of the current <see cref="EntityRuleBuilder"/> to a new instance.
+            /// </summary>
+            /// <returns>A new <see cref="EntityRuleBuilder"/> with all the same rules as the current instance.</returns>
+            public EntityRuleBuilder Copy() => new EntityRuleBuilder(Commit());
+
+            /// <summary>
             /// Returns a <see cref="Predicate{T}"/> representing the specified rules.
             /// </summary>
             /// <returns>The <see cref="Predicate{T}"/>.</returns>
@@ -301,6 +307,38 @@ namespace DefaultEcs
         #endregion
 
         #region Initialisation
+
+        private EntityRuleBuilder(EntityRuleBuilder other)
+        {
+            _world = other._world;
+            _subscriptions = other._subscriptions.ToList();
+            _nonReactSubscriptions = other._nonReactSubscriptions.ToList();
+
+            _addCreated = other._addCreated;
+            _predicateFilter = other._predicateFilter.Copy();
+            _withFilter = other._withFilter.Copy();
+            _withEitherFilter = other._withEitherFilter.Copy();
+            _withoutFilter = other._withoutFilter.Copy();
+            _withoutEitherFilter = other._withoutEitherFilter.Copy();
+            _whenAddedFilter = other._whenAddedFilter.Copy();
+            _whenChangedFilter = other._whenChangedFilter.Copy();
+            _whenRemovedFilter = other._whenRemovedFilter.Copy();
+
+            if (other._predicates != null)
+            {
+                _predicates = other._predicates.ToList();
+            }
+
+            if (other._withEitherFilters != null)
+            {
+                _withEitherFilters = other._withEitherFilters.Select(f => f.Copy()).ToList();
+            }
+
+            if (other._withoutEitherFilters != null)
+            {
+                _withoutEitherFilters = other._withoutEitherFilters.Select(f => f.Copy()).ToList();
+            }
+        }
 
         internal EntityRuleBuilder(World world, bool withEnabledEntities)
         {
@@ -516,6 +554,12 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of component to add to the either group.</typeparam>
         /// <returns>A <see cref="EitherBuilder"/> to create a either group.</returns>
         public EitherBuilder WhenRemovedEither<T>() => new EitherBuilder(this, EitherType.WhenRemoved).Or<T>();
+
+        /// <summary>
+        /// Copies all the rules of the current <see cref="EntityRuleBuilder"/> to a new instance.
+        /// </summary>
+        /// <returns>A new <see cref="EntityRuleBuilder"/> with all the same rules as the current instance.</returns>
+        public EntityRuleBuilder Copy() => new EntityRuleBuilder(this);
 
         /// <summary>
         /// Returns a <see cref="Predicate{T}"/> representing the specified rules.
