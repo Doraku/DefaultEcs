@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using DefaultEcs.Resource;
 using NFluent;
 using NSubstitute;
@@ -58,6 +60,24 @@ namespace DefaultEcs.Test.Resource
 
             entity.Set(ManagedResource<IDisposable>.Create("dummy5", "dummy6"));
             Check.That(entity.Get<int>()).IsEqualTo(6);
+        }
+
+        [Fact]
+        public void Resources_Should_return_loaded_resource()
+        {
+            IDisposable value = Substitute.For<IDisposable>();
+
+            using World world = new World(1);
+            using ResourceManagerTest manager = new ResourceManagerTest(value);
+
+            Entity entity = world.CreateEntity();
+            entity.Set(ManagedResource<IDisposable>.Create("dummy1", "dummy2"));
+
+            manager.Manage(world);
+
+            Check.That(manager.Resources.ToArray()).ContainsExactly(
+                new KeyValuePair<string, IDisposable>("dummy1", value),
+                new KeyValuePair<string, IDisposable>("dummy2", value));
         }
 
         [Fact]

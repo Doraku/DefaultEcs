@@ -123,10 +123,7 @@ namespace DefaultEcs
             /// <summary>
             /// Sets the enumerator to its initial position, which is before the first <see cref="Entity"/> in the collection.
             /// </summary>
-            public void Reset()
-            {
-                _index = -1;
-            }
+            public void Reset() => _index = -1;
 
             #endregion
 

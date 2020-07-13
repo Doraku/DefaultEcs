@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Helper;
@@ -34,12 +35,113 @@ namespace DefaultEcs.Resource
             public bool RemoveReference() => --_referencesCount == 0;
         }
 
+        /// <summary>
+        /// Allows to enumerate the resources of a <see cref="AResourceManager{TInfo, TResource}" />.
+        /// </summary>
+        public readonly struct ResourceEnumerable : IEnumerable<KeyValuePair<TInfo, TResource>>
+        {
+            private readonly AResourceManager<TInfo, TResource> _manager;
+
+            internal ResourceEnumerable(AResourceManager<TInfo, TResource> manager)
+            {
+                _manager = manager;
+            }
+
+            #region IEnumerable
+
+            /// <summary>
+            /// Returns an enumerator that iterates through the collection.
+            /// </summary>
+            /// <returns>An enumerator that can be used to iterate through the collection.</returns>
+            public ResourceEnumerator GetEnumerator() => new ResourceEnumerator(_manager);
+
+            IEnumerator<KeyValuePair<TInfo, TResource>> IEnumerable<KeyValuePair<TInfo, TResource>>.GetEnumerator() => GetEnumerator();
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Enumerates the resources of a <see cref="AResourceManager{TInfo, TResource}" />.
+        /// </summary>
+        public struct ResourceEnumerator : IEnumerator<KeyValuePair<TInfo, TResource>>
+        {
+            private readonly KeyValuePair<TInfo, TResource>[] _resources;
+
+            private int _index;
+
+            internal ResourceEnumerator(AResourceManager<TInfo, TResource> manager)
+            {
+                lock (manager._lockObject)
+                {
+                    _resources = new KeyValuePair<TInfo, TResource>[manager._resources.Count];
+                    _index = 0;
+                    foreach (KeyValuePair<TInfo, Resource> pair in manager._resources)
+                    {
+                        _resources[_index++] = new KeyValuePair<TInfo, TResource>(pair.Key, pair.Value.Value);
+                    }
+                }
+
+                _index = -1;
+
+                Current = default;
+            }
+
+            #region IEnumerator
+
+            /// <summary>
+            /// Gets the resource at the current position of the enumerator.
+            /// </summary>
+            /// <returns>The resource at the current position of the enumerator.</returns>
+            public KeyValuePair<TInfo, TResource> Current { get; private set; }
+
+            object IEnumerator.Current => Current;
+
+            /// <summary>Advances the enumerator to the next resource of the <see cref="AResourceManager{TInfo, TResource}" />.</summary>
+            /// <returns>true if the enumerator was successfully advanced to the next resource; false if the enumerator has passed the end of the collection.</returns>
+            public bool MoveNext()
+            {
+                if (++_index < _resources.Length)
+                {
+                    Current = _resources[_index];
+                    return true;
+                }
+
+                Current = default;
+                return false;
+            }
+
+            void IEnumerator.Reset() => _index = -1;
+
+            #endregion
+
+            #region IDisposable
+
+            /// <summary>
+            /// Releases all resources used by the <see cref="ResourceEnumerator" />.
+            /// </summary>
+            public void Dispose()
+            { }
+
+            #endregion
+        }
+
         #endregion
 
         #region Fields
 
         private readonly object _lockObject;
         private readonly Dictionary<TInfo, Resource> _resources;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets all the <typeparamref name="TResource"/> loaded by the current instance and their corresponding <typeparamref name="TInfo"/>.
+        /// </summary>
+        public ResourceEnumerable Resources => new ResourceEnumerable(this);
 
         #endregion
 
