@@ -133,14 +133,14 @@ namespace DefaultEcs
             bool needClearing,
             World world,
             Predicate<ComponentEnum> filter,
-            List<Predicate<int>> predicates,
+            Predicate<int> predicate,
             List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions,
             IEqualityComparer<TKey> comparer)
         {
             _needClearing = needClearing;
             _worldId = world.WorldId;
             _worldMaxCapacity = world.MaxCapacity;
-            _container = new EntityContainerWatcher(this, filter, predicates);
+            _container = new EntityContainerWatcher(this, filter, predicate);
             _subscriptions = Enumerable.Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(OnChange), 1).Concat(subscriptions.Select(s => s(_container, world))).Merge();
 
             _previousComponents = ComponentManager<TKey>.GetOrCreatePrevious(_worldId);
@@ -151,10 +151,10 @@ namespace DefaultEcs
 
             if (!_needClearing)
             {
-                IEntityContainer @this = this as IEntityContainer;
+                IEntityContainer @this = this;
                 foreach (Entity entity in _components.GetEntities())
                 {
-                    if (filter(entity.Components))
+                    if (filter(entity.Components) && predicate(entity.EntityId))
                     {
                         @this.Add(entity.EntityId);
                     }

@@ -368,7 +368,16 @@ namespace DefaultEcs
 
         #region Methods
 
+        private static bool All(int _) => true;
+
         private Predicate<ComponentEnum> GetFilter() => EntityRuleFilterFactory.GetFilter(_withFilter, _withoutFilter, _withEitherFilters, _withoutEitherFilters);
+
+        private Predicate<int> GetPredicate() => _predicates?.Count switch
+        {
+            null => All,
+            1 => _predicates.Single(),
+            _ => i => _predicates.All(p => p(i))
+        };
 
         private bool GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions)
         {
@@ -568,22 +577,16 @@ namespace DefaultEcs
         public Predicate<Entity> AsPredicate()
         {
             Predicate<ComponentEnum> filter = GetFilter();
+            Predicate<int> predicate = GetPredicate();
 
-            Predicate<int> singlePredicate = _predicates?.FirstOrDefault();
-
-            return _predicates?.Count switch
-            {
-                null => e => filter(e.Components),
-                1 => e => filter(e.Components) && singlePredicate(e.EntityId),
-                _ => e => filter(e.Components) && _predicates.All(p => p(e.EntityId))
-            };
+            return e => filter(e.Components) && predicate(e.EntityId);
         }
 
         /// <summary>
         /// Returns an <see cref="EntitySet"/> with the specified rules.
         /// </summary>
         /// <returns>The <see cref="EntitySet"/>.</returns>
-        public EntitySet AsSet() => new EntitySet(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), _predicates, subscriptions);
+        public EntitySet AsSet() => new EntitySet(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), GetPredicate(), subscriptions);
 
         /// <summary>
         /// Returns an <see cref="EntityMap{TKey}"/> with the specified rules.
@@ -595,7 +598,7 @@ namespace DefaultEcs
         {
             With<TKey>();
 
-            return new EntityMap<TKey>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), _predicates, subscriptions, comparer);
+            return new EntityMap<TKey>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), GetPredicate(), subscriptions, comparer);
         }
 
         /// <summary>
@@ -615,7 +618,7 @@ namespace DefaultEcs
         {
             With<TKey>();
 
-            return new EntitiesMap<TKey>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), _predicates, subscriptions, comparer);
+            return new EntitiesMap<TKey>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), GetPredicate(), subscriptions, comparer);
         }
 
         /// <summary>

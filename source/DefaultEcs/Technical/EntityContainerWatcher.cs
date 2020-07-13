@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs.Technical
@@ -17,19 +15,11 @@ namespace DefaultEcs.Technical
 
         #region Initialisation
 
-        public EntityContainerWatcher(IEntityContainer container, Predicate<ComponentEnum> filter, List<Predicate<int>> predicates)
+        public EntityContainerWatcher(IEntityContainer container, Predicate<ComponentEnum> filter, Predicate<int> predicate)
         {
-            static bool All(int _) => true;
-
             _container = container;
             _filter = filter;
-
-            _predicate = predicates?.Count switch
-            {
-                null => All,
-                1 => predicates.Single(),
-                _ => i => predicates.All(p => p(i))
-            };
+            _predicate = predicate;
         }
 
         #endregion
