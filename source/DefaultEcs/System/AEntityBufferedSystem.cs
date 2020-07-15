@@ -116,10 +116,7 @@ namespace DefaultEcs.System
         /// <summary>
         /// Disposes of the inner <see cref="EntitySet"/> instance.
         /// </summary>
-        public virtual void Dispose()
-        {
-            _set.Dispose();
-        }
+        public virtual void Dispose() => _set.Dispose();
 
         #endregion
     }
