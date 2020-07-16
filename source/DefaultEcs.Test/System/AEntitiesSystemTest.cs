@@ -11,11 +11,11 @@ namespace DefaultEcs.Test.System
     public sealed class AEntitiesSystemTest
     {
         [With(typeof(bool))]
-        private sealed class System : AEntitiesSystem<int, int>
+        private sealed class System<T> : AEntitiesSystem<int, T>
         {
-            public List<int> Keys = new List<int>();
+            public List<T> Keys = new List<T>();
 
-            public System(EntitiesMap<int> map)
+            public System(EntitiesMap<T> map)
                 : base(map)
             { }
 
@@ -33,9 +33,9 @@ namespace DefaultEcs.Test.System
 
             protected override void PreUpdate(int state) => Keys.Clear();
 
-            protected override void PostUpdate(int state, int key) => Keys.Add(key);
+            protected override void PostUpdate(int state, T key) => Keys.Add(key);
 
-            protected override void Update(int state, in int key, in Entity entity)
+            protected override void Update(int state, in T key, in Entity entity)
             {
                 entity.Get<bool>() = true;
             }
@@ -50,14 +50,26 @@ namespace DefaultEcs.Test.System
                 : base(world)
             { }
 
-            protected override void PreUpdate(int state) => Keys.Clear();
+            protected override void PreUpdate(int state)
+            {
+                base.PreUpdate(state);
 
-            protected override void PostUpdate(int state, int key) => Keys.Add(key);
+                Keys.Clear();
+            }
+
+            protected override void PostUpdate(int state, int key)
+            {
+                base.PostUpdate(state, key);
+
+                Keys.Add(key);
+            }
 
             public int Compare(int x, int y) => x.CompareTo(y) * -1;
 
             protected override void Update(int state, in int key, in Entity entity)
             {
+                base.Update(state, key, entity);
+
                 entity.Get<bool>() = true;
             }
         }
@@ -67,13 +79,13 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void AEntitiesSystem_Should_throw_ArgumentNullException_When_EntitySet_is_null()
         {
-            Check.ThatCode(() => new System(default(EntitiesMap<int>))).Throws<ArgumentNullException>();
+            Check.ThatCode(() => new System<int>(default(EntitiesMap<int>))).Throws<ArgumentNullException>();
         }
 
         [Fact]
         public void AEntitiesSystem_Should_throw_ArgumentNullException_When_World_is_null()
         {
-            Check.ThatCode(() => new System(default(World))).Throws<ArgumentNullException>();
+            Check.ThatCode(() => new System<int>(default(World))).Throws<ArgumentNullException>();
         }
 
         [Fact]
@@ -97,17 +109,102 @@ namespace DefaultEcs.Test.System
             entity4.Set<bool>();
             entity4.Set(1);
 
-            using (System system = new System(world.GetEntities().With<bool>().AsMultiMap<int>()))
+            using (System<int> system = new System<int>(world.GetEntities().With<bool>().AsMultiMap<int>()))
             {
                 system.Update(0);
 
                 Check.That(system.Keys).ContainsExactly(1, 2, 3, 4);
-            }
 
-            Check.That(entity1.Get<bool>()).IsTrue();
-            Check.That(entity2.Get<bool>()).IsTrue();
-            Check.That(entity3.Get<bool>()).IsTrue();
-            Check.That(entity4.Get<bool>()).IsTrue();
+                Check.That(entity1.Get<bool>()).IsTrue();
+                Check.That(entity2.Get<bool>()).IsTrue();
+                Check.That(entity3.Get<bool>()).IsTrue();
+                Check.That(entity4.Get<bool>()).IsTrue();
+
+                entity1.Set<bool>();
+                entity2.Set<bool>();
+                entity3.Set<bool>();
+                entity4.Set<bool>();
+                entity4.Remove<int>();
+
+                system.Update(0);
+
+                Check.That(system.Keys).ContainsExactly(2, 3, 4);
+
+                Check.That(entity1.Get<bool>()).IsTrue();
+                Check.That(entity2.Get<bool>()).IsTrue();
+                Check.That(entity3.Get<bool>()).IsTrue();
+                Check.That(entity4.Get<bool>()).IsFalse();
+            }
+        }
+
+        [Fact]
+        public void Update_Should_call_update_for_nullable_key()
+        {
+            using World world = new World(4);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set<bool>();
+            entity1.Set<int?>(4);
+
+            Entity entity2 = world.CreateEntity();
+            entity2.Set<bool>();
+            entity2.Set<int?>(3);
+
+            Entity entity3 = world.CreateEntity();
+            entity3.Set<bool>();
+            entity3.Set<int?>(2);
+
+            Entity entity4 = world.CreateEntity();
+            entity4.Set<bool>();
+            entity4.Set<int?>(1);
+
+            using (System<int?> system = new System<int?>(world))
+            {
+                system.Update(0);
+
+                Check.That(system.Keys).ContainsExactly(1, 2, 3, 4);
+
+                Check.That(entity1.Get<bool>()).IsTrue();
+                Check.That(entity2.Get<bool>()).IsTrue();
+                Check.That(entity3.Get<bool>()).IsTrue();
+                Check.That(entity4.Get<bool>()).IsTrue();
+            }
+        }
+
+        [Fact]
+        public void Update_Should_call_update_for_non_comparable_key()
+        {
+            object key = new object();
+
+            using World world = new World(4);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set<bool>();
+            entity1.Set(key);
+
+            Entity entity2 = world.CreateEntity();
+            entity2.Set<bool>();
+            entity2.Set(key);
+
+            Entity entity3 = world.CreateEntity();
+            entity3.Set<bool>();
+            entity3.Set(key);
+
+            Entity entity4 = world.CreateEntity();
+            entity4.Set<bool>();
+            entity4.Set(key);
+
+            using (System<object> system = new System<object>(world))
+            {
+                system.Update(0);
+
+                Check.That(system.Keys).ContainsExactly(key);
+
+                Check.That(entity1.Get<bool>()).IsTrue();
+                Check.That(entity2.Get<bool>()).IsTrue();
+                Check.That(entity3.Get<bool>()).IsTrue();
+                Check.That(entity4.Get<bool>()).IsTrue();
+            }
         }
 
         [Fact]
@@ -165,7 +262,7 @@ namespace DefaultEcs.Test.System
             entity4.Set<bool>();
             entity4.Set(1);
 
-            using (ISystem<int> system = new System(world)
+            using (ISystem<int> system = new System<int>(world)
             {
                 IsEnabled = false
             })
@@ -201,7 +298,7 @@ namespace DefaultEcs.Test.System
             entity4.Set<bool>();
             entity4.Set(1);
 
-            using (ISystem<int> system = new System(world, runner))
+            using (ISystem<int> system = new System<int>(world, runner))
             {
                 system.Update(0);
             }
@@ -237,7 +334,7 @@ namespace DefaultEcs.Test.System
             entity4.Set<bool>();
             entity4.Set(1);
 
-            using (ISystem<int> system = new System(world, runner, 10))
+            using (ISystem<int> system = new System<int>(world, runner, 10))
             {
                 Check.ThatCode(() => system.Update(0)).DoesNotThrow();
             }
