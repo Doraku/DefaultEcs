@@ -53,6 +53,10 @@ namespace DefaultEcs.Threading
         {
             int index = (int)state;
 
+#if !NETSTANDARD1_1
+            Thread.CurrentThread.Name = $"{nameof(DefaultParallelRunner)} worker {index + 1}";
+#endif
+
             goto Start;
 
         Work:
