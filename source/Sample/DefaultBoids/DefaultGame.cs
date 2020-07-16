@@ -71,7 +71,8 @@ namespace DefaultBoids
 
             _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(
-                new BehaviorSystem(_world, _runner),
+                new ResetBehaviorSystem(_world, _runner),
+                new SetBehaviorSystem(_world, _runner),
                 new BoidsSystem(_world, _runner),
                 new MoveSystem(_world, _runner));
 

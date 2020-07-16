@@ -20,6 +20,7 @@ added quote and multiline string support to TextSerializer
 added EntityRuleBuilder.Copy to duplicate an EntityRuleBuilder
 added EntitiesMap.Count to get the number of entities for a given key
 added AResourceManager.Resources to get all resources loaded
+added AEntitiesSystem to process EntitiesMap in a controlled way
 
 fixed EntitySet, EntityMap and EntitiesMap initialization with pre-existing entities when applying a component predicate
     </PackageReleaseNotes>

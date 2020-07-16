@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using DefaultEcs.Technical;
 using DefaultEcs.Technical.Helper;
@@ -18,7 +19,7 @@ namespace DefaultEcs
     {
         #region Types
 
-        private class Entities
+        internal class Entities
         {
             private Entity[] _entities;
             private int _sortedIndex;
@@ -30,7 +31,11 @@ namespace DefaultEcs
                 _entities = EmptyArray<Entity>.Value;
             }
 
-            public ReadOnlySpan<Entity> GetEntities() => new ReadOnlySpan<Entity>(_entities, 0, Count);
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public ReadOnlySpan<Entity> GetEntities(int start, int length) => new ReadOnlySpan<Entity>(_entities, start, length);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public ReadOnlySpan<Entity> GetEntities() => GetEntities(0, Count);
 
             public int Add(in Entity entity, int worldMaxCapacity)
             {
@@ -99,7 +104,7 @@ namespace DefaultEcs
             }
         }
 
-        private struct Mapping
+        internal struct Mapping
         {
             public Entities Entities;
             public int ItemIndex;
@@ -302,6 +307,8 @@ namespace DefaultEcs
 
         #region Methods
 
+        internal bool TryGetEntities(TKey key, out Entities entities) => _entities.TryGetValue(key, out entities);
+
         /// <summary>
         /// Gets the number of <see cref="Entity"/> in the current <see cref="EntitiesMap{TKey}"/> for the given <typeparamref name="TKey"/>.
         /// </summary>
@@ -394,7 +401,7 @@ namespace DefaultEcs
 
         #endregion
 
-        #region IOptimizable
+        #region ISortable
 
         void ISortable.Sort(ref bool shouldContinue)
         {

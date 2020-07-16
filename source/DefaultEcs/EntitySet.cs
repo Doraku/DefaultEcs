@@ -169,7 +169,7 @@ namespace DefaultEcs
 
         #endregion
 
-        #region IOptimizable
+        #region ISortable
 
         void ISortable.Sort(ref bool shouldContinue)
         {
