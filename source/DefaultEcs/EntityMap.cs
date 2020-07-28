@@ -135,6 +135,7 @@ namespace DefaultEcs
             Predicate<ComponentEnum> filter,
             Predicate<int> predicate,
             List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions,
+            int capacity,
             IEqualityComparer<TKey> comparer)
         {
             _needClearing = needClearing;
@@ -145,7 +146,7 @@ namespace DefaultEcs
 
             _previousComponents = ComponentManager<TKey>.GetOrCreatePrevious(_worldId);
             _components = ComponentManager<TKey>.GetOrCreate(_worldId);
-            _entities = new Dictionary<TKey, Entity>(comparer);
+            _entities = new Dictionary<TKey, Entity>(capacity, comparer);
 
             _entityIds = EmptyArray<bool>.Value;
 

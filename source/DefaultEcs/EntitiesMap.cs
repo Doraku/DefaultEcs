@@ -241,6 +241,7 @@ namespace DefaultEcs
             Predicate<ComponentEnum> filter,
             Predicate<int> predicate,
             List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions,
+            int capacity,
             IEqualityComparer<TKey> comparer)
         {
             _needClearing = needClearing;
@@ -250,7 +251,7 @@ namespace DefaultEcs
             _subscriptions = Enumerable.Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(OnChange), 1).Concat(subscriptions.Select(s => s(_container, world))).Merge();
 
             _components = ComponentManager<TKey>.GetOrCreate(_worldId);
-            _entities = new Dictionary<TKey, Entities>(comparer);
+            _entities = new Dictionary<TKey, Entities>(capacity, comparer);
 
             _mapping = EmptyArray<Mapping>.Value;
 
