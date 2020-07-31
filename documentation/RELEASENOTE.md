@@ -1,3 +1,16 @@
+## DefaultEcs 0.14.4
+added quote and multiline string support to TextSerializer  
+added EntityRuleBuilder.Copy to duplicate an EntityRuleBuilder  
+added EntityRuleBuilder.AsMap with capacity parameter  
+added EntityRuleBuilder.AsMultiMap with capacity parameter  
+added EntitiesMap.Count to get the number of entities for a given key  
+added AResourceManager.Resources to get all resources loaded  
+added AEntitiesSystem to process EntitiesMap in a controlled way  
+
+fixed EntitySet, EntityMap and EntitiesMap initialization with pre-existing entities when applying a component predicate  
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.14.4)
+
 ## DefaultEcs 0.14.3
 added componentFilter parameter on BinarySerializer and TextSerializer to apply a filter on which component type should be serialized or deserialized  
 added BinarySerializationContext to provide transformation between types when using the BinarySerializer  
