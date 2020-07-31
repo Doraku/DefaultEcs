@@ -23,6 +23,8 @@ The type of the resource.
   
 ### Constructors
 - [AResourceManager()](./DefaultEcs-Resource-AResourceManager-TInfo_TResource--AResourceManager().md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.AResourceManager()')
+### Properties
+- [Resources](./DefaultEcs-Resource-AResourceManager-TInfo_TResource--Resources.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.Resources')
 ### Methods
 - [Dispose()](./DefaultEcs-Resource-AResourceManager-TInfo_TResource--Dispose().md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.Dispose()')
 - [Load(TInfo)](./DefaultEcs-Resource-AResourceManager-TInfo_TResource--Load(TInfo).md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.Load(TInfo)')

@@ -1,0 +1,9 @@
+#### [DefaultEcs](./index.md 'index')
+### [DefaultEcs.Resource](./DefaultEcs-Resource.md 'DefaultEcs.Resource').[AResourceManager&lt;TInfo,TResource&gt;](./DefaultEcs-Resource-AResourceManager-TInfo_TResource-.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;')
+## AResourceManager&lt;TInfo,TResource&gt;.Resources Property
+Gets all the [TResource](./DefaultEcs-Resource-AResourceManager-TInfo_TResource-.md#DefaultEcs-Resource-AResourceManager-TInfo_TResource--TResource 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.TResource') loaded by the current instance and their corresponding [TInfo](./DefaultEcs-Resource-AResourceManager-TInfo_TResource-.md#DefaultEcs-Resource-AResourceManager-TInfo_TResource--TInfo 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.TInfo').  
+```csharp
+public DefaultEcs.Resource.AResourceManager<TInfo,TResource>.ResourceEnumerable Resources { get; }
+```
+#### Property Value
+[DefaultEcs.Resource.AResourceManager.ResourceEnumerable&lt;](./DefaultEcs-Resource-AResourceManager-TInfo_TResource--ResourceEnumerable.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.ResourceEnumerable')[TInfo](./DefaultEcs-Resource-AResourceManager-TInfo_TResource-.md#DefaultEcs-Resource-AResourceManager-TInfo_TResource--TInfo 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.TInfo')[,](./DefaultEcs-Resource-AResourceManager-TInfo_TResource--ResourceEnumerable.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.ResourceEnumerable')[TResource](./DefaultEcs-Resource-AResourceManager-TInfo_TResource-.md#DefaultEcs-Resource-AResourceManager-TInfo_TResource--TResource 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.TResource')[&gt;](./DefaultEcs-Resource-AResourceManager-TInfo_TResource--ResourceEnumerable.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.ResourceEnumerable')  

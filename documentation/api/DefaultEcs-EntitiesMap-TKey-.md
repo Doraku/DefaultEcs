@@ -22,5 +22,6 @@ The type of the component used as key.
 - [Complete()](./DefaultEcs-EntitiesMap-TKey--Complete().md 'DefaultEcs.EntitiesMap&lt;TKey&gt;.Complete()')
 - [ContainsEntity(DefaultEcs.Entity)](./DefaultEcs-EntitiesMap-TKey--ContainsEntity(DefaultEcs-Entity).md 'DefaultEcs.EntitiesMap&lt;TKey&gt;.ContainsEntity(DefaultEcs.Entity)')
 - [ContainsKey(TKey)](./DefaultEcs-EntitiesMap-TKey--ContainsKey(TKey).md 'DefaultEcs.EntitiesMap&lt;TKey&gt;.ContainsKey(TKey)')
+- [Count(TKey)](./DefaultEcs-EntitiesMap-TKey--Count(TKey).md 'DefaultEcs.EntitiesMap&lt;TKey&gt;.Count(TKey)')
 - [Dispose()](./DefaultEcs-EntitiesMap-TKey--Dispose().md 'DefaultEcs.EntitiesMap&lt;TKey&gt;.Dispose()')
 - [TryGetEntities(TKey, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;)](./DefaultEcs-EntitiesMap-TKey--TryGetEntities(TKey_System-ReadOnlySpan-DefaultEcs-Entity-).md 'DefaultEcs.EntitiesMap&lt;TKey&gt;.TryGetEntities(TKey, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;)')

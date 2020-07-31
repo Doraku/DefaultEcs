@@ -13,6 +13,7 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 - [AsMultiMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)](./DefaultEcs-EntityRuleBuilder-EitherBuilder-AsMultiMap-TKey-(System-Collections-Generic-IEqualityComparer-TKey-).md 'DefaultEcs.EntityRuleBuilder.EitherBuilder.AsMultiMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)')
 - [AsPredicate()](./DefaultEcs-EntityRuleBuilder-EitherBuilder-AsPredicate().md 'DefaultEcs.EntityRuleBuilder.EitherBuilder.AsPredicate()')
 - [AsSet()](./DefaultEcs-EntityRuleBuilder-EitherBuilder-AsSet().md 'DefaultEcs.EntityRuleBuilder.EitherBuilder.AsSet()')
+- [Copy()](./DefaultEcs-EntityRuleBuilder-EitherBuilder-Copy().md 'DefaultEcs.EntityRuleBuilder.EitherBuilder.Copy()')
 - [Or&lt;T&gt;()](./DefaultEcs-EntityRuleBuilder-EitherBuilder-Or-T-().md 'DefaultEcs.EntityRuleBuilder.EitherBuilder.Or&lt;T&gt;()')
 - [WhenAdded&lt;T&gt;()](./DefaultEcs-EntityRuleBuilder-EitherBuilder-WhenAdded-T-().md 'DefaultEcs.EntityRuleBuilder.EitherBuilder.WhenAdded&lt;T&gt;()')
 - [WhenAddedEither&lt;T&gt;()](./DefaultEcs-EntityRuleBuilder-EitherBuilder-WhenAddedEither-T-().md 'DefaultEcs.EntityRuleBuilder.EitherBuilder.WhenAddedEither&lt;T&gt;()')
