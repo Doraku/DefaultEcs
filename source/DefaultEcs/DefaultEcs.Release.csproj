@@ -10,21 +10,12 @@
     <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
   </PropertyGroup>
   <ItemGroup Label="Documentation" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="DefaultDocumentation" Version="0.6.5" PrivateAssets="all" />
+    <PackageReference Include="DefaultDocumentation" Version="0.6.11" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup Label="Package">
-    <Version>0.14.4</Version>
+    <Version>0.14.5</Version>
     <PackageReleaseNotes>
-added quote and multiline string support to TextSerializer
-added EntityRuleBuilder.Copy to duplicate an EntityRuleBuilder
-added EntityRuleBuilder.AsMap with capacity parameter
-added EntityRuleBuilder.AsMultiMap with capacity parameter
-added EntitiesMap.Count to get the number of entities for a given key
-added AResourceManager.Resources to get all resources loaded
-added AEntitiesSystem to process EntitiesMap in a controlled way
-
-fixed EntitySet, EntityMap and EntitiesMap initialization with pre-existing entities when applying a component predicate
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

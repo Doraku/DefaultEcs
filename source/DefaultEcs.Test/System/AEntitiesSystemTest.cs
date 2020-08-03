@@ -109,32 +109,31 @@ namespace DefaultEcs.Test.System
             entity4.Set<bool>();
             entity4.Set(1);
 
-            using (System<int> system = new System<int>(world.GetEntities().With<bool>().AsMultiMap<int>()))
-            {
-                system.Update(0);
+            using System<int> system = new System<int>(world.GetEntities().With<bool>().AsMultiMap<int>());
 
-                Check.That(system.Keys).ContainsExactly(1, 2, 3, 4);
+            system.Update(0);
 
-                Check.That(entity1.Get<bool>()).IsTrue();
-                Check.That(entity2.Get<bool>()).IsTrue();
-                Check.That(entity3.Get<bool>()).IsTrue();
-                Check.That(entity4.Get<bool>()).IsTrue();
+            Check.That(system.Keys).ContainsExactly(1, 2, 3, 4);
 
-                entity1.Set<bool>();
-                entity2.Set<bool>();
-                entity3.Set<bool>();
-                entity4.Set<bool>();
-                entity4.Remove<int>();
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+            Check.That(entity4.Get<bool>()).IsTrue();
 
-                system.Update(0);
+            entity1.Set<bool>();
+            entity2.Set<bool>();
+            entity3.Set<bool>();
+            entity4.Set<bool>();
+            entity4.Remove<int>();
 
-                Check.That(system.Keys).ContainsExactly(2, 3, 4);
+            system.Update(0);
 
-                Check.That(entity1.Get<bool>()).IsTrue();
-                Check.That(entity2.Get<bool>()).IsTrue();
-                Check.That(entity3.Get<bool>()).IsTrue();
-                Check.That(entity4.Get<bool>()).IsFalse();
-            }
+            Check.That(system.Keys).ContainsExactly(2, 3, 4);
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+            Check.That(entity4.Get<bool>()).IsFalse();
         }
 
         [Fact]
@@ -158,17 +157,16 @@ namespace DefaultEcs.Test.System
             entity4.Set<bool>();
             entity4.Set<int?>(1);
 
-            using (System<int?> system = new System<int?>(world))
-            {
-                system.Update(0);
+            using System<int?> system = new System<int?>(world);
 
-                Check.That(system.Keys).ContainsExactly(1, 2, 3, 4);
+            system.Update(0);
 
-                Check.That(entity1.Get<bool>()).IsTrue();
-                Check.That(entity2.Get<bool>()).IsTrue();
-                Check.That(entity3.Get<bool>()).IsTrue();
-                Check.That(entity4.Get<bool>()).IsTrue();
-            }
+            Check.That(system.Keys).ContainsExactly(1, 2, 3, 4);
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+            Check.That(entity4.Get<bool>()).IsTrue();
         }
 
         [Fact]
@@ -194,17 +192,16 @@ namespace DefaultEcs.Test.System
             entity4.Set<bool>();
             entity4.Set(key);
 
-            using (System<object> system = new System<object>(world))
-            {
-                system.Update(0);
+            using System<object> system = new System<object>(world);
 
-                Check.That(system.Keys).ContainsExactly(key);
+            system.Update(0);
 
-                Check.That(entity1.Get<bool>()).IsTrue();
-                Check.That(entity2.Get<bool>()).IsTrue();
-                Check.That(entity3.Get<bool>()).IsTrue();
-                Check.That(entity4.Get<bool>()).IsTrue();
-            }
+            Check.That(system.Keys).ContainsExactly(key);
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+            Check.That(entity4.Get<bool>()).IsTrue();
         }
 
         [Fact]
