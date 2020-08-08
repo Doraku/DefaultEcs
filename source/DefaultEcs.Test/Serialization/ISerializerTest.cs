@@ -551,6 +551,84 @@ namespace DefaultEcs.Test.Serialization
             }
         }
 
+        [Theory]
+        [MemberData(nameof(SerializersAndContext))]
+        public void Serialize_Should_reset_context_marshalling_When_setting_null(ISerializer serializer, IDisposable context)
+        {
+            using (context)
+            {
+                if (context is TextSerializationContext text)
+                {
+                    text.Marshal<uint, int>(null);
+                }
+                else if (context is BinarySerializationContext binary)
+                {
+                    binary.Marshal<uint, int>(null);
+                }
+
+                using World world = new World();
+
+                Entity entity = world.CreateEntity();
+
+                entity.Set<uint>(42);
+
+                using Stream stream = new MemoryStream();
+
+                serializer.Serialize(stream, world);
+
+                stream.Position = 0;
+
+                World copy = serializer.Deserialize(stream);
+
+                Entity[] entities = copy.ToArray();
+                Check.That(entities.Length).IsEqualTo(1);
+                Check.That(entities[0].Has<uint>()).IsTrue();
+                Check.That(entities[0].Has<int>()).IsFalse();
+                Check.That(entities[0].Has<string>()).IsFalse();
+                Check.That(entities[0].IsEnabled<uint>()).IsTrue();
+                Check.That(entities[0].Get<uint>()).IsEqualTo(42);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(SerializersAndContext))]
+        public void Deserialize_Should_reset_context_marshalling_When_setting_null(ISerializer serializer, IDisposable context)
+        {
+            using (context)
+            {
+                if (context is TextSerializationContext text)
+                {
+                    text.Unmarshal<int, string>(null);
+                }
+                else if (context is BinarySerializationContext binary)
+                {
+                    binary.Unmarshal<int, string>(null);
+                }
+
+                using World world = new World();
+
+                Entity entity = world.CreateEntity();
+
+                entity.Set<uint>(42);
+
+                using Stream stream = new MemoryStream();
+
+                serializer.Serialize(stream, world);
+
+                stream.Position = 0;
+
+                World copy = serializer.Deserialize(stream);
+
+                Entity[] entities = copy.ToArray();
+                Check.That(entities.Length).IsEqualTo(1);
+                Check.That(entities[0].Has<uint>()).IsFalse();
+                Check.That(entities[0].Has<int>()).IsTrue();
+                Check.That(entities[0].Has<string>()).IsFalse();
+                Check.That(entities[0].IsEnabled<int>()).IsTrue();
+                Check.That(entities[0].Get<int>()).IsEqualTo(42);
+            }
+        }
+
         #endregion
     }
 }
