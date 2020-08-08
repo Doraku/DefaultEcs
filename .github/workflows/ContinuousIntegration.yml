@@ -5,14 +5,8 @@ on:
     branches:
       - master
     paths:
-      - 'source/DefaultEcs/*'
-      - 'source/DefaultEcs/*/*'
-      - 'source/DefaultEcs/*/*/*'
-      - 'source/DefaultEcs/*/*/*/*'
-      - 'source/DefaultEcs.Test/*'
-      - 'source/DefaultEcs.Test/*/*'
-      - 'source/DefaultEcs.Test/*/*/*'
-      - 'source/DefaultEcs.Test/*/*/*/*'
+      - 'source/DefaultEcs/**'
+      - 'source/DefaultEcs.Test/**'
 
 jobs:
   continuous_integration:
@@ -37,15 +31,9 @@ jobs:
 
     - name: Create package
       run: dotnet pack source\DefaultEcs\DefaultEcs.csproj -c Release -o package -p:PackageReleaseNotes="${{ github.sha }}"
-
-    - name: Set up nuget
-      uses: warrenbuckley/Setup-Nuget@v1
-
-    - name: Register GPR
-      run: nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/Doraku/index.json" -UserName Doraku -Password ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Publish package
-      run: nuget push package\*.nupkg -Source "GitHub"
+      
+    - name: Push package
+      run: dotnet nuget push package\*.nupkg -s https://nuget.pkg.github.com/Doraku/index.json -k ${{ secrets.GITHUB_TOKEN }}
 
     - name: Install coverlet tool
       run: dotnet tool install --tool-path . --version 1.6.0 coverlet.console
