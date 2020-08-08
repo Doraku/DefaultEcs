@@ -32,8 +32,14 @@ jobs:
     - name: Create package
       run: dotnet pack source\DefaultEcs\DefaultEcs.csproj -c Release -o package -p:PackageReleaseNotes="${{ github.sha }}"
       
+    - name: Add GPR
+      run: dotnet nuget add source https://nuget.pkg.github.com/Doraku/index.json -n GitHub -u Doraku -p ${{ secrets.GITHUB_TOKEN }}
+
     - name: Push package
-      run: dotnet nuget push package\*.nupkg -s https://nuget.pkg.github.com/Doraku/index.json -k ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet nuget push package\*.nupkg -s GitHub
+      
+    - name: Remove GPR
+      run: dotnet nuget remove source GitHub
 
     - name: Install coverlet tool
       run: dotnet tool install --tool-path . --version 1.6.0 coverlet.console
