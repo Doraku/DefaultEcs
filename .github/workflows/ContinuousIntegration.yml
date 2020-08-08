@@ -19,6 +19,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.0.100'
+        source-url: https://nuget.pkg.github.com/Doraku/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
     - name: Run tests net452
       run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net452
@@ -32,14 +35,8 @@ jobs:
     - name: Create package
       run: dotnet pack source\DefaultEcs\DefaultEcs.csproj -c Release -o package -p:PackageReleaseNotes="${{ github.sha }}"
 
-    - name: Set up nuget
-      uses: warrenbuckley/Setup-Nuget@v1
-
-    - name: Register GPR
-      run: nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/Doraku/index.json" -UserName Doraku -Password ${{ secrets.GITHUB_TOKEN }}
-
     - name: Publish package
-      run: nuget push package\*.nupkg -Source "GitHub"
+      run: nuget push package\*.nupkg
 
     - name: Install coverlet tool
       run: dotnet tool install --tool-path . --version 1.6.0 coverlet.console
