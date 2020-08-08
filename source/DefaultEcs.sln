@@ -10,12 +10,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EEC6BAC3-A699-42F0-BED3-43985B10DE44}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
-		..\.github\workflows\ContinuousIntegration.yml = ..\.github\workflows\ContinuousIntegration.yml
 		DefaultEcs\DefaultEcs.Release.csproj = DefaultEcs\DefaultEcs.Release.csproj
 		DefaultEcs\DefaultEcs.targets = DefaultEcs\DefaultEcs.targets
 		..\documentation\FAQ.md = ..\documentation\FAQ.md
 		..\LICENSE.md = ..\LICENSE.md
-		..\.github\workflows\PullRequest.yml = ..\.github\workflows\PullRequest.yml
 		..\README.md = ..\README.md
 		..\Release.bat = ..\Release.bat
 		..\documentation\RELEASENOTE.md = ..\documentation\RELEASENOTE.md
@@ -30,6 +28,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultSlap", "Sample\DefaultSlap\DefaultSlap.csproj", "{95F4D6A0-FD01-4AA8-B603-5811C9FFAEEA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultBoids", "Sample\DefaultBoids\DefaultBoids.csproj", "{198A12F3-B396-4243-BFD4-B93FA488AB76}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{88457BE7-95CE-4C5D-903A-1E159F3B1AEB}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\CodeCoverage.yml = ..\.github\workflows\CodeCoverage.yml
+		..\.github\workflows\ContinuousIntegration.yml = ..\.github\workflows\ContinuousIntegration.yml
+		..\.github\workflows\PullRequest.yml = ..\.github\workflows\PullRequest.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +74,7 @@ Global
 		{6D2BA0F6-177E-454B-8AD7-42AF0AD539B7} = {DC400F20-A383-4C0F-83D4-F19B4F45191A}
 		{95F4D6A0-FD01-4AA8-B603-5811C9FFAEEA} = {DC400F20-A383-4C0F-83D4-F19B4F45191A}
 		{198A12F3-B396-4243-BFD4-B93FA488AB76} = {DC400F20-A383-4C0F-83D4-F19B4F45191A}
+		{88457BE7-95CE-4C5D-903A-1E159F3B1AEB} = {EEC6BAC3-A699-42F0-BED3-43985B10DE44}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D44A5DBD-5CAD-4E51-BCC2-9AFAD5486CAD}
