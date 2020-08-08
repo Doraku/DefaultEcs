@@ -442,7 +442,7 @@ namespace DefaultEcs.Test.Serialization
 
             using World world = new World();
 
-            world.SetMaxCapacity<bool>(10);
+            world.SetMaxCapacity<string>(10);
 
             Entity entity0 = world.CreateEntity();
             entity0.Set(true);
@@ -470,7 +470,7 @@ namespace DefaultEcs.Test.Serialization
             using World copy = serializer.Deserialize(stream);
             Entity[] entities = copy.ToArray();
 
-            Check.That(copy.GetMaxCapacity<bool>()).IsEqualTo(-1);
+            Check.That(copy.GetMaxCapacity<string>()).IsEqualTo(-1);
             Check.That(entities.Length).IsEqualTo(world.Count());
             Check.That(entities[0].Get<bool>()).IsEqualTo(world.First().Get<bool>());
             Check.That(entities[0].Has<string>()).IsFalse();
