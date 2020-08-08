@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using DefaultEcs.Serialization;
 using NFluent;
 using Xunit;
@@ -953,6 +954,20 @@ namespace DefaultEcs.Test
             Entity entity = default;
 
             Check.That(entity.GetChildren()).IsEmpty();
+
+            using World world = new World();
+
+            entity = world.CreateEntity();
+
+            Check.That(entity.GetChildren()).IsEmpty();
+        }
+
+        [Fact]
+        public void ToString_Should_not_throw()
+        {
+            Entity entity = default;
+
+            Check.That(Regex.IsMatch(entity.ToString(), "^Entity \\d*:\\d*.\\d*$")).IsTrue();
         }
 
         #endregion

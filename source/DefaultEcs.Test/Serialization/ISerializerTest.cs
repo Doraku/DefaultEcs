@@ -442,9 +442,22 @@ namespace DefaultEcs.Test.Serialization
 
             using World world = new World();
 
-            Entity entity = world.CreateEntity();
-            entity.Set(true);
-            entity.Set("kikoo");
+            world.SetMaxCapacity<bool>(10);
+
+            Entity entity0 = world.CreateEntity();
+            entity0.Set(true);
+            entity0.Set("kikoo");
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set(true);
+            entity1.Disable<bool>();
+
+            Entity entity2 = world.CreateEntity();
+            entity2.SetSameAs<bool>(entity0);
+
+            Entity entity3 = world.CreateEntity();
+            entity3.SetSameAs<bool>(entity0);
+            entity3.Disable<bool>();
 
             using Stream stream = new MemoryStream();
 
@@ -454,11 +467,51 @@ namespace DefaultEcs.Test.Serialization
 
             serializer = (ISerializer)Activator.CreateInstance(serializerType);
 
-            World copy = serializer.Deserialize(stream);
+            using World copy = serializer.Deserialize(stream);
+            Entity[] entities = copy.ToArray();
 
-            Check.That(copy.Count()).IsEqualTo(world.Count());
-            Check.That(copy.First().Get<bool>()).IsEqualTo(world.First().Get<bool>());
-            Check.That(copy.First().Has<string>()).IsFalse();
+            Check.That(copy.GetMaxCapacity<bool>()).IsEqualTo(-1);
+            Check.That(entities.Length).IsEqualTo(world.Count());
+            Check.That(entities[0].Get<bool>()).IsEqualTo(world.First().Get<bool>());
+            Check.That(entities[0].Has<string>()).IsFalse();
+            Check.That(entities[1].Has<string>()).IsFalse();
+            Check.That(entities[2].Has<string>()).IsFalse();
+            Check.That(entities[3].Has<string>()).IsFalse();
+        }
+
+        [Theory]
+        [MemberData(nameof(SerializerTypes))]
+        public void Deserialize_Should_remove_entities_When_exception(Type serializerType)
+        {
+            static bool Filter(Type type) => type == typeof(string) ? throw new Exception() : true;
+
+            ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
+
+            using World world = new World();
+
+            Entity entity0 = world.CreateEntity();
+            entity0.Set(true);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set("bim");
+
+            using Stream stream = new MemoryStream();
+
+            serializer.Serialize(stream, world);
+
+            stream.Position = 0;
+
+            serializer = (ISerializer)Activator.CreateInstance(serializerType, new Predicate<Type>(Filter));
+
+            Check.ThatCode(() => serializer.Deserialize(stream)).Throws<Exception>();
+
+            stream.Position = 0;
+
+            using World copy = new World();
+
+            Check.ThatCode(() => serializer.Deserialize(stream, copy)).Throws<Exception>();
+            Check.That(copy.Count()).IsZero();
+            Check.That(copy.Get<bool>().Length).IsZero();
         }
 
         [Theory]
@@ -483,7 +536,7 @@ namespace DefaultEcs.Test.Serialization
 
             serializer = (ISerializer)Activator.CreateInstance(serializerType, new Predicate<Type>(Filter));
 
-            World copy = serializer.Deserialize(stream);
+            using World copy = serializer.Deserialize(stream);
 
             Check.That(copy.Count()).IsEqualTo(world.Count());
             Check.That(copy.First().Get<bool>()).IsEqualTo(world.First().Get<bool>());
@@ -502,6 +555,7 @@ namespace DefaultEcs.Test.Serialization
 
                 world.SetMaxCapacity<uint>(10);
                 entity0.Set<uint>(42);
+                entity0.Set<double>(1);
 
                 Entity entity1 = world.CreateEntity();
 
@@ -523,11 +577,12 @@ namespace DefaultEcs.Test.Serialization
 
                 stream.Position = 0;
 
-                World copy = serializer.Deserialize(stream);
+                using World copy = serializer.Deserialize(stream);
 
                 Entity[] entities = copy.ToArray();
                 Check.That(copy.GetMaxCapacity<string>()).IsEqualTo(10);
                 Check.That(entities.Length).IsEqualTo(4);
+                Check.That(entities[0].Get<double>()).IsEqualTo(entity0.Get<double>());
                 Check.That(entities[0].Has<int>()).IsFalse();
                 Check.That(entities[0].Has<uint>()).IsFalse();
                 Check.That(entities[0].Has<string>()).IsTrue();
@@ -578,7 +633,7 @@ namespace DefaultEcs.Test.Serialization
 
                 stream.Position = 0;
 
-                World copy = serializer.Deserialize(stream);
+                using World copy = serializer.Deserialize(stream);
 
                 Entity[] entities = copy.ToArray();
                 Check.That(entities.Length).IsEqualTo(1);
@@ -617,7 +672,7 @@ namespace DefaultEcs.Test.Serialization
 
                 stream.Position = 0;
 
-                World copy = serializer.Deserialize(stream);
+                using World copy = serializer.Deserialize(stream);
 
                 Entity[] entities = copy.ToArray();
                 Check.That(entities.Length).IsEqualTo(1);

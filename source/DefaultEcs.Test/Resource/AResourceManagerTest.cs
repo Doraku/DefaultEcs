@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DefaultEcs.Resource;
 using NFluent;
 using NSubstitute;
@@ -76,6 +77,10 @@ namespace DefaultEcs.Test.Resource
             manager.Manage(world);
 
             Check.That(manager.Resources as IEnumerable).ContainsExactly(
+                new KeyValuePair<string, IDisposable>("dummy1", value),
+                new KeyValuePair<string, IDisposable>("dummy2", value));
+
+            Check.That(manager.Resources.ToList()).ContainsExactly(
                 new KeyValuePair<string, IDisposable>("dummy1", value),
                 new KeyValuePair<string, IDisposable>("dummy2", value));
         }
