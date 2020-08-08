@@ -196,6 +196,9 @@ namespace DefaultEcs.Test.Serialization
         public void Should_handle_struct_with_class() => Test(new StructWithClass { _1 = new SimpleStruct(0), _2 = new SimpleClass(0), _3 = "kikoolol" });
 
         [Fact]
+        public void Should_handle_empty_array() => TestArray(new object[0]);
+
+        [Fact]
         public void Should_handle_struct_array() => TestArray(Enumerable.Range(0, 42).ToArray());
 
         [Fact]

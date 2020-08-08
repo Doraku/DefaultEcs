@@ -108,7 +108,7 @@ namespace DefaultEcs.Test.Serialization
 
         #endregion
 
-        public static IEnumerable<object[]> SerializerType
+        public static IEnumerable<object[]> SerializerTypes
         {
             get
             {
@@ -117,10 +117,26 @@ namespace DefaultEcs.Test.Serialization
             }
         }
 
+        public static IEnumerable<object[]> SerializersAndContext
+        {
+            get
+            {
+                BinarySerializationContext binaryContext = new BinarySerializationContext()
+                    .Marshal<uint, int>(v => (int)v)
+                    .Unmarshal<int, string>(v => v.ToString());
+                TextSerializationContext textContext = new TextSerializationContext()
+                    .Marshal<uint, int>(v => (int)v)
+                    .Unmarshal<int, string>(v => v.ToString());
+
+                yield return new object[] { new BinarySerializer(binaryContext), binaryContext };
+                yield return new object[] { new TextSerializer(textContext), textContext };
+            }
+        }
+
         #region Tests
 
         [Theory]
-        [MemberData(nameof(SerializerType))]
+        [MemberData(nameof(SerializerTypes))]
         public void Serialize_world_Should_throw_When_stream_is_null(Type serializerType)
         {
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
@@ -129,7 +145,7 @@ namespace DefaultEcs.Test.Serialization
         }
 
         [Theory]
-        [MemberData(nameof(SerializerType))]
+        [MemberData(nameof(SerializerTypes))]
         public void Serialize_world_Should_throw_When_world_is_null(Type serializerType)
         {
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
@@ -140,7 +156,7 @@ namespace DefaultEcs.Test.Serialization
         }
 
         [Theory]
-        [MemberData(nameof(SerializerType))]
+        [MemberData(nameof(SerializerTypes))]
         public void Serialize_entities_Should_throw_When_stream_is_null(Type serializerType)
         {
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
@@ -149,7 +165,7 @@ namespace DefaultEcs.Test.Serialization
         }
 
         [Theory]
-        [MemberData(nameof(SerializerType))]
+        [MemberData(nameof(SerializerTypes))]
         public void Serialize_entities_Should_throw_When_world_is_null(Type serializerType)
         {
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
@@ -160,7 +176,7 @@ namespace DefaultEcs.Test.Serialization
         }
 
         [Theory]
-        [MemberData(nameof(SerializerType))]
+        [MemberData(nameof(SerializerTypes))]
         public void Deserialize_Should_throw_When_stream_is_null(Type serializerType)
         {
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
@@ -169,7 +185,7 @@ namespace DefaultEcs.Test.Serialization
         }
 
         [Theory]
-        [MemberData(nameof(SerializerType))]
+        [MemberData(nameof(SerializerTypes))]
         public void Deserialize_world_Should_throw_When_stream_is_null(Type serializerType)
         {
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
@@ -178,7 +194,7 @@ namespace DefaultEcs.Test.Serialization
         }
 
         [Theory]
-        [MemberData(nameof(SerializerType))]
+        [MemberData(nameof(SerializerTypes))]
         public void Deserialize_world_Should_throw_When_world_is_null(Type serializerType)
         {
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
@@ -189,7 +205,7 @@ namespace DefaultEcs.Test.Serialization
         }
 
         [Theory]
-        [MemberData(nameof(SerializerType))]
+        [MemberData(nameof(SerializerTypes))]
         public void Serialize_Should_serialize_World(Type serializerType)
         {
             using World world = new World(42);
@@ -305,7 +321,7 @@ namespace DefaultEcs.Test.Serialization
         }
 
         [Theory]
-        [MemberData(nameof(SerializerType))]
+        [MemberData(nameof(SerializerTypes))]
         public void Serialize_Should_serialize_Entities(Type serializerType)
         {
             using World world = new World(42);
@@ -417,7 +433,7 @@ namespace DefaultEcs.Test.Serialization
         }
 
         [Theory]
-        [MemberData(nameof(SerializerType))]
+        [MemberData(nameof(SerializerTypes))]
         public void Serialize_world_Should_only_serialize_component_type_which_validate_predicate(Type serializerType)
         {
             static bool Filter(Type type) => type != typeof(string);
@@ -446,7 +462,7 @@ namespace DefaultEcs.Test.Serialization
         }
 
         [Theory]
-        [MemberData(nameof(SerializerType))]
+        [MemberData(nameof(SerializerTypes))]
         public void Serialize_world_Should_only_deserialize_component_type_which_validate_predicate(Type serializerType)
         {
             static bool Filter(Type type) => type != typeof(string);
@@ -474,64 +490,65 @@ namespace DefaultEcs.Test.Serialization
             Check.That(copy.First().Has<string>()).IsFalse();
         }
 
-        [Fact]
-        public void TextSerializer_Should_use_context_marshalling()
+        [Theory]
+        [MemberData(nameof(SerializersAndContext))]
+        public void Should_use_context_marshalling(ISerializer serializer, IDisposable context)
         {
-            using World world = new World();
+            using (context)
+            {
+                using World world = new World();
 
-            Entity entity = world.CreateEntity();
+                Entity entity0 = world.CreateEntity();
 
-            entity.Set<uint>(42);
+                world.SetMaxCapacity<uint>(10);
+                entity0.Set<uint>(42);
 
-            using TextSerializationContext context = new TextSerializationContext()
-                .Marshal<uint, int>(v => (int)v)
-                .Unmarshal<int, string>(v => v.ToString());
+                Entity entity1 = world.CreateEntity();
 
-            TextSerializer serializer = new TextSerializer(context);
+                entity1.SetSameAs<uint>(entity0);
 
-            using Stream stream = new MemoryStream();
+                Entity entity2 = world.CreateEntity();
 
-            serializer.Serialize(stream, world);
+                entity2.Set<uint>(1337);
+                entity2.Disable<uint>();
 
-            stream.Position = 0;
+                Entity entity3 = world.CreateEntity();
 
-            World copy = serializer.Deserialize(stream);
+                entity3.SetSameAs<uint>(entity0);
+                entity3.Disable<uint>();
 
-            Check.That(copy.Count()).IsEqualTo(1);
-            Check.That(copy.First().Has<int>()).IsFalse();
-            Check.That(copy.First().Has<uint>()).IsFalse();
-            Check.That(copy.First().Has<string>()).IsTrue();
-            Check.That(copy.First().Get<string>()).IsEqualTo("42");
-        }
+                using Stream stream = new MemoryStream();
 
-        [Fact]
-        public void BinarySerializer_Should_use_context_marshalling()
-        {
-            using World world = new World();
+                serializer.Serialize(stream, world);
 
-            Entity entity = world.CreateEntity();
+                stream.Position = 0;
 
-            entity.Set<uint>(42);
+                World copy = serializer.Deserialize(stream);
 
-            using BinarySerializationContext context = new BinarySerializationContext()
-                .Marshal<uint, int>(v => (int)v)
-                .Unmarshal<int, string>(v => v.ToString());
-
-            BinarySerializer serializer = new BinarySerializer(context);
-
-            using Stream stream = new MemoryStream();
-
-            serializer.Serialize(stream, world);
-
-            stream.Position = 0;
-
-            World copy = serializer.Deserialize(stream);
-
-            Check.That(copy.Count()).IsEqualTo(1);
-            Check.That(copy.First().Has<int>()).IsFalse();
-            Check.That(copy.First().Has<uint>()).IsFalse();
-            Check.That(copy.First().Has<string>()).IsTrue();
-            Check.That(copy.First().Get<string>()).IsEqualTo("42");
+                Entity[] entities = copy.ToArray();
+                Check.That(copy.GetMaxCapacity<string>()).IsEqualTo(10);
+                Check.That(entities.Length).IsEqualTo(4);
+                Check.That(entities[0].Has<int>()).IsFalse();
+                Check.That(entities[0].Has<uint>()).IsFalse();
+                Check.That(entities[0].Has<string>()).IsTrue();
+                Check.That(entities[0].IsEnabled<string>()).IsTrue();
+                Check.That(entities[0].Get<string>()).IsEqualTo("42");
+                Check.That(entities[1].Has<int>()).IsFalse();
+                Check.That(entities[1].Has<uint>()).IsFalse();
+                Check.That(entities[1].Has<string>()).IsTrue();
+                Check.That(entities[1].IsEnabled<string>()).IsTrue();
+                Check.That(entities[1].Get<string>()).IsEqualTo("42");
+                Check.That(entities[2].Has<int>()).IsFalse();
+                Check.That(entities[2].Has<uint>()).IsFalse();
+                Check.That(entities[2].Has<string>()).IsTrue();
+                Check.That(entities[2].IsEnabled<string>()).IsFalse();
+                Check.That(entities[2].Get<string>()).IsEqualTo("1337");
+                Check.That(entities[3].Has<int>()).IsFalse();
+                Check.That(entities[3].Has<uint>()).IsFalse();
+                Check.That(entities[3].Has<string>()).IsTrue();
+                Check.That(entities[3].IsEnabled<string>()).IsFalse();
+                Check.That(entities[3].Get<string>()).IsEqualTo("42");
+            }
         }
 
         #endregion

@@ -68,7 +68,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         }
 
         [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
-        public void WriteComponent<T>(in T component, in Entity componentOwner)
+        public void WriteComponent<T>(in T component, in Entity componentOwner, bool isEnabled)
         {
             if (!_types.TryGetValue(typeof(T), out _))
             {
@@ -92,7 +92,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             (Entity, Type) componentKey = (componentOwner, typeof(T));
             if (_components.TryGetValue(componentKey, out int key))
             {
-                string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.ComponentSameAs) : nameof(EntryType.DisabledComponentSameAs);
+                string entry = isEnabled ? nameof(EntryType.ComponentSameAs) : nameof(EntryType.DisabledComponentSameAs);
 
                 _writer.Write(entry);
                 _writer.WriteSpace();
@@ -103,7 +103,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             else
             {
                 _components.Add(componentKey, _entityCount);
-                string entry = _currentEntity.IsEnabled<T>() ? nameof(EntryType.Component) : nameof(EntryType.DisabledComponent);
+                string entry = isEnabled ? nameof(EntryType.Component) : nameof(EntryType.DisabledComponent);
 
                 _writer.Write(entry);
                 _writer.WriteSpace();
@@ -121,14 +121,14 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         {
             if (_componentFilter(typeof(T)))
             {
-                Action<EntityWriter, T, Entity> action = _writer.Context?.GetEntityWrite<T>();
+                Action<EntityWriter, T, Entity, bool> action = _writer.Context?.GetEntityWrite<T>();
                 if (action is null)
                 {
-                    WriteComponent(component, componentOwner);
+                    WriteComponent(component, componentOwner, _currentEntity.IsEnabled<T>());
                 }
                 else
                 {
-                    action(this, component, componentOwner);
+                    action(this, component, componentOwner, _currentEntity.IsEnabled<T>());
                 }
             }
         }

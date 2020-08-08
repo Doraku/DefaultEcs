@@ -81,7 +81,7 @@ namespace DefaultEcs.Serialization
 
         internal Action<ComponentTypeWriter, int> GetWorldWrite<T>() => _id < SerializationContext<T>.Actions.Length ? SerializationContext<T>.Actions[_id].WorldWrite as Action<ComponentTypeWriter, int> : null;
 
-        internal Action<EntityWriter, T, Entity> GetEntityWrite<T>() => _id < SerializationContext<T>.Actions.Length ? SerializationContext<T>.Actions[_id].EntityWrite as Action<EntityWriter, T, Entity> : null;
+        internal Action<EntityWriter, T, Entity, bool> GetEntityWrite<T>() => _id < SerializationContext<T>.Actions.Length ? SerializationContext<T>.Actions[_id].EntityWrite as Action<EntityWriter, T, Entity, bool> : null;
 
         internal WriteAction<T> GetValueWrite<T>() => _id < SerializationContext<T>.Actions.Length ? SerializationContext<T>.Actions[_id].ValueWrite as WriteAction<T> : null;
 
@@ -107,7 +107,7 @@ namespace DefaultEcs.Serialization
                 SerializationContext<TIn>.SetWriteActions(
                     _id,
                     new Action<ComponentTypeWriter, int>((writer, maxCapacity) => writer.WriteComponent<TOut>(maxCapacity)),
-                    new Action<EntityWriter, TIn, Entity>((writer, value, owner) => writer.WriteComponent(converter(value), owner)),
+                    new Action<EntityWriter, TIn, Entity, bool>((writer, value, owner, isEnabled) => writer.WriteComponent(converter(value), owner, isEnabled)),
                     new WriteAction<TIn>((in StreamWriterWrapper writer, in TIn value) =>
                     {
                         writer.WriteTypeMarshalling(TypeNames.Get(typeof(TOut)));

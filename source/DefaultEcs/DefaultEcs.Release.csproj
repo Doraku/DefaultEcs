@@ -16,6 +16,7 @@
   <PropertyGroup Label="Package">
     <Version>0.14.5</Version>
     <PackageReleaseNotes>
+fixed invalid IsEnable component state with serializing with a SerializationContext
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>
