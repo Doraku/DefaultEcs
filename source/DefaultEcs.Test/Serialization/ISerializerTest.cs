@@ -449,15 +449,15 @@ namespace DefaultEcs.Test.Serialization
             entity0.Set("kikoo");
 
             Entity entity1 = world.CreateEntity();
-            entity1.Set(true);
-            entity1.Disable<bool>();
+            entity1.Set("lol");
+            entity1.Disable<string>();
 
             Entity entity2 = world.CreateEntity();
-            entity2.SetSameAs<bool>(entity0);
+            entity2.SetSameAs<string>(entity0);
 
             Entity entity3 = world.CreateEntity();
-            entity3.SetSameAs<bool>(entity0);
-            entity3.Disable<bool>();
+            entity3.SetSameAs<string>(entity0);
+            entity3.Disable<string>();
 
             using Stream stream = new MemoryStream();
 

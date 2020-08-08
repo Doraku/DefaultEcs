@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using NFluent;
 using Xunit;
 
@@ -81,11 +82,23 @@ namespace DefaultEcs.Test
             Entity entity = world.CreateEntity();
             entity.Set(42);
 
-            Check.That(map.Keys.AsEnumerable()).ContainsExactly(42);
+            Check.That(map.Keys as IEnumerable).ContainsExactly(42);
 
             entity.Remove<int>();
 
             Check.That(map.Keys).IsEmpty();
+
+            entity.Set(42);
+
+            using IEnumerator<int> enumerator = (map.Keys as IEnumerable<int>)?.GetEnumerator();
+
+            Check.That(enumerator.MoveNext()).IsTrue();
+            Check.That(enumerator.Current).IsEqualTo(42);
+
+            enumerator.Reset();
+
+            Check.That(enumerator.MoveNext()).IsTrue();
+            Check.That(enumerator.Current).IsEqualTo(42);
         }
 
         [Fact]

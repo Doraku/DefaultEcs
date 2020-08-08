@@ -83,6 +83,16 @@ namespace DefaultEcs.Test.Resource
             Check.That(manager.Resources.ToList()).ContainsExactly(
                 new KeyValuePair<string, IDisposable>("dummy1", value),
                 new KeyValuePair<string, IDisposable>("dummy2", value));
+
+            using IEnumerator<KeyValuePair<string, IDisposable>> enumerator = manager.Resources.GetEnumerator();
+
+            Check.That(enumerator.MoveNext()).IsTrue();
+            Check.That(enumerator.Current.Key).IsEqualTo("dummy1");
+
+            enumerator.Reset();
+
+            Check.That(enumerator.MoveNext()).IsTrue();
+            Check.That(enumerator.Current.Key).IsEqualTo("dummy1");
         }
 
         [Fact]

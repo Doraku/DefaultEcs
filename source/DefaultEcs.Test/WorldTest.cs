@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -211,7 +212,17 @@ namespace DefaultEcs.Test
             entities.Add(world.CreateEntity());
             entity.Dispose();
 
-            Check.That(world).ContainsExactly(entities);
+            Check.That(world as IEnumerable).ContainsExactly(entities);
+
+            using IEnumerator<Entity> enumerator = (world as IEnumerable<Entity>)?.GetEnumerator();
+
+            Check.That(enumerator.MoveNext()).IsTrue();
+            Check.That(enumerator.Current).IsEqualTo(entities[0]);
+
+            enumerator.Reset();
+
+            Check.That(enumerator.MoveNext()).IsTrue();
+            Check.That(enumerator.Current).IsEqualTo(entities[0]);
         }
 
         [Fact]
