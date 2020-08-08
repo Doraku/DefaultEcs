@@ -178,6 +178,8 @@ namespace DefaultEcs.Test.Serialization
         [Fact]
         public void Should_handle_string() => Test("kikoolol");
 
+        public void Should_handle_string_with_double_quote() => Test(@"kikoo""lol""");
+
         [Fact]
         public void Should_handle_simple_struct() => Test(new SimpleStruct(0));
 

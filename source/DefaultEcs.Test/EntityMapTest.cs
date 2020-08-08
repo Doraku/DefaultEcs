@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
 using NFluent;
 using Xunit;
 
@@ -92,7 +93,7 @@ namespace DefaultEcs.Test
             Entity entity = world.CreateEntity();
             entity.Set(42);
 
-            Check.That(map.Keys.AsEnumerable()).ContainsExactly(42);
+            Check.That(map.Keys as IEnumerable).ContainsExactly(42);
 
             entity.Remove<int>();
 

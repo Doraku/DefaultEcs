@@ -333,6 +333,20 @@ namespace DefaultEcs.Test
 
             foreach (Entity entity in entities)
             {
+                entity.Disable<bool>();
+            }
+
+            Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
+
+            foreach (Entity entity in entities)
+            {
+                entity.Enable<bool>();
+            }
+
+            Check.That(set.Count).IsZero();
+
+            foreach (Entity entity in entities)
+            {
                 entity.Remove<bool>();
             }
 
