@@ -6,7 +6,6 @@ on:
       - master
     paths:
       - 'source/DefaultEcs/**'
-      - 'source/DefaultEcs.Test/**'
 
 jobs:
   continuous_integration:
@@ -37,14 +36,3 @@ jobs:
 
     - name: Publish package
       run: nuget push package\*.nupkg
-
-    - name: Install coverlet tool
-      run: dotnet tool install --tool-path . --version 1.6.0 coverlet.console
-
-    - name: Create coverage file
-      run: dotnet .store\coverlet.console\1.6.0\coverlet.console\1.6.0\tools\netcoreapp2.2\any\coverlet.console.dll source\DefaultEcs.Test\bin\Release\netcoreapp3.0\DefaultEcs.Test.dll -t "dotnet" -a "vstest source\DefaultEcs.Test\bin\Release\netcoreapp3.0\DefaultEcs.Test.dll" -o coverage\lcov.info -f lcov --exclude "[*]DefaultEcs.Technical.Debug*"
-
-    - name: Upload to coverall
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
