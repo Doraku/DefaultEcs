@@ -80,6 +80,13 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void IsAlive_Should_return_false_When_default()
+        {
+            Entity entity = default;
+            Check.That(entity.IsAlive).IsFalse();
+        }
+
+        [Fact]
         public void IsAlive_Should_return_false_When_disposed()
         {
             using World world = new World(1);
@@ -111,6 +118,20 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void IsEnabled_Should_return_true_for_default()
+        {
+            Entity entity = default;
+            Check.That(entity.IsEnabled()).IsFalse();
+        }
+
+        [Fact]
+        public void Disable_Should_throw_When_default()
+        {
+            Entity entity = default;
+            Check.ThatCode(() => entity.Disable()).Throws<InvalidOperationException>();
+        }
+
+        [Fact]
         public void Disable_Should_disable_Entity()
         {
             using World world = new World(1);
@@ -119,6 +140,13 @@ namespace DefaultEcs.Test
             entity.Disable();
 
             Check.That(entity.IsEnabled()).IsFalse();
+        }
+
+        [Fact]
+        public void Enable_Should_throw_When_default()
+        {
+            Entity entity = default;
+            Check.ThatCode(() => entity.Enable()).Throws<InvalidOperationException>();
         }
 
         [Fact]
@@ -134,6 +162,14 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void IsEnabled_T_Should_return_false_for_default()
+        {
+            Entity entity = default;
+
+            Check.That(entity.IsEnabled<bool>()).IsFalse();
+        }
+
+        [Fact]
         public void IsEnabled_T_Should_return_true_by_default()
         {
             using World world = new World(1);
@@ -146,6 +182,13 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void Disable_T_Should_throw_When_default()
+        {
+            Entity entity = default;
+            Check.ThatCode(() => entity.Disable<bool>()).Throws<InvalidOperationException>();
+        }
+
+        [Fact]
         public void Disable_T_Should_disable_component()
         {
             using World world = new World(1);
@@ -155,6 +198,13 @@ namespace DefaultEcs.Test
             entity.Disable<bool>();
 
             Check.That(entity.IsEnabled<bool>()).IsFalse();
+        }
+
+        [Fact]
+        public void Enable_T_Should_throw_When_default()
+        {
+            Entity entity = default;
+            Check.ThatCode(() => entity.Enable<bool>()).Throws<InvalidOperationException>();
         }
 
         [Fact]
@@ -388,6 +438,25 @@ namespace DefaultEcs.Test
             entity.Get<bool>() = false;
 
             Check.That(reference.Get<bool>()).IsEqualTo(entity.Get<bool>());
+        }
+
+        [Fact]
+        public void SetSameAs_Should_override_SetSameAs()
+        {
+            using World world = new World();
+
+            Entity reference = world.CreateEntity();
+            Entity reference2 = world.CreateEntity();
+            Entity entity = world.CreateEntity();
+
+            reference.Set(true);
+            reference2.Set(false);
+            entity.SetSameAs<bool>(reference);
+            entity.SetSameAs<bool>(reference2);
+
+            Check.That(reference.Get<bool>()).IsTrue();
+            Check.That(reference2.Get<bool>()).IsFalse();
+            Check.That(entity.Get<bool>()).IsFalse();
         }
 
         [Fact]
@@ -827,6 +896,14 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void Equal_Should_return_false_When_other_is_not_an_Entity()
+        {
+            Entity entity = default;
+
+            Check.That(entity.Equals(new object())).IsFalse();
+        }
+
+        [Fact]
         public void OperatorEqual_Should_return_true_When_entities_are_equal()
         {
             using World world = new World();
@@ -868,6 +945,14 @@ namespace DefaultEcs.Test
             Entity otherEntity = world.CreateEntity();
 
             Check.That(entity != otherEntity).IsTrue();
+        }
+
+        [Fact]
+        public void GetChildren_Should_return_empty_for_default()
+        {
+            Entity entity = default;
+
+            Check.That(entity.GetChildren()).IsEmpty();
         }
 
         #endregion

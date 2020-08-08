@@ -258,7 +258,7 @@ namespace DefaultEcs.Test
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
-            temp.Remove<int>();
+            temp.Disable<int>();
             entities.Remove(temp);
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
