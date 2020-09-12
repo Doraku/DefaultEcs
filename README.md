@@ -198,19 +198,19 @@ Span<Example> components = world.Get<Example>();
 There is also some special rules which will make the EntitySet react to some events
 ```csharp
 // this set when enumerated will give all the entities on which an Example component has been added for the first time
-EntitySet set = world.GetEntities().WhenAdded<Example>().Build();
+EntitySet set = world.GetEntities().WhenAdded<Example>().AsSet();
 
 // this set when enumerated will give all the entities on which the Example component has been explicitly changed with Entity.Set<Example> method
-EntitySet set = world.GetEntities().WhenChanged<Example>().Build();
+EntitySet set = world.GetEntities().WhenChanged<Example>().AsSet();
 
 // this set when enumerated will give all the entities on which the Example component has been removed
-EntitySet set = world.GetEntities().WhenRemoved<Example>().Build();
+EntitySet set = world.GetEntities().WhenRemoved<Example>().AsSet();
 
 // this set when enumerated will give all the entities on which the Example component has been added or changed
-EntitySet set = world.GetEntities().WhenAdded<Example>().WhenChanged<Example>().Build();
+EntitySet set = world.GetEntities().WhenAdded<Example>().WhenChanged<Example>().AsSet();
 
 // this set when enumerated will give all the entities with an int component on which the Example component has been changed, the order is important
-EntitySet set = world.GetEntities().With<int>().WhenChanged<Example>().Build();
+EntitySet set = world.GetEntities().With<int>().WhenChanged<Example>().AsSet();
 ```
 
 Note that if such a rule is used, the method `Complete` of the EntitySet needs to be called once every Entity has been processed to clear the EntitySet of its content.  
@@ -266,7 +266,7 @@ This is a base class to create system to update a given EntitySet.
 public sealed class VelocitySystem : AEntitySystem<float>
 {
     public VelocitySystem(World world, IParallelRunner runner)
-        : base(world.GetEntities().With<Velocity>().With<Position>().Build(), runner)
+        : base(world.GetEntities().With<Velocity>().With<Position>().AsSet(), runner)
     {
     }
 

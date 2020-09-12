@@ -71,7 +71,7 @@ namespace DefaultEcs
 
             if (!_needClearing)
             {
-                IEntityContainer @this = this as IEntityContainer;
+                IEntityContainer @this = this;
                 for (int i = 0; i <= Math.Min(world.EntityInfos.Length, world.LastEntityId); ++i)
                 {
                     if (filter(world.EntityInfos[i].Components) && predicate(i))
