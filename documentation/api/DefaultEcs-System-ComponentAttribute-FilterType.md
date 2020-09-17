@@ -3,7 +3,7 @@
 ## ComponentAttribute.FilterType Field
 Whether the component type should be included or excluded.  
 ```csharp
-public readonly FilterType;
+public readonly ComponentFilterType FilterType;
 ```
 #### Field Value
 [ComponentFilterType](./DefaultEcs-System-ComponentFilterType.md 'DefaultEcs.System.ComponentFilterType')  
