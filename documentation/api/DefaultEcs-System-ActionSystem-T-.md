@@ -4,8 +4,8 @@
 Represents a class to set up easily a custom action as a system update.  
 ```csharp
 public sealed class ActionSystem<T> :
-ISystem<T>,
-IDisposable
+DefaultEcs.System.ISystem<T>,
+System.IDisposable
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; ActionSystem&lt;T&gt;  
 

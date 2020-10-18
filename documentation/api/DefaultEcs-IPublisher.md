@@ -4,7 +4,7 @@
 Exposes methods to subscribe to [MessageHandler&lt;T&gt;(T)](./DefaultEcs-MessageHandler-T-(T).md 'DefaultEcs.MessageHandler&lt;T&gt;(T)') and publish message to callback those subscriptions.  
 ```csharp
 public interface IPublisher :
-IDisposable
+System.IDisposable
 ```
 Derived  
 &#8627; [World](./DefaultEcs-World.md 'DefaultEcs.World')  

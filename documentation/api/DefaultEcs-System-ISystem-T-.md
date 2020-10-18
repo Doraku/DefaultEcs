@@ -4,7 +4,7 @@
 Exposes a method to update a system.  
 ```csharp
 public interface ISystem<in T> :
-IDisposable
+System.IDisposable
 ```
 Derived  
 &#8627; [AComponentSystem&lt;TState,TComponent&gt;](./DefaultEcs-System-AComponentSystem-TState_TComponent-.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;')  

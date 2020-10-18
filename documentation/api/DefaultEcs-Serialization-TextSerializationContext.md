@@ -4,7 +4,7 @@
 Represents a context used by the [TextSerializer](./DefaultEcs-Serialization-TextSerializer.md 'DefaultEcs.Serialization.TextSerializer') to convert types during serialization and deserialization operations.  
 ```csharp
 public sealed class TextSerializationContext :
-IDisposable
+System.IDisposable
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; TextSerializationContext  
 

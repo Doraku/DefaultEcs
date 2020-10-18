@@ -6,8 +6,8 @@ Represents a base class to process updates on a given [EntitySet](./DefaultEcs-E
 The updates are single threaded, all [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') operations are safe.  
 ```csharp
 public abstract class AEntityBufferedSystem<T> :
-ISystem<T>,
-IDisposable
+DefaultEcs.System.ISystem<T>,
+System.IDisposable
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; AEntityBufferedSystem&lt;T&gt;  
 

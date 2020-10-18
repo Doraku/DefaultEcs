@@ -5,7 +5,7 @@ Represents a context used by the [BinarySerializer](./DefaultEcs-Serialization-B
 The context marshalling will not be applied on members of unmanaged type as [BinarySerializer](./DefaultEcs-Serialization-BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer') just past their memory location with no transformation.  
 ```csharp
 public sealed class BinarySerializationContext :
-IDisposable
+System.IDisposable
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; BinarySerializationContext  
 

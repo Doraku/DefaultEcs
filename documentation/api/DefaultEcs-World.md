@@ -4,10 +4,10 @@
 Represents a item used to create and manage [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') objects.  
 ```csharp
 public sealed class World :
-IEnumerable<Entity>,
-IEnumerable,
-IPublisher,
-IDisposable
+System.Collections.Generic.IEnumerable<DefaultEcs.Entity>,
+System.Collections.IEnumerable,
+DefaultEcs.IPublisher,
+System.IDisposable
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; World  
 

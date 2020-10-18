@@ -3,7 +3,7 @@
 ## WhenChangedEitherAttribute Class
 Represents a group of component types to react to at least one of their change when building the inner [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') of [AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;') when giving a [World](./DefaultEcs-World.md 'DefaultEcs.World') instance.  
 ```csharp
-public sealed class WhenChangedEitherAttribute : ComponentAttribute
+public sealed class WhenChangedEitherAttribute : DefaultEcs.System.ComponentAttribute
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; [ComponentAttribute](./DefaultEcs-System-ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &#129106; WhenChangedEitherAttribute  
 ### Constructors

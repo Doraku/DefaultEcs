@@ -4,8 +4,8 @@
 Represents an object used to run an [IParallelRunnable](./DefaultEcs-Threading-IParallelRunnable.md 'DefaultEcs.Threading.IParallelRunnable') by using multiple [System.Threading.Tasks.Task](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task 'System.Threading.Tasks.Task').  
 ```csharp
 public sealed class DefaultParallelRunner :
-IParallelRunner,
-IDisposable
+DefaultEcs.Threading.IParallelRunner,
+System.IDisposable
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; DefaultParallelRunner  
 

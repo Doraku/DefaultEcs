@@ -4,8 +4,8 @@
 Represents a collection of [ISystem&lt;T&gt;](./DefaultEcs-System-ISystem-T-.md 'DefaultEcs.System.ISystem&lt;T&gt;') to update in parallel.  
 ```csharp
 public sealed class ParallelSystem<T> :
-ISystem<T>,
-IDisposable
+DefaultEcs.System.ISystem<T>,
+System.IDisposable
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; ParallelSystem&lt;T&gt;  
 

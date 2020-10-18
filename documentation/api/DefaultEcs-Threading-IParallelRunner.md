@@ -4,7 +4,7 @@
 Exposes a method to run in parallel a [IParallelRunnable](./DefaultEcs-Threading-IParallelRunnable.md 'DefaultEcs.Threading.IParallelRunnable').  
 ```csharp
 public interface IParallelRunner :
-IDisposable
+System.IDisposable
 ```
 Derived  
 &#8627; [DefaultParallelRunner](./DefaultEcs-Threading-DefaultParallelRunner.md 'DefaultEcs.Threading.DefaultParallelRunner')  

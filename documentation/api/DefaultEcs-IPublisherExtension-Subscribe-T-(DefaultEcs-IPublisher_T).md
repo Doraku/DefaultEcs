@@ -3,7 +3,8 @@
 ## IPublisherExtension.Subscribe&lt;T&gt;(DefaultEcs.IPublisher, T) Method
 Subscribes automatically methods of an instance and its Type marked with the [SubscribeAttribute](./DefaultEcs-SubscribeAttribute.md 'DefaultEcs.SubscribeAttribute') on an [IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher') instance.  
 ```csharp
-public static System.IDisposable Subscribe<T>(this DefaultEcs.IPublisher publisher, T target);
+public static System.IDisposable Subscribe<T>(this DefaultEcs.IPublisher publisher, T target)
+    where T : class;
 ```
 #### Type parameters
 <a name='DefaultEcs-IPublisherExtension-Subscribe-T-(DefaultEcs-IPublisher_T)-T'></a>

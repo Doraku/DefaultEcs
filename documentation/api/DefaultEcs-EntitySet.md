@@ -4,7 +4,7 @@
 Represents a sub-selection of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') instances from a [World](./DefaultEcs-EntitySet-World.md 'DefaultEcs.EntitySet.World').  
 ```csharp
 public sealed class EntitySet :
-IDisposable
+System.IDisposable
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; EntitySet  
 

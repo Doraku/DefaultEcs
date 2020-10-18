@@ -4,8 +4,8 @@
 Represents a base class to process updates on a given [World](./DefaultEcs-World.md 'DefaultEcs.World') instance to all its components of type [TComponent](#DefaultEcs-System-AComponentSystem-TState_TComponent--TComponent 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.TComponent').  
 ```csharp
 public abstract class AComponentSystem<TState,TComponent> :
-ISystem<TState>,
-IDisposable
+DefaultEcs.System.ISystem<TState>,
+System.IDisposable
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; AComponentSystem&lt;TState,TComponent&gt;  
 

@@ -4,7 +4,7 @@
 Represents the base attribute to declare how to build the inner [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') of [AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;') when giving a [World](./DefaultEcs-World.md 'DefaultEcs.World') instance.  
 Do not use this attribute, prefer [WithAttribute](./DefaultEcs-System-WithAttribute.md 'DefaultEcs.System.WithAttribute') and [WithoutAttribute](./DefaultEcs-System-WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute') instead.  
 ```csharp
-public class ComponentAttribute : Attribute
+public class ComponentAttribute : System.Attribute
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; ComponentAttribute  
 

@@ -7,7 +7,7 @@ If no [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') contains the [Managed
 By default, if [TResource](#DefaultEcs-Resource-AResourceManager-TInfo_TResource--TResource 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.TResource') is [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable'), [Unload(TInfo, TResource)](./DefaultEcs-Resource-AResourceManager-TInfo_TResource--Unload(TInfo_TResource).md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.Unload(TInfo, TResource)') will call the [System.IDisposable.Dispose](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable.Dispose 'System.IDisposable.Dispose') method of the resource.  
 ```csharp
 public abstract class AResourceManager<TInfo,TResource> :
-IDisposable
+System.IDisposable
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; AResourceManager&lt;TInfo,TResource&gt;  
 

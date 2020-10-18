@@ -4,7 +4,7 @@
 Provides a basic implementation of the [ISerializer](./DefaultEcs-Serialization-ISerializer.md 'DefaultEcs.Serialization.ISerializer') interface using a binary format.  
 ```csharp
 public sealed class BinarySerializer :
-ISerializer
+DefaultEcs.Serialization.ISerializer
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; BinarySerializer  
 

@@ -4,7 +4,7 @@
 Represents a collection of [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') mapped to a [TKey](#DefaultEcs-EntitiesMap-TKey--TKey 'DefaultEcs.EntitiesMap&lt;TKey&gt;.TKey') component. Multiple [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') can be associated with a given [TKey](#DefaultEcs-EntitiesMap-TKey--TKey 'DefaultEcs.EntitiesMap&lt;TKey&gt;.TKey').  
 ```csharp
 public sealed class EntitiesMap<TKey> :
-IDisposable
+System.IDisposable
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; EntitiesMap&lt;TKey&gt;  
 

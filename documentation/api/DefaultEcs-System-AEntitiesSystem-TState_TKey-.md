@@ -4,8 +4,8 @@
 Represents a base class to process updates on a given [EntitiesMap&lt;TKey&gt;](./DefaultEcs-EntitiesMap-TKey-.md 'DefaultEcs.EntitiesMap&lt;TKey&gt;') instance.  
 ```csharp
 public abstract class AEntitiesSystem<TState,TKey> :
-ISystem<TState>,
-IDisposable
+DefaultEcs.System.ISystem<TState>,
+System.IDisposable
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; AEntitiesSystem&lt;TState,TKey&gt;  
 

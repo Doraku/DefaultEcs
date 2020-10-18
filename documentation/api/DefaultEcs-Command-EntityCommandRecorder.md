@@ -4,7 +4,7 @@
 Represents a buffer of structural modifications to apply on [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') to record as postoned commands.  
 ```csharp
 public sealed class EntityCommandRecorder :
-IDisposable
+System.IDisposable
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; EntityCommandRecorder  
 
