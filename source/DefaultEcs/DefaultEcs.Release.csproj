@@ -14,8 +14,19 @@
   </ItemGroup>
 
   <PropertyGroup Label="Package">
-    <Version>0.14.5</Version>
+    <Version>0.15.0</Version>
     <PackageReleaseNotes>
+breaking changes:
+removed Entity.SetAsChildOf
+removed Entity.SetAsParentOf
+removed Entity.RemoveFromChildrenOf
+removed Entity.RemoveFromParentsOf
+removed Entity.GetChildren
+removed EntityRecord.SetAsChildOf
+removed EntityRecord.SetAsParentOf
+removed EntityRecord.RemoveFromChildrenOf
+removed EntityRecord.RemoveFromParentsOf
+
 fixed invalid IsEnable component state with serializing with a SerializationContext
     </PackageReleaseNotes>
   </PropertyGroup>

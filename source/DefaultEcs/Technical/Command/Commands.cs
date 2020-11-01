@@ -35,26 +35,6 @@ namespace DefaultEcs.Technical.Command
     }
 
     [StructLayout(LayoutKind.Explicit, Pack = 1)]
-    internal readonly struct ChildParentOffsetCommand
-    {
-        [FieldOffset(0)]
-        public readonly CommandType CommandType;
-
-        [FieldOffset(1)]
-        public readonly int ChildOffset;
-
-        [FieldOffset(5)]
-        public readonly int ParentOffset;
-
-        public ChildParentOffsetCommand(CommandType commandType, int childOffset, int parentOffset)
-        {
-            CommandType = commandType;
-            ChildOffset = childOffset;
-            ParentOffset = parentOffset;
-        }
-    }
-
-    [StructLayout(LayoutKind.Explicit, Pack = 1)]
     internal readonly struct EntityOffsetComponentCommand
     {
         [FieldOffset(0)]

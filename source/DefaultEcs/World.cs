@@ -234,22 +234,6 @@ namespace DefaultEcs
             entityInfo.Components.Clear();
             _entityIdDispenser.ReleaseInt(message.EntityId);
             ++entityInfo.Version;
-
-            Func<int, bool> cleanParent = entityInfo.Parents;
-            entityInfo.Parents = null;
-            cleanParent?.Invoke(message.EntityId);
-
-            HashSet<int> children = entityInfo.Children;
-            if (children != null)
-            {
-                entityInfo.Children = null;
-                foreach (int childId in children)
-                {
-                    EntityInfos[childId].Parents -= children.Remove;
-                    Publish(new EntityDisposingMessage(childId));
-                    Publish(new EntityDisposedMessage(childId));
-                }
-            }
         }
 
         #endregion

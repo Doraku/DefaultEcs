@@ -82,19 +82,6 @@ To clear an entity, simply call its Dispose method
 entity.Dispose();
 ```
 
-It is possible to create a relationship between entities
-```csharp
-Entity parentEntity = world.CreateEntity();
-Entity childEntity = world.CreateEntity();
-
-// both lines have the same outcome
-parentEntity.SetAsParentOf(childEntity);
-childEntity.SetAsChildOf(parentEntity);
-
-// disposing the parent will also dispose the child
-parentEntity.Dispose();
-```
-
 <a name='Overview_Component'></a>
 ## Component
 Components are not restricted by any heritage hierarchy. It is recommanded that component objects only hold data and to be struct to generate as little as possible garbage and to have them contiguous in memory.
@@ -432,7 +419,6 @@ EntityRecord record = recorder.Record(entity);
 
 // EntityRecord has the same API as Entity so all action expected are available to record as command this way
 newRecord.Set<bool>(true);
-record.SetAsParentOf(newRecord);
 
 // To execute all recorded commands
 recorder.Execute(world);
@@ -530,9 +516,6 @@ ComponentType Int32 System.Int32, System.Private.CoreLib
 // this line is used to set the max capacity for the given type, in case it is different from the world max capacity
 ComponentMaxCapacity Int32 13
 
-// this line create an entity with the id "MyEntity", this must be before any Component, ComponentSameAs or ParentChild line
-Entity MyEntity
-
 // this line set the component of the type with the alias Int32 on the previously created Entity to the value 13
 Component Int32 13
 
@@ -559,9 +542,6 @@ Entity Foo
 
 // this sets the component of the type with the alias Test of the previously created Entity as the same as the one of the Entity with the id MyEntity
 ComponentSameAs Test MyEntity
-
-// this sets the entity with the id MyEntity as the parent of the entity with the id Foo
-ParentChild MyEntity Foo
 ```
 <a name='Overview_Serialization_BinarySerializer'></a>
 ### BinarySerializer

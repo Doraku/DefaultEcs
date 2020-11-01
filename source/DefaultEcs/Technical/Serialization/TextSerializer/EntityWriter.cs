@@ -11,7 +11,6 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         private readonly StreamWriterWrapper _writer;
         private readonly Dictionary<Type, string> _types;
-        private readonly Dictionary<Entity, int> _entities;
         private readonly Dictionary<(Entity, Type), int> _components;
         private readonly Predicate<Type> _componentFilter;
 
@@ -26,7 +25,6 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         {
             _writer = writer;
             _types = types;
-            _entities = new Dictionary<Entity, int>();
             _components = new Dictionary<(Entity, Type), int>();
             _componentFilter = componentFilter;
         }
@@ -39,31 +37,15 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         {
             foreach (Entity entity in entities)
             {
-                _entities.Add(entity, ++_entityCount);
                 _currentEntity = entity;
 
                 _writer.Stream.WriteLine();
                 string entry = entity.IsEnabled() ? nameof(EntryType.Entity) : nameof(EntryType.DisabledEntity);
                 _writer.Write(entry);
                 _writer.WriteSpace();
-                _writer.Stream.WriteLine(_entityCount);
+                _writer.Stream.WriteLine(++_entityCount);
 
                 entity.ReadAllComponents(this);
-            }
-
-            foreach (KeyValuePair<Entity, int> pair in _entities)
-            {
-                foreach (Entity child in pair.Key.GetChildren())
-                {
-                    if (_entities.TryGetValue(child, out int childId))
-                    {
-                        _writer.Write(nameof(EntryType.ParentChild));
-                        _writer.WriteSpace();
-                        _writer.Stream.Write(pair.Value);
-                        _writer.WriteSpace();
-                        _writer.Stream.WriteLine(childId);
-                    }
-                }
             }
         }
 

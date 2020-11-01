@@ -250,8 +250,6 @@ namespace DefaultEcs.Test.Serialization
 
             entities[1].Disable();
 
-            entities[0].SetAsParentOf(entities[1]);
-
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
 
             string filePath = Path.GetRandomFileName();
@@ -308,10 +306,6 @@ namespace DefaultEcs.Test.Serialization
                     Check.That(entitiesCopy[2].IsEnabled<bool>()).IsFalse();
                     Check.That(entitiesCopy[2].Get<sbyte>()).IsEqualTo(entities[2].Get<sbyte>());
                     Check.That(entitiesCopy[2].IsEnabled<sbyte>()).IsFalse();
-
-                    entitiesCopy[0].Dispose();
-
-                    Check.That(copyWorld.Count()).IsEqualTo(1);
                 }
             }
             finally
@@ -366,8 +360,6 @@ namespace DefaultEcs.Test.Serialization
 
             entities[1].Disable();
 
-            entities[0].SetAsParentOf(entities[1]);
-
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
 
             string filePath = Path.GetRandomFileName();
@@ -421,10 +413,6 @@ namespace DefaultEcs.Test.Serialization
                 Check.That(entitiesCopy[2].IsEnabled<bool>()).IsFalse();
                 Check.That(entitiesCopy[2].Get<sbyte>()).IsEqualTo(entities[2].Get<sbyte>());
                 Check.That(entitiesCopy[2].IsEnabled<sbyte>()).IsFalse();
-
-                entitiesCopy[0].Dispose();
-
-                Check.That(copyWorld.Count()).IsEqualTo(1);
             }
             finally
             {

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using DefaultEcs.Serialization;
@@ -256,74 +254,6 @@ namespace DefaultEcs
         /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/> or does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
-
-        /// <summary>
-        /// Makes it so when given <see cref="Entity"/> is disposed, current <see cref="Entity"/> will also be disposed.
-        /// </summary>
-        /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
-        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
-        public void SetAsChildOf(in Entity parent)
-        {
-            if (WorldId != parent.WorldId) Throw("Child and parent Entity come from a different World");
-            if (WorldId == 0) Throw("Entity was not created from a World");
-
-            ref HashSet<int> children = ref World.EntityInfos[parent.EntityId].Children;
-            children ??= new HashSet<int>();
-
-            if (children.Add(EntityId))
-            {
-                World.EntityInfos[EntityId].Parents += children.Remove;
-            }
-        }
-
-        /// <summary>
-        /// Makes it so when current <see cref="Entity"/> is disposed, given <see cref="Entity"/> will also be disposed.
-        /// </summary>
-        /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
-        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetAsParentOf(in Entity child) => child.SetAsChildOf(this);
-
-        /// <summary>
-        /// Remove the given <see cref="Entity"/> from current <see cref="Entity"/> parents.
-        /// </summary>
-        /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
-        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
-        public void RemoveFromChildrenOf(in Entity parent)
-        {
-            if (WorldId != parent.WorldId) Throw("Child and parent Entity come from a different World");
-            if (WorldId == 0) Throw("Entity was not created from a World");
-
-            HashSet<int> children = World.EntityInfos[parent.EntityId].Children;
-            if (children?.Remove(EntityId) ?? false)
-            {
-                World.EntityInfos[EntityId].Parents -= children.Remove;
-            }
-        }
-
-        /// <summary>
-        /// Remove the given <see cref="Entity"/> from current <see cref="Entity"/> children.
-        /// </summary>
-        /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
-        /// <exception cref="InvalidOperationException">Child and parent <see cref="Entity"/> come from a different <see cref="DefaultEcs.World"/>.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveFromParentsOf(in Entity child) => child.RemoveFromChildrenOf(this);
-
-        /// <summary>
-        /// Gets all the <see cref="Entity"/> setted as children of the current <see cref="Entity"/>.
-        /// </summary>
-        /// <returns>An <see cref="IEnumerable{Entity}"/> of all the current <see cref="Entity"/> children.</returns>
-        public IEnumerable<Entity> GetChildren()
-        {
-            foreach (int childId in World?.EntityInfos[EntityId].Children ?? Enumerable.Empty<int>())
-            {
-                yield return new Entity(WorldId, childId);
-            }
-        }
 
         /// <summary>
         /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="DefaultEcs.World"/>.

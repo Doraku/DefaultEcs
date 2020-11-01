@@ -172,10 +172,6 @@ namespace DefaultEcs.Serialization
                             componentOperations[reader.Read<ushort>()].SetSameAs(currentEntity, entities[reader.Read<int>()]);
                             break;
 
-                        case EntryType.ParentChild:
-                            entities[reader.Read<int>()].SetAsParentOf(entities[reader.Read<int>()]);
-                            break;
-
                         case EntryType.DisabledEntity:
                             currentEntity = world.CreateEntity();
                             currentEntity.Disable();

@@ -96,38 +96,6 @@ namespace DefaultEcs.Command
         public void NotifyChanged<T>() => _recorder.WriteCommand(new EntityOffsetComponentCommand(CommandType.NotifyChanged, ComponentCommands.ComponentCommand<T>.Index, _offset));
 
         /// <summary>
-        /// Makes it so when given <see cref="EntityRecord"/> corresponding <see cref="Entity"/> is disposed, corresponding <see cref="Entity"/> will also be disposed.
-        /// This command takes 9 bytes.
-        /// </summary>
-        /// <param name="parent">The <see cref="EntityRecord"/> which acts as parent.</param>
-        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
-        public void SetAsChildOf(in EntityRecord parent) => _recorder.WriteCommand(new ChildParentOffsetCommand(CommandType.SetAsChildOf, _offset, parent._offset));
-
-        /// <summary>
-        /// Makes it so when corresponding <see cref="Entity"/> is disposed, given <see cref="EntityRecord"/> corresponding <see cref="Entity"/> will also be disposed.
-        /// This command takes 9 bytes.
-        /// </summary>
-        /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
-        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
-        public void SetAsParentOf(in EntityRecord child) => child.SetAsChildOf(this);
-
-        /// <summary>
-        /// Remove the given <see cref="EntityRecord"/> corresponding <see cref="Entity"/> from corresponding <see cref="Entity"/> parents.
-        /// This command takes 9 bytes.
-        /// </summary>
-        /// <param name="parent">The <see cref="Entity"/> which acts as parent.</param>
-        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
-        public void RemoveFromChildrenOf(in EntityRecord parent) => _recorder.WriteCommand(new ChildParentOffsetCommand(CommandType.RemoveFromChildrenOf, _offset, parent._offset));
-
-        /// <summary>
-        /// Remove the given <see cref="EntityRecord"/> corresponding <see cref="Entity"/> from corresponding <see cref="Entity"/> children.
-        /// This command takes 9 bytes.
-        /// </summary>
-        /// <param name="child">The <see cref="Entity"/> which acts as child.</param>
-        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
-        public void RemoveFromParentsOf(in EntityRecord child) => child.RemoveFromChildrenOf(this);
-
-        /// <summary>
         /// Clean the corresponding <see cref="Entity"/> of all its components.
         /// The current <see cref="EntityRecord"/> should not be used again after calling this method.
         /// This command takes 5 bytes.

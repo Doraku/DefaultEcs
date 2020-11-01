@@ -249,10 +249,6 @@ namespace DefaultEcs.Serialization
                             ReadComponentOperation(reader, componentOperations).SetSameAs(currentEntity, ReadEntity(reader, entities));
                             break;
 
-                        case nameof(EntryType.ParentChild):
-                            ReadEntity(reader, entities).SetAsParentOf(ReadEntity(reader, entities));
-                            break;
-
                         case nameof(EntryType.DisabledComponent):
                             if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
 

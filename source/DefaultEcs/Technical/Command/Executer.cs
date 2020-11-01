@@ -72,18 +72,6 @@ namespace DefaultEcs.Technical.Command
                             commandSize = sizeof(EntityOffsetComponentCommand);
                             break;
 
-                        case CommandType.SetAsChildOf:
-                            ChildParentOffsetCommand* childParent = (ChildParentOffsetCommand*)commands;
-                            (*(Entity*)(memoryP + (*childParent).ChildOffset)).SetAsChildOf(*(Entity*)(memoryP + (*childParent).ParentOffset));
-                            commandSize = sizeof(ChildParentOffsetCommand);
-                            break;
-
-                        case CommandType.RemoveFromChildrenOf:
-                            childParent = (ChildParentOffsetCommand*)commands;
-                            (*(Entity*)(memoryP + (*childParent).ChildOffset)).RemoveFromChildrenOf(*(Entity*)(memoryP + (*childParent).ParentOffset));
-                            commandSize = sizeof(ChildParentOffsetCommand);
-                            break;
-
                         case CommandType.Dispose:
                             (*(Entity*)(memoryP + (*(EntityOffsetCommand*)commands).EntityOffset)).Dispose();
                             commandSize = sizeof(EntityOffsetCommand);

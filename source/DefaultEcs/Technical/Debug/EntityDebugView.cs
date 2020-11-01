@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using DefaultEcs.Serialization;
 
 namespace DefaultEcs.Technical.Debug
@@ -43,7 +42,6 @@ namespace DefaultEcs.Technical.Debug
         public World World => _entity.World;
         public bool IsAlive => _entity.IsAlive;
         public bool IsEnabled => _entity.IsEnabled();
-        public Entity[] Children => _entity.GetChildren().ToArray();
         public IComponent[] Components => _components.ToArray();
 
         public EntityDebugView(Entity entity)

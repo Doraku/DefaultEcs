@@ -8,9 +8,8 @@
         Entity = 3,
         Component = 4,
         ComponentSameAs = 5,
-        ParentChild = 6,
-        DisabledEntity = 7,
-        DisabledComponent = 8,
-        DisabledComponentSameAs = 9
+        DisabledEntity = 6,
+        DisabledComponent = 7,
+        DisabledComponentSameAs = 8
     }
 }

@@ -11,7 +11,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         private readonly StreamWriterWrapper _writer;
         private readonly Dictionary<Type, ushort> _types;
-        private readonly Dictionary<Entity, int> _entities;
         private readonly Dictionary<(Entity, Type), int> _components;
         private readonly Predicate<Type> _componentFilter;
 
@@ -27,7 +26,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         {
             _writer = writer;
             _types = types;
-            _entities = new Dictionary<Entity, int>();
             _components = new Dictionary<(Entity, Type), int>();
             _componentFilter = componentFilter;
 
@@ -46,20 +44,9 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 _writer.WriteByte((byte)(entity.IsEnabled() ? EntryType.Entity : EntryType.DisabledEntity));
                 ++_entityCount;
 
-                _entities.Add(entity, _entityCount);
                 _currentEntity = entity;
 
                 entity.ReadAllComponents(this);
-            }
-
-            foreach (KeyValuePair<Entity, int> pair in _entities)
-            {
-                foreach (Entity child in pair.Key.GetChildren())
-                {
-                    _writer.WriteByte((byte)EntryType.ParentChild);
-                    _writer.Write(pair.Value);
-                    _writer.Write(_entities[child]);
-                }
             }
         }
 
