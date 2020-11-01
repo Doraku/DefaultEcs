@@ -3,11 +3,16 @@ using BenchmarkDotNet.Attributes;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
 using Entitas;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended.Entities;
+using MonoGame.Extended.Entities.Systems;
 using DefaultEntity = DefaultEcs.Entity;
 using DefaultEntitySet = DefaultEcs.EntitySet;
 using DefaultWorld = DefaultEcs.World;
 using EntitasEntity = Entitas.Entity;
 using EntitasWorld = Entitas.IContext<Entitas.Entity>;
+using MonoEntity = MonoGame.Extended.Entities.Entity;
+using MonoWorld = MonoGame.Extended.Entities.World;
 
 namespace DefaultEcs.Benchmark.Performance
 {
@@ -102,6 +107,33 @@ namespace DefaultEcs.Benchmark.Performance
             }
         }
 
+        private class MonoComponent
+        {
+            public int Value;
+        }
+
+        public class MonoSystem : EntityUpdateSystem
+        {
+            private ComponentMapper<MonoComponent> _components;
+
+            public MonoSystem()
+                : base(Aspect.All(typeof(MonoComponent)))
+            { }
+
+            public override void Initialize(IComponentMapperService mapperService)
+            {
+                _components = mapperService.GetMapper<MonoComponent>();
+            }
+
+            public override void Update(GameTime gameTime)
+            {
+                foreach (int entityId in ActiveEntities)
+                {
+                    ++_components.Get(entityId).Value;
+                }
+            }
+        }
+
         private DefaultWorld _defaultWorld;
         private DefaultParallelRunner _defaultRunner;
         private DefaultEntitySet _defaultEntitySet;
@@ -115,6 +147,9 @@ namespace DefaultEcs.Benchmark.Performance
         private EntitasWorld _entitasWorld;
         private EntitasSystem _entitasSystem;
         private EntitasSystem _entitasMultiSystem;
+
+        private MonoWorld _monoWorld;
+        private GameTime _time;
 
         [Params(100000)]
         public int EntityCount { get; set; }
@@ -136,6 +171,9 @@ namespace DefaultEcs.Benchmark.Performance
             _entitasSystem = new EntitasSystem(_entitasWorld);
             _entitasMultiSystem = new EntitasSystem(_entitasWorld, Environment.ProcessorCount);
 
+            _monoWorld = new WorldBuilder().AddSystem(new MonoSystem()).Build();
+            _time = new GameTime();
+
             for (int i = 0; i < EntityCount; ++i)
             {
                 DefaultEntity defaultEntity = _defaultWorld.CreateEntity();
@@ -143,6 +181,9 @@ namespace DefaultEcs.Benchmark.Performance
 
                 EntitasEntity entitasEntity = _entitasWorld.CreateEntity();
                 entitasEntity.AddComponent(0, new EntitasComponent());
+
+                MonoEntity monoEntity = _monoWorld.CreateEntity();
+                monoEntity.Attach(new MonoComponent());
             }
         }
 
@@ -194,5 +235,8 @@ namespace DefaultEcs.Benchmark.Performance
 
         [Benchmark]
         public void Entitas_MultiSystem() => _entitasMultiSystem.Execute();
+
+        [Benchmark]
+        public void MonoGameExtendedEntities_System() => _monoWorld.Update(_time);
     }
 }

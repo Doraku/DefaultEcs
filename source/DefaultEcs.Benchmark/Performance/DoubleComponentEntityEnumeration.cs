@@ -3,11 +3,16 @@ using BenchmarkDotNet.Attributes;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
 using Entitas;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended.Entities;
+using MonoGame.Extended.Entities.Systems;
 using DefaultEntity = DefaultEcs.Entity;
 using DefaultEntitySet = DefaultEcs.EntitySet;
 using DefaultWorld = DefaultEcs.World;
 using EntitasEntity = Entitas.Entity;
 using EntitiasWorld = Entitas.IContext<Entitas.Entity>;
+using MonoEntity = MonoGame.Extended.Entities.Entity;
+using MonoWorld = MonoGame.Extended.Entities.World;
 
 namespace DefaultEcs.Benchmark.Performance
 {
@@ -106,6 +111,45 @@ namespace DefaultEcs.Benchmark.Performance
             }
         }
 
+        private class MonoSpeed
+        {
+            public float X;
+            public float Y;
+        }
+
+        private class MonoPosition
+        {
+            public float X;
+            public float Y;
+        }
+
+        public class MonoSystem : EntityUpdateSystem
+        {
+            private ComponentMapper<MonoSpeed> _speeds;
+            private ComponentMapper<MonoPosition> _positions;
+
+            public MonoSystem()
+                : base(Aspect.All(typeof(MonoSpeed), typeof(MonoPosition)))
+            { }
+
+            public override void Initialize(IComponentMapperService mapperService)
+            {
+                _speeds = mapperService.GetMapper<MonoSpeed>();
+                _positions = mapperService.GetMapper<MonoPosition>();
+            }
+
+            public override void Update(GameTime gameTime)
+            {
+                foreach (int entityId in ActiveEntities)
+                {
+                    MonoSpeed speed = _speeds.Get(entityId);
+                    MonoPosition position = _positions.Get(entityId);
+                    position.X += speed.X * Time;
+                    position.Y += speed.Y * Time;
+                }
+            }
+        }
+
         private DefaultWorld _defaultWorld;
         private DefaultEntitySet _defaultEntitySet;
         private DefaultParallelRunner _defaultRunner;
@@ -117,6 +161,9 @@ namespace DefaultEcs.Benchmark.Performance
         private EntitiasWorld _entitasWorld;
         private EntitasSystem _entitasSystem;
         private EntitasSystem _entitasMultiSystem;
+
+        private MonoWorld _monoWorld;
+        private GameTime _time;
 
         [Params(100000)]
         public int EntityCount { get; set; }
@@ -136,6 +183,9 @@ namespace DefaultEcs.Benchmark.Performance
             _entitasSystem = new EntitasSystem(_entitasWorld);
             _entitasMultiSystem = new EntitasSystem(_entitasWorld, Environment.ProcessorCount);
 
+            _monoWorld = new WorldBuilder().AddSystem(new MonoSystem()).Build();
+            _time = new GameTime();
+
             for (int i = 0; i < EntityCount; ++i)
             {
                 DefaultEntity defaultEntity = _defaultWorld.CreateEntity();
@@ -145,6 +195,10 @@ namespace DefaultEcs.Benchmark.Performance
                 EntitasEntity entitasEntity = _entitasWorld.CreateEntity();
                 entitasEntity.AddComponent(0, new EntitasSpeed { X = 42, Y = 42 });
                 entitasEntity.AddComponent(1, new EntitasPosition());
+
+                MonoEntity monoEntity = _monoWorld.CreateEntity();
+                monoEntity.Attach(new MonoSpeed { X = 42, Y = 42 });
+                monoEntity.Attach(new MonoPosition());
             }
         }
 
@@ -185,5 +239,8 @@ namespace DefaultEcs.Benchmark.Performance
 
         [Benchmark]
         public void Entitas_MultiSystem() => _entitasMultiSystem.Execute();
+
+        [Benchmark]
+        public void MonoGameExtendedEntities_System() => _monoWorld.Update(_time);
     }
 }
