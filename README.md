@@ -35,6 +35,7 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
   - [Serialization](#Overview_Serialization)
     - [TextSerializer](#Overview_Serialization_TextSerializer)
     - [BinarySerializer](#Overview_Serialization_BinarySerializer)
+- [Extension](#Extension)
 - [Sample](#Sample)
 - [Performance](#Performance)
 
@@ -547,6 +548,10 @@ ComponentSameAs Test Foo
 <a name='Overview_Serialization_BinarySerializer'></a>
 ### BinarySerializer
 This serializer is optimized for speed and file space.
+
+<a name='Extension'></a>
+# Extension
+A DefaultEcs.Extension project is present to show how other features can be build uppon the base framework. Those features are just provided as example and are not part of DefaultEcs because the implementation is not generic nor satisfactory enough.
 
 <a name='Sample'></a>
 # Sample
