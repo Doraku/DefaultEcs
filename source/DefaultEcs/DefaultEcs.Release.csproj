@@ -27,7 +27,9 @@ removed EntityRecord.SetAsParentOf
 removed EntityRecord.RemoveFromChildrenOf
 removed EntityRecord.RemoveFromParentsOf
 
-fixed invalid IsEnable component state with serializing with a SerializationContext
+fixed invalid IsEnable component state when serializing with a SerializationContext
+
+added World.SubscribeWorldDisposed
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

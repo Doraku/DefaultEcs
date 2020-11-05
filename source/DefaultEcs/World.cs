@@ -360,6 +360,19 @@ namespace DefaultEcs
         public void Optimize() => Optimize(DefaultParallelRunner.Default);
 
         /// <summary>
+        /// Subscribes an <see cref="WorldDisposedHandler"/> on the current <see cref="World"/> to be called when current instance is disposed.
+        /// </summary>
+        /// <param name="action">The <see cref="WorldDisposedHandler"/> to be called.</param>
+        /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
+        public IDisposable SubscribeWorldDisposed(WorldDisposedHandler action)
+        {
+            if (action is null) throw new ArgumentNullException(nameof(action));
+
+            return Subscribe((in WorldDisposedMessage _) => action(this));
+        }
+
+        /// <summary>
         /// Subscribes an <see cref="EntityCreatedHandler"/> on the current <see cref="World"/> to be called when an <see cref="Entity"/> is created.
         /// </summary>
         /// <param name="action">The <see cref="EntityCreatedHandler"/> to be called.</param>

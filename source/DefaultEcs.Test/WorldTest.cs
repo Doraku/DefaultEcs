@@ -351,6 +351,26 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void SubscribeWorldDisposed_Should_throw_When_action_is_null()
+        {
+            using World world = new World();
+
+            Check.ThatCode(() => world.SubscribeWorldDisposed(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void SubscribeWorldDisposed_Should_call_handler_When_world_disposed()
+        {
+            World world = new World();
+            World result = null;
+
+            using IDisposable subscription = world.SubscribeWorldDisposed(w => result = w);
+
+            world.Dispose();
+            Check.That(result).IsEqualTo(world);
+        }
+
+        [Fact]
         public void SubscribeEntityCreated_Should_throw_When_action_is_null()
         {
             using World world = new World();

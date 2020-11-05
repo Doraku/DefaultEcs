@@ -8,6 +8,12 @@
     public delegate void MessageHandler<T>(in T message);
 
     /// <summary>
+    /// Represents the method that will called when a <see cref="World"/> is created.
+    /// </summary>
+    /// <param name="world">The dusposed <see cref="World"/>.</param>
+    public delegate void WorldDisposedHandler(World world);
+
+    /// <summary>
     /// Represents the method that will called when an <see cref="Entity"/> is created.
     /// </summary>
     /// <param name="entity">The created <see cref="Entity"/>.</param>

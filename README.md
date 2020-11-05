@@ -516,6 +516,9 @@ ComponentType Int32 System.Int32, System.Private.CoreLib
 // this line is used to set the max capacity for the given type, in case it is different from the world max capacity
 ComponentMaxCapacity Int32 13
 
+// this create a new entity with the id "Foo"
+Entity Foo
+
 // this line set the component of the type with the alias Int32 on the previously created Entity to the value 13
 Component Int32 13
 
@@ -525,6 +528,8 @@ Component Int32 13
 //     int Hello
 //     int World
 // }
+ComponentType Test MyNamespace.Text, MyLib
+
 // composite objects are setted like this
 Component Test {
 	Hello 666
@@ -535,13 +540,9 @@ Component Test {
 
 // this create a new entity with no id
 Entity
-Component Int32 1337
 
-// this create a new entity with the id "Foo"
-Entity Foo
-
-// this sets the component of the type with the alias Test of the previously created Entity as the same as the one of the Entity with the id MyEntity
-ComponentSameAs Test MyEntity
+// this sets the component of the type with the alias Test of the previously created Entity as the same as the one of the Entity with the id Foo
+ComponentSameAs Test Foo
 ```
 <a name='Overview_Serialization_BinarySerializer'></a>
 ### BinarySerializer
