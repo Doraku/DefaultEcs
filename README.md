@@ -551,7 +551,7 @@ This serializer is optimized for speed and file space.
 
 <a name='Extension'></a>
 # Extension
-A DefaultEcs.Extension project is present to show how other features can be build uppon the base framework. Those features are just provided as example and are not part of DefaultEcs because the implementation is not generic nor satisfactory enough.
+A DefaultEcs.Extension project is present to show how other features can be built upon the base framework. Those features are just provided as example and are not part of DefaultEcs because the implementation is not generic nor satisfactory enough.
 
 <a name='Sample'></a>
 # Sample
