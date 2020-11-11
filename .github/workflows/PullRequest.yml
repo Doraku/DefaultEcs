@@ -16,7 +16,7 @@ jobs:
     - name: Set up dotnet
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0.0'
+        dotnet-version: '5.0.100'
 
     - name: Run tests net452
       run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net452
