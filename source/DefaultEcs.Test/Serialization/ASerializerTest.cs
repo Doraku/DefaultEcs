@@ -149,6 +149,32 @@ namespace DefaultEcs.Test.Serialization
             Check.That(copy).ContainsExactly(array);
         }
 
+        private void TestList<T>(List<T> list)
+        {
+            using Stream stream = new MemoryStream();
+
+            Write(stream, list);
+
+            stream.Position = 0;
+
+            List<T> copy = Read<List<T>>(stream);
+
+            Check.That(copy).ContainsExactly(list);
+        }
+
+        private void TestDctionary<TKey, TValue>(Dictionary<TKey, TValue> dictionary)
+        {
+            using Stream stream = new MemoryStream();
+
+            Write(stream, dictionary);
+
+            stream.Position = 0;
+
+            Dictionary<TKey, TValue> copy = Read<Dictionary<TKey, TValue>>(stream);
+
+            Check.That(copy).ContainsExactly(dictionary);
+        }
+
         protected abstract void Write<T>(Stream stream, T obj);
 
         protected abstract T Read<T>(Stream stream);
@@ -178,6 +204,7 @@ namespace DefaultEcs.Test.Serialization
         [Fact]
         public void Should_handle_string() => Test("kikoolol");
 
+        [Fact]
         public void Should_handle_string_with_double_quote() => Test(@"kikoo""lol""");
 
         [Fact]
@@ -206,6 +233,18 @@ namespace DefaultEcs.Test.Serialization
 
         [Fact]
         public void Should_handle_class_array() => TestArray(Enumerable.Range(0, 42).Select(i => new SimpleClass(i)).ToArray());
+
+        [Fact]
+        public void Should_handle_struct_list() => TestList(Enumerable.Range(0, 42).ToList());
+
+        [Fact]
+        public void Should_handle_class_list() => TestList(Enumerable.Range(0, 42).Select(i => new SimpleClass(i)).ToList());
+
+        [Fact]
+        public void Should_handle_struct_dictionary() => TestDctionary(Enumerable.Range(0, 42).ToDictionary(i => i));
+
+        [Fact]
+        public void Should_handle_class_dictionary() => TestDctionary(Enumerable.Range(0, 42).ToDictionary(i => i, i => new SimpleClass(i)));
 
         [Fact]
         public void Should_handle_derived_class() => Test<SimpleClass>(new DerivedClass(0));

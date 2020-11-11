@@ -121,11 +121,11 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             (WriteAction, ReadAction) = typeof(T) switch
             {
                 Type type when type == typeof(Type) => TypeConverter.GetActions<T>(),
-                Type type when type == typeof(string) => StringConverter.GetActions<T>(),
-                Type type when type.IsUnmanaged() => UnmanagedConverter.GetActions<T>(),
+                Type type when type.IsAbstract() => (null, null),
                 Type type when type.IsArray && type.GetElementType().IsUnmanaged() => UnmanagedConverter.GetArrayActions<T>(),
                 Type type when type.IsArray => ArrayConverter.GetActions<T>(),
-                Type type when type.GetTypeInfo().IsAbstract => (null, null),
+                Type type when type.IsUnmanaged() => UnmanagedConverter.GetActions<T>(),
+                Type type when type == typeof(string) => StringConverter.GetActions<T>(),
                 _ => ManagedConverter.GetActions<T>()
             };
         }

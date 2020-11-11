@@ -26,6 +26,7 @@ removed EntityRecord.SetAsChildOf
 removed EntityRecord.SetAsParentOf
 removed EntityRecord.RemoveFromChildrenOf
 removed EntityRecord.RemoveFromParentsOf
+changed TextSerializer format for pure List and Dictionary types
 
 fixed invalid IsEnable component state when serializing with a SerializationContext
 
