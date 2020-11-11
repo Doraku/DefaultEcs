@@ -9,7 +9,6 @@ namespace DefaultEcs.Technical.Command
         [SuppressMessage("Design", "RCS1158:Static member in generic type should use a type parameter.")]
         public static int SizeOfT = sizeof(T);
 
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void WriteComponent(List<object> _, byte* data, in T component) => *(T*)data = component;
 
         public static int SetComponent(in Entity entity, List<object> _, byte* memory)

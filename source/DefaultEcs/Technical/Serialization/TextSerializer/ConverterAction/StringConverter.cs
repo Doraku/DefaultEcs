@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
 {
     internal static class StringConverter
     {
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         private static void Write(StreamWriterWrapper writer, in string value)
         {
             writer.Write("\"");

@@ -196,6 +196,9 @@ namespace DefaultEcs.Test.Serialization
         public void Should_handle_struct_with_class() => Test(new StructWithClass { _1 = new SimpleStruct(0), _2 = new SimpleClass(0), _3 = "kikoolol" });
 
         [Fact]
+#if NET5_0
+        [SuppressMessage("Performance", "CA1825")]
+#endif
         public void Should_handle_empty_array() => TestArray(new object[0]);
 
         [Fact]
@@ -217,6 +220,9 @@ namespace DefaultEcs.Test.Serialization
         public void Should_handle_struct_as_object() => Test<object>(42);
 
         [Fact]
+#if NET5_0
+        [SuppressMessage("Performance", "CA1825")]
+#endif
         public void Should_handle_complex_generic_type_as_object() => Test<object>(new Dictionary<string, DerivedClass[,,]>[0]);
 
         [Fact]

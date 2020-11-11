@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using DefaultEcs.Serialization;
 
 namespace DefaultEcs.Technical.Serialization.BinarySerializer
@@ -50,7 +49,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             }
         }
 
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public void WriteComponent<T>(in T component, in Entity componentOwner, bool isEnabled)
         {
             if (!_types.TryGetValue(typeof(T), out ushort typeId))

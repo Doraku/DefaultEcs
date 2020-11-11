@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Buffers;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -61,7 +60,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             }
         }
 
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public void Write<T>(in T value)
             where T : unmanaged
         {
@@ -92,7 +90,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
             }
         }
 
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public void WriteValue<T>(in T value)
         {
             if (Context?.TypeMarshalling != null)

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
-    public class GameSystem : ISystem<float>
+    public sealed class GameSystem : ISystem<float>
     {
         private readonly Random _random;
         private readonly World _world;

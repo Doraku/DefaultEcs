@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace DefaultEcs.Technical.Serialization.BinarySerializer.ConverterAction
 {
@@ -10,10 +9,8 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer.ConverterAction
         private static readonly MethodInfo _readMethod = typeof(UnmanagedConverter).GetTypeInfo().GetDeclaredMethod(nameof(Read));
         private static readonly MethodInfo _readArrayMethod = typeof(UnmanagedConverter).GetTypeInfo().GetDeclaredMethod(nameof(ReadArray));
 
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         private static void Write<T>(in StreamWriterWrapper writer, in T value) where T : unmanaged => writer.Write(value);
 
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         private static void WriteArray<T>(in StreamWriterWrapper writer, in T[] value) where T : unmanaged => writer.WriteArray(value);
 
         private static T Read<T>(in StreamReaderWrapper reader) where T : unmanaged => reader.Read<T>();

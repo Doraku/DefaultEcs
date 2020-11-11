@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using DefaultEcs.Technical;
 using DefaultEcs.Threading;
 
@@ -25,6 +26,9 @@ namespace DefaultEcs.System
                 _system = system;
             }
 
+#if NETSTANDARD2_1
+            [SuppressMessage("Style", "IDE0057:Use range operator")]
+#endif
             public void Run(int index, int maxIndex)
             {
                 Span<TComponent> components = _system._components.AsSpan();

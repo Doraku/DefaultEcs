@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
+﻿using System.Reflection;
 using DefaultEcs.Technical.Helper;
 
 namespace DefaultEcs.Technical.Serialization.BinarySerializer.ConverterAction
@@ -9,7 +8,6 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer.ConverterAction
         private static readonly MethodInfo _writeMethod = typeof(ArrayConverter).GetTypeInfo().GetDeclaredMethod(nameof(Write));
         private static readonly MethodInfo _readMethod = typeof(ArrayConverter).GetTypeInfo().GetDeclaredMethod(nameof(Read));
 
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         private static void Write<T>(in StreamWriterWrapper writer, in T[] value)
         {
             writer.Write(value.Length);

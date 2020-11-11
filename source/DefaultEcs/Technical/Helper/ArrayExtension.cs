@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace DefaultEcs.Technical.Helper
@@ -19,7 +18,6 @@ namespace DefaultEcs.Technical.Helper
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void Fill<T>(this T[] array, in T value, int start = 0)
         {
             for (int i = start; i < array.Length; ++i)
@@ -38,7 +36,6 @@ namespace DefaultEcs.Technical.Helper
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void EnsureLength<T>(ref T[] array, int index, int maxLength, in T defaultValue)
         {
             if (index >= array.Length)

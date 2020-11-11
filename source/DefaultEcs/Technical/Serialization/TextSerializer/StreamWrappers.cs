@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Buffers;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -42,7 +41,6 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         public void WriteLine(string value) => Stream.WriteLine(value);
 
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public void WriteValue<T>(in T value)
         {
             if (Context?.TypeMarshalling != null)

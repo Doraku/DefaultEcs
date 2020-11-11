@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using DefaultEcs.Serialization;
 using DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction;
@@ -150,7 +149,6 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             (WriteAction<T>)(Delegate)write,
             (ReadAction<T>)(Delegate)new ReadAction<TReal>(reader => read(reader.Read())));
 
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void Write(StreamWriterWrapper writer, in T value)
         {
             WriteAction<T> action = writer.Context?.GetValueWrite<T>();
@@ -171,7 +169,6 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             return action is null ? reader.ReadValue<T>() : action(reader);
         }
 
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public static void WrappedWrite(StreamWriterWrapper writer, in object value) => Write(writer, (T)value);
 
         #endregion

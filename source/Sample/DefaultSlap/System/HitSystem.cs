@@ -6,7 +6,7 @@ using DefaultSlap.Message;
 
 namespace DefaultSlap.System
 {
-    public class HitSystem : ISystem<float>
+    public sealed class HitSystem : ISystem<float>
     {
         private readonly World _world;
 

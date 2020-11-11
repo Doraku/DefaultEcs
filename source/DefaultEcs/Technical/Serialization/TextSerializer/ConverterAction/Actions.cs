@@ -1,6 +1,4 @@
-﻿#if !NETSTANDARD1_1 && !NETSTANDARD2_0
-using System;
-#endif
+﻿using System;
 
 namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
 {

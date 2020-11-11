@@ -13,21 +13,21 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@master
+      uses: actions/checkout@2
 
     - name: Set up dotnet
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.0.100'
+        dotnet-version: '5.0.0'
 
     - name: Build netcoreapp3.0
-      run: dotnet build source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f netcoreapp3.0
+      run: dotnet build source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net5.0
 
     - name: Install coverlet tool
       run: dotnet tool install --tool-path . --version 1.6.0 coverlet.console
 
     - name: Create coverage file
-      run: dotnet .store\coverlet.console\1.6.0\coverlet.console\1.6.0\tools\netcoreapp2.2\any\coverlet.console.dll source\DefaultEcs.Test\bin\Release\netcoreapp3.0\DefaultEcs.Test.dll -t "dotnet" -a "vstest source\DefaultEcs.Test\bin\Release\netcoreapp3.0\DefaultEcs.Test.dll" -o coverage\lcov.info -f lcov --exclude "[*]DefaultEcs.Technical.Debug*"
+      run: dotnet .store\coverlet.console\1.6.0\coverlet.console\1.6.0\tools\netcoreapp2.2\any\coverlet.console.dll source\DefaultEcs.Test\bin\Release\net5.0\DefaultEcs.Test.dll -t "dotnet" -a "vstest source\DefaultEcs.Test\bin\Release\net5.0\DefaultEcs.Test.dll" -o coverage\lcov.info -f lcov --exclude "[*]DefaultEcs.Technical.Debug*"
 
     - name: Upload to coverall
       uses: coverallsapp/github-action@master

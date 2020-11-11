@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using DefaultEcs.Technical.Command;
 
 namespace DefaultEcs.Command
@@ -67,7 +66,6 @@ namespace DefaultEcs.Command
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
         /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         public void Set<T>(in T component = default) => _recorder.WriteSetCommand(_offset, component);
 
         /// <summary>

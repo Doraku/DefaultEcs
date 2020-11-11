@@ -24,6 +24,10 @@ namespace DefaultBoids.Component
         public bool Equals(GridId other) => X == other.X && Y == other.Y;
 
         public override string ToString() => $"{X} {Y}";
+
+        public static bool operator ==(GridId left, GridId right) => left.Equals(right);
+
+        public static bool operator !=(GridId left, GridId right) => !(left == right);
     }
 
     public static class GridIdExtension

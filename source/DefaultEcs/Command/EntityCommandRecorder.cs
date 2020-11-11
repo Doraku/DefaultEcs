@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using DefaultEcs.Technical.Command;
 using DefaultEcs.Technical.Helper;
@@ -89,7 +88,6 @@ namespace DefaultEcs.Command
 
         #region Methods
 
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         private void WriteCommand<T>(int offset, in T command)
             where T : unmanaged
         {
@@ -141,10 +139,8 @@ namespace DefaultEcs.Command
             return commandOffset;
         }
 
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         internal void WriteCommand<T>(in T command) where T : unmanaged => WriteCommand(ReserveNextCommand(sizeof(T)), command);
 
-        [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
         internal void WriteSetCommand<T>(int entityOffset, in T component)
         {
             int offset = ReserveNextCommand(sizeof(EntityOffsetComponentCommand) + ComponentCommands.ComponentCommand<T>.SizeOfT);

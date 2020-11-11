@@ -23,7 +23,6 @@ namespace DefaultEcs.Test
                 return null;
             }
 
-            [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
             public void Publish<T>(in T message)
             { }
 
@@ -41,7 +40,6 @@ namespace DefaultEcs.Test
         private sealed class InvalidReturnType
         {
             [Subscribe]
-            [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
             public static object Method(in object _) { return null; }
         }
 
@@ -54,7 +52,6 @@ namespace DefaultEcs.Test
         private sealed class StaticMethod
         {
             [Subscribe]
-            [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
             public static void Method(in object arg)
             {
                 if (arg is null)
@@ -67,7 +64,9 @@ namespace DefaultEcs.Test
         private class InstanceMethod
         {
             [Subscribe]
-            [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
+#if NET5_0
+            [SuppressMessage("Performance", "CA1822")]
+#endif
             public void Method(in object _) { }
         }
 
@@ -86,6 +85,9 @@ namespace DefaultEcs.Test
             { }
 
             [Subscribe]
+#if NET5_0
+            [SuppressMessage("Performance", "CA1822")]
+#endif
             public void NewMethod(in int _)
             { }
         }
@@ -107,11 +109,9 @@ namespace DefaultEcs.Test
             public object Arg { get; set; }
 
             [Subscribe]
-            [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
             public void Valid(in object arg) => Arg = arg;
 
             [Subscribe]
-            [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
             public object Invalid(in object arg) => Arg = arg;
         }
 

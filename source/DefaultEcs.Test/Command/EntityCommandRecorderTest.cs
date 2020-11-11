@@ -103,7 +103,7 @@ namespace DefaultEcs.Test.Command
         }
 
         [Fact]
-        public void Set_Should_set__blittable_component_on_recorded_entity()
+        public void Set_Should_set_blittable_component_on_recorded_entity()
         {
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
             using World world = new World();
@@ -119,7 +119,7 @@ namespace DefaultEcs.Test.Command
         }
 
         [Fact]
-        public void Set_Should_set__blittable_component_on_created_entity()
+        public void Set_Should_set_blittable_component_on_created_entity()
         {
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
             using World world = new World();
@@ -133,7 +133,7 @@ namespace DefaultEcs.Test.Command
         }
 
         [Fact]
-        public void Set_Should_set__reference_component_on_recorded_entity()
+        public void Set_Should_set_reference_component_on_recorded_entity()
         {
             object o = new object();
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
@@ -150,7 +150,7 @@ namespace DefaultEcs.Test.Command
         }
 
         [Fact]
-        public void Set_Should_set__reference_component_on_created_entity()
+        public void Set_Should_set_reference_component_on_created_entity()
         {
             object o = new object();
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
@@ -165,7 +165,7 @@ namespace DefaultEcs.Test.Command
         }
 
         [Fact]
-        public void Set_Should_set__non_blittable_component_on_recorded_entity()
+        public void Set_Should_set_non_blittable_component_on_recorded_entity()
         {
             object o = new object();
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
@@ -183,7 +183,7 @@ namespace DefaultEcs.Test.Command
         }
 
         [Fact]
-        public void Set_Should_set__non_blittable_component_on_created_entity()
+        public void Set_Should_set_non_blittable_component_on_created_entity()
         {
             object o = new object();
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
@@ -307,7 +307,7 @@ namespace DefaultEcs.Test.Command
             Entity entity = world.CreateEntity();
             entity.Set(true);
 
-            using IDisposable changed = world.SubscribeComponentChanged((in Entity e, in bool _, in bool __) => result = e);
+            using IDisposable changed = world.SubscribeComponentChanged((in Entity e, in bool _, in bool _) => result = e);
 
             recorder.Record(entity).NotifyChanged<bool>();
 
@@ -323,7 +323,7 @@ namespace DefaultEcs.Test.Command
 
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
             using World world = new World();
-            using IDisposable changed = world.SubscribeComponentChanged((in Entity e, in bool _, in bool __) => result = e);
+            using IDisposable changed = world.SubscribeComponentChanged((in Entity e, in bool _, in bool _) => result = e);
 
             EntityRecord record = recorder.CreateEntity();
             record.Set(true);

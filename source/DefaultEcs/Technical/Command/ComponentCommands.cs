@@ -63,7 +63,6 @@ namespace DefaultEcs.Technical.Command
 
             #region Methods
 
-            [SuppressMessage("Performance", "RCS1242:Do not pass non-read-only struct by read-only reference.")]
             public static void WriteComponent(List<object> objects, byte* memory, in T component) => _writeComponentAction(objects, memory, component);
 
             #endregion

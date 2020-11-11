@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DefaultEcs.Technical;
+using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
 
 namespace DefaultEcs
@@ -331,12 +332,12 @@ namespace DefaultEcs
 
             if (other._withEitherFilters != null)
             {
-                _withEitherFilters = other._withEitherFilters.Select(f => f.Copy()).ToList();
+                _withEitherFilters = other._withEitherFilters.ConvertAll(f => f.Copy());
             }
 
             if (other._withoutEitherFilters != null)
             {
-                _withoutEitherFilters = other._withoutEitherFilters.Select(f => f.Copy()).ToList();
+                _withoutEitherFilters = other._withoutEitherFilters.ConvertAll(f => f.Copy());
             }
         }
 

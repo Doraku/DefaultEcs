@@ -639,11 +639,11 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
             Entity entity = world.CreateEntity();
-            using IDisposable added = world.SubscribeComponentAdded((in Entity _, in bool __) => throw new Exception());
-            using IDisposable changed = world.SubscribeComponentChanged((in Entity _, in bool __, in bool ___) => throw new Exception());
-            using IDisposable removed = world.SubscribeComponentRemoved((in Entity _, in bool __) => throw new Exception());
-            using IDisposable enabled = world.SubscribeComponentEnabled((in Entity _, in bool __) => throw new Exception());
-            using IDisposable disabled = world.SubscribeComponentDisabled((in Entity _, in bool __) => throw new Exception());
+            using IDisposable added = world.SubscribeComponentAdded((in Entity _, in bool _) => throw new Exception());
+            using IDisposable changed = world.SubscribeComponentChanged((in Entity _, in bool _, in bool _) => throw new Exception());
+            using IDisposable removed = world.SubscribeComponentRemoved((in Entity _, in bool _) => throw new Exception());
+            using IDisposable enabled = world.SubscribeComponentEnabled((in Entity _, in bool _) => throw new Exception());
+            using IDisposable disabled = world.SubscribeComponentDisabled((in Entity _, in bool _) => throw new Exception());
 
             Check.ThatCode(entity.Dispose).DoesNotThrow();
         }
@@ -653,11 +653,11 @@ namespace DefaultEcs.Test
         {
             World world = new World();
             Entity entity = world.CreateEntity();
-            using IDisposable added = world.SubscribeComponentAdded((in Entity _, in bool __) => throw new Exception());
-            using IDisposable changed = world.SubscribeComponentChanged((in Entity _, in bool __, in bool ___) => throw new Exception());
-            using IDisposable removed = world.SubscribeComponentRemoved((in Entity _, in bool __) => throw new Exception());
-            using IDisposable enabled = world.SubscribeComponentEnabled((in Entity _, in bool __) => throw new Exception());
-            using IDisposable disabled = world.SubscribeComponentDisabled((in Entity _, in bool __) => throw new Exception());
+            using IDisposable added = world.SubscribeComponentAdded((in Entity _, in bool _) => throw new Exception());
+            using IDisposable changed = world.SubscribeComponentChanged((in Entity _, in bool _, in bool _) => throw new Exception());
+            using IDisposable removed = world.SubscribeComponentRemoved((in Entity _, in bool _) => throw new Exception());
+            using IDisposable enabled = world.SubscribeComponentEnabled((in Entity _, in bool _) => throw new Exception());
+            using IDisposable disabled = world.SubscribeComponentDisabled((in Entity _, in bool _) => throw new Exception());
 
             Check.ThatCode(world.Dispose).DoesNotThrow();
         }
@@ -667,11 +667,11 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
             Entity entity = world.CreateEntity();
-            world.SubscribeComponentAdded((in Entity _, in bool __) => throw new Exception()).Dispose();
-            world.SubscribeComponentChanged((in Entity _, in bool __, in bool ___) => throw new Exception()).Dispose();
-            world.SubscribeComponentRemoved((in Entity _, in bool __) => throw new Exception()).Dispose();
-            world.SubscribeComponentEnabled((in Entity _, in bool __) => throw new Exception()).Dispose();
-            world.SubscribeComponentDisabled((in Entity _, in bool __) => throw new Exception()).Dispose();
+            world.SubscribeComponentAdded((in Entity _, in bool _) => throw new Exception()).Dispose();
+            world.SubscribeComponentChanged((in Entity _, in bool _, in bool _) => throw new Exception()).Dispose();
+            world.SubscribeComponentRemoved((in Entity _, in bool _) => throw new Exception()).Dispose();
+            world.SubscribeComponentEnabled((in Entity _, in bool _) => throw new Exception()).Dispose();
+            world.SubscribeComponentDisabled((in Entity _, in bool _) => throw new Exception()).Dispose();
 
             Check.ThatCode(() => entity.Set(true)).DoesNotThrow();
         }
