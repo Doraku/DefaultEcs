@@ -97,12 +97,12 @@ namespace DefaultEcs.System
             {
                 PreUpdate(state);
 
-                Entity[] entities = ArrayPool<Entity>.Shared.Rent(_set.Count);
-                _set.GetEntities().CopyTo(entities);
+                Entity[] buffer = ArrayPool<Entity>.Shared.Rent(_set.Count);
+                _set.GetEntities().CopyTo(buffer);
 
-                Update(state, new ReadOnlySpan<Entity>(entities, 0, _set.Count));
+                Update(state, new ReadOnlySpan<Entity>(buffer, 0, _set.Count));
 
-                ArrayPool<Entity>.Shared.Return(entities);
+                ArrayPool<Entity>.Shared.Return(buffer);
                 _set.Complete();
 
                 PostUpdate(state);

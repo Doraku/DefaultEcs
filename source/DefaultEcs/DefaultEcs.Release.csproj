@@ -31,6 +31,7 @@ changed TextSerializer format for pure List and Dictionary types
 fixed invalid IsEnable component state when serializing with a SerializationContext
 
 added World.SubscribeWorldDisposed
+added AEntitiesBufferedSystem
     </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

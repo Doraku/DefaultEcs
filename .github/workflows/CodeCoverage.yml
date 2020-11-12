@@ -20,7 +20,7 @@ jobs:
       with:
         dotnet-version: '5.0.100'
 
-    - name: Build netcoreapp3.0
+    - name: Build net5.0
       run: dotnet build source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net5.0
 
     - name: Install coverlet tool
