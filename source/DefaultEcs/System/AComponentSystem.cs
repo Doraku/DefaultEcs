@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using DefaultEcs.Technical;
 using DefaultEcs.Threading;
@@ -49,6 +50,16 @@ namespace DefaultEcs.System
 
         #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// Gets the <see cref="DefaultEcs.World"/> instance on which this system operates.
+        /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public World World { get; }
+
+        #endregion
+
         #region Initialisation
 
         /// <summary>
@@ -64,6 +75,8 @@ namespace DefaultEcs.System
             _runnable = new Runnable(this);
             _components = ComponentManager<TComponent>.GetOrCreate(world?.WorldId ?? throw new ArgumentNullException(nameof(world)));
             _minComponentCountByRunnerIndex = minComponentCountByRunnerIndex;
+
+            World = world;
         }
 
         /// <summary>

@@ -76,6 +76,16 @@ namespace DefaultEcs.Test.System
         }
 
         [Fact]
+        public void World_Should_return_parent_world()
+        {
+            using World world = new World(4);
+
+            using System system = new System(world);
+
+            Check.That(system.World).IsEqualTo(world);
+        }
+
+        [Fact]
         public void Update_Should_call_update()
         {
             using World world = new World(4);

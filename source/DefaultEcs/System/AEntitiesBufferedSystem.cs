@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.System;
@@ -21,6 +22,16 @@ namespace DefaultEcs.System
 
         private TKey[] _keys;
         private int _keyCount;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the <see cref="DefaultEcs.World"/> instance on which this system operates.
+        /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public World World { get; }
 
         #endregion
 
@@ -62,6 +73,8 @@ namespace DefaultEcs.System
             : this()
         {
             _map = map ?? throw new ArgumentNullException(nameof(map));
+
+            World = map.World;
         }
 
         /// <summary>
@@ -74,6 +87,8 @@ namespace DefaultEcs.System
             : this()
         {
             _map = EntityRuleBuilderFactory.Create(GetType())(this, world ?? throw new ArgumentNullException(nameof(world))).AsMultiMap(this as IEqualityComparer<TKey>);
+
+            World = world;
         }
 
         #endregion

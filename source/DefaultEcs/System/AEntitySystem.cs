@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using DefaultEcs.Technical.System;
 using DefaultEcs.Threading;
 
@@ -44,6 +45,16 @@ namespace DefaultEcs.System
 
         #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// Gets the <see cref="DefaultEcs.World"/> instance on which this system operates.
+        /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public World World { get; }
+
+        #endregion
+
         #region Initialisation
 
         private AEntitySystem(IParallelRunner runner, int minEntityCountByRunnerIndex)
@@ -64,6 +75,8 @@ namespace DefaultEcs.System
             : this(runner, minEntityCountByRunnerIndex)
         {
             _set = set ?? throw new ArgumentNullException(nameof(set));
+
+            World = set.World;
         }
 
         /// <summary>
@@ -97,6 +110,8 @@ namespace DefaultEcs.System
             : this(runner, minEntityCountByRunnerIndex)
         {
             _set = EntityRuleBuilderFactory.Create(GetType())(this, world ?? throw new ArgumentNullException(nameof(world))).AsSet();
+
+            World = world;
         }
 
         /// <summary>

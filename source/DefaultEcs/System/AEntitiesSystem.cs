@@ -53,6 +53,15 @@ namespace DefaultEcs.System
 
         #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// Gets the <see cref="DefaultEcs.World"/> instance on which this system operates.
+        /// </summary>
+        public World World { get; }
+
+        #endregion
+
         #region Initialisation
 
         private AEntitiesSystem(IParallelRunner runner, int minEntityCountByRunnerIndex)
@@ -96,6 +105,8 @@ namespace DefaultEcs.System
             : this(runner, minEntityCountByRunnerIndex)
         {
             _map = map ?? throw new ArgumentNullException(nameof(map));
+
+            World = map.World;
         }
 
         /// <summary>
@@ -129,6 +140,8 @@ namespace DefaultEcs.System
             : this(runner, minEntityCountByRunnerIndex)
         {
             _map = EntityRuleBuilderFactory.Create(GetType())(this, world ?? throw new ArgumentNullException(nameof(world))).AsMultiMap(this as IEqualityComparer<TKey>);
+
+            World = world;
         }
 
         /// <summary>

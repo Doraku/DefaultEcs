@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Diagnostics;
 using DefaultEcs.Technical.System;
 
 namespace DefaultEcs.System
@@ -18,6 +19,16 @@ namespace DefaultEcs.System
 
         #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// Gets the <see cref="DefaultEcs.World"/> instance on which this system operates.
+        /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public World World { get; }
+
+        #endregion
+
         #region Initialisation
 
         /// <summary>
@@ -28,6 +39,8 @@ namespace DefaultEcs.System
         protected AEntityBufferedSystem(EntitySet set)
         {
             _set = set ?? throw new ArgumentNullException(nameof(set));
+
+            World = set.World;
         }
 
         /// <summary>
@@ -39,6 +52,8 @@ namespace DefaultEcs.System
         protected AEntityBufferedSystem(World world)
         {
             _set = EntityRuleBuilderFactory.Create(GetType())(this, world ?? throw new ArgumentNullException(nameof(world))).AsSet();
+
+            World = world;
         }
 
         #endregion
