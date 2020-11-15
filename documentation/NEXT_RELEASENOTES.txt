@@ -1,0 +1,20 @@
+breaking changes:  
+removed Entity.SetAsChildOf  
+removed Entity.SetAsParentOf  
+removed Entity.RemoveFromChildrenOf  
+removed Entity.RemoveFromParentsOf  
+removed Entity.GetChildren  
+removed EntityRecord.SetAsChildOf  
+removed EntityRecord.SetAsParentOf  
+removed EntityRecord.RemoveFromChildrenOf  
+removed EntityRecord.RemoveFromParentsOf  
+changed TextSerializer format for pure List and Dictionary types  
+
+fixed invalid IsEnable component state when serializing with a SerializationContext  
+
+added World.SubscribeWorldDisposed  
+added AComponentSystem.World property  
+added AEntitySystem.World property  
+added AEntitiesSystem.World property  
+added AEntityBufferedSystem.World property  
+added AEntitiesBufferedSystem  

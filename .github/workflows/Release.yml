@@ -1,0 +1,61 @@
+name: release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set up dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.100'
+        source-url: https://api.nuget.org/v3/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API_KEY }}
+      
+    - name: Decrypte snk file
+      env:
+        SNK_KEY: ${{ secrets.SNK_KEY }}
+      run: gpg --quiet --batch --yes --decrypt --passphrase="$env:SNK_KEY" --output ds.snk ds.snk.gpg
+
+    - name: Create package
+      run: dotnet pack source\DefaultEcs\DefaultEcs.csproj -c Release -o package /p:Version=${{ github.event.release.tag_name }}
+
+    - name: Create NEW_RELEASENOTES.txt
+      run: |
+        "echo ## DefaultEcs ${{ github.event.release.tag_name }}> package\NEW_RELEASENOTES.txt"
+        "type documentation\NEXT_RELEASENOTES.txt >> package\NEW_RELEASENOTES.txt"
+        "echo.>> package\NEW_RELEASENOTES.txt"
+        "echo.>> package\NEW_RELEASENOTES.txt"
+        "echo [nuget package](https://www.nuget.org/packages/DefaultEcs/${{ github.event.release.tag_name }})>> package\NEW_RELEASENOTES.txt"
+
+    - name: Update release
+      uses: tubone24/update_release@v1.0
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        body_path: package\NEW_RELEASENOTES.txt
+        
+    - name: Update RELEASENOTES.md
+      run: |
+        "echo.>> package\NEW_RELEASENOTES.txt"
+        "type documentation\RELEASENOTES.md >> package\NEW_RELEASENOTES.txt"
+        "type package\NEW_RELEASENOTES.txt > documentation\RELEASENOTES.md"
+        "echo.> documentation\NEXT_RELEASENOTES.txt"
+
+    - name: Publish package
+      run: nuget push package\*.nupkg
+
+    - name: Commit RELEASENOTES and documentation api
+      run: |
+        git config --local user.email "$(git log --format='%ae' HEAD^!)"
+        git config --local user.name "$(git log --format='%an' HEAD^!)"
+        git add .
+        git commit -m "Updated RELEASENOTES and documentation api"
+        git push

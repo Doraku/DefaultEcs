@@ -10,10 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EEC6BAC3-A699-42F0-BED3-43985B10DE44}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
-		DefaultEcs\DefaultEcs.Release.csproj = DefaultEcs\DefaultEcs.Release.csproj
-		DefaultEcs\DefaultEcs.targets = DefaultEcs\DefaultEcs.targets
 		..\documentation\FAQ.md = ..\documentation\FAQ.md
 		..\LICENSE.md = ..\LICENSE.md
+		..\documentation\NEXT_RELEASENOTES.txt = ..\documentation\NEXT_RELEASENOTES.txt
 		..\README.md = ..\README.md
 		..\Release.bat = ..\Release.bat
 		..\documentation\RELEASENOTE.md = ..\documentation\RELEASENOTE.md
@@ -34,6 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{
 		..\.github\workflows\CodeCoverage.yml = ..\.github\workflows\CodeCoverage.yml
 		..\.github\workflows\ContinuousIntegration.yml = ..\.github\workflows\ContinuousIntegration.yml
 		..\.github\workflows\PullRequest.yml = ..\.github\workflows\PullRequest.yml
+		..\.github\workflows\Release.yml = ..\.github\workflows\Release.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultEcs.Extension", "DefaultEcs.Extension\DefaultEcs.Extension.csproj", "{17280FCB-26FC-4999-8831-2810AF764B86}"

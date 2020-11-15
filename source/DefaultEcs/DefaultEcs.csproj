@@ -1,12 +1,72 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="DefaultEcs.targets" />
+  <PropertyGroup Label="Compilation">
+    <LangVersion>latest</LangVersion>
+    <TargetFrameworks>
+      netstandard1.1;
+      netstandard2.0;
+      netstandard2.1;
+    </TargetFrameworks>
+    <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
+  </PropertyGroup>
 
   <PropertyGroup Label="Debug" Condition="'$(Configuration)'=='Debug'">
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="..\..\image\logo.png" Pack="true" PackagePath="\" Visible="false"/>
+  </ItemGroup>
+
+  <ItemGroup Label="Reference" Condition="'$(TargetFramework)'=='netstandard1.1'">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup Label="Reference" Condition="'$(TargetFramework)'=='netstandard1.1' Or '$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DefaultDocumentation" Version="0.6.13" PrivateAssets="all" Condition="'$(GITHUB_ACTIONS)' == 'true' AND '$(TEST)' != 'true' AND '$(CI_VERSION)' != 'true'" />
+  </ItemGroup>
+
   <PropertyGroup Label="Package">
-    <Version>0-ci$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Version>
+    <Authors>Paillat Laszlo</Authors>
+    <AssemblyName>DefaultEcs</AssemblyName>
+    <AssemblyTitle>DefaultEcs</AssemblyTitle>
+    <PackageId>DefaultEcs</PackageId>
+    <Description>Entity Component System framework aiming for syntax and usage simplicity with maximum performance for game development.</Description>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
+    <PackageLicenseExpression>MIT-0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/Doraku/DefaultEcs.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(LOCAL_VERSION)' == 'true'">
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
+    <Version>0-local$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' AND '$(TEST)' != 'true'">
+    <SignAssembly>True</SignAssembly>
+    <IncludeSymbols Condition="'$(CI_VERSION)' != 'true'">true</IncludeSymbols>
+    <SymbolPackageFormat Condition="'$(CI_VERSION)' != 'true'">snupkg</SymbolPackageFormat>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <AssemblyOriginatorKeyFile>..\..\ds.snk</AssemblyOriginatorKeyFile>
+    <Version Condition="'$(CI_VERSION)' == 'true'">0-ci$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Version>
+  </PropertyGroup>
+
+  <Target Name="PreparePackageReleaseNotesFromFile" BeforeTargets="GenerateNuspec">
+    <ReadLinesFromFile File="../../documentation/NEXT_RELEASENOTES.txt">
+      <Output TaskParameter="Lines" ItemName="ReleaseNotesLines" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <PackageReleaseNotes>@(ReleaseNotesLines, '%0a')</PackageReleaseNotes>
+    </PropertyGroup>
+  </Target>
 </Project>

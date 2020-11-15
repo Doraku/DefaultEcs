@@ -3,5 +3,6 @@
 /**/.vs
 /**/*.vspscc
 /**/*.user
+/**/*.snk
 /package
 .idea/
