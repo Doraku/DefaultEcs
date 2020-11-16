@@ -246,6 +246,12 @@ namespace DefaultEcs
             public Predicate<Entity> AsPredicate() => Commit().AsPredicate();
 
             /// <summary>
+            /// Returns an <see cref="IEnumerable{T}"/> of <see cref="Entity"/> with the specified rules.
+            /// </summary>
+            /// <returns>The <see cref="IEnumerable{T}"/> of <see cref="Entity"/>.</returns>
+            public IEnumerable<Entity> AsEnumerable() => Commit().AsEnumerable();
+
+            /// <summary>
             /// Returns an <see cref="EntitySet"/> with the specified rules.
             /// </summary>
             /// <returns>The <see cref="EntitySet"/>.</returns>
@@ -368,6 +374,17 @@ namespace DefaultEcs
         #endregion
 
         #region Methods
+
+        private static IEnumerable<Entity> AsEnumerable(World world, Predicate<ComponentEnum> filter, Predicate<int> predicate)
+        {
+            for (int i = 0; i <= Math.Min(world.EntityInfos.Length, world.LastEntityId); ++i)
+            {
+                if (filter(world.EntityInfos[i].Components) && predicate(i))
+                {
+                    yield return new Entity(world.WorldId, i);
+                }
+            }
+        }
 
         private static bool All(int _) => true;
 
@@ -582,6 +599,12 @@ namespace DefaultEcs
 
             return e => filter(e.Components) && predicate(e.EntityId);
         }
+
+        /// <summary>
+        /// Returns an <see cref="IEnumerable{T}"/> of <see cref="Entity"/> with the specified rules.
+        /// </summary>
+        /// <returns>The <see cref="IEnumerable{T}"/> of <see cref="Entity"/>.</returns>
+        public IEnumerable<Entity> AsEnumerable() => AsEnumerable(_world, GetFilter(), GetPredicate());
 
         /// <summary>
         /// Returns an <see cref="EntitySet"/> with the specified rules.

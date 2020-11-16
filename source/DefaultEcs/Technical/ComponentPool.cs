@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -14,7 +11,7 @@ namespace DefaultEcs.Technical
     {
         #region Types
 
-        public readonly struct EntityEnumerable : IEnumerable<Entity>
+        public readonly ref struct EntityEnumerable
         {
             private readonly ComponentPool<T> _pool;
 
@@ -27,14 +24,10 @@ namespace DefaultEcs.Technical
 
             public EntityEnumerator GetEnumerator() => new EntityEnumerator(_pool);
 
-            IEnumerator<Entity> IEnumerable<Entity>.GetEnumerator() => GetEnumerator();
-
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
             #endregion
         }
 
-        public struct EntityEnumerator : IEnumerator<Entity>
+        public ref struct EntityEnumerator
         {
             private readonly short _worldId;
             private readonly int[] _mapping;
@@ -53,8 +46,6 @@ namespace DefaultEcs.Technical
 
             public Entity Current => new Entity(_worldId, _index);
 
-            object IEnumerator.Current => Current;
-
             public bool MoveNext()
             {
                 while (++_index < _mapping.Length)
@@ -67,18 +58,6 @@ namespace DefaultEcs.Technical
 
                 return false;
             }
-
-            public void Reset()
-            {
-                _index = -1;
-            }
-
-            #endregion
-
-            #region IDisposable
-
-            public void Dispose()
-            { }
 
             #endregion
         }

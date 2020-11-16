@@ -12,9 +12,11 @@ changed TextSerializer format for pure List and Dictionary types
 
 fixed invalid IsEnable component state when serializing with a SerializationContext  
 
-added World.SubscribeWorldDisposed  
+added World.SubscribeWorldDisposed method  
 added AComponentSystem.World property  
 added AEntitySystem.World property  
 added AEntitiesSystem.World property  
 added AEntityBufferedSystem.World property  
 added AEntitiesBufferedSystem  
+added EntityRuleBuilder.AsEnumerable method  
+added EitherBuilder.AsEnumerable method  

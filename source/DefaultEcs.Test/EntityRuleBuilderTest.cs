@@ -722,6 +722,119 @@ namespace DefaultEcs.Test
             Check.That(predicate(entity)).IsTrue();
         }
 
+        [Fact]
+        public void AsEnumerable_With_T_Should_return_entity_with_component_T()
+        {
+            using World world = new World(4);
+
+            Entity entity = world.CreateEntity();
+
+            IEnumerable<Entity> enumerable = world.GetEntities().With<bool>().AsEnumerable();
+
+            Check.That(enumerable).IsEmpty();
+
+            entity.Set(true);
+
+            Check.That(enumerable).ContainsExactly(entity);
+
+            entity.Disable<bool>();
+
+            Check.That(enumerable).IsEmpty();
+
+            entity.Enable<bool>();
+
+            Check.That(enumerable).ContainsExactly(entity);
+
+            entity.Remove<bool>();
+
+            Check.That(enumerable).IsEmpty();
+        }
+
+        [Fact]
+        public void AsEnumerable_With_predicate_T_Should_return_entity_which_validate_predicate()
+        {
+            using World world = new World(4);
+
+            Entity entity = world.CreateEntity();
+
+            IEnumerable<Entity> enumerable = world.GetEntities().WithEither<bool>().With((in bool b) => b).AsEnumerable();
+
+            entity.Set(false);
+
+            Check.That(enumerable).IsEmpty();
+
+            entity.Set(true);
+
+            Check.That(enumerable).ContainsExactly(entity);
+
+            entity.Disable<bool>();
+
+            Check.That(enumerable).IsEmpty();
+
+            entity.Enable<bool>();
+
+            Check.That(enumerable).ContainsExactly(entity);
+
+            entity.Remove<bool>();
+
+            Check.That(enumerable).IsEmpty();
+        }
+
+        [Fact]
+        public void AsEnumerable_With_predicate_T1_T2_Should_return_entity_with_T__which_validate_predicate()
+        {
+            using World world = new World(4);
+
+            Entity entity = world.CreateEntity();
+
+            IEnumerable<Entity> enumerable = world.GetEntities().With((in bool b) => b).With((in int i) => i == 42).AsEnumerable();
+
+            entity.Set(false);
+            entity.Set(1337);
+
+            Check.That(enumerable).IsEmpty();
+
+            entity.Set(true);
+
+            Check.That(enumerable).IsEmpty();
+
+            entity.Set(42);
+
+            Check.That(enumerable).ContainsExactly(entity);
+        }
+
+        [Fact]
+        public void AsEnumerable_WithEither_T1_T2_Should_return_entity_with_component_T1()
+        {
+            using World world = new World(4);
+
+            Entity entity = world.CreateEntity();
+
+            IEnumerable<Entity> enumerable = world.GetEntities().WithEither<bool>().Or<int>().AsEnumerable();
+
+            Check.That(enumerable).IsEmpty();
+
+            entity.Set(true);
+
+            Check.That(enumerable).ContainsExactly(entity);
+
+            entity.Disable<bool>();
+
+            Check.That(enumerable).IsEmpty();
+
+            entity.Enable<bool>();
+
+            Check.That(enumerable).ContainsExactly(entity);
+
+            entity.Remove<bool>();
+
+            Check.That(enumerable).IsEmpty();
+
+            entity.Set(42);
+
+            Check.That(enumerable).ContainsExactly(entity);
+        }
+
         #endregion
     }
 }
