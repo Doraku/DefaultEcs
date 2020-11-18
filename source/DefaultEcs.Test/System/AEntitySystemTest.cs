@@ -61,6 +61,14 @@ namespace DefaultEcs.Test.System
             }
         }
 
+        [Component((ComponentFilterType)42, typeof(bool))]
+        private sealed class InvalidSystem : AEntitySystem<int>
+        {
+            public InvalidSystem(World world)
+                : base(world)
+            { }
+        }
+
         #region Tests
 
         [Fact]
@@ -296,6 +304,14 @@ namespace DefaultEcs.Test.System
             Check.That(entity2.Get<bool>()).IsTrue();
             Check.That(entity3.Get<bool>()).IsTrue();
             Check.That(entity4.Get<bool>()).IsTrue();
+        }
+
+        [Fact]
+        public void Should_throw_When_invalid_component_filter_type()
+        {
+            using World world = new World(4);
+
+            Check.ThatCode(() => new InvalidSystem(world)).Throws<ArgumentException>();
         }
 
         #endregion

@@ -47,7 +47,7 @@ namespace DefaultEcs.Technical.System
                     ComponentFilterType.WhenChangedEither => (_, b) => b.WhenChangedEither(attribute.ComponentTypes),
                     ComponentFilterType.WhenRemoved => (_, b) => b.WhenRemoved(attribute.ComponentTypes),
                     ComponentFilterType.WhenRemovedEither => (_, b) => b.WhenRemovedEither(attribute.ComponentTypes),
-                    _ => null
+                    _ => throw new ArgumentException($"Unknown component filter type {attribute.FilterType}")
                 };
             }
 

@@ -15,6 +15,12 @@ namespace DefaultEcs.Test.Threading
             Check.ThatCode(() => new DefaultParallelRunner(-1)).Throws<ArgumentException>();
         }
 
+        [Fact]
+        public void DefaultRunner_Should_not_throw_When_Dispose()
+        {
+            Check.ThatCode(() => new DefaultParallelRunner(1).Dispose()).DoesNotThrow();
+        }
+
         #endregion
     }
 }
