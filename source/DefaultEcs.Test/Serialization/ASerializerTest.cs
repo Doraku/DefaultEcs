@@ -214,6 +214,9 @@ namespace DefaultEcs.Test.Serialization
         public void Should_handle_simple_class() => Test(new SimpleClass(0));
 
         [Fact]
+        public void Should_handle_Guid() => Test(Guid.NewGuid());
+
+        [Fact]
         public void Should_handle_null_class() => Test(default(SimpleClass));
 
         [Fact]

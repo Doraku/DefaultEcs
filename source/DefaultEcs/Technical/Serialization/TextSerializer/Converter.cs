@@ -140,6 +140,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 Type type when type == typeof(double) => GetActions((StreamWriterWrapper w, in double v) => w.Stream.WriteLine(v), i => double.Parse(i)),
                 Type type when type == typeof(float) => GetActions((StreamWriterWrapper w, in float v) => w.Stream.WriteLine(v), i => float.Parse(i)),
                 Type type when type == typeof(string) => StringConverter.GetActions<T>(),
+                Type type when type == typeof(Guid) => GuidConverter.GetActions<T>(),
                 _ => ObjectConverter<T>.GetActions()
             };
         }
