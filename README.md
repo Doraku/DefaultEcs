@@ -37,6 +37,7 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
     - [BinarySerializer](#Overview_Serialization_BinarySerializer)
 - [Extension](#Extension)
 - [Sample](#Sample)
+- [Projects using DefaultEcs](#Projects)
 - [Performance](#Performance)
 
 <a name='Requirement'></a>
@@ -576,6 +577,12 @@ Basic breakout clone. The collision is buggy! As said not much time was spent de
 ![](https://github.com/Doraku/DefaultEcs/raw/master/image/defaultslap.gif)
 
 Basic fly swatter clone. Every five seconds, flies (blue square) will damage the player (up to 3 times until the "game" resets) and new ones will spawn.
+
+<a name='Projects'></a>
+# Projects using DefaultEcs
+Your game uses DefaultEcs? Don't hesitate to contact me.  
+
+[![Chambers of Anubis](https://img.itch.zone/aW1nLzQ2MDYzODcucG5n/original/IALw4S.png)](https://github.com/PodeCaradox/HellowIInJam)
 
 <a name='Performance'></a>
 # Performance
