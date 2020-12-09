@@ -129,6 +129,24 @@ namespace DefaultEcs.System
         { }
 
         /// <summary>
+        /// Initialise a new instance of the <see cref="AEntitiesSystem{T, TKey}"/> class with the given <see cref="World"/> and factory.
+        /// The current instance will be passed as the first parameter of the factory.
+        /// </summary>
+        /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
+        /// <param name="factory">The factory used to create the <see cref="EntitiesMap{TKey}"/>.</param>
+        /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
+        /// <param name="minEntityCountByRunnerIndex">The minimum number of <see cref="Entity"/> per runner index to use the given <paramref name="runner"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="factory"/> is null.</exception>
+        protected AEntitiesSystem(World world, Func<object, World, EntitiesMap<TKey>> factory, IParallelRunner runner, int minEntityCountByRunnerIndex)
+            : this(runner, minEntityCountByRunnerIndex)
+        {
+            _map = (factory ?? throw new ArgumentNullException(nameof(factory)))(this, world ?? throw new ArgumentNullException(nameof(world)));
+
+            World = _map.World;
+        }
+
+        /// <summary>
         /// Initialise a new instance of the <see cref="AEntitiesSystem{T, TKey}"/> class with the given <see cref="World"/>.
         /// To create the inner <see cref="EntitiesMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
@@ -137,12 +155,8 @@ namespace DefaultEcs.System
         /// <param name="minEntityCountByRunnerIndex">The minimum number of <see cref="Entity"/> per runner index to use the given <paramref name="runner"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntitiesSystem(World world, IParallelRunner runner, int minEntityCountByRunnerIndex)
-            : this(runner, minEntityCountByRunnerIndex)
-        {
-            _map = EntityRuleBuilderFactory.Create(GetType())(this, world ?? throw new ArgumentNullException(nameof(world))).AsMultiMap(this as IEqualityComparer<TKey>);
-
-            World = world;
-        }
+            : this(world, static (s, w) => EntityRuleBuilderFactory.Create(s.GetType())(s, w).AsMultiMap(s as IEqualityComparer<TKey>), runner, minEntityCountByRunnerIndex)
+        { }
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitiesSystem{T,TKey}"/> class with the given <see cref="World"/>.

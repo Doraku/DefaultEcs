@@ -44,17 +44,29 @@ namespace DefaultEcs.System
         }
 
         /// <summary>
+        /// Initialise a new instance of the <see cref="AEntitySystem{T}"/> class with the given <see cref="World"/> and factory.
+        /// The current instance will be passed as the first parameter of the factory.
+        /// </summary>
+        /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
+        /// <param name="factory">The factory used to create the <see cref="EntitiesMap{TKey}"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="factory"/> is null.</exception>
+        protected AEntityBufferedSystem(World world, Func<object, World, EntitySet> factory)
+        {
+            _set = (factory ?? throw new ArgumentNullException(nameof(factory)))(this, world ?? throw new ArgumentNullException(nameof(world)));
+
+            World = _set.World;
+        }
+
+        /// <summary>
         /// Initialise a new instance of the <see cref="AEntityBufferedSystem{T}"/> class with the given <see cref="World"/>.
         /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntityBufferedSystem(World world)
-        {
-            _set = EntityRuleBuilderFactory.Create(GetType())(this, world ?? throw new ArgumentNullException(nameof(world))).AsSet();
-
-            World = world;
-        }
+            : this(world, static (s, w) => EntityRuleBuilderFactory.Create(s.GetType())(s, w).AsSet())
+        { }
 
         #endregion
 

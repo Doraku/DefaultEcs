@@ -19,6 +19,10 @@ namespace DefaultEcs.Test.System
                 : base(map)
             { }
 
+            public System(World world, Func<object, World, EntitiesMap<T>> factory)
+                : base(world, factory, null, 0)
+            { }
+
             public System(World world)
                 : base(world)
             { }
@@ -86,6 +90,14 @@ namespace DefaultEcs.Test.System
         public void AEntitiesSystem_Should_throw_ArgumentNullException_When_World_is_null()
         {
             Check.ThatCode(() => new System<int>(default(World))).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void AEntitiesSystem_Should_throw_ArgumentNullException_When_factory_is_null()
+        {
+            using World world = new();
+
+            Check.ThatCode(() => new System<int>(world, default(Func<object, World, EntitiesMap<int>>))).Throws<ArgumentNullException>();
         }
 
         [Fact]

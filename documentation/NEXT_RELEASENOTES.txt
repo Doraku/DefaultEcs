@@ -16,8 +16,11 @@ fixed invalid IsEnable component state when serializing with a SerializationCont
 added World.SubscribeWorldDisposed method  
 added AComponentSystem.World property  
 added AEntitySystem.World property  
+added AEntitySystem constructor override with factory  
 added AEntitiesSystem.World property  
+added AEntitiesSystem constructor override with factory  
 added AEntityBufferedSystem.World property  
-added AEntitiesBufferedSystem  
+added AEntityBufferedSystem constructor override with factory  
+added AEntitiesBufferedSystem type  
 added EntityRuleBuilder.AsEnumerable method  
 added EitherBuilder.AsEnumerable method  
