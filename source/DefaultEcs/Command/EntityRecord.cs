@@ -103,6 +103,8 @@ namespace DefaultEcs.Command
 
         #endregion
 
+        #region Operator
+
         /// <summary>Determines whether two specified <see cref="EntityRecord"/> are the same.</summary>
         /// <param name="a">The first <see cref="EntityRecord"/> to compare.</param>
         /// <param name="b">The second <see cref="EntityRecord"/> to compare.</param>
@@ -120,5 +122,26 @@ namespace DefaultEcs.Command
         /// otherwise, false.
         /// </returns>
         public static bool operator !=(EntityRecord a, EntityRecord b) => a._recorder != b._recorder || a._offset != b._offset;
+
+        #endregion
+
+        #region Object
+
+        /// <summary>
+        /// Always returns false.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current instance.</param>
+        /// <returns>
+        /// false.
+        /// </returns>
+        public override bool Equals(object obj) => false;
+
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
+        public override int GetHashCode() => _offset;
+
+        #endregion
     }
 }

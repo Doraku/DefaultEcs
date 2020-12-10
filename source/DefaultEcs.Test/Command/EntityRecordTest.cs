@@ -9,7 +9,29 @@ namespace DefaultEcs.Test.Command
         #region Tests
 
         [Fact]
-        public void equal_Should_return_true_When_equal()
+        public void Equals_Should_return_false()
+        {
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+
+            EntityRecord record = recorder.CreateEntity();
+
+            Check.That(record.Equals(default)).IsFalse();
+        }
+
+        [Fact]
+        public void GetHashCode_Should_return_hashcode()
+        {
+            using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
+
+            EntityRecord record1 = recorder.CreateEntity();
+            EntityRecord record2 = recorder.CreateEntity();
+
+            Check.That(record1.GetHashCode()).IsNotEqualTo(record2.GetHashCode());
+            Check.That(record1.GetHashCode()).IsEqualTo(record1.GetHashCode());
+        }
+
+        [Fact]
+        public void OperatorEqual_Should_return_true_When_equal()
         {
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
 
@@ -20,7 +42,7 @@ namespace DefaultEcs.Test.Command
         }
 
         [Fact]
-        public void equal_Should_return_false_When_not_equal()
+        public void OperatorEqual_Should_return_false_When_not_equal()
         {
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
 
@@ -32,7 +54,7 @@ namespace DefaultEcs.Test.Command
         }
 
         [Fact]
-        public void not_equal_Should_return_true_When_not_equal()
+        public void OperatorNotEqual_Should_return_true_When_not_equal()
         {
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
 
@@ -44,7 +66,7 @@ namespace DefaultEcs.Test.Command
         }
 
         [Fact]
-        public void not_equal_Should_return_false_When_equal()
+        public void OperatorNotEqual_Should_return_false_When_equal()
         {
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
 
