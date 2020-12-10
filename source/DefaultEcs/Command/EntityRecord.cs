@@ -102,5 +102,23 @@ namespace DefaultEcs.Command
         public void Dispose() => _recorder.WriteCommand(new EntityOffsetCommand(CommandType.Dispose, _offset));
 
         #endregion
+
+        /// <summary>Determines whether two specified <see cref="EntityRecord"/> are the same.</summary>
+        /// <param name="a">The first <see cref="EntityRecord"/> to compare.</param>
+        /// <param name="b">The second <see cref="EntityRecord"/> to compare.</param>
+        /// <returns>
+        /// true if the value of <paramref name="a" /> is the same as the value of <paramref name="b" />;
+        /// otherwise, false.
+        /// </returns>
+        public static bool operator ==(EntityRecord a, EntityRecord b) => a._recorder == b._recorder && a._offset == b._offset;
+
+        /// <summary>Determines whether two specified <see cref="EntityRecord"/> are not the same.</summary>
+        /// <param name="a">The first <see cref="EntityRecord"/> to compare.</param>
+        /// <param name="b">The second <see cref="EntityRecord"/> to compare.</param>
+        /// <returns>
+        /// true if the value of <paramref name="a" /> is not the same as the value of <paramref name="b" />;
+        /// otherwise, false.
+        /// </returns>
+        public static bool operator !=(EntityRecord a, EntityRecord b) => a._recorder != b._recorder || a._offset != b._offset;
     }
 }
