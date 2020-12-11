@@ -24,4 +24,3 @@ added AEntityBufferedSystem constructor override with factory
 added AEntitiesBufferedSystem type  
 added EntityRuleBuilder.AsEnumerable method  
 added EitherBuilder.AsEnumerable method  
-added EntityRecord equal and not equal operators   
