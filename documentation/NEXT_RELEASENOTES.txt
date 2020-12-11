@@ -10,6 +10,8 @@ removed EntityRecord.RemoveFromChildrenOf
 removed EntityRecord.RemoveFromParentsOf  
 changed TextSerializer format for pure List and Dictionary types  
 changed TextSerializer format for Guid
+changed EntityCommandRecorder.CreateEntity parameters, now takes directly the world on which to create the entity  
+changed EntityCommandRecorder.Execute parameters, now takes no parameter  
 
 fixed invalid IsEnable component state when serializing with a SerializationContext  
 

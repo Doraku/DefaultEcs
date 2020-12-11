@@ -32,6 +32,13 @@ namespace DefaultEcs
 
         #region Initialisation
 
+        internal Entity(short worldId)
+        {
+            WorldId = worldId;
+            EntityId = -1;
+            Version = -1;
+        }
+
         internal Entity(short worldId, int entityId)
         {
             WorldId = worldId;

@@ -4,7 +4,7 @@ namespace DefaultEcs.Technical.Command
 {
     internal static class Executer
     {
-        public static unsafe void Execute(byte[] memory, int commandLength, List<object> objects, World world)
+        public static unsafe void Execute(byte[] memory, int commandLength, List<object> objects)
         {
             fixed (byte* memoryP = memory)
             {
@@ -20,7 +20,8 @@ namespace DefaultEcs.Technical.Command
                             break;
 
                         case CommandType.CreateEntity:
-                            (*(EntityCommand*)commands).Entity = world.CreateEntity();
+                            EntityCommand* command = (EntityCommand*)commands;
+                            command->Entity = command->Entity.World.CreateEntity();
                             commandSize = sizeof(EntityCommand);
                             break;
 

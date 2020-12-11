@@ -53,7 +53,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             record.Remove<bool>();
             record.Remove<int>();
 
-            _recorder.Execute(_world);
+            _recorder.Execute();
         }
     }
 }

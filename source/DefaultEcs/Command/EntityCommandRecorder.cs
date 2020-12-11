@@ -177,16 +177,17 @@ namespace DefaultEcs.Command
         }
 
         /// <summary>
-        /// Records the creation of an <see cref="Entity"/> and returns an <see cref="EntityRecord"/> to record action on it.
+        /// Records the creation of an <see cref="Entity"/> on a <see cref="World"/> and returns an <see cref="EntityRecord"/> to record action on it.
         /// This command takes 9 bytes.
         /// </summary>
+        /// <param name="world">The <see cref="World"/> on which the entity need to be created.</param>
         /// <returns>The <see cref="EntityRecord"/> used to record actions on the later created <see cref="Entity"/>.</returns>
         /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
-        public EntityRecord CreateEntity()
+        public EntityRecord CreateEntity(World world)
         {
             int offset = ReserveNextCommand(sizeof(EntityCommand));
 
-            WriteCommand(offset, new EntityCommand(CommandType.CreateEntity, default));
+            WriteCommand(offset, new EntityCommand(CommandType.CreateEntity, new Entity(world.WorldId)));
 
             return new EntityRecord(this, offset + sizeof(CommandType));
         }
@@ -194,10 +195,9 @@ namespace DefaultEcs.Command
         /// <summary>
         /// Executes all recorded commands and clears those commands.
         /// </summary>
-        /// <param name="world">The <see cref="World"/> on which the commands to create new <see cref="Entity"/> will be executed.</param>
-        public void Execute(World world)
+        public void Execute()
         {
-            Executer.Execute(_memory, _nextCommandOffset, _objects, world);
+            Executer.Execute(_memory, _nextCommandOffset, _objects);
 
             Clear();
         }

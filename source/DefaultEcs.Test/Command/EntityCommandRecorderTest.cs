@@ -26,16 +26,15 @@ namespace DefaultEcs.Test.Command
         public void CreateEntity_Should_create_an_entity()
         {
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
-
-            recorder.CreateEntity();
-            recorder.CreateEntity();
-            recorder.CreateEntity();
-            recorder.CreateEntity();
-            recorder.CreateEntity();
-
             using World world = new World();
 
-            recorder.Execute(world);
+            recorder.CreateEntity(world);
+            recorder.CreateEntity(world);
+            recorder.CreateEntity(world);
+            recorder.CreateEntity(world);
+            recorder.CreateEntity(world);
+
+            recorder.Execute();
 
             Check.That(world.Count()).IsEqualTo(5);
         }
@@ -51,7 +50,7 @@ namespace DefaultEcs.Test.Command
             EntityRecord record = recorder.Record(entity);
             record.Disable();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(entity.IsEnabled()).IsFalse();
         }
@@ -62,10 +61,10 @@ namespace DefaultEcs.Test.Command
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
             using World world = new World();
 
-            EntityRecord record = recorder.CreateEntity();
+            EntityRecord record = recorder.CreateEntity(world);
             record.Disable();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(world.Single().IsEnabled()).IsFalse();
         }
@@ -82,7 +81,7 @@ namespace DefaultEcs.Test.Command
             EntityRecord record = recorder.Record(entity);
             record.Enable();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(entity.IsEnabled()).IsTrue();
         }
@@ -93,11 +92,11 @@ namespace DefaultEcs.Test.Command
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
             using World world = new World();
 
-            EntityRecord record = recorder.CreateEntity();
+            EntityRecord record = recorder.CreateEntity(world);
             record.Disable();
             record.Enable();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(world.Single().IsEnabled()).IsTrue();
         }
@@ -113,7 +112,7 @@ namespace DefaultEcs.Test.Command
             EntityRecord record = recorder.Record(entity);
             record.Set(true);
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(entity.Get<bool>()).IsTrue();
         }
@@ -124,10 +123,10 @@ namespace DefaultEcs.Test.Command
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
             using World world = new World();
 
-            EntityRecord record = recorder.CreateEntity();
+            EntityRecord record = recorder.CreateEntity(world);
             record.Set(true);
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(world.Single().Get<bool>()).IsTrue();
         }
@@ -144,7 +143,7 @@ namespace DefaultEcs.Test.Command
             EntityRecord record = recorder.Record(entity);
             record.Set(o);
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(entity.Get<object>()).IsEqualTo(o);
         }
@@ -156,10 +155,10 @@ namespace DefaultEcs.Test.Command
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
             using World world = new World();
 
-            EntityRecord record = recorder.CreateEntity();
+            EntityRecord record = recorder.CreateEntity(world);
             record.Set(o);
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(world.Single().Get<object>()).IsEqualTo(o);
         }
@@ -176,7 +175,7 @@ namespace DefaultEcs.Test.Command
             EntityRecord record = recorder.Record(entity);
             record.Set(new NonBlittable(42, o));
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(entity.Get<NonBlittable>().Id).IsEqualTo(42);
             Check.That(entity.Get<NonBlittable>().Item).IsEqualTo(o);
@@ -189,10 +188,10 @@ namespace DefaultEcs.Test.Command
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
             using World world = new World();
 
-            EntityRecord record = recorder.CreateEntity();
+            EntityRecord record = recorder.CreateEntity(world);
             record.Set(new NonBlittable(42, o));
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(world.Single().Get<NonBlittable>().Id).IsEqualTo(42);
             Check.That(world.Single().Get<NonBlittable>().Item).IsEqualTo(o);
@@ -210,7 +209,7 @@ namespace DefaultEcs.Test.Command
             EntityRecord record = recorder.Record(entity);
             record.Disable<bool>();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(entity.IsEnabled<bool>()).IsFalse();
         }
@@ -221,11 +220,11 @@ namespace DefaultEcs.Test.Command
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
             using World world = new World();
 
-            EntityRecord record = recorder.CreateEntity();
+            EntityRecord record = recorder.CreateEntity(world);
             record.Set(true);
             record.Disable<bool>();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(world.Single().IsEnabled<bool>()).IsFalse();
         }
@@ -243,7 +242,7 @@ namespace DefaultEcs.Test.Command
             EntityRecord record = recorder.Record(entity);
             record.Enable<bool>();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(entity.IsEnabled()).IsTrue();
         }
@@ -254,12 +253,12 @@ namespace DefaultEcs.Test.Command
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
             using World world = new World();
 
-            EntityRecord record = recorder.CreateEntity();
+            EntityRecord record = recorder.CreateEntity(world);
             record.Set(true);
             record.Disable<bool>();
             record.Enable<bool>();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(world.Single().IsEnabled()).IsTrue();
         }
@@ -276,7 +275,7 @@ namespace DefaultEcs.Test.Command
             EntityRecord record = recorder.Record(entity);
             record.Remove<bool>();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(entity.Has<bool>()).IsFalse();
         }
@@ -287,11 +286,11 @@ namespace DefaultEcs.Test.Command
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
             using World world = new World();
 
-            EntityRecord record = recorder.CreateEntity();
+            EntityRecord record = recorder.CreateEntity(world);
             record.Set(true);
             record.Remove<bool>();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(world.Single().Has<bool>()).IsFalse();
         }
@@ -311,7 +310,7 @@ namespace DefaultEcs.Test.Command
 
             recorder.Record(entity).NotifyChanged<bool>();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(result).IsEqualTo(world.Single());
         }
@@ -325,11 +324,11 @@ namespace DefaultEcs.Test.Command
             using World world = new World();
             using IDisposable changed = world.SubscribeComponentChanged((in Entity e, in bool _, in bool _) => result = e);
 
-            EntityRecord record = recorder.CreateEntity();
+            EntityRecord record = recorder.CreateEntity(world);
             record.Set(true);
             record.NotifyChanged<bool>();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(result).IsEqualTo(world.Single());
         }
@@ -345,7 +344,7 @@ namespace DefaultEcs.Test.Command
             EntityRecord record = recorder.Record(entity);
             record.Dispose();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(entity.IsAlive).IsFalse();
         }
@@ -356,10 +355,10 @@ namespace DefaultEcs.Test.Command
             using EntityCommandRecorder recorder = new EntityCommandRecorder(1024);
             using World world = new World();
 
-            EntityRecord record = recorder.CreateEntity();
+            EntityRecord record = recorder.CreateEntity(world);
             record.Dispose();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(world.Count()).IsEqualTo(0);
         }
@@ -377,7 +376,7 @@ namespace DefaultEcs.Test.Command
             EntityRecord record = recorder.Record(entity);
             record.SetSameAs<bool>(recorder.Record(reference));
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(entity.Get<bool>()).IsTrue();
         }
@@ -391,10 +390,10 @@ namespace DefaultEcs.Test.Command
             Entity reference = world.CreateEntity();
             reference.Set(true);
 
-            EntityRecord record = recorder.CreateEntity();
+            EntityRecord record = recorder.CreateEntity(world);
             record.SetSameAs<bool>(recorder.Record(reference));
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             reference.Dispose();
 
@@ -407,9 +406,9 @@ namespace DefaultEcs.Test.Command
             using EntityCommandRecorder recorder = new EntityCommandRecorder(8, int.MaxValue);
             using World world = new World();
 
-            Enumerable.Range(0, 100000).AsParallel().ForAll(_ => recorder.CreateEntity());
+            Enumerable.Range(0, 100000).AsParallel().ForAll(_ => recorder.CreateEntity(world));
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(world.Count()).IsEqualTo(100000);
         }
@@ -436,17 +435,18 @@ namespace DefaultEcs.Test.Command
         public void Shoud_throw_When_no_more_space()
         {
             using EntityCommandRecorder recorder = new EntityCommandRecorder(8, 16);
+            using World world = new World();
 
             Check.That(recorder.Size).IsZero();
             Check.That(recorder.Capacity).IsEqualTo(8);
             Check.That(recorder.MaxCapacity).IsEqualTo(16);
 
-            recorder.CreateEntity();
+            recorder.CreateEntity(world);
 
             Check.That(recorder.Size).IsEqualTo(9);
             Check.That(recorder.Capacity).IsEqualTo(recorder.MaxCapacity);
 
-            Check.ThatCode(() => recorder.CreateEntity()).Throws<InvalidOperationException>();
+            Check.ThatCode(() => recorder.CreateEntity(world)).Throws<InvalidOperationException>();
         }
 
         [Fact]
@@ -455,17 +455,17 @@ namespace DefaultEcs.Test.Command
             using EntityCommandRecorder recorder = new EntityCommandRecorder();
             using World world = new World();
 
-            recorder.CreateEntity();
+            recorder.CreateEntity(world);
 
             Check.That(recorder.Size).IsNotZero();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(world.Count()).IsEqualTo(1);
 
             Check.That(recorder.Size).IsZero();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(world.Count()).IsEqualTo(1);
         }
@@ -476,7 +476,7 @@ namespace DefaultEcs.Test.Command
             using EntityCommandRecorder recorder = new EntityCommandRecorder(5, 10);
             using World world = new World();
 
-            recorder.CreateEntity();
+            recorder.CreateEntity(world);
 
             Check.That(recorder.Size).IsNotZero();
 
@@ -484,7 +484,7 @@ namespace DefaultEcs.Test.Command
 
             Check.That(recorder.Size).IsZero();
 
-            recorder.Execute(world);
+            recorder.Execute();
 
             Check.That(world.Count()).IsZero();
         }
