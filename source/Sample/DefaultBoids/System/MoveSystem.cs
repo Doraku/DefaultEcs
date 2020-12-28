@@ -65,7 +65,7 @@ namespace DefaultBoids.System
             }
         }
 
-        protected override void PostUpdate(float state) => _recorder.Execute(_world);
+        protected override void PostUpdate(float state) => _recorder.Execute();
 
         public override void Dispose()
         {
