@@ -98,15 +98,6 @@ namespace DefaultEcs.System
         /// Initialise a new instance of the <see cref="AEntitySetSystem{T}"/> class with the given <see cref="EntitySet"/>.
         /// </summary>
         /// <param name="set">The <see cref="EntitySet"/> on which to process the update.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
-        protected AEntitySetSystem(EntitySet set)
-            : this(set, null)
-        { }
-
-        /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySetSystem{T}"/> class with the given <see cref="EntitySet"/>.
-        /// </summary>
-        /// <param name="set">The <see cref="EntitySet"/> on which to process the update.</param>
         /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
         /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
         protected AEntitySetSystem(EntitySet set, bool useBuffer)
@@ -114,6 +105,15 @@ namespace DefaultEcs.System
         {
             _useBuffer = useBuffer;
         }
+
+        /// <summary>
+        /// Initialise a new instance of the <see cref="AEntitySetSystem{T}"/> class with the given <see cref="EntitySet"/>.
+        /// </summary>
+        /// <param name="set">The <see cref="EntitySet"/> on which to process the update.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
+        protected AEntitySetSystem(EntitySet set)
+            : this(set, false)
+        { }
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitySetSystem{T}"/> class with the given <see cref="World"/> and factory.
@@ -126,7 +126,7 @@ namespace DefaultEcs.System
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="factory"/> is null.</exception>
         protected AEntitySetSystem(World world, Func<object, World, EntitySet> factory, IParallelRunner runner, int minEntityCountByRunnerIndex)
-            : this(o => (factory ?? throw new ArgumentNullException(nameof(factory)))(o, world ?? throw new ArgumentNullException(nameof(world))), runner, minEntityCountByRunnerIndex)
+            : this(s => (factory ?? throw new ArgumentNullException(nameof(factory)))(s, world ?? throw new ArgumentNullException(nameof(world))), runner, minEntityCountByRunnerIndex)
         { }
 
         /// <summary>

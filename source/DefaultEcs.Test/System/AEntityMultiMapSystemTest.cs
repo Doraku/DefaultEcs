@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 using NFluent;
+using NSubstitute;
 using Xunit;
 
 namespace DefaultEcs.Test.System
 {
-    public sealed class AEntitiesBufferedSystemTest
+    public sealed class AEntityMultiMapSystemTest
     {
         [With(typeof(bool))]
-        private sealed class System<T> : AEntitiesBufferedSystem<int, T>
+        private sealed class System<T> : AEntityMultiMapSystem<int, T>
         {
             public List<T> Keys = new List<T>();
 
@@ -17,12 +19,28 @@ namespace DefaultEcs.Test.System
                 : base(map)
             { }
 
+            public System(EntityMultiMap<T> map, bool useBuffer)
+                : base(map, useBuffer)
+            { }
+
             public System(World world, Func<object, World, EntityMultiMap<T>> factory)
-                : base(world, factory)
+                : base(world, factory, null, 0)
+            { }
+
+            public System(World world, Func<object, World, EntityMultiMap<T>> factory, bool useBuffer)
+                : base(world, factory, useBuffer)
             { }
 
             public System(World world)
                 : base(world)
+            { }
+
+            public System(World world, IParallelRunner runner)
+                : base(world, runner)
+            { }
+
+            public System(World world, IParallelRunner runner, int minEntityCountByRunnerIndex)
+                : base(world, runner, minEntityCountByRunnerIndex)
             { }
 
             protected override void PreUpdate(int state) => Keys.Clear();
@@ -36,7 +54,7 @@ namespace DefaultEcs.Test.System
         }
 
         [With(typeof(bool))]
-        private sealed class ReverseSystem : AEntitiesBufferedSystem<int, int>, IComparer<int>
+        private sealed class ReverseSystem : AEntityMultiMapSystem<int, int>, IComparer<int>
         {
             public List<int> Keys = new List<int>();
 
@@ -71,23 +89,24 @@ namespace DefaultEcs.Test.System
         #region Tests
 
         [Fact]
-        public void AEntitiesSystem_Should_throw_ArgumentNullException_When_EntitySet_is_null()
+        public void AEntityMultiMapSystem_Should_throw_ArgumentNullException_When_EntitySet_is_null()
         {
             Check.ThatCode(() => new System<int>(default(EntityMultiMap<int>))).Throws<ArgumentNullException>();
         }
 
         [Fact]
-        public void AEntitiesSystem_Should_throw_ArgumentNullException_When_World_is_null()
+        public void AEntityMultiMapSystem_Should_throw_ArgumentNullException_When_World_is_null()
         {
             Check.ThatCode(() => new System<int>(default(World))).Throws<ArgumentNullException>();
         }
 
         [Fact]
-        public void AEntitiesSystem_Should_throw_ArgumentNullException_When_Factory_is_null()
+        public void AEntityMultiMapSystem_Should_throw_ArgumentNullException_When_factory_is_null()
         {
-            using World world = new World();
+            using World world = new();
 
-            Check.ThatCode(() => new System<int>(world, default)).Throws<ArgumentNullException>();
+            Check.ThatCode(() => new System<int>(world, default(Func<object, World, EntityMultiMap<int>>))).Throws<ArgumentNullException>();
+            Check.ThatCode(() => new System<int>(world, default, true)).Throws<ArgumentNullException>();
         }
 
         [Fact]
@@ -122,6 +141,54 @@ namespace DefaultEcs.Test.System
             entity4.Set(1);
 
             using System<int> system = new System<int>(world.GetEntities().With<bool>().AsMultiMap<int>());
+
+            system.Update(0);
+
+            Check.That(system.Keys).ContainsExactly(1, 2, 3, 4);
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+            Check.That(entity4.Get<bool>()).IsTrue();
+
+            entity1.Set<bool>();
+            entity2.Set<bool>();
+            entity3.Set<bool>();
+            entity4.Set<bool>();
+            entity4.Remove<int>();
+
+            system.Update(0);
+
+            Check.That(system.Keys).ContainsExactly(2, 3, 4);
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+            Check.That(entity4.Get<bool>()).IsFalse();
+        }
+
+        [Fact]
+        public void Update_Should_call_update_When_using_buffer()
+        {
+            using World world = new World(4);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set<bool>();
+            entity1.Set(4);
+
+            Entity entity2 = world.CreateEntity();
+            entity2.Set<bool>();
+            entity2.Set(3);
+
+            Entity entity3 = world.CreateEntity();
+            entity3.Set<bool>();
+            entity3.Set(2);
+
+            Entity entity4 = world.CreateEntity();
+            entity4.Set<bool>();
+            entity4.Set(1);
+
+            using System<int> system = new System<int>(world.GetEntities().With<bool>().AsMultiMap<int>(), true);
 
             system.Update(0);
 
@@ -283,6 +350,75 @@ namespace DefaultEcs.Test.System
             Check.That(entity2.Get<bool>()).IsFalse();
             Check.That(entity3.Get<bool>()).IsFalse();
             Check.That(entity4.Get<bool>()).IsFalse();
+        }
+
+        [Fact]
+        public void Update_with_runner_Should_call_update()
+        {
+            using DefaultParallelRunner runner = new DefaultParallelRunner(2);
+            using World world = new World(4);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set<bool>();
+            entity1.Set(4);
+
+            Entity entity2 = world.CreateEntity();
+            entity2.Set<bool>();
+            entity2.Set(3);
+
+            Entity entity3 = world.CreateEntity();
+            entity3.Set<bool>();
+            entity3.Set(2);
+
+            Entity entity4 = world.CreateEntity();
+            entity4.Set<bool>();
+            entity4.Set(1);
+
+            using (ISystem<int> system = new System<int>(world, runner))
+            {
+                system.Update(0);
+            }
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+            Check.That(entity4.Get<bool>()).IsTrue();
+        }
+
+        [Fact]
+        public void Update_Should_not_use_runner_When_minEntityCountByRunnerIndex_not_respected()
+        {
+            IParallelRunner runner = Substitute.For<IParallelRunner>();
+            runner.DegreeOfParallelism.Returns(4);
+            runner.When(m => m.Run(Arg.Any<IParallelRunnable>())).Throw<Exception>();
+
+            using World world = new World(4);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set<bool>();
+            entity1.Set(4);
+
+            Entity entity2 = world.CreateEntity();
+            entity2.Set<bool>();
+            entity2.Set(3);
+
+            Entity entity3 = world.CreateEntity();
+            entity3.Set<bool>();
+            entity3.Set(2);
+
+            Entity entity4 = world.CreateEntity();
+            entity4.Set<bool>();
+            entity4.Set(1);
+
+            using (ISystem<int> system = new System<int>(world, runner, 10))
+            {
+                Check.ThatCode(() => system.Update(0)).DoesNotThrow();
+            }
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+            Check.That(entity4.Get<bool>()).IsTrue();
         }
 
         #endregion

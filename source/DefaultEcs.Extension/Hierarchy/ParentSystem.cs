@@ -5,7 +5,7 @@ namespace DefaultEcs.Hierarchy
 {
     // add other required component types
     [With(typeof(Parent))]
-    public class ParentSystem<T> : AEntitiesSystem<T, HierarchyLevel>
+    public class ParentSystem<T> : AEntityMultiMapSystem<T, HierarchyLevel>
     {
         public ParentSystem(World world, IParallelRunner runner)
             : base(world, runner)
