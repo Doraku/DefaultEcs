@@ -19,10 +19,6 @@ namespace DefaultEcs.Test.System
                 : base(map)
             { }
 
-            public System(EntityMultiMap<T> map, bool useBuffer)
-                : base(map, useBuffer)
-            { }
-
             public System(World world, Func<object, World, EntityMultiMap<T>> factory)
                 : base(world, factory, null, 0)
             { }
@@ -188,7 +184,7 @@ namespace DefaultEcs.Test.System
             entity4.Set<bool>();
             entity4.Set(1);
 
-            using System<int> system = new System<int>(world.GetEntities().With<bool>().AsMultiMap<int>(), true);
+            using System<int> system = new System<int>(world, (_, w) => w.GetEntities().With<bool>().AsMultiMap<int>(), true);
 
             system.Update(0);
 

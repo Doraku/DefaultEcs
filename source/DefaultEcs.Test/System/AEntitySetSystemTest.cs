@@ -30,10 +30,6 @@ namespace DefaultEcs.Test.System
                 : base(world, factory, useBuffer)
             { }
 
-            public System(World world, bool useBuffer)
-                : base(world, useBuffer)
-            { }
-
             public System(World world)
                 : base(world)
             { }
@@ -385,7 +381,7 @@ namespace DefaultEcs.Test.System
             Entity entity4 = world.CreateEntity();
             entity4.Set<bool>();
 
-            using (ISystem<int> system = new System(world, true)
+            using (ISystem<int> system = new System(world, (_, w) => w.GetEntities().With<bool>().AsSet(), true)
             {
                 IsEnabled = false
             })
