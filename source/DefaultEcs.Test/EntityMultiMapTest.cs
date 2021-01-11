@@ -6,14 +6,14 @@ using Xunit;
 
 namespace DefaultEcs.Test
 {
-    public sealed class EntitiesMapTest
+    public sealed class EntityMultiMapTest
     {
         [Fact]
         public void World_Should_return_world()
         {
             using World world = new World();
 
-            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
+            using EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Check.That(map.World).IsEqualTo(world);
         }
@@ -26,7 +26,7 @@ namespace DefaultEcs.Test
             Entity entity = world.CreateEntity();
             entity.Set(42);
 
-            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
+            using EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Check.That(map.ContainsEntity(entity)).IsTrue();
 
@@ -48,7 +48,7 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
 
-            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
+            using EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Entity entity = world.CreateEntity();
 
@@ -64,7 +64,7 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
 
-            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
+            using EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Entity entity = world.CreateEntity();
             entity.Set(42);
@@ -77,7 +77,7 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
 
-            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
+            using EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Entity entity = world.CreateEntity();
             entity.Set(42);
@@ -106,7 +106,7 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
 
-            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
+            using EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Entity entity = world.CreateEntity();
 
@@ -122,7 +122,7 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
 
-            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
+            using EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Entity entity = world.CreateEntity();
 
@@ -152,7 +152,7 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
 
-            using EntitiesMap<int> map = world.GetEntities().AsMultiMap<int>();
+            using EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
 
             Entity entity = world.CreateEntity();
             entity.Set(42);
@@ -179,7 +179,7 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
 
-            using EntitiesMap<int> map = world.GetEntities().WhenAddedEither<int>().AsMultiMap<int>();
+            using EntityMultiMap<int> map = world.GetEntities().WhenAddedEither<int>().AsMultiMap<int>();
 
             Entity entity = world.CreateEntity();
             entity.Set(42);
@@ -201,7 +201,7 @@ namespace DefaultEcs.Test
         {
             World world = new World(4);
 
-            EntitiesMap<int> set = world.GetEntities().AsMultiMap<int>();
+            EntityMultiMap<int> set = world.GetEntities().AsMultiMap<int>();
 
             world.Dispose();
 

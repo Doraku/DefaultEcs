@@ -13,11 +13,11 @@ namespace DefaultEcs.Test.System
         {
             public List<T> Keys = new List<T>();
 
-            public System(EntitiesMap<T> map)
+            public System(EntityMultiMap<T> map)
                 : base(map)
             { }
 
-            public System(World world, Func<object, World, EntitiesMap<T>> factory)
+            public System(World world, Func<object, World, EntityMultiMap<T>> factory)
                 : base(world, factory)
             { }
 
@@ -73,7 +73,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void AEntitiesSystem_Should_throw_ArgumentNullException_When_EntitySet_is_null()
         {
-            Check.ThatCode(() => new System<int>(default(EntitiesMap<int>))).Throws<ArgumentNullException>();
+            Check.ThatCode(() => new System<int>(default(EntityMultiMap<int>))).Throws<ArgumentNullException>();
         }
 
         [Fact]

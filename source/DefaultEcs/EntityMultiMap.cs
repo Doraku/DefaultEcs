@@ -15,7 +15,7 @@ namespace DefaultEcs
     /// Represents a collection of <see cref="Entity"/> mapped to a <typeparamref name="TKey"/> component. Multiple <see cref="Entity"/> can be associated with a given <typeparamref name="TKey"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the component used as key.</typeparam>
-    public sealed class EntitiesMap<TKey> : IEntityContainer, ISortable, IDisposable
+    public sealed class EntityMultiMap<TKey> : IEntityContainer, ISortable, IDisposable
     {
         #region Types
 
@@ -111,13 +111,13 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Allows to enumerate the <typeparamref name="TKey"/> of a <see cref="EntitiesMap{TKey}" />.
+        /// Allows to enumerate the <typeparamref name="TKey"/> of a <see cref="EntityMultiMap{TKey}" />.
         /// </summary>
         public readonly struct KeyEnumerable : IEnumerable<TKey>
         {
-            private readonly EntitiesMap<TKey> _map;
+            private readonly EntityMultiMap<TKey> _map;
 
-            internal KeyEnumerable(EntitiesMap<TKey> map)
+            internal KeyEnumerable(EntityMultiMap<TKey> map)
             {
                 _map = map;
             }
@@ -138,15 +138,15 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Enumerates the <typeparamref name="TKey"/> of a <see cref="EntitiesMap{TKey}" />.
+        /// Enumerates the <typeparamref name="TKey"/> of a <see cref="EntityMultiMap{TKey}" />.
         /// </summary>
         public struct KeyEnumerator : IEnumerator<TKey>
         {
-            private readonly EntitiesMap<TKey> _map;
+            private readonly EntityMultiMap<TKey> _map;
 
             private Dictionary<TKey, Entities>.Enumerator _enumerator;
 
-            internal KeyEnumerator(EntitiesMap<TKey> map)
+            internal KeyEnumerator(EntityMultiMap<TKey> map)
             {
                 _map = map;
 
@@ -165,7 +165,7 @@ namespace DefaultEcs
 
             object IEnumerator.Current => Current;
 
-            /// <summary>Advances the enumerator to the next <typeparamref name="TKey"/> of the <see cref="EntitiesMap{TKey}" />.</summary>
+            /// <summary>Advances the enumerator to the next <typeparamref name="TKey"/> of the <see cref="EntityMultiMap{TKey}" />.</summary>
             /// <returns>true if the enumerator was successfully advanced to the next <typeparamref name="TKey"/>; false if the enumerator has passed the end of the collection.</returns>
             public bool MoveNext()
             {
@@ -214,13 +214,13 @@ namespace DefaultEcs
         #region Properties
 
         /// <summary>
-        /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="EntitiesMap{TKey}"/> originate.
+        /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="EntityMultiMap{TKey}"/> originate.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public World World => World.Worlds[_worldId];
 
         /// <summary>
-        /// Gets the keys contained in the <see cref="EntitiesMap{TKey}"/>.
+        /// Gets the keys contained in the <see cref="EntityMultiMap{TKey}"/>.
         /// </summary>
         public KeyEnumerable Keys => new KeyEnumerable(this);
 
@@ -235,7 +235,7 @@ namespace DefaultEcs
 
         #region Initialisation
 
-        internal EntitiesMap(
+        internal EntityMultiMap(
             bool needClearing,
             World world,
             Predicate<ComponentEnum> filter,
@@ -311,24 +311,24 @@ namespace DefaultEcs
         internal bool TryGetEntities(TKey key, out Entities entities) => _entities.TryGetValue(key, out entities);
 
         /// <summary>
-        /// Gets the number of <see cref="Entity"/> in the current <see cref="EntitiesMap{TKey}"/> for the given <typeparamref name="TKey"/>.
+        /// Gets the number of <see cref="Entity"/> in the current <see cref="EntityMultiMap{TKey}"/> for the given <typeparamref name="TKey"/>.
         /// </summary>
-        /// <param name="key">The key to locate in the <see cref="EntitiesMap{TKey}"/>.</param>
-        /// <returns>The number of <see cref="Entity"/> in the current <see cref="EntitiesMap{TKey}"/> for the given <typeparamref name="TKey"/>.</returns>
+        /// <param name="key">The key to locate in the <see cref="EntityMultiMap{TKey}"/>.</param>
+        /// <returns>The number of <see cref="Entity"/> in the current <see cref="EntityMultiMap{TKey}"/> for the given <typeparamref name="TKey"/>.</returns>
         public int Count(TKey key) => _entities.TryGetValue(key, out Entities entities) ? entities.Count : 0;
 
         /// <summary>
-        /// Determines whether the <see cref="EntitiesMap{TKey}"/> contains a specific <see cref="Entity"/>.
+        /// Determines whether the <see cref="EntityMultiMap{TKey}"/> contains a specific <see cref="Entity"/>.
         /// </summary>
-        /// <param name="entity">The <see cref="Entity"/> to locate in the <see cref="EntitiesMap{TKey}"/>.</param>
-        /// <returns>true if the <see cref="EntitiesMap{TKey}"/> contains the specified <see cref="Entity"/>; otherwise, false.</returns>
+        /// <param name="entity">The <see cref="Entity"/> to locate in the <see cref="EntityMultiMap{TKey}"/>.</param>
+        /// <returns>true if the <see cref="EntityMultiMap{TKey}"/> contains the specified <see cref="Entity"/>; otherwise, false.</returns>
         public bool ContainsEntity(Entity entity) => entity.EntityId < _mapping.Length && _mapping[entity.EntityId].Entities != null;
 
         /// <summary>
-        /// Determines whether the <see cref="EntitiesMap{TKey}"/> contains the specified key.
+        /// Determines whether the <see cref="EntityMultiMap{TKey}"/> contains the specified key.
         /// </summary>
-        /// <param name="key">The key to locate in the <see cref="EntitiesMap{TKey}"/>.</param>
-        /// <returns>true if the <see cref="EntitiesMap{TKey}"/> contains the specified key; otherwise, false.</returns>
+        /// <param name="key">The key to locate in the <see cref="EntityMultiMap{TKey}"/>.</param>
+        /// <returns>true if the <see cref="EntityMultiMap{TKey}"/> contains the specified key; otherwise, false.</returns>
         public bool ContainsKey(TKey key) => _entities.TryGetValue(key, out Entities entities) && entities.Count > 0;
 
         /// <summary>
@@ -336,7 +336,7 @@ namespace DefaultEcs
         /// </summary>
         /// <param name="key">The key of the <see cref="Entity"/> instances to get.</param>
         /// <param name="entities">When this method returns, contains the <see cref="Entity"/> instances associated with the specified key, if the key is found; otherwise, the type default value. This parameter is passed uninitialized.</param>
-        /// <returns>true if the <see cref="EntitiesMap{TKey}"/> contains <see cref="Entity"/> instances with the specified key; otherwise, false.</returns>
+        /// <returns>true if the <see cref="EntityMultiMap{TKey}"/> contains <see cref="Entity"/> instances with the specified key; otherwise, false.</returns>
         public bool TryGetEntities(TKey key, out ReadOnlySpan<Entity> entities)
         {
             entities = _entities.TryGetValue(key, out Entities e) ? e.GetEntities() : default;

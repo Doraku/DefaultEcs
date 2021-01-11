@@ -9,7 +9,7 @@ using DefaultEcs.Technical.System;
 namespace DefaultEcs.System
 {
     /// <summary>
-    /// Represents a base class to process updates on a given <see cref="EntitiesMap{TKey}"/> instance.
+    /// Represents a base class to process updates on a given <see cref="EntityMultiMap{TKey}"/> instance.
     /// </summary>
     /// <typeparam name="TState">The type of the object used as state to update the system.</typeparam>
     /// <typeparam name="TKey">The type of the component used as key.</typeparam>
@@ -17,7 +17,7 @@ namespace DefaultEcs.System
     {
         #region Fields
 
-        private readonly EntitiesMap<TKey> _map;
+        private readonly EntityMultiMap<TKey> _map;
         private readonly IComparer<TKey> _keyComparer;
 
         private TKey[] _keys;
@@ -65,11 +65,11 @@ namespace DefaultEcs.System
         }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitiesBufferedSystem{T, TKey}"/> class with the given <see cref="EntitiesMap{TKey}"/>.
+        /// Initialise a new instance of the <see cref="AEntitiesBufferedSystem{T, TKey}"/> class with the given <see cref="EntityMultiMap{TKey}"/>.
         /// </summary>
-        /// <param name="map">The <see cref="EntitiesMap{TKey}"/> on which to process the update.</param>
+        /// <param name="map">The <see cref="EntityMultiMap{TKey}"/> on which to process the update.</param>
         /// <exception cref="ArgumentNullException"><paramref name="map"/> is null.</exception>
-        protected AEntitiesBufferedSystem(EntitiesMap<TKey> map)
+        protected AEntitiesBufferedSystem(EntityMultiMap<TKey> map)
             : this()
         {
             _map = map ?? throw new ArgumentNullException(nameof(map));
@@ -82,10 +82,10 @@ namespace DefaultEcs.System
         /// The current instance will be passed as the first parameter of the factory.
         /// </summary>
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
-        /// <param name="factory">The factory used to create the <see cref="EntitiesMap{TKey}"/>.</param>
+        /// <param name="factory">The factory used to create the <see cref="EntityMultiMap{TKey}"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="factory"/> is null.</exception>
-        protected AEntitiesBufferedSystem(World world, Func<object, World, EntitiesMap<TKey>> factory)
+        protected AEntitiesBufferedSystem(World world, Func<object, World, EntityMultiMap<TKey>> factory)
             : this()
         {
             _map = (factory ?? throw new ArgumentNullException(nameof(factory)))(this, world ?? throw new ArgumentNullException(nameof(world)));
@@ -95,7 +95,7 @@ namespace DefaultEcs.System
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitiesBufferedSystem{T, TKey}"/> class with the given <see cref="World"/>.
-        /// To create the inner <see cref="EntitiesMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
+        /// To create the inner <see cref="EntityMultiMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
@@ -134,7 +134,7 @@ namespace DefaultEcs.System
         protected virtual void PostUpdate(TState state) { }
 
         /// <summary>
-        /// Gets all the <typeparamref name="TKey"/> of the inner <see cref="EntitiesMap{TKey}"/> which <see cref="Entity"/> instances will be updated.
+        /// Gets all the <typeparamref name="TKey"/> of the inner <see cref="EntityMultiMap{TKey}"/> which <see cref="Entity"/> instances will be updated.
         /// </summary>
         /// <returns>A <see cref="Span{T}"/> of <typeparamref name="TKey"/> in the order of update.</returns>
         protected virtual Span<TKey> GetKeys()
@@ -194,7 +194,7 @@ namespace DefaultEcs.System
 
         /// <summary>
         /// Updates the system once.
-        /// Does nothing if <see cref="IsEnabled"/> is false or if the inner <see cref="EntitiesMap{TKey}"/> is empty.
+        /// Does nothing if <see cref="IsEnabled"/> is false or if the inner <see cref="EntityMultiMap{TKey}"/> is empty.
         /// </summary>
         /// <param name="state">The state to use.</param>
         public void Update(TState state)
@@ -209,7 +209,7 @@ namespace DefaultEcs.System
 
                     foreach (ref readonly TKey key in keys)
                     {
-                        if (_map.TryGetEntities(key, out EntitiesMap<TKey>.Entities entities) && entities.Count > 0)
+                        if (_map.TryGetEntities(key, out EntityMultiMap<TKey>.Entities entities) && entities.Count > 0)
                         {
                             PreUpdate(state, key);
 
@@ -235,7 +235,7 @@ namespace DefaultEcs.System
         #region IDisposable
 
         /// <summary>
-        /// Disposes of the inner <see cref="EntitiesMap{TKey}"/> instance.
+        /// Disposes of the inner <see cref="EntityMultiMap{TKey}"/> instance.
         /// </summary>
         public virtual void Dispose() => _map.Dispose();
 

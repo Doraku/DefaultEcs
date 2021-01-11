@@ -8,7 +8,7 @@ using DefaultEcs.Threading;
 namespace DefaultEcs.System
 {
     /// <summary>
-    /// Represents a base class to process updates on a given <see cref="EntitiesMap{TKey}"/> instance.
+    /// Represents a base class to process updates on a given <see cref="EntityMultiMap{TKey}"/> instance.
     /// </summary>
     /// <typeparam name="TState">The type of the object used as state to update the system.</typeparam>
     /// <typeparam name="TKey">The type of the component used as key.</typeparam>
@@ -23,7 +23,7 @@ namespace DefaultEcs.System
             public TState CurrentState;
             public int EntitiesPerIndex;
             public TKey Key;
-            public EntitiesMap<TKey>.Entities Entities;
+            public EntityMultiMap<TKey>.Entities Entities;
 
             public Runnable(AEntitiesSystem<TState, TKey> system)
             {
@@ -45,7 +45,7 @@ namespace DefaultEcs.System
         private readonly IParallelRunner _runner;
         private readonly Runnable _runnable;
         private readonly int _minEntityCountByRunnerIndex;
-        private readonly EntitiesMap<TKey> _map;
+        private readonly EntityMultiMap<TKey> _map;
         private readonly IComparer<TKey> _keyComparer;
 
         private TKey[] _keys;
@@ -95,13 +95,13 @@ namespace DefaultEcs.System
         }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitiesSystem{T, TKey}"/> class with the given <see cref="EntitiesMap{TKey}"/> and <see cref="IParallelRunner"/>.
+        /// Initialise a new instance of the <see cref="AEntitiesSystem{T, TKey}"/> class with the given <see cref="EntityMultiMap{TKey}"/> and <see cref="IParallelRunner"/>.
         /// </summary>
-        /// <param name="map">The <see cref="EntitiesMap{TKey}"/> on which to process the update.</param>
+        /// <param name="map">The <see cref="EntityMultiMap{TKey}"/> on which to process the update.</param>
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="minEntityCountByRunnerIndex">The minimum number of <see cref="Entity"/> per runner index to use the given <paramref name="runner"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="map"/> is null.</exception>
-        protected AEntitiesSystem(EntitiesMap<TKey> map, IParallelRunner runner, int minEntityCountByRunnerIndex)
+        protected AEntitiesSystem(EntityMultiMap<TKey> map, IParallelRunner runner, int minEntityCountByRunnerIndex)
             : this(runner, minEntityCountByRunnerIndex)
         {
             _map = map ?? throw new ArgumentNullException(nameof(map));
@@ -110,21 +110,21 @@ namespace DefaultEcs.System
         }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitiesSystem{T, TKey}"/> class with the given <see cref="EntitiesMap{TKey}"/> and <see cref="IParallelRunner"/>.
+        /// Initialise a new instance of the <see cref="AEntitiesSystem{T, TKey}"/> class with the given <see cref="EntityMultiMap{TKey}"/> and <see cref="IParallelRunner"/>.
         /// </summary>
-        /// <param name="map">The <see cref="EntitiesMap{TKey}"/> on which to process the update.</param>
+        /// <param name="map">The <see cref="EntityMultiMap{TKey}"/> on which to process the update.</param>
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="map"/> is null.</exception>
-        protected AEntitiesSystem(EntitiesMap<TKey> map, IParallelRunner runner)
+        protected AEntitiesSystem(EntityMultiMap<TKey> map, IParallelRunner runner)
             : this(map, runner, 0)
         { }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitiesSystem{T, TKey}"/> class with the given <see cref="EntitiesMap{TKey}"/>.
+        /// Initialise a new instance of the <see cref="AEntitiesSystem{T, TKey}"/> class with the given <see cref="EntityMultiMap{TKey}"/>.
         /// </summary>
-        /// <param name="map">The <see cref="EntitiesMap{TKey}"/> on which to process the update.</param>
+        /// <param name="map">The <see cref="EntityMultiMap{TKey}"/> on which to process the update.</param>
         /// <exception cref="ArgumentNullException"><paramref name="map"/> is null.</exception>
-        protected AEntitiesSystem(EntitiesMap<TKey> map)
+        protected AEntitiesSystem(EntityMultiMap<TKey> map)
             : this(map, null)
         { }
 
@@ -133,12 +133,12 @@ namespace DefaultEcs.System
         /// The current instance will be passed as the first parameter of the factory.
         /// </summary>
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
-        /// <param name="factory">The factory used to create the <see cref="EntitiesMap{TKey}"/>.</param>
+        /// <param name="factory">The factory used to create the <see cref="EntityMultiMap{TKey}"/>.</param>
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="minEntityCountByRunnerIndex">The minimum number of <see cref="Entity"/> per runner index to use the given <paramref name="runner"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="factory"/> is null.</exception>
-        protected AEntitiesSystem(World world, Func<object, World, EntitiesMap<TKey>> factory, IParallelRunner runner, int minEntityCountByRunnerIndex)
+        protected AEntitiesSystem(World world, Func<object, World, EntityMultiMap<TKey>> factory, IParallelRunner runner, int minEntityCountByRunnerIndex)
             : this(runner, minEntityCountByRunnerIndex)
         {
             _map = (factory ?? throw new ArgumentNullException(nameof(factory)))(this, world ?? throw new ArgumentNullException(nameof(world)));
@@ -148,7 +148,7 @@ namespace DefaultEcs.System
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitiesSystem{T, TKey}"/> class with the given <see cref="World"/>.
-        /// To create the inner <see cref="EntitiesMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
+        /// To create the inner <see cref="EntityMultiMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
@@ -160,7 +160,7 @@ namespace DefaultEcs.System
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitiesSystem{T,TKey}"/> class with the given <see cref="World"/>.
-        /// To create the inner <see cref="EntitiesMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
+        /// To create the inner <see cref="EntityMultiMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
@@ -171,7 +171,7 @@ namespace DefaultEcs.System
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitiesSystem{T,TKey}"/> class with the given <see cref="World"/>.
-        /// To create the inner <see cref="EntitiesMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
+        /// To create the inner <see cref="EntityMultiMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
         /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
@@ -210,7 +210,7 @@ namespace DefaultEcs.System
         protected virtual void PostUpdate(TState state) { }
 
         /// <summary>
-        /// Gets all the <typeparamref name="TKey"/> of the inner <see cref="EntitiesMap{TKey}"/> which <see cref="Entity"/> instances will be updated.
+        /// Gets all the <typeparamref name="TKey"/> of the inner <see cref="EntityMultiMap{TKey}"/> which <see cref="Entity"/> instances will be updated.
         /// </summary>
         /// <returns>A <see cref="Span{T}"/> of <typeparamref name="TKey"/> in the order of update.</returns>
         protected virtual Span<TKey> GetKeys()
@@ -270,7 +270,7 @@ namespace DefaultEcs.System
 
         /// <summary>
         /// Updates the system once.
-        /// Does nothing if <see cref="IsEnabled"/> is false or if the inner <see cref="EntitiesMap{TKey}"/> is empty.
+        /// Does nothing if <see cref="IsEnabled"/> is false or if the inner <see cref="EntityMultiMap{TKey}"/> is empty.
         /// </summary>
         /// <param name="state">The state to use.</param>
         public void Update(TState state)
@@ -318,7 +318,7 @@ namespace DefaultEcs.System
         #region IDisposable
 
         /// <summary>
-        /// Disposes of the inner <see cref="EntitiesMap{TKey}"/> instance.
+        /// Disposes of the inner <see cref="EntityMultiMap{TKey}"/> instance.
         /// </summary>
         public virtual void Dispose() => _map.Dispose();
 

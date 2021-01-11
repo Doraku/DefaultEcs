@@ -14,6 +14,7 @@ changed TextSerializer format for Guid
 changed EntityCommandRecorder.CreateEntity parameters, now takes directly the world on which to create the entity  
 changed EntityCommandRecorder.Execute parameters, now takes no parameter  
 renamed AEntitySystem to AEntitySetSystem
+renamed EntitiesMap to EntitiesMultiMap
 
 fixed invalid IsEnable component state when serializing with a SerializationContext  
 

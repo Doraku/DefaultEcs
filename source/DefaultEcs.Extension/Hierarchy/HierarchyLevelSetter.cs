@@ -7,7 +7,7 @@ namespace DefaultEcs.Hierarchy
     {
         private static readonly HashSet<World> _worlds = new HashSet<World>();
 
-        private readonly EntitiesMap<Parent> _map;
+        private readonly EntityMultiMap<Parent> _map;
         private readonly IDisposable _addedSubscription;
         private readonly IDisposable _changedSubscription;
         private readonly IDisposable _removedSubscription;

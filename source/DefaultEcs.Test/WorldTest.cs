@@ -299,7 +299,7 @@ namespace DefaultEcs.Test
         {
             using World world = new World();
             using EntitySet set = world.GetEntities().With<int>().AsSet();
-            using EntitiesMap<bool> map = world.GetEntities().With<int>().AsMultiMap<bool>();
+            using EntityMultiMap<bool> map = world.GetEntities().With<int>().AsMultiMap<bool>();
 
             Entity e1 = world.CreateEntity();
             Entity e2 = world.CreateEntity();

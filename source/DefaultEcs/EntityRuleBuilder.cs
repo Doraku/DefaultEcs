@@ -273,19 +273,19 @@ namespace DefaultEcs
             public EntityMap<TKey> AsMap<TKey>() => AsMap<TKey>(default);
 
             /// <summary>
-            /// Returns an <see cref="EntitiesMap{TKey}"/> with the specified rules.
+            /// Returns an <see cref="EntityMultiMap{TKey}"/> with the specified rules.
             /// </summary>
             /// <typeparam name="TKey">The component type to use as key.</typeparam>
             /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the key.</param>
-            /// <returns>The <see cref="EntitiesMap{TKey}"/>.</returns>
-            public EntitiesMap<TKey> AsMultiMap<TKey>(IEqualityComparer<TKey> comparer) => Commit().AsMultiMap(comparer);
+            /// <returns>The <see cref="EntityMultiMap{TKey}"/>.</returns>
+            public EntityMultiMap<TKey> AsMultiMap<TKey>(IEqualityComparer<TKey> comparer) => Commit().AsMultiMap(comparer);
 
             /// <summary>
-            /// Returns an <see cref="EntitiesMap{TKey}"/> with the specified rules.
+            /// Returns an <see cref="EntityMultiMap{TKey}"/> with the specified rules.
             /// </summary>
             /// <typeparam name="TKey">The component type to use as key.</typeparam>
-            /// <returns>The <see cref="EntitiesMap{TKey}"/>.</returns>
-            public EntitiesMap<TKey> AsMultiMap<TKey>() => AsMultiMap<TKey>(default);
+            /// <returns>The <see cref="EntityMultiMap{TKey}"/>.</returns>
+            public EntityMultiMap<TKey> AsMultiMap<TKey>() => AsMultiMap<TKey>(default);
 
             #endregion
         }
@@ -650,41 +650,41 @@ namespace DefaultEcs
         public EntityMap<TKey> AsMap<TKey>() => AsMap<TKey>(0);
 
         /// <summary>
-        /// Returns an <see cref="EntitiesMap{TKey}"/> with the specified rules.
+        /// Returns an <see cref="EntityMultiMap{TKey}"/> with the specified rules.
         /// </summary>
         /// <typeparam name="TKey">The component type to use as key.</typeparam>
-        /// <param name="capacity">The initial number of element the <see cref="EntitiesMap{TKey}"/> can contain.</param>
+        /// <param name="capacity">The initial number of element the <see cref="EntityMultiMap{TKey}"/> can contain.</param>
         /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the key.</param>
-        /// <returns>The <see cref="EntitiesMap{TKey}"/>.</returns>
-        public EntitiesMap<TKey> AsMultiMap<TKey>(int capacity, IEqualityComparer<TKey> comparer)
+        /// <returns>The <see cref="EntityMultiMap{TKey}"/>.</returns>
+        public EntityMultiMap<TKey> AsMultiMap<TKey>(int capacity, IEqualityComparer<TKey> comparer)
         {
             With<TKey>();
 
-            return new EntitiesMap<TKey>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), GetPredicate(), subscriptions, capacity, comparer);
+            return new EntityMultiMap<TKey>(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), GetPredicate(), subscriptions, capacity, comparer);
         }
 
         /// <summary>
-        /// Returns an <see cref="EntitiesMap{TKey}"/> with the specified rules.
+        /// Returns an <see cref="EntityMultiMap{TKey}"/> with the specified rules.
         /// </summary>
         /// <typeparam name="TKey">The component type to use as key.</typeparam>
         /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the key.</param>
-        /// <returns>The <see cref="EntitiesMap{TKey}"/>.</returns>
-        public EntitiesMap<TKey> AsMultiMap<TKey>(IEqualityComparer<TKey> comparer) => AsMultiMap(0, comparer);
+        /// <returns>The <see cref="EntityMultiMap{TKey}"/>.</returns>
+        public EntityMultiMap<TKey> AsMultiMap<TKey>(IEqualityComparer<TKey> comparer) => AsMultiMap(0, comparer);
 
         /// <summary>
-        /// Returns an <see cref="EntitiesMap{TKey}"/> with the specified rules.
+        /// Returns an <see cref="EntityMultiMap{TKey}"/> with the specified rules.
         /// </summary>
         /// <typeparam name="TKey">The component type to use as key.</typeparam>
-        /// <param name="capacity">The initial number of element the <see cref="EntitiesMap{TKey}"/> can contain.</param>
-        /// <returns>The <see cref="EntitiesMap{TKey}"/>.</returns>
-        public EntitiesMap<TKey> AsMultiMap<TKey>(int capacity) => AsMultiMap<TKey>(capacity, default);
+        /// <param name="capacity">The initial number of element the <see cref="EntityMultiMap{TKey}"/> can contain.</param>
+        /// <returns>The <see cref="EntityMultiMap{TKey}"/>.</returns>
+        public EntityMultiMap<TKey> AsMultiMap<TKey>(int capacity) => AsMultiMap<TKey>(capacity, default);
 
         /// <summary>
-        /// Returns an <see cref="EntitiesMap{TKey}"/> with the specified rules.
+        /// Returns an <see cref="EntityMultiMap{TKey}"/> with the specified rules.
         /// </summary>
         /// <typeparam name="TKey">The component type to use as key.</typeparam>
-        /// <returns>The <see cref="EntitiesMap{TKey}"/>.</returns>
-        public EntitiesMap<TKey> AsMultiMap<TKey>() => AsMultiMap<TKey>(0);
+        /// <returns>The <see cref="EntityMultiMap{TKey}"/>.</returns>
+        public EntityMultiMap<TKey> AsMultiMap<TKey>() => AsMultiMap<TKey>(0);
 
         #endregion
     }

@@ -327,7 +327,7 @@ namespace DefaultEcs
         public void ReadAllComponentTypes(IComponentTypeReader reader) => Publish(new ComponentTypeReadMessage(reader ?? throw new ArgumentNullException(nameof(reader))));
 
         /// <summary>
-        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntitiesMap{TKey}"/> always move forward in memory.
+        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntityMultiMap{TKey}"/> always move forward in memory.
         /// This method will return once <paramref name="mainAction"/> is executed even if the optimization process has not finished.
         /// </summary>
         /// <param name="runner">The <see cref="IParallelRunner"/> to process this operation in parallel.</param>
@@ -342,7 +342,7 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntitiesMap{TKey}"/> always move forward in memory.
+        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntityMultiMap{TKey}"/> always move forward in memory.
         /// </summary>
         /// <param name="runner">The <see cref="IParallelRunner"/> to process this operation in parallel.</param>
         public void Optimize(IParallelRunner runner)
@@ -354,7 +354,7 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntitiesMap{TKey}"/> always move forward in memory.
+        /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntityMultiMap{TKey}"/> always move forward in memory.
         /// </summary>
         public void Optimize() => Optimize(DefaultParallelRunner.Default);
 
