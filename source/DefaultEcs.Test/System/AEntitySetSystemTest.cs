@@ -26,6 +26,10 @@ namespace DefaultEcs.Test.System
                 : base(world, factory, null, 0)
             { }
 
+            public System(World world, Func<object, World, EntitySet> factory, bool useBuffer)
+                : base(world, factory, useBuffer)
+            { }
+
             public System(World world, bool useBuffer)
                 : base(world, useBuffer)
             { }
@@ -101,6 +105,7 @@ namespace DefaultEcs.Test.System
             using World world = new();
 
             Check.ThatCode(() => new System(world, default(Func<object, World, EntitySet>))).Throws<ArgumentNullException>();
+            Check.ThatCode(() => new System(world, default, true)).Throws<ArgumentNullException>();
         }
 
         [Fact]

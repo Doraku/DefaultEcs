@@ -138,7 +138,7 @@ namespace DefaultEcs.System
         /// <param name="minEntityCountByRunnerIndex">The minimum number of <see cref="Entity"/> per runner index to use the given <paramref name="runner"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntitySetSystem(World world, IParallelRunner runner, int minEntityCountByRunnerIndex)
-            : this(world, static (s, w) => EntityRuleBuilderFactory.Create(s.GetType())(s, w).AsSet(), runner, minEntityCountByRunnerIndex)
+            : this(world, static (o, w) => EntityRuleBuilderFactory.Create(o.GetType())(o, w).AsSet(), runner, minEntityCountByRunnerIndex)
         { }
 
         /// <summary>
