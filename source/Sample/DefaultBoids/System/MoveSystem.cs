@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 namespace DefaultBoids.System
 {
     [With(typeof(DrawInfo), typeof(Velocity), typeof(Acceleration), typeof(GridId))]
-    public sealed class MoveSystem : AEntitySystem<float>
+    public sealed class MoveSystem : AEntitySetSystem<float>
     {
         private readonly World _world;
         private readonly EntityCommandRecorder _recorder;

@@ -9,7 +9,7 @@ namespace DefaultEcs.Test.System
     public sealed class ComponentAttributeTest
     {
         [With(typeof(bool))]
-        private sealed class WithSystem : AEntitySystem<int>
+        private sealed class WithSystem : AEntitySetSystem<int>
         {
             public WithSystem(World world)
                 : base(world)
@@ -18,7 +18,7 @@ namespace DefaultEcs.Test.System
             protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
         }
 
-        private sealed class WithPredicateSystem : AEntitySystem<int>
+        private sealed class WithPredicateSystem : AEntitySetSystem<int>
         {
             public WithPredicateSystem(World world)
                 : base(world)
@@ -38,7 +38,7 @@ namespace DefaultEcs.Test.System
             protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
         }
 
-        private sealed class InvalidWithPredicateSystem : AEntitySystem<int>
+        private sealed class InvalidWithPredicateSystem : AEntitySetSystem<int>
         {
             public InvalidWithPredicateSystem(World world)
                 : base(world)
@@ -54,7 +54,7 @@ namespace DefaultEcs.Test.System
 
         [WithEither(typeof(bool), typeof(int))]
         [WithEither(typeof(bool), typeof(string))]
-        private sealed class WithEitherSystem : AEntitySystem<int>
+        private sealed class WithEitherSystem : AEntitySetSystem<int>
         {
             public WithEitherSystem(World world)
                 : base(world)
@@ -65,7 +65,7 @@ namespace DefaultEcs.Test.System
 
         [With(typeof(bool))]
         [Without(typeof(string))]
-        private sealed class WithoutSystem : AEntitySystem<int>
+        private sealed class WithoutSystem : AEntitySetSystem<int>
         {
             public WithoutSystem(World world)
                 : base(world)
@@ -77,7 +77,7 @@ namespace DefaultEcs.Test.System
         [With(typeof(bool))]
         [WithoutEither(typeof(string), typeof(char))]
         [WithoutEither(typeof(double), typeof(long))]
-        private sealed class WithoutEitherSystem : AEntitySystem<int>
+        private sealed class WithoutEitherSystem : AEntitySetSystem<int>
         {
             public WithoutEitherSystem(World world)
                 : base(world)
@@ -87,7 +87,7 @@ namespace DefaultEcs.Test.System
         }
 
         [WhenAdded(typeof(bool))]
-        private sealed class WhenAddedSystem : AEntitySystem<int>
+        private sealed class WhenAddedSystem : AEntitySetSystem<int>
         {
             public WhenAddedSystem(World world)
                 : base(world)
@@ -97,7 +97,7 @@ namespace DefaultEcs.Test.System
         }
 
         [WhenAddedEither(typeof(bool), typeof(int))]
-        private sealed class WhenAddedEitherSystem : AEntitySystem<int>
+        private sealed class WhenAddedEitherSystem : AEntitySetSystem<int>
         {
             public WhenAddedEitherSystem(World world)
                 : base(world)
@@ -107,7 +107,7 @@ namespace DefaultEcs.Test.System
         }
 
         [WhenChanged(typeof(bool))]
-        private sealed class WhenChangedSystem : AEntitySystem<int>
+        private sealed class WhenChangedSystem : AEntitySetSystem<int>
         {
             public WhenChangedSystem(World world)
                 : base(world)
@@ -117,7 +117,7 @@ namespace DefaultEcs.Test.System
         }
 
         [WhenChangedEither(typeof(bool), typeof(int))]
-        private sealed class WhenChangedEitherSystem : AEntitySystem<int>
+        private sealed class WhenChangedEitherSystem : AEntitySetSystem<int>
         {
             public WhenChangedEitherSystem(World world)
                 : base(world)
@@ -128,7 +128,7 @@ namespace DefaultEcs.Test.System
 
         [With(typeof(bool))]
         [WhenRemoved(typeof(string))]
-        private sealed class WhenRemovedSystem : AEntitySystem<int>
+        private sealed class WhenRemovedSystem : AEntitySetSystem<int>
         {
             public WhenRemovedSystem(World world)
                 : base(world)
@@ -139,7 +139,7 @@ namespace DefaultEcs.Test.System
 
         [With(typeof(bool))]
         [WhenRemovedEither(typeof(string), typeof(char))]
-        private sealed class WhenRemovedEitherSystem : AEntitySystem<int>
+        private sealed class WhenRemovedEitherSystem : AEntitySetSystem<int>
         {
             public WhenRemovedEitherSystem(World world)
                 : base(world)

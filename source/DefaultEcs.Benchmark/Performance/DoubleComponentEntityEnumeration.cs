@@ -33,7 +33,7 @@ namespace DefaultEcs.Benchmark.Performance
             public float Y;
         }
 
-        private sealed class DefaultEcsSystem : AEntitySystem<float>
+        private sealed class DefaultEcsSystem : AEntitySetSystem<float>
         {
             public DefaultEcsSystem(DefaultWorld world, IParallelRunner runner)
                 : base(world.GetEntities().With<DefaultSpeed>().With<DefaultPosition>().AsSet(), runner)
@@ -56,7 +56,7 @@ namespace DefaultEcs.Benchmark.Performance
             }
         }
 
-        private sealed class DefaultEcsComponentSystem : AEntitySystem<float>
+        private sealed class DefaultEcsComponentSystem : AEntitySetSystem<float>
         {
             private readonly DefaultWorld _world;
 

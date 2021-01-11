@@ -3,14 +3,14 @@
 namespace DefaultEcs.System
 {
     /// <summary>
-    /// Makes so when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance, it will only contain disabled entities.
+    /// Makes so when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance, it will only contain disabled entities.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class DisabledAttribute : Attribute
     { }
 
     /// <summary>
-    /// Makes so when building the inner EntitySet of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance, the decorated method will be used as a component predicate.
+    /// Makes so when building the inner EntitySet of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance, the decorated method will be used as a component predicate.
     /// The decorated method should be of the type <see cref="ComponentPredicate{T}"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
@@ -74,7 +74,7 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
-    /// Represents the base attribute to declare how to build the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// Represents the base attribute to declare how to build the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// Do not use this attribute, prefer <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> instead.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
@@ -103,7 +103,7 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
-    /// Represents a component type to include when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// Represents a component type to include when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
     public sealed class WithAttribute : ComponentAttribute
     {
@@ -117,7 +117,7 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
-    /// Represents a group of component types which at least one should be present when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// Represents a group of component types which at least one should be present when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
     public sealed class WithEitherAttribute : ComponentAttribute
     {
@@ -131,7 +131,7 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
-    /// Represents a component type to exclude when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// Represents a component type to exclude when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
     public sealed class WithoutAttribute : ComponentAttribute
     {
@@ -145,7 +145,7 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
-    /// Represents a group of component types which at least one should not be present when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// Represents a group of component types which at least one should not be present when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
     public sealed class WithoutEitherAttribute : ComponentAttribute
     {
@@ -159,7 +159,7 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
-    /// Represents a component type to react to its addition when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// Represents a component type to react to its addition when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
     public sealed class WhenAddedAttribute : ComponentAttribute
     {
@@ -173,7 +173,7 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
-    /// Represents a group of component types to react to at least one of their addition when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// Represents a group of component types to react to at least one of their addition when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
     public sealed class WhenAddedEitherAttribute : ComponentAttribute
     {
@@ -187,7 +187,7 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
-    /// Represents a component type to react to its change when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// Represents a component type to react to its change when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
     public sealed class WhenChangedAttribute : ComponentAttribute
     {
@@ -201,7 +201,7 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
-    /// Represents a group of component types to react to at least one of their change when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// Represents a group of component types to react to at least one of their change when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
     public sealed class WhenChangedEitherAttribute : ComponentAttribute
     {
@@ -215,7 +215,7 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
-    /// Represents a component type to react to its deletion when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// Represents a component type to react to its deletion when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
     public sealed class WhenRemovedAttribute : ComponentAttribute
     {
@@ -229,7 +229,7 @@ namespace DefaultEcs.System
     }
 
     /// <summary>
-    /// Represents a group of component types to react to at least one of their deletion when building the inner <see cref="EntitySet"/> of <see cref="AEntitySystem{T}"/> when giving a <see cref="World"/> instance.
+    /// Represents a group of component types to react to at least one of their deletion when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
     public sealed class WhenRemovedEitherAttribute : ComponentAttribute
     {

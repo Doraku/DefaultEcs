@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultSlap.System
 {
-    public sealed class AISystem : AEntitySystem<float>
+    public sealed class AISystem : AEntitySetSystem<float>
     {
         private readonly ThreadLocal<Random> _random;
 

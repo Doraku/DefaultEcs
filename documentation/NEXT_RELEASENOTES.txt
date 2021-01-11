@@ -8,21 +8,23 @@ removed EntityRecord.SetAsChildOf
 removed EntityRecord.SetAsParentOf  
 removed EntityRecord.RemoveFromChildrenOf  
 removed EntityRecord.RemoveFromParentsOf  
+removed AEntityBufferedSystem
 changed TextSerializer format for pure List and Dictionary types  
 changed TextSerializer format for Guid
 changed EntityCommandRecorder.CreateEntity parameters, now takes directly the world on which to create the entity  
 changed EntityCommandRecorder.Execute parameters, now takes no parameter  
+renamed AEntitySystem to AEntitySetSystem
 
 fixed invalid IsEnable component state when serializing with a SerializationContext  
 
 added World.SubscribeWorldDisposed method  
 added AComponentSystem.World property  
-added AEntitySystem.World property  
-added AEntitySystem constructor override with factory  
+added AEntitySetSystem.Set property 
+added AEntitySetSystem.World property  
+added AEntitySetSystem constructor override with factory  
+added AEntitySetSystem constructor override with boolean useBuffer to replace AEntityBufferedSystem  
 added AEntitiesSystem.World property  
 added AEntitiesSystem constructor override with factory  
-added AEntityBufferedSystem.World property  
-added AEntityBufferedSystem constructor override with factory  
 added AEntitiesBufferedSystem type  
 added EntityRuleBuilder.AsEnumerable method  
 added EitherBuilder.AsEnumerable method  

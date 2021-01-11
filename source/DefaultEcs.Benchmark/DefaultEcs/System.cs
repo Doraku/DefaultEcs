@@ -34,7 +34,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             public float Y;
         }
 
-        private sealed class TestSystem : AEntitySystem<float>
+        private sealed class TestSystem : AEntitySetSystem<float>
         {
             public TestSystem(World world, IParallelRunner runner)
                 : base(world.GetEntities().With<Position>().With<Speed>().AsSet(), runner)
@@ -54,7 +54,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [With(typeof(Speed), typeof(Position))]
-        private sealed class TestComponentSystem : AEntitySystem<float>
+        private sealed class TestComponentSystem : AEntitySetSystem<float>
         {
             private readonly World _world;
 
@@ -81,10 +81,10 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [With(typeof(Speed), typeof(Position))]
-        private sealed class TestBufferedSystem : AEntityBufferedSystem<float>
+        private sealed class TestBufferedSystem : AEntitySetSystem<float>
         {
             public TestBufferedSystem(World world)
-                : base(world)
+                : base(world, true)
             { }
 
             protected override void Update(float state, ReadOnlySpan<Entity> entities)

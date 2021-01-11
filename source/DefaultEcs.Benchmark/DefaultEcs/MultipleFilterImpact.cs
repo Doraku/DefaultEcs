@@ -36,7 +36,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         public struct ComponentY { public int value; }
         public struct ComponentZ { public int value; }
 
-        public sealed class BasicSystem : AEntitySystem<float>
+        public sealed class BasicSystem : AEntitySetSystem<float>
         {
             public BasicSystem(EntitySet set) : base(set)
             { }

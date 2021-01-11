@@ -5,12 +5,12 @@ using DefaultEcs.System;
 
 namespace DefaultBrick.System
 {
-    public sealed class BallBoundSystem : AEntityBufferedSystem<float>
+    public sealed class BallBoundSystem : AEntitySetSystem<float>
     {
         private readonly World _world;
 
         public BallBoundSystem(World world)
-            : base(world.GetEntities().With<Velocity>().With<Position>().With<Ball>().AsSet())
+            : base(world.GetEntities().With<Velocity>().With<Position>().With<Ball>().AsSet(), true)
         {
             _world = world;
         }

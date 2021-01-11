@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 namespace DefaultBoids.System
 {
     [With(typeof(DrawInfo), typeof(Acceleration), typeof(Velocity), typeof(GridId))]
-    public sealed class BoidsSystem : AEntitySystem<float>
+    public sealed class BoidsSystem : AEntitySetSystem<float>
     {
         private readonly World _world;
         private readonly EntityMap<GridId> _grid;

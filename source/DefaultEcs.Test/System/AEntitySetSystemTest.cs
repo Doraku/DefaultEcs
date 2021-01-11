@@ -7,19 +7,27 @@ using Xunit;
 
 namespace DefaultEcs.Test.System
 {
-    public sealed class AEntitySystemTest
+    public sealed class AEntitySetSystemTest
     {
         [With(typeof(bool))]
         [Without(typeof(int))]
         [WithEither(typeof(double), typeof(uint))]
-        private sealed class System : AEntitySystem<int>
+        private sealed class System : AEntitySetSystem<int>
         {
+            public System(EntitySet set, bool useBuffer)
+                : base(set, useBuffer)
+            { }
+
             public System(EntitySet set)
                 : base(set)
             { }
 
             public System(World world, Func<object, World, EntitySet> factory)
                 : base(world, factory, null, 0)
+            { }
+
+            public System(World world, bool useBuffer)
+                : base(world, useBuffer)
             { }
 
             public System(World world)
@@ -51,7 +59,7 @@ namespace DefaultEcs.Test.System
         }
 
         [Disabled, With(typeof(bool))]
-        private sealed class DisabledSystem : AEntitySystem<int>
+        private sealed class DisabledSystem : AEntitySetSystem<int>
         {
             public DisabledSystem(World world)
                 : base(world)
@@ -66,7 +74,7 @@ namespace DefaultEcs.Test.System
         }
 
         [Component((ComponentFilterType)42, typeof(bool))]
-        private sealed class InvalidSystem : AEntitySystem<int>
+        private sealed class InvalidSystem : AEntitySetSystem<int>
         {
             public InvalidSystem(World world)
                 : base(world)
@@ -76,19 +84,19 @@ namespace DefaultEcs.Test.System
         #region Tests
 
         [Fact]
-        public void AEntitySystem_Should_throw_ArgumentNullException_When_EntitySet_is_null()
+        public void AEntitySetSystem_Should_throw_ArgumentNullException_When_EntitySet_is_null()
         {
             Check.ThatCode(() => new System(default(EntitySet))).Throws<ArgumentNullException>();
         }
 
         [Fact]
-        public void AEntitySystem_Should_throw_ArgumentNullException_When_World_is_null()
+        public void AEntitySetSystem_Should_throw_ArgumentNullException_When_World_is_null()
         {
             Check.ThatCode(() => new System(default(World))).Throws<ArgumentNullException>();
         }
 
         [Fact]
-        public void AEntitySystem_Should_throw_ArgumentNullException_When_factory_is_null()
+        public void AEntitySetSystem_Should_throw_ArgumentNullException_When_factory_is_null()
         {
             using World world = new();
 
@@ -324,6 +332,66 @@ namespace DefaultEcs.Test.System
             using World world = new World(4);
 
             Check.ThatCode(() => new InvalidSystem(world)).Throws<ArgumentException>();
+        }
+
+        [Fact]
+        public void Update_Should_call_update_When_using_buffer()
+        {
+            using World world = new World(4);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set<bool>();
+
+            Entity entity2 = world.CreateEntity();
+            entity2.Set<bool>();
+
+            Entity entity3 = world.CreateEntity();
+            entity3.Set<bool>();
+
+            Entity entity4 = world.CreateEntity();
+            entity4.Set<bool>();
+
+            using (EntitySet set = world.GetEntities().With<bool>().Without<int>().AsSet())
+            using (ISystem<int> system = new System(set, true))
+            {
+                system.Update(0);
+            }
+
+            Check.That(entity1.Get<bool>()).IsTrue();
+            Check.That(entity2.Get<bool>()).IsTrue();
+            Check.That(entity3.Get<bool>()).IsTrue();
+            Check.That(entity4.Get<bool>()).IsTrue();
+        }
+
+        [Fact]
+        public void Update_Should_not_call_update_When_disabled_and_using_buffer()
+        {
+            using World world = new World(4);
+
+            Entity entity1 = world.CreateEntity();
+            entity1.Set<bool>();
+
+            Entity entity2 = world.CreateEntity();
+            entity2.Set<bool>();
+
+            Entity entity3 = world.CreateEntity();
+            entity3.Set<bool>();
+
+            Entity entity4 = world.CreateEntity();
+            entity4.Set<bool>();
+
+            using (ISystem<int> system = new System(world, true)
+            {
+                IsEnabled = false
+            })
+            {
+                system.Update(0);
+            }
+
+            Check.That(entity1.Get<bool>()).IsFalse();
+            Check.That(entity2.Get<bool>()).IsFalse();
+            Check.That(entity3.Get<bool>()).IsFalse();
+            Check.That(entity4.Get<bool>()).IsFalse();
         }
 
         #endregion

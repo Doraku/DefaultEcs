@@ -7,7 +7,7 @@ using DefaultEcs.Threading;
 namespace DefaultBoids.System
 {
     [With(typeof(GridId), typeof(Behavior))]
-    public sealed class ResetBehaviorSystem : AEntitySystem<float>
+    public sealed class ResetBehaviorSystem : AEntitySetSystem<float>
     {
         public ResetBehaviorSystem(World world, IParallelRunner runner)
             : base(world, runner)

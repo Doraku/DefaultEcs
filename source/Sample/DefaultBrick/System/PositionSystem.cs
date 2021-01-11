@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
-    public sealed class PositionSystem : AEntitySystem<float>
+    public sealed class PositionSystem : AEntitySetSystem<float>
     {
         public PositionSystem(World world, IParallelRunner runner)
             : base(world.GetEntities().With<Position>().With<DrawInfo>().AsSet(), runner)

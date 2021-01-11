@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DefaultSlap.System
 {
-    public sealed class DrawSystem : AEntitySystem<float>
+    public sealed class DrawSystem : AEntitySetSystem<float>
     {
         private readonly SpriteBatch _batch;
         private readonly Texture2D _square;
