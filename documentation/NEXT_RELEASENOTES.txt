@@ -25,7 +25,7 @@ added AEntitySetSystem.Set property
 added AEntitySetSystem.World property  
 added AEntitySetSystem constructor override with factory  
 added AEntitySetSystem constructor override with boolean useBuffer to replace AEntityBufferedSystem   
-added EntityMultiMap.Map property 
+added EntityMultiMap.MultiMap property 
 added EntityMultiMap.World property  
 added EntityMultiMap constructor override with factory  
 added EntityMultiMap constructor override with boolean useBuffer

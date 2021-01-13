@@ -59,7 +59,7 @@ namespace DefaultEcs.System
         /// <summary>
         /// Gets the <see cref="EntityMultiMap{TKey}"/> instance on which this system operates.
         /// </summary>
-        public EntityMultiMap<TKey> Map { get; }
+        public EntityMultiMap<TKey> MultiMap { get; }
 
         /// <summary>
         /// Gets the <see cref="DefaultEcs.World"/> instance on which this system operates.
@@ -91,8 +91,8 @@ namespace DefaultEcs.System
                 return false;
             }
 
-            Map = factory(this);
-            World = Map.World;
+            MultiMap = factory(this);
+            World = MultiMap.World;
 
             _keyComparer = this as IComparer<TKey> ?? (IsIComparable() ? Comparer<TKey>.Default : null);
             _runner = runner ?? DefaultParallelRunner.Default;
@@ -257,7 +257,7 @@ namespace DefaultEcs.System
         protected virtual Span<TKey> GetKeys()
         {
             int newKeyCount = 0;
-            foreach (TKey key in Map.Keys)
+            foreach (TKey key in MultiMap.Keys)
             {
                 ArrayExtension.EnsureLength(ref _keys, newKeyCount);
                 _keys[newKeyCount++] = key;
@@ -328,7 +328,7 @@ namespace DefaultEcs.System
 
                     foreach (ref readonly TKey key in keys)
                     {
-                        if (Map.TryGetEntities(key, out _runnable.Entities) && _runnable.Entities.Count > 0)
+                        if (MultiMap.TryGetEntities(key, out _runnable.Entities) && _runnable.Entities.Count > 0)
                         {
                             PreUpdate(state, key);
 
@@ -359,7 +359,7 @@ namespace DefaultEcs.System
                             PostUpdate(state, key);
                         }
                     }
-                    Map.Complete();
+                    MultiMap.Complete();
 
                     PostUpdate(state);
                 }
@@ -373,7 +373,7 @@ namespace DefaultEcs.System
         /// <summary>
         /// Disposes of the inner <see cref="EntityMultiMap{TKey}"/> instance.
         /// </summary>
-        public virtual void Dispose() => Map.Dispose();
+        public virtual void Dispose() => MultiMap.Dispose();
 
         #endregion
     }
