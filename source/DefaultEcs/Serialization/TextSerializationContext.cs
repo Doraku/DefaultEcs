@@ -39,13 +39,13 @@ namespace DefaultEcs.Serialization
 
             public void SetDisabled(in Entity entity, StreamReaderWrapper reader)
             {
-                entity.Set(_converter(Converter<TIn>.Read(reader)));
+                Set(entity, reader);
                 entity.Disable<TOut>();
             }
 
             public void SetDisabledSameAs(in Entity entity, in Entity reference)
             {
-                entity.SetSameAs<TOut>(reference);
+                SetSameAs(entity, reference);
                 entity.Disable<TOut>();
             }
 

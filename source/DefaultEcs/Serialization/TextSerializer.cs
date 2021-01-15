@@ -38,13 +38,13 @@ namespace DefaultEcs.Serialization
 
             public void SetDisabled(in Entity entity, StreamReaderWrapper reader)
             {
-                entity.Set(Converter<T>.Read(reader));
+                Set(entity, reader);
                 entity.Disable<T>();
             }
 
             public void SetDisabledSameAs(in Entity entity, in Entity reference)
             {
-                entity.SetSameAs<T>(reference);
+                SetSameAs(entity, reference);
                 entity.Disable<T>();
             }
 
@@ -63,7 +63,7 @@ namespace DefaultEcs.Serialization
 
             public void SetSameAs(in Entity entity, in Entity reference) { }
 
-            public void SetDisabled(in Entity entity, StreamReaderWrapper reader) => Converter<T>.Read(reader);
+            public void SetDisabled(in Entity entity, StreamReaderWrapper reader) => Set(entity, reader);
 
             public void SetDisabledSameAs(in Entity entity, in Entity reference) { }
 
