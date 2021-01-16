@@ -22,8 +22,10 @@ namespace DefaultSlap.System
         }
 
         [Update]
-        private void Update(ref PlayerState playerState, ref DrawInfo drawInfo)
+        private void Update(ref PlayerState playerState, ref Position position, ref DrawInfo drawInfo)
         {
+            position.Value = _mouseState.Position;
+
             if (_isSlaping
                 && !playerState.IsSlaping)
             {
