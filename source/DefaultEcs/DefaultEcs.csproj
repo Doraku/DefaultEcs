@@ -41,7 +41,7 @@
     <Description>Entity Component System framework aiming for syntax and usage simplicity with maximum performance for game development.</Description>
     <PackageIcon>logo.png</PackageIcon>
     <PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
-    <PackageLicenseExpression>MIT-0</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/Doraku/DefaultEcs.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
