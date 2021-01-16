@@ -10,6 +10,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        ref: master
 
     - name: Set up dotnet
       uses: actions/setup-dotnet@v1
@@ -29,28 +31,28 @@ jobs:
 
     - name: Create NEW_RELEASENOTES.txt
       run: |
-        "echo ## DefaultEcs ${{ github.event.release.tag_name }}> package\NEW_RELEASENOTES.txt"
-        "type documentation\NEXT_RELEASENOTES.txt >> package\NEW_RELEASENOTES.txt"
-        "echo.>> package\NEW_RELEASENOTES.txt"
-        "echo.>> package\NEW_RELEASENOTES.txt"
-        "echo [nuget package](https://www.nuget.org/packages/DefaultEcs/${{ github.event.release.tag_name }})>> package\NEW_RELEASENOTES.txt"
+        echo "## DefaultEcs ${{ github.event.release.tag_name }}" | Out-File package\NEW_RELEASENOTES.txt
+        type documentation\NEXT_RELEASENOTES.txt | Out-File package\NEW_RELEASENOTES.txt -Append
+        echo "" | Out-File package\NEW_RELEASENOTES.txt -Append
+        echo "[nuget package](https://www.nuget.org/packages/DefaultEcs/${{ github.event.release.tag_name }})" | Out-File package\NEW_RELEASENOTES.txt -Append
 
     - name: Update release
-      uses: tubone24/update_release@v1.0
+      uses: tubone24/update_release@v1.1.0
       env:
         GITHUB_TOKEN: ${{ github.token }}
       with:
-        body_path: package\NEW_RELEASENOTES.txt
+        release_name: DefaultEcs ${{ github.event.release.tag_name }}
+        body_path: .\package\NEW_RELEASENOTES.txt
         
     - name: Update RELEASENOTES.md
       run: |
-        "echo.>> package\NEW_RELEASENOTES.txt"
-        "type documentation\RELEASENOTES.md >> package\NEW_RELEASENOTES.txt"
-        "type package\NEW_RELEASENOTES.txt > documentation\RELEASENOTES.md"
-        "echo.> documentation\NEXT_RELEASENOTES.txt"
+        echo "" | Out-File package\NEW_RELEASENOTES.txt -Append
+        type documentation\RELEASENOTES.md | Out-File package\NEW_RELEASENOTES.txt -Append
+        type package\NEW_RELEASENOTES.txt | Out-File documentation\RELEASENOTES.md
+        echo "" | Out-File documentation\NEXT_RELEASENOTES.txt -NoNewLine
 
     - name: Publish package
-      run: nuget push package\*.nupkg
+      run: dotnet nuget push package\*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
 
     - name: Commit RELEASENOTES and documentation api
       run: |

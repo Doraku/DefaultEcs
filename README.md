@@ -24,7 +24,7 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
     - [ISystem](#Overview_System_ISystem)
     - [ActionSystem](#Overview_System_ActionSystem)
     - [SequentialSystem](#Overview_System_SequentialSystem)
-    - [AEntitySystem](#Overview_System_AEntitySystem)
+    - [EntitySetSystem](#Overview_System_AEntitySystem)
     - [AComponentSystem](#Overview_System_AComponentSystem)
   - [Threading](#Overview_Threading)
     - [IParallelRunnable](#Overview_Threading_IParallelRunnable)
@@ -248,11 +248,11 @@ ISystem<float> system = new SequentialSystem<float>(
 system.Update(elaspedTime);
 ```
 
-<a name='Overview_System_AEntitySystem'></a>
-### AEntitySystem<T>
+<a name='Overview_System_AEntitySetSystem'></a>
+### AEntitySetSystem<T>
 This is a base class to create system to update a given EntitySet.
 ```csharp
-public sealed class VelocitySystem : AEntitySystem<float>
+public sealed class VelocitySystem : AEntitySetSystem<float>
 {
     public VelocitySystem(World world, IParallelRunner runner)
         : base(world.GetEntities().With<Velocity>().With<Position>().AsSet(), runner)
@@ -276,7 +276,7 @@ It is also possible to declare the needed component by using the WithAttribute a
 ```csharp
 [With(typeof(Velocity)]
 [With(typeof(Position)]
-public sealed class VelocitySystem : AEntitySystem<float>
+public sealed class VelocitySystem : AEntitySetSystem<float>
 {
     public VelocitySystem(World world, IParallelRunner runner)
         : base(world, runner)
@@ -331,7 +331,7 @@ public class DrawSystem : AComponentSystem<float, DrawInfo>
 
 <a name='Overview_Threading'></a>
 ## Threading
-Some systems are compatible with multithreading execution: ParallelSystem, AEntitySystem and AComponentSystem. This is done by passing a IParallelRunner to their respective constructor.
+Some systems are compatible with multithreading execution: ParallelSystem, AEntitySetSystem and AComponentSystem. This is done by passing a IParallelRunner to their respective constructor.
 ```csharp
 IParallelRunner runner = new DefaultParallelRunner(Environment.ProcessorCount);
 
@@ -341,7 +341,7 @@ ISystem<float> system = new VelocitySystem(world, runner);
 system.Update(elaspedTime);
 ```
 It is safe to run a system with multithreading when:
-* for an AEntitySystem
+* for an AEntitySetSystem
   * each entity can be safely updated separately with no dependency to an other entity
   * there is no new Set, Remove or Dispose action on entity (only read or update)
 * for an AComponentSystem

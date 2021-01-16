@@ -359,6 +359,7 @@ namespace DefaultEcs.System
                             PostUpdate(state, key);
                         }
                     }
+
                     MultiMap.Complete();
 
                     PostUpdate(state);
