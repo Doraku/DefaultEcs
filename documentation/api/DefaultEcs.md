@@ -3,8 +3,8 @@
 The [DefaultEcs](./DefaultEcs.md 'DefaultEcs') namespace contains types to put in place the Entity Component System pattern.  
 ### Classes
 - [AoTHelper](./DefaultEcs-AoTHelper.md 'DefaultEcs.AoTHelper')
-- [EntitiesMap&lt;TKey&gt;](./DefaultEcs-EntitiesMap-TKey-.md 'DefaultEcs.EntitiesMap&lt;TKey&gt;')
 - [EntityMap&lt;TKey&gt;](./DefaultEcs-EntityMap-TKey-.md 'DefaultEcs.EntityMap&lt;TKey&gt;')
+- [EntityMultiMap&lt;TKey&gt;](./DefaultEcs-EntityMultiMap-TKey-.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;')
 - [EntityRuleBuilder](./DefaultEcs-EntityRuleBuilder.md 'DefaultEcs.EntityRuleBuilder')
 - [EntityRuleBuilder.EitherBuilder](./DefaultEcs-EntityRuleBuilder-EitherBuilder.md 'DefaultEcs.EntityRuleBuilder.EitherBuilder')
 - [EntityRuleBuilderExtension](./DefaultEcs-EntityRuleBuilderExtension.md 'DefaultEcs.EntityRuleBuilderExtension')
@@ -14,11 +14,11 @@ The [DefaultEcs](./DefaultEcs.md 'DefaultEcs') namespace contains types to put i
 - [World](./DefaultEcs-World.md 'DefaultEcs.World')
 ### Structs
 - [Components&lt;T&gt;](./DefaultEcs-Components-T-.md 'DefaultEcs.Components&lt;T&gt;')
-- [EntitiesMap&lt;TKey&gt;.KeyEnumerable](./DefaultEcs-EntitiesMap-TKey--KeyEnumerable.md 'DefaultEcs.EntitiesMap&lt;TKey&gt;.KeyEnumerable')
-- [EntitiesMap&lt;TKey&gt;.KeyEnumerator](./DefaultEcs-EntitiesMap-TKey--KeyEnumerator.md 'DefaultEcs.EntitiesMap&lt;TKey&gt;.KeyEnumerator')
 - [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity')
 - [EntityMap&lt;TKey&gt;.KeyEnumerable](./DefaultEcs-EntityMap-TKey--KeyEnumerable.md 'DefaultEcs.EntityMap&lt;TKey&gt;.KeyEnumerable')
 - [EntityMap&lt;TKey&gt;.KeyEnumerator](./DefaultEcs-EntityMap-TKey--KeyEnumerator.md 'DefaultEcs.EntityMap&lt;TKey&gt;.KeyEnumerator')
+- [EntityMultiMap&lt;TKey&gt;.KeyEnumerable](./DefaultEcs-EntityMultiMap-TKey--KeyEnumerable.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.KeyEnumerable')
+- [EntityMultiMap&lt;TKey&gt;.KeyEnumerator](./DefaultEcs-EntityMultiMap-TKey--KeyEnumerator.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.KeyEnumerator')
 - [World.Enumerator](./DefaultEcs-World-Enumerator.md 'DefaultEcs.World.Enumerator')
 ### Interfaces
 - [IPublisher](./DefaultEcs-IPublisher.md 'DefaultEcs.IPublisher')
@@ -34,3 +34,4 @@ The [DefaultEcs](./DefaultEcs.md 'DefaultEcs') namespace contains types to put i
 - [EntityDisposedHandler(DefaultEcs.Entity)](./DefaultEcs-EntityDisposedHandler(DefaultEcs-Entity).md 'DefaultEcs.EntityDisposedHandler(DefaultEcs.Entity)')
 - [EntityEnabledHandler(DefaultEcs.Entity)](./DefaultEcs-EntityEnabledHandler(DefaultEcs-Entity).md 'DefaultEcs.EntityEnabledHandler(DefaultEcs.Entity)')
 - [MessageHandler&lt;T&gt;(T)](./DefaultEcs-MessageHandler-T-(T).md 'DefaultEcs.MessageHandler&lt;T&gt;(T)')
+- [WorldDisposedHandler(DefaultEcs.World)](./DefaultEcs-WorldDisposedHandler(DefaultEcs-World).md 'DefaultEcs.WorldDisposedHandler(DefaultEcs.World)')

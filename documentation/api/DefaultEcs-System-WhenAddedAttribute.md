@@ -1,7 +1,7 @@
 #### [DefaultEcs](./index.md 'index')
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
 ## WhenAddedAttribute Class
-Represents a component type to react to its addition when building the inner [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') of [AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;') when giving a [World](./DefaultEcs-World.md 'DefaultEcs.World') instance.  
+Represents a component type to react to its addition when building the inner [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') of [AEntitySetSystem&lt;T&gt;](./DefaultEcs-System-AEntitySetSystem-T-.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') when giving a [World](./DefaultEcs-World.md 'DefaultEcs.World') instance.  
 ```csharp
 public sealed class WhenAddedAttribute : DefaultEcs.System.ComponentAttribute
 ```

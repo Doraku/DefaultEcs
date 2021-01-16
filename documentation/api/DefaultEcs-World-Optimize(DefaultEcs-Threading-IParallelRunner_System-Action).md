@@ -1,7 +1,7 @@
 #### [DefaultEcs](./index.md 'index')
 ### [DefaultEcs](./DefaultEcs.md 'DefaultEcs').[World](./DefaultEcs-World.md 'DefaultEcs.World')
 ## World.Optimize(DefaultEcs.Threading.IParallelRunner, System.Action) Method
-Sorts current instance inner storage so accessing [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') and their components from [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') and [EntitiesMap&lt;TKey&gt;](./DefaultEcs-EntitiesMap-TKey-.md 'DefaultEcs.EntitiesMap&lt;TKey&gt;') always move forward in memory.  
+Sorts current instance inner storage so accessing [Entity](./DefaultEcs-Entity.md 'DefaultEcs.Entity') and their components from [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') and [EntityMultiMap&lt;TKey&gt;](./DefaultEcs-EntityMultiMap-TKey-.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;') always move forward in memory.  
 This method will return once [mainAction](#DefaultEcs-World-Optimize(DefaultEcs-Threading-IParallelRunner_System-Action)-mainAction 'DefaultEcs.World.Optimize(DefaultEcs.Threading.IParallelRunner, System.Action).mainAction') is executed even if the optimization process has not finished.  
 ```csharp
 public void Optimize(DefaultEcs.Threading.IParallelRunner runner, System.Action mainAction);

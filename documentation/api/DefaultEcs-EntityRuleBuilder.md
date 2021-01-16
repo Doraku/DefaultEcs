@@ -7,6 +7,7 @@ public sealed class EntityRuleBuilder
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; EntityRuleBuilder  
 ### Methods
+- [AsEnumerable()](./DefaultEcs-EntityRuleBuilder-AsEnumerable().md 'DefaultEcs.EntityRuleBuilder.AsEnumerable()')
 - [AsMap&lt;TKey&gt;()](./DefaultEcs-EntityRuleBuilder-AsMap-TKey-().md 'DefaultEcs.EntityRuleBuilder.AsMap&lt;TKey&gt;()')
 - [AsMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)](./DefaultEcs-EntityRuleBuilder-AsMap-TKey-(System-Collections-Generic-IEqualityComparer-TKey-).md 'DefaultEcs.EntityRuleBuilder.AsMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)')
 - [AsMap&lt;TKey&gt;(int)](./DefaultEcs-EntityRuleBuilder-AsMap-TKey-(int).md 'DefaultEcs.EntityRuleBuilder.AsMap&lt;TKey&gt;(int)')

@@ -42,4 +42,5 @@ Implements [System.Collections.Generic.IEnumerable&lt;](https://docs.microsoft.c
 - [SubscribeEntityDisabled(DefaultEcs.EntityDisabledHandler)](./DefaultEcs-World-SubscribeEntityDisabled(DefaultEcs-EntityDisabledHandler).md 'DefaultEcs.World.SubscribeEntityDisabled(DefaultEcs.EntityDisabledHandler)')
 - [SubscribeEntityDisposed(DefaultEcs.EntityDisposedHandler)](./DefaultEcs-World-SubscribeEntityDisposed(DefaultEcs-EntityDisposedHandler).md 'DefaultEcs.World.SubscribeEntityDisposed(DefaultEcs.EntityDisposedHandler)')
 - [SubscribeEntityEnabled(DefaultEcs.EntityEnabledHandler)](./DefaultEcs-World-SubscribeEntityEnabled(DefaultEcs-EntityEnabledHandler).md 'DefaultEcs.World.SubscribeEntityEnabled(DefaultEcs.EntityEnabledHandler)')
+- [SubscribeWorldDisposed(DefaultEcs.WorldDisposedHandler)](./DefaultEcs-World-SubscribeWorldDisposed(DefaultEcs-WorldDisposedHandler).md 'DefaultEcs.World.SubscribeWorldDisposed(DefaultEcs.WorldDisposedHandler)')
 - [ToString()](./DefaultEcs-World-ToString().md 'DefaultEcs.World.ToString()')

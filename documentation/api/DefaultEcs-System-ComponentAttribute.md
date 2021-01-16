@@ -1,7 +1,7 @@
 #### [DefaultEcs](./index.md 'index')
 ### [DefaultEcs.System](./DefaultEcs-System.md 'DefaultEcs.System')
 ## ComponentAttribute Class
-Represents the base attribute to declare how to build the inner [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') of [AEntitySystem&lt;T&gt;](./DefaultEcs-System-AEntitySystem-T-.md 'DefaultEcs.System.AEntitySystem&lt;T&gt;') when giving a [World](./DefaultEcs-World.md 'DefaultEcs.World') instance.  
+Represents the base attribute to declare how to build the inner [EntitySet](./DefaultEcs-EntitySet.md 'DefaultEcs.EntitySet') of [AEntitySetSystem&lt;T&gt;](./DefaultEcs-System-AEntitySetSystem-T-.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') when giving a [World](./DefaultEcs-World.md 'DefaultEcs.World') instance.  
 Do not use this attribute, prefer [WithAttribute](./DefaultEcs-System-WithAttribute.md 'DefaultEcs.System.WithAttribute') and [WithoutAttribute](./DefaultEcs-System-WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute') instead.  
 ```csharp
 public class ComponentAttribute : System.Attribute

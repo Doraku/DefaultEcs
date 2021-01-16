@@ -19,7 +19,7 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 - [Size](./DefaultEcs-Command-EntityCommandRecorder-Size.md 'DefaultEcs.Command.EntityCommandRecorder.Size')
 ### Methods
 - [Clear()](./DefaultEcs-Command-EntityCommandRecorder-Clear().md 'DefaultEcs.Command.EntityCommandRecorder.Clear()')
-- [CreateEntity()](./DefaultEcs-Command-EntityCommandRecorder-CreateEntity().md 'DefaultEcs.Command.EntityCommandRecorder.CreateEntity()')
+- [CreateEntity(DefaultEcs.World)](./DefaultEcs-Command-EntityCommandRecorder-CreateEntity(DefaultEcs-World).md 'DefaultEcs.Command.EntityCommandRecorder.CreateEntity(DefaultEcs.World)')
 - [Dispose()](./DefaultEcs-Command-EntityCommandRecorder-Dispose().md 'DefaultEcs.Command.EntityCommandRecorder.Dispose()')
-- [Execute(DefaultEcs.World)](./DefaultEcs-Command-EntityCommandRecorder-Execute(DefaultEcs-World).md 'DefaultEcs.Command.EntityCommandRecorder.Execute(DefaultEcs.World)')
+- [Execute()](./DefaultEcs-Command-EntityCommandRecorder-Execute().md 'DefaultEcs.Command.EntityCommandRecorder.Execute()')
 - [Record(DefaultEcs.Entity)](./DefaultEcs-Command-EntityCommandRecorder-Record(DefaultEcs-Entity).md 'DefaultEcs.Command.EntityCommandRecorder.Record(DefaultEcs.Entity)')

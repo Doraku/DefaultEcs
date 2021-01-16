@@ -7,6 +7,7 @@ public sealed class EntityRuleBuilder.EitherBuilder
 ```
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; EntityRuleBuilder.EitherBuilder  
 ### Methods
+- [AsEnumerable()](./DefaultEcs-EntityRuleBuilder-EitherBuilder-AsEnumerable().md 'DefaultEcs.EntityRuleBuilder.EitherBuilder.AsEnumerable()')
 - [AsMap&lt;TKey&gt;()](./DefaultEcs-EntityRuleBuilder-EitherBuilder-AsMap-TKey-().md 'DefaultEcs.EntityRuleBuilder.EitherBuilder.AsMap&lt;TKey&gt;()')
 - [AsMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)](./DefaultEcs-EntityRuleBuilder-EitherBuilder-AsMap-TKey-(System-Collections-Generic-IEqualityComparer-TKey-).md 'DefaultEcs.EntityRuleBuilder.EitherBuilder.AsMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)')
 - [AsMultiMap&lt;TKey&gt;()](./DefaultEcs-EntityRuleBuilder-EitherBuilder-AsMultiMap-TKey-().md 'DefaultEcs.EntityRuleBuilder.EitherBuilder.AsMultiMap&lt;TKey&gt;()')
