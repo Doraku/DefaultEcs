@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
 using DefaultEcs.System;
@@ -20,7 +21,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
     }
 
     [MemoryDiagnoser]
-    public class System
+    public partial class System
     {
         private struct Position
         {
@@ -132,6 +133,16 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             }
         }
 
+        private sealed partial class GeneratorSystem : AEntitySetSystem<float>
+        {
+            [Update]
+            private static void Update(float state, Speed speed, ref Position position)
+            {
+                position.X += speed.X * state;
+                position.Y += speed.Y * state;
+            }
+        }
+
         private World _world;
         private DefaultParallelRunner _runner;
         private ISystem<float> _systemSingle;
@@ -139,6 +150,8 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         private ISystem<float> _componentSystem;
         private ISystem<float> _bufferedSystem;
         private ISystem<float> _systemTPL;
+        private ISystem<float> _generatorSystem;
+        private IEnumerable<Entity> _enumerable;
 
         [Params(100, 1000, 10000, 100000)]
         public int EntityCount { get; set; }
@@ -153,6 +166,8 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             _componentSystem = new TestComponentSystem(_world, _runner);
             _bufferedSystem = new TestBufferedSystem(_world);
             _systemTPL = new TestSystemTPL(_world);
+            _generatorSystem = new GeneratorSystem(_world, _runner);
+            _enumerable = _world.GetEntities().With<Position>().With<Speed>().AsEnumerable();
 
             for (int i = 0; i < EntityCount; ++i)
             {
@@ -188,5 +203,23 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 
         [Benchmark]
         public void DefaultEcs_UpdateTPL() => _systemTPL.Update(1f / 60f);
+
+        [Benchmark]
+        public void DefaultEcs_UpdateMultiGenerator() => _generatorSystem.Update(1f / 60f);
+
+        [Benchmark]
+        public void DefaultEcs_UpdateEnumerable()
+        {
+            const float state = 1f / 60f;
+
+            foreach (Entity entity in _enumerable)
+            {
+                Speed speed = entity.Get<Speed>();
+                ref Position position = ref entity.Get<Position>();
+
+                position.X += speed.X * state;
+                position.Y += speed.Y * state;
+            }
+        }
     }
 }

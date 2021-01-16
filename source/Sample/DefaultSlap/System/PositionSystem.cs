@@ -1,22 +1,15 @@
-﻿using DefaultEcs;
-using DefaultEcs.System;
-using DefaultEcs.Threading;
+﻿using DefaultEcs.System;
 using DefaultSlap.Component;
 using Microsoft.Xna.Framework;
 
 namespace DefaultSlap.System
 {
-    [With(typeof(Position), typeof(PositionFloat))]
-    public sealed class PositionSystem : AEntitySetSystem<float>
+    public sealed partial class PositionSystem : AEntitySetSystem<float>
     {
-        public PositionSystem(World world, IParallelRunner runner)
-            : base(world, runner)
-        { }
-
-        protected override void Update(float state, in Entity entity)
+        [Update]
+        private static void Update(in PositionFloat positionFloat, ref Position position)
         {
-            Vector2 positionFloat = entity.Get<PositionFloat>().Value;
-            entity.Get<Position>().Value = new Point((int)positionFloat.X, (int)positionFloat.Y);
+            position.Value = new Point((int)positionFloat.Value.X, (int)positionFloat.Value.Y);
         }
     }
 }

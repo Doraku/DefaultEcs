@@ -17,7 +17,7 @@ using MonoWorld = MonoGame.Extended.Entities.World;
 namespace DefaultEcs.Benchmark.Performance
 {
     [MemoryDiagnoser]
-    public class SingleComponentEntityEnumeration
+    public partial class SingleComponentEntityEnumeration
     {
         private struct DefaultComponent
         {
@@ -87,6 +87,15 @@ namespace DefaultEcs.Benchmark.Performance
             }
         }
 
+        private sealed partial class DefaultEcsGeneratorSystem : AEntitySetSystem<int>
+        {
+            [Update]
+            private static void Update(ref DefaultComponent component)
+            {
+                ++component.Value;
+            }
+        }
+
         private class EntitasComponent : IComponent
         {
             public int Value;
@@ -143,6 +152,8 @@ namespace DefaultEcs.Benchmark.Performance
         private DefaultEcsEntityComponentSystem _defaultMultiEntityComponentSystem;
         private DefaultEcsComponentSystem _defaultComponentSystem;
         private DefaultEcsComponentSystem _defaultComponentMultiSystem;
+        private DefaultEcsGeneratorSystem _defaultGeneratorSystem;
+        private DefaultEcsGeneratorSystem _defaultGeneratorMultiSystem;
 
         private EntitasWorld _entitasWorld;
         private EntitasSystem _entitasSystem;
@@ -166,6 +177,8 @@ namespace DefaultEcs.Benchmark.Performance
             _defaultMultiEntityComponentSystem = new DefaultEcsEntityComponentSystem(_defaultWorld, _defaultRunner);
             _defaultComponentSystem = new DefaultEcsComponentSystem(_defaultWorld);
             _defaultComponentMultiSystem = new DefaultEcsComponentSystem(_defaultWorld, _defaultRunner);
+            _defaultGeneratorSystem = new DefaultEcsGeneratorSystem(_defaultWorld);
+            _defaultGeneratorMultiSystem = new DefaultEcsGeneratorSystem(_defaultWorld, _defaultRunner);
 
             _entitasWorld = new Context<EntitasEntity>(1, () => new EntitasEntity());
             _entitasSystem = new EntitasSystem(_entitasWorld);
@@ -229,6 +242,12 @@ namespace DefaultEcs.Benchmark.Performance
 
         [Benchmark]
         public void DefaultEcs_ComponentMultiSystem() => _defaultComponentMultiSystem.Update(42);
+
+        [Benchmark]
+        public void DefaultEcs_GeneratorSystem() => _defaultGeneratorSystem.Update(42);
+
+        [Benchmark]
+        public void DefaultEcs_GeneratorMultiSystem() => _defaultGeneratorMultiSystem.Update(42);
 
         [Benchmark]
         public void Entitas_System() => _entitasSystem.Execute();

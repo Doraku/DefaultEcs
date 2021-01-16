@@ -15,7 +15,7 @@ namespace DefaultBoids
     {
         #region Fields
 
-        public const int BoidsCount = 30000;
+        public const int BoidsCount = 50000;
 
         public const int ResolutionWidth = 1920;
         public const int ResolutionHeight = 1080;
@@ -69,11 +69,13 @@ namespace DefaultBoids
 
             _world = new World();
 
+            EntityMap<GridId> grid = _world.GetEntities().With<Behavior>().AsMap<GridId>();
+
             _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(
                 new ResetBehaviorSystem(_world, _runner),
-                new SetBehaviorSystem(_world, _runner),
-                new BoidsSystem(_world, _runner),
+                new SetBehaviorSystem(_world, _runner, grid),
+                new BoidsSystem(_world, _runner, grid),
                 new MoveSystem(_world, _runner));
 
             _drawSystem = new DrawSystem(_batch, _square, _world, _runner);

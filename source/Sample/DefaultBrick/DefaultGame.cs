@@ -55,8 +55,8 @@ namespace DefaultBrick
             _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(
                 new GameSystem(_world),
-                new PlayerSystem(Window, _world),
-                new BallToBarSystem(Window, _world),
+                new PlayerSystem(_world, Window),
+                new BallToBarSystem(_world, Window),
                 new VelocitySystem(_world, _runner),
                 new CollisionSystem(_world),
                 new BallBoundSystem(_world),

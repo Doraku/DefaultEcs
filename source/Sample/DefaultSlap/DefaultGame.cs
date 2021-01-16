@@ -56,12 +56,12 @@ namespace DefaultSlap
 
             _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(
-                new PlayerSystem(Window, _world),
+                new PlayerSystem(_world, Window),
                 new HitSystem(_world),
                 new GameSystem(_world),
                 new AISystem(_world, _runner),
                 new PositionSystem(_world, _runner),
-                new DrawSystem(_batch, _square, _world));
+                new DrawSystem(_world, _batch, _square));
 
             Entity player = _world.CreateEntity();
             player.Set<PlayerState>(default);

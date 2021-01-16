@@ -17,11 +17,11 @@ namespace DefaultBoids.System
 
         private int _updateCount;
 
-        public SetBehaviorSystem(World world, IParallelRunner runner)
+        public SetBehaviorSystem(World world, IParallelRunner runner, EntityMap<GridId> grid)
             : base(world, runner, 1)
         {
             _world = world;
-            _map = world.GetEntities().With<Behavior>().AsMap<GridId>();
+            _map = grid;
             _temp = new (Vector2 center, Vector2 direction, int count)[runner?.DegreeOfParallelism ?? 1];
         }
 

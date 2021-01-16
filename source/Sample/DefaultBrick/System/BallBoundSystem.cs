@@ -5,21 +5,12 @@ using DefaultEcs.System;
 
 namespace DefaultBrick.System
 {
-    public sealed class BallBoundSystem : AEntitySetSystem<float>
+    [With(typeof(Ball))]
+    public sealed partial class BallBoundSystem : AEntitySetSystem<float>
     {
-        private readonly World _world;
-
-        public BallBoundSystem(World world)
-            : base(world.GetEntities().With<Velocity>().With<Position>().With<Ball>().AsSet(), true)
+        [Update(true)]
+        private void Update(in Entity entity, ref Position position, ref Velocity velocity)
         {
-            _world = world;
-        }
-
-        protected override void Update(float state, in Entity entity)
-        {
-            ref Position position = ref entity.Get<Position>();
-            ref Velocity velocity = ref entity.Get<Velocity>();
-
             if (position.Value.X < 0)
             {
                 position.Value.X *= -1;
@@ -39,10 +30,8 @@ namespace DefaultBrick.System
             else if (position.Value.Y > 600)
             {
                 entity.Dispose();
-                _world.Publish<BallDroppedMessage>(default);
+                World.Publish<BallDroppedMessage>(default);
             }
-
-            entity.Set(position);
         }
     }
 }

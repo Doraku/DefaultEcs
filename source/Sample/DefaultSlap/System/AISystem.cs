@@ -1,39 +1,29 @@
 ﻿using System;
 using System.Threading;
-using DefaultEcs;
 using DefaultEcs.System;
-using DefaultEcs.Threading;
 using DefaultSlap.Component;
 using Microsoft.Xna.Framework;
 
 namespace DefaultSlap.System
 {
-    public sealed class AISystem : AEntitySetSystem<float>
+    public sealed partial class AISystem : AEntitySetSystem<float>
     {
-        private readonly ThreadLocal<Random> _random;
+        private readonly ThreadLocal<Random> _random = new ThreadLocal<Random>(() => new Random());
 
-        public AISystem(World world, IParallelRunner runner)
-            : base(world.GetEntities().With<PositionFloat>().With<TargetPosition>().With<Speed>().AsSet(), runner)
+        [Update]
+        private void Update(float elapsedTime, ref TargetPosition target, ref PositionFloat position, in Speed speed)
         {
-            _random = new ThreadLocal<Random>(() => new Random());
-        }
-
-        protected override void Update(float state, in Entity entity)
-        {
-            Point target = entity.Get<TargetPosition>().Value;
-            ref Vector2 position = ref entity.Get<PositionFloat>().Value;
-            Vector2 offset = new Vector2(target.X, target.Y) - position;
-            if (target == Point.Zero
+            Vector2 offset = new Vector2(target.Value.X, target.Value.Y) - position.Value;
+            if (target.Value == Point.Zero
                 || offset.Length() < 10f)
             {
-                target = new Point(_random.Value.Next(10, 790), _random.Value.Next(10, 590));
-                entity.Get<TargetPosition>().Value = target;
-                offset = new Vector2(target.X, target.Y) - position;
+                target.Value = new Point(_random.Value.Next(10, 790), _random.Value.Next(10, 590));
+                offset = new Vector2(target.Value.X, target.Value.Y) - position.Value;
             }
 
             offset.Normalize();
 
-            position += offset * state * entity.Get<Speed>().Value;
+            position.Value += offset * elapsedTime * speed.Value;
         }
     }
 }

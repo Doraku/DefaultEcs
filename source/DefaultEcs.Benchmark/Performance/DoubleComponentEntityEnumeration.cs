@@ -17,7 +17,7 @@ using MonoWorld = MonoGame.Extended.Entities.World;
 namespace DefaultEcs.Benchmark.Performance
 {
     [MemoryDiagnoser]
-    public class DoubleComponentEntityEnumeration
+    public partial class DoubleComponentEntityEnumeration
     {
         private const float Time = 1f / 60f;
 
@@ -79,6 +79,16 @@ namespace DefaultEcs.Benchmark.Performance
                     position.X += speed.X * state;
                     position.Y += speed.Y * state;
                 }
+            }
+        }
+
+        private sealed partial class DefaultEcsGeneratorSystem : AEntitySetSystem<float>
+        {
+            [Update]
+            private static void Update(float state, DefaultSpeed speed, ref DefaultPosition position)
+            {
+                position.X += speed.X * state;
+                position.Y += speed.Y * state;
             }
         }
 
@@ -157,6 +167,8 @@ namespace DefaultEcs.Benchmark.Performance
         private DefaultEcsSystem _defaultMultiSystem;
         private DefaultEcsComponentSystem _defaultComponentSystem;
         private DefaultEcsComponentSystem _defaultMultiComponentSystem;
+        private DefaultEcsGeneratorSystem _defaultGeneratorSystem;
+        private DefaultEcsGeneratorSystem _defaultMultiGeneratorSystem;
 
         private EntitiasWorld _entitasWorld;
         private EntitasSystem _entitasSystem;
@@ -178,6 +190,8 @@ namespace DefaultEcs.Benchmark.Performance
             _defaultMultiSystem = new DefaultEcsSystem(_defaultWorld, _defaultRunner);
             _defaultComponentSystem = new DefaultEcsComponentSystem(_defaultWorld, null);
             _defaultMultiComponentSystem = new DefaultEcsComponentSystem(_defaultWorld, _defaultRunner);
+            _defaultGeneratorSystem = new DefaultEcsGeneratorSystem(_defaultWorld, null);
+            _defaultMultiGeneratorSystem = new DefaultEcsGeneratorSystem(_defaultWorld, _defaultRunner);
 
             _entitasWorld = new Context<EntitasEntity>(2, () => new EntitasEntity());
             _entitasSystem = new EntitasSystem(_entitasWorld);
@@ -233,6 +247,12 @@ namespace DefaultEcs.Benchmark.Performance
 
         [Benchmark]
         public void DefaultEcs_ComponentMultiSystem() => _defaultMultiComponentSystem.Update(Time);
+
+        [Benchmark]
+        public void DefaultEcs_GeneratorSystem() => _defaultGeneratorSystem.Update(Time);
+
+        [Benchmark]
+        public void DefaultEcs_GeneratorMultiSystem() => _defaultMultiGeneratorSystem.Update(Time);
 
         [Benchmark]
         public void Entitas_System() => _entitasSystem.Execute();

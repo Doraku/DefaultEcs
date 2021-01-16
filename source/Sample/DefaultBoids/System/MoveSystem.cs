@@ -3,66 +3,46 @@ using DefaultBoids.Component;
 using DefaultEcs;
 using DefaultEcs.Command;
 using DefaultEcs.System;
-using DefaultEcs.Threading;
 using Microsoft.Xna.Framework;
 
 namespace DefaultBoids.System
 {
-    [With(typeof(DrawInfo), typeof(Velocity), typeof(Acceleration), typeof(GridId))]
-    public sealed class MoveSystem : AEntitySetSystem<float>
+    public sealed partial class MoveSystem : AEntitySetSystem<float>
     {
-        private readonly World _world;
-        private readonly EntityCommandRecorder _recorder;
+        private readonly EntityCommandRecorder _recorder = new EntityCommandRecorder();
 
-        public MoveSystem(World world, IParallelRunner runner)
-            : base(world, runner)
+        [Update]
+        private void Update(in Entity entity, float elaspedTime, ref Velocity velocity, ref DrawInfo drawInfo, ref GridId gridId, in Acceleration acceleration)
         {
-            _world = world;
-            _recorder = new EntityCommandRecorder();
-        }
+            velocity.Value += acceleration.Value * elaspedTime;
 
-        protected override void Update(float state, ReadOnlySpan<Entity> entities)
-        {
-            Components<DrawInfo> drawInfos = _world.GetComponents<DrawInfo>();
-            Components<Velocity> velocities = _world.GetComponents<Velocity>();
-            Components<Acceleration> accelerations = _world.GetComponents<Acceleration>();
-            Components<GridId> gridIds = _world.GetComponents<GridId>();
+            Vector2 direction = Vector2.Normalize(velocity.Value);
+            float speed = velocity.Value.Length();
 
-            foreach (ref readonly Entity entity in entities)
+            velocity.Value = Math.Clamp(speed, DefaultGame.MinVelocity, DefaultGame.MaxVelocity) * direction;
+
+            Vector2 newPosition = drawInfo.Position + (velocity.Value * elaspedTime);
+
+            GridId newId = newPosition.ToGridId();
+            if (!newId.Equals(gridId))
             {
-                ref Vector2 velocity = ref velocities[entity].Value;
-
-                velocity += accelerations[entity].Value * state;
-
-                Vector2 direction = Vector2.Normalize(velocity);
-                float speed = velocity.Length();
-
-                velocity = Math.Clamp(speed, DefaultGame.MinVelocity, DefaultGame.MaxVelocity) * direction;
-
-                ref DrawInfo drawInfo = ref drawInfos[entity];
-                Vector2 newPosition = drawInfo.Position + (velocity * state);
-
-                GridId newId = newPosition.ToGridId();
-                if (!newId.Equals(gridIds[entity]))
-                {
-                    entity.Get<GridId>() = newId;
-                    _recorder.Record(entity).NotifyChanged<GridId>();
-                }
-                drawInfo.Position = newPosition;
-
-                if ((drawInfo.Position.X < 0 && velocity.X < 0)
-                    || (drawInfo.Position.X > DefaultGame.ResolutionWidth && velocity.X > 0))
-                {
-                    velocity.X *= -1;
-                }
-                if ((drawInfo.Position.Y < 0 && velocity.Y < 0)
-                    || (drawInfo.Position.Y > DefaultGame.ResolutionHeight && velocity.Y > 0))
-                {
-                    velocity.Y *= -1;
-                }
-
-                drawInfo.Rotation = MathF.Atan2(velocity.X, -velocity.Y);
+                gridId = newId;
+                _recorder.Record(entity).NotifyChanged<GridId>();
             }
+            drawInfo.Position = newPosition;
+
+            if ((drawInfo.Position.X < 0 && velocity.Value.X < 0)
+                || (drawInfo.Position.X > DefaultGame.ResolutionWidth && velocity.Value.X > 0))
+            {
+                velocity.Value.X *= -1;
+            }
+            if ((drawInfo.Position.Y < 0 && velocity.Value.Y < 0)
+                || (drawInfo.Position.Y > DefaultGame.ResolutionHeight && velocity.Value.Y > 0))
+            {
+                velocity.Value.Y *= -1;
+            }
+
+            drawInfo.Rotation = MathF.Atan2(velocity.Value.X, -velocity.Value.Y);
         }
 
         protected override void PostUpdate(float state) => _recorder.Execute();

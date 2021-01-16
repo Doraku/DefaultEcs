@@ -1,24 +1,15 @@
-﻿using System;
-using DefaultBoids.Component;
-using DefaultEcs;
+﻿using DefaultBoids.Component;
 using DefaultEcs.System;
-using DefaultEcs.Threading;
 
 namespace DefaultBoids.System
 {
-    [With(typeof(GridId), typeof(Behavior))]
-    public sealed class ResetBehaviorSystem : AEntitySetSystem<float>
+    [With(typeof(GridId))]
+    public sealed partial class ResetBehaviorSystem : AEntitySetSystem<float>
     {
-        public ResetBehaviorSystem(World world, IParallelRunner runner)
-            : base(world, runner)
-        { }
-
-        protected override void Update(float state, ReadOnlySpan<Entity> entities)
+        [Update]
+        private static void Update(ref Behavior behavior)
         {
-            foreach (ref readonly Entity entity in entities)
-            {
-                entity.Get<Behavior>() = new Behavior();
-            }
+            behavior = new Behavior();
         }
     }
 }

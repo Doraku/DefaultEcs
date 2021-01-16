@@ -7,20 +7,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace DefaultSlap.System
 {
-    internal sealed class PlayerSystem : AEntitySetSystem<float>
+    internal sealed partial class PlayerSystem : AEntitySetSystem<float>
     {
+        [ConstructorParameter]
         private readonly GameWindow _window;
-        private readonly World _world;
 
         private MouseState _mouseState;
         private bool _isSlaping;
-
-        public PlayerSystem(GameWindow window, World world)
-            : base(world.GetEntities().With<PlayerState>().With<DrawInfo>().With<Position>().AsSet())
-        {
-            _window = window;
-            _world = world;
-        }
 
         protected override void PreUpdate(float state)
         {
@@ -28,19 +21,18 @@ namespace DefaultSlap.System
             _isSlaping = _mouseState.LeftButton == ButtonState.Pressed;
         }
 
-        protected override void Update(float state, in Entity entity)
+        [Update]
+        private void Update(ref PlayerState playerState, ref DrawInfo drawInfo)
         {
-            entity.Get<Position>().Value = _mouseState.Position;
-            ref PlayerState playerState = ref entity.Get<PlayerState>();
             if (_isSlaping
                 && !playerState.IsSlaping)
             {
-                Point size = entity.Get<DrawInfo>().Size;
-                _world.Publish(new SlapMessage(new Rectangle(_mouseState.Position - (size / new Point(2)), size)));
+                Point size = drawInfo.Size;
+                World.Publish(new SlapMessage(new Rectangle(_mouseState.Position - (size / new Point(2)), size)));
             }
 
             playerState.IsSlaping = _isSlaping;
-            entity.Get<DrawInfo>().Color.A = _isSlaping ? (byte)0xFF : (byte)0x7F;
+            drawInfo.Color.A = _isSlaping ? (byte)0xFF : (byte)0x7F;
         }
     }
 }

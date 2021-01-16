@@ -17,19 +17,10 @@ namespace DefaultBrick.System
             _square = square;
         }
 
-        protected override void PreUpdate(float state)
-        {
-            _batch.Begin();
-        }
+        protected override void PreUpdate(float state) => _batch.Begin();
 
-        protected override void Update(float state, ref DrawInfo component)
-        {
-            _batch.Draw(_square, component.Destination, component.Color);
-        }
+        protected override void Update(float state, ref DrawInfo component) => _batch.Draw(_square, component.Destination, component.Color);
 
-        protected override void PostUpdate(float state)
-        {
-            _batch.End();
-        }
+        protected override void PostUpdate(float state) => _batch.End();
     }
 }
