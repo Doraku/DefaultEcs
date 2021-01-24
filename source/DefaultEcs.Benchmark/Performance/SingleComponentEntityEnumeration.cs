@@ -3,6 +3,7 @@ using BenchmarkDotNet.Attributes;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
 using Entitas;
+using Leopotam.Ecs;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
@@ -11,6 +12,9 @@ using DefaultEntitySet = DefaultEcs.EntitySet;
 using DefaultWorld = DefaultEcs.World;
 using EntitasEntity = Entitas.Entity;
 using EntitasWorld = Entitas.IContext<Entitas.Entity>;
+using LeoEntity = Leopotam.Ecs.EcsEntity;
+using LeoSystems = Leopotam.Ecs.EcsSystems;
+using LeoWorld = Leopotam.Ecs.EcsWorld;
 using MonoEntity = MonoGame.Extended.Entities.Entity;
 using MonoWorld = MonoGame.Extended.Entities.World;
 
@@ -143,6 +147,24 @@ namespace DefaultEcs.Benchmark.Performance
             }
         }
 
+        private struct LeoComponent
+        {
+            public int Value;
+        }
+
+        public sealed class LeoSystem : IEcsRunSystem
+        {
+            private EcsFilter<LeoComponent> _filter = null;
+
+            public void Run()
+            {
+                foreach (var i in _filter)
+                {
+                    ++_filter.Get1(i).Value;
+                }
+            }
+        }
+
         private DefaultWorld _defaultWorld;
         private DefaultParallelRunner _defaultRunner;
         private DefaultEntitySet _defaultEntitySet;
@@ -161,6 +183,10 @@ namespace DefaultEcs.Benchmark.Performance
 
         private MonoWorld _monoWorld;
         private GameTime _time;
+
+        private LeoWorld _leoWorld;
+        private LeoSystems _leoSystems;
+        private LeoSystem _leoSystem;
 
         [Params(100000)]
         public int EntityCount { get; set; }
@@ -187,6 +213,11 @@ namespace DefaultEcs.Benchmark.Performance
             _monoWorld = new WorldBuilder().AddSystem(new MonoSystem()).Build();
             _time = new GameTime();
 
+            _leoWorld = new LeoWorld();
+            _leoSystem = new LeoSystem();
+            _leoSystems = new LeoSystems(_leoWorld).Add(_leoSystem);
+            _leoSystems.ProcessInjects().Init();
+
             for (int i = 0; i < EntityCount; ++i)
             {
                 DefaultEntity defaultEntity = _defaultWorld.CreateEntity();
@@ -197,6 +228,9 @@ namespace DefaultEcs.Benchmark.Performance
 
                 MonoEntity monoEntity = _monoWorld.CreateEntity();
                 monoEntity.Attach(new MonoComponent());
+
+                LeoEntity leoEntity = _leoWorld.NewEntity();
+                leoEntity.Get<LeoComponent>();
             }
         }
 
@@ -257,5 +291,8 @@ namespace DefaultEcs.Benchmark.Performance
 
         [Benchmark]
         public void MonoGameExtendedEntities_System() => _monoWorld.Update(_time);
+
+        [Benchmark]
+        public void Leo_System() => _leoSystem.Run();
     }
 }

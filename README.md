@@ -588,6 +588,10 @@ Your game uses DefaultEcs? Don't hesitate to contact me.
 # Performance
 Feel free to correct my use of the compared ecs libraries as I looked only for basic uses which may not be the most performant way.
 
+[Entitas](https://github.com/sschmid/Entitas-CSharp)  
+[MonoGameExtendedEntities](https://github.com/craftworkgames/MonoGame.Extended)  
+[Leo](https://github.com/Leopotam/ecs)  
+
 ```
 BenchmarkDotNet=v0.12.0, OS=Windows 10.0.18362
 Intel Core i5-3570K CPU 3.40GHz (Ivy Bridge), 1 CPU, 4 logical and 4 physical cores
@@ -612,6 +616,7 @@ SingleComponentEntityEnumeration: add one to the basic component (containing one
 |                        Entitas_System | 5,640.56 μs | 17.903 μs | 15.871 μs | 5,637.30 μs |     - |     - |     - |     128 B |
 |                   Entitas_MultiSystem | 3,205.63 μs | 30.255 μs | 28.300 μs | 3,204.10 μs |     - |     - |     - |     473 B |
 |       MonoGameExtendedEntities_System | 2,513.39 μs | 16.349 μs | 15.293 μs | 2,510.51 μs |     - |     - |     - |     192 B |
+|                            Leo_System |   148.16 μs |  0.053 μs |  0.047 μs |   148.16 μs |     - |     - |     - |         - |
 
 DoubleComponentEntityEnumeration: do basic movement with two component (position, speed) on 100000 entities
 
@@ -627,3 +632,4 @@ DoubleComponentEntityEnumeration: do basic movement with two component (position
 |                  Entitas_System | 5,007.1 μs | 16.58 μs | 14.70 μs | 5,005.5 μs |     - |     - |     - |     128 B |
 |             Entitas_MultiSystem | 3,389.1 μs | 14.19 μs | 11.08 μs | 3,390.2 μs |     - |     - |     - |     467 B |
 | MonoGameExtendedEntities_System | 3,033.1 μs |  7.96 μs |  7.06 μs | 3,034.4 μs |     - |     - |     - |     192 B |
+|                      Leo_System |   447.5 us |  0.08 us |  0.06 us |   447.6 us |     - |     - |     - |         - |
