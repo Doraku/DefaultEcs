@@ -591,6 +591,7 @@ Feel free to correct my use of the compared ecs libraries as I looked only for b
 [Entitas](https://github.com/sschmid/Entitas-CSharp)  
 [MonoGameExtendedEntities](https://github.com/craftworkgames/MonoGame.Extended)  
 [Leo](https://github.com/Leopotam/ecs)  
+[Svelto](https://github.com/sebas77/Svelto.ECS)  
 
 ```
 BenchmarkDotNet=v0.12.0, OS=Windows 10.0.18362
@@ -617,6 +618,7 @@ SingleComponentEntityEnumeration: add one to the basic component (containing one
 |                   Entitas_MultiSystem | 3,599.35 μs | 40.843 μs | 36.206 μs |     - |     - |     - |     477 B |
 |       MonoGameExtendedEntities_System | 2,248.81 μs |  7.693 μs |  6.424 μs |     - |     - |     - |     163 B |
 |                            Leo_System |   147.62 μs |  0.012 μs |  0.011 μs |     - |     - |     - |         - |
+|                         Svelto_System |    83.95 μs |  0.048 μs |  0.037 μs |     - |     - |     - |         - |
 
 DoubleComponentEntityEnumeration: do basic movement with two components (position, speed) on 100000 entities
 
@@ -633,6 +635,7 @@ DoubleComponentEntityEnumeration: do basic movement with two components (positio
 |             Entitas_MultiSystem | 3,727.1 μs | 18.70 μs | 17.49 μs |     - |     - |     - |     463 B |
 | MonoGameExtendedEntities_System | 3,133.0 μs |  4.40 μs |  3.90 μs |     - |     - |     - |     183 B |
 |                      Leo_System |   449.0 μs |  0.07 μs |  0.07 μs |     - |     - |     - |         - |
+|                   Svelto_System |   155.7 μs |  0.03 μs |  0.02 μs |     - |     - |     - |         - |
 
 TripleComponentEntityEnumeration: do basic operation with three components on 100000 entities
 
@@ -649,3 +652,4 @@ TripleComponentEntityEnumeration: do basic operation with three components on 10
 |             Entitas_MultiSystem | 3,790.2 μs | 22.05 μs | 20.63 μs |     - |     - |     - |     470 B |
 | MonoGameExtendedEntities_System | 3,513.3 μs |  3.07 μs |  2.57 μs |     - |     - |     - |     192 B |
 |                      Leo_System |   834.8 μs |  0.54 μs |  0.48 μs |     - |     - |     - |         - |
+|                   Svelto_System |   129.9 μs |  0.01 μs |  0.01 μs |     - |     - |     - |         - |

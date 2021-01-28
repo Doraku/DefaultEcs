@@ -2,7 +2,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFramework>net48</TargetFramework>
-    <!--<TargetFramework>netcoreapp3.0</TargetFramework>-->
+    <!--<TargetFramework>netcoreapp3.1</TargetFramework>-->
     <DefineConstants></DefineConstants>
     <Optimize>true</Optimize>
     <Configurations>Debug;Release</Configurations>
@@ -38,15 +38,16 @@
     <Reference Include="DesperateDevs.Utils">
       <HintPath>..\..\dependency\DesperateDevs.Utils.dll</HintPath>
     </Reference>
+    <!--v2020.11.22-->
     <Reference Include="Leopotam.Ecs">
       <HintPath>..\..\dependency\Leopotam.Ecs.dll</HintPath>
     </Reference>
-    <!--v2.7.0--><!--
+    <!--v3.1.3-->
     <Reference Include="Svelto.ECS">
       <HintPath>..\..\dependency\Svelto.ECS.dll</HintPath>
     </Reference>
     <Reference Include="Svelto.Common">
       <HintPath>..\..\dependency\Svelto.Common.dll</HintPath>
-    </Reference>-->
+    </Reference>
   </ItemGroup>
 </Project>

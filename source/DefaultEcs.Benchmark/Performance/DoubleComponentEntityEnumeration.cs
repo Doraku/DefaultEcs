@@ -7,6 +7,8 @@ using Leopotam.Ecs;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
+using Svelto.ECS;
+using Svelto.ECS.Schedulers;
 using DefaultEntity = DefaultEcs.Entity;
 using DefaultEntitySet = DefaultEcs.EntitySet;
 using DefaultWorld = DefaultEcs.World;
@@ -192,6 +194,45 @@ namespace DefaultEcs.Benchmark.Performance
             }
         }
 
+        private struct SveltoSpeed : IEntityComponent
+        {
+            public float X;
+            public float Y;
+        }
+
+        private struct SveltoPosition : IEntityComponent
+        {
+            public float X;
+            public float Y;
+        }
+
+        private sealed class SveltoEntity : GenericEntityDescriptor<SveltoSpeed, SveltoPosition>
+        { }
+
+        private sealed class SveltoSystem : IQueryingEntitiesEngine
+        {
+            public EntitiesDB entitiesDB { get; set; }
+
+            public void Ready()
+            { }
+
+            public void Update()
+            {
+                var (speeds, positions, count) = entitiesDB.QueryEntities<SveltoSpeed, SveltoPosition>(_sveltoGroup);
+
+                for (var i = 0; i < count; i++)
+                {
+                    SveltoSpeed speed = speeds[i];
+                    ref SveltoPosition position = ref positions[i];
+
+                    position.X += speed.X * Time;
+                    position.Y += speed.Y * Time;
+                }
+            }
+        }
+
+        private static readonly ExclusiveGroup _sveltoGroup = new ExclusiveGroup();
+
         private DefaultWorld _defaultWorld;
         private DefaultEntitySet _defaultEntitySet;
         private DefaultParallelRunner _defaultRunner;
@@ -212,6 +253,9 @@ namespace DefaultEcs.Benchmark.Performance
         private LeoWorld _leoWorld;
         private LeoSystems _leoSystems;
         private LeoSystem _leoSystem;
+
+        private EnginesRoot _sveltoWorld;
+        private SveltoSystem _sveltoSystem;
 
         [Params(100000)]
         public int EntityCount { get; set; }
@@ -241,6 +285,12 @@ namespace DefaultEcs.Benchmark.Performance
             _leoSystems = new LeoSystems(_leoWorld).Add(_leoSystem);
             _leoSystems.ProcessInjects().Init();
 
+            SimpleEntitiesSubmissionScheduler sveltoScheduler = new SimpleEntitiesSubmissionScheduler();
+            _sveltoWorld = new EnginesRoot(sveltoScheduler);
+            _sveltoSystem = new SveltoSystem();
+            _sveltoWorld.AddEngine(_sveltoSystem);
+            IEntityFactory sveltoFactory = _sveltoWorld.GenerateEntityFactory();
+
             for (int i = 0; i < EntityCount; ++i)
             {
                 DefaultEntity defaultEntity = _defaultWorld.CreateEntity();
@@ -258,7 +308,11 @@ namespace DefaultEcs.Benchmark.Performance
                 LeoEntity leoEntity = _leoWorld.NewEntity();
                 leoEntity.Get<LeoSpeed>() = new LeoSpeed { X = 42, Y = 42 };
                 leoEntity.Get<LeoPosition>();
+
+                sveltoFactory.BuildEntity<SveltoEntity>((uint)i, _sveltoGroup).GetOrCreate<SveltoSpeed>() = new SveltoSpeed { X = 42, Y = 42 };
             }
+
+            sveltoScheduler.SubmitEntities();
         }
 
         [GlobalCleanup]
@@ -310,5 +364,8 @@ namespace DefaultEcs.Benchmark.Performance
 
         [Benchmark]
         public void Leo_System() => _leoSystem.Run();
+
+        [Benchmark]
+        public void Svelto_System() => _sveltoSystem.Update();
     }
 }

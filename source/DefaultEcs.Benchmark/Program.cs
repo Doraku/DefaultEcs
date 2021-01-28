@@ -21,7 +21,6 @@ namespace DefaultEcs.Benchmark
                 typeof(Performance.TripleComponentEntityEnumeration),
                 //typeof(Message.Publish),
             }).RunAll();
-
             //BenchmarkSwitcher.FromAssembly(typeof(Program).GetTypeInfo().Assembly).RunAll();
         }
     }
