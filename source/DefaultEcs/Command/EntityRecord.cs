@@ -66,7 +66,16 @@ namespace DefaultEcs.Command
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
         /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
-        public void Set<T>(in T component = default) => _recorder.WriteSetCommand(_offset, component);
+        public void Set<T>(in T component) => _recorder.WriteSetCommand(_offset, component);
+
+        /// <summary>
+        /// Sets the value of the component of type <typeparamref name="T"/> to its default value on the corresponding <see cref="Entity"/>.
+        /// For a blittable component, this command takes 9 bytes + the size of the component.
+        /// For non blittable component, this command takes 13 bytes and may cause some allocation because of boxing on struct component type.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
+        public void Set<T>() => Set<T>(default);
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the corresponding <see cref="Entity"/> to the same instance of an other <see cref="EntityRecord"/>.

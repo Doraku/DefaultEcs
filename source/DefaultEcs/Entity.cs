@@ -166,7 +166,7 @@ namespace DefaultEcs
         /// <param name="component">The value of the component.</param>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
-        public void Set<T>(in T component = default)
+        public void Set<T>(in T component)
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
@@ -183,6 +183,14 @@ namespace DefaultEcs
 
             ComponentManager<T>.GetPrevious(WorldId)?.Set(EntityId, component);
         }
+
+        /// <summary>
+        /// Sets the value of the component of type <typeparamref name="T"/> to its default value on the current <see cref="Entity"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
+        /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
+        public void Set<T>() => Set<T>(default);
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/> to the same instance of an other <see cref="Entity"/>.
