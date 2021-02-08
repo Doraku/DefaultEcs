@@ -29,6 +29,7 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 - [NotifyChanged&lt;T&gt;()](./DefaultEcs-Entity-NotifyChanged-T-().md 'DefaultEcs.Entity.NotifyChanged&lt;T&gt;()')
 - [ReadAllComponents(DefaultEcs.Serialization.IComponentReader)](./DefaultEcs-Entity-ReadAllComponents(DefaultEcs-Serialization-IComponentReader).md 'DefaultEcs.Entity.ReadAllComponents(DefaultEcs.Serialization.IComponentReader)')
 - [Remove&lt;T&gt;()](./DefaultEcs-Entity-Remove-T-().md 'DefaultEcs.Entity.Remove&lt;T&gt;()')
+- [Set&lt;T&gt;()](./DefaultEcs-Entity-Set-T-().md 'DefaultEcs.Entity.Set&lt;T&gt;()')
 - [Set&lt;T&gt;(T)](./DefaultEcs-Entity-Set-T-(T).md 'DefaultEcs.Entity.Set&lt;T&gt;(T)')
 - [SetSameAs&lt;T&gt;(DefaultEcs.Entity)](./DefaultEcs-Entity-SetSameAs-T-(DefaultEcs-Entity).md 'DefaultEcs.Entity.SetSameAs&lt;T&gt;(DefaultEcs.Entity)')
 - [ToString()](./DefaultEcs-Entity-ToString().md 'DefaultEcs.Entity.ToString()')

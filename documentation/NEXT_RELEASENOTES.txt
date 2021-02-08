@@ -1,2 +1,0 @@
-added Entity.Set with no parameter (fix for Unity IL2CPP)  
-added EntityRecord.Set with no parameter (fix for Unity IL2CPP)  

@@ -1,3 +1,9 @@
+## DefaultEcs 0.15.1
+added Entity.Set with no parameter (fix for Unity IL2CPP)  
+added EntityRecord.Set with no parameter (fix for Unity IL2CPP)  
+
+[nuget package](https://www.nuget.org/packages/DefaultEcs/0.15.1)
+
 ## DefaultEcs 0.15.0
 breaking changes:  
 removed Entity.SetAsChildOf  
