@@ -110,11 +110,11 @@ namespace DefaultEcs.Test.Command
             Entity entity = world.CreateEntity();
 
             EntityRecord record = recorder.Record(entity);
-            record.Set(true);
+            record.Set<bool>();
 
             recorder.Execute();
 
-            Check.That(entity.Get<bool>()).IsTrue();
+            Check.That(entity.Get<bool>()).IsFalse();
         }
 
         [Fact]
