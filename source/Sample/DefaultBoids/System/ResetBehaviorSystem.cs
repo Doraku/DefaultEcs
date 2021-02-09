@@ -1,15 +1,17 @@
-﻿using DefaultBoids.Component;
+﻿using System;
+using DefaultBoids.Component;
+using DefaultEcs;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 
 namespace DefaultBoids.System
 {
-    [With(typeof(GridId))]
-    public sealed partial class ResetBehaviorSystem : AEntitySetSystem<float>
+    public sealed class ResetBehaviorSystem : AComponentSystem<float, Behavior>
     {
-        [Update]
-        private static void Update(ref Behavior behavior)
-        {
-            behavior = new Behavior();
-        }
+        public ResetBehaviorSystem(World world, IParallelRunner runner)
+            : base(world, runner)
+        { }
+
+        protected override void Update(float state, Span<Behavior> components) => components.Fill(default);
     }
 }

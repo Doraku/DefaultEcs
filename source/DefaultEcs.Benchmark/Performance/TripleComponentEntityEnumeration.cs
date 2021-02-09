@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using BenchmarkDotNet.Attributes;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
@@ -183,6 +184,8 @@ namespace DefaultEcs.Benchmark.Performance
 
         private sealed class LeoSystem : IEcsRunSystem
         {
+            [SuppressMessage("Design", "RCS1169:Make field read-only.")]
+            [SuppressMessage("Style", "IDE0044:Add readonly modifier")]
             private EcsFilter<LeoA, LeoB, LeoX> _filter = null;
 
             public void Run()

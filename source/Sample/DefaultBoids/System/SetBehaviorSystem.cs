@@ -11,7 +11,6 @@ namespace DefaultBoids.System
     [With(typeof(Velocity), typeof(DrawInfo))]
     public sealed class SetBehaviorSystem : AEntityMultiMapSystem<float, GridId>
     {
-        private readonly World _world;
         private readonly EntityMap<GridId> _map;
         private readonly (Vector2 center, Vector2 direction, int count)[] _temp;
 
@@ -20,7 +19,6 @@ namespace DefaultBoids.System
         public SetBehaviorSystem(World world, IParallelRunner runner, EntityMap<GridId> grid)
             : base(world, runner, 1)
         {
-            _world = world;
             _map = grid;
             _temp = new (Vector2 center, Vector2 direction, int count)[runner?.DegreeOfParallelism ?? 1];
         }
@@ -32,8 +30,8 @@ namespace DefaultBoids.System
 
         protected override void Update(float state, in GridId key, ReadOnlySpan<Entity> entities)
         {
-            Components<Velocity> velocities = _world.GetComponents<Velocity>();
-            Components<DrawInfo> drawInfos = _world.GetComponents<DrawInfo>();
+            Components<Velocity> velocities = World.GetComponents<Velocity>();
+            Components<DrawInfo> drawInfos = World.GetComponents<DrawInfo>();
 
             Vector2 center = Vector2.Zero;
             Vector2 direction = Vector2.Zero;
@@ -49,18 +47,20 @@ namespace DefaultBoids.System
 
         protected override void PostUpdate(float state, GridId key)
         {
+            Components<Behavior> behaviors = World.GetComponents<Behavior>();
+
             Vector2 center = Vector2.Zero;
             Vector2 direction = Vector2.Zero;
             int count = 0;
 
-            for (int i = 0; i < _updateCount; ++i)
+            foreach ((Vector2 tCenter, Vector2 tDirection, int tCount) in _temp)
             {
-                center += _temp[i].center;
-                direction += _temp[i].direction;
-                count += _temp[i].count;
+                center += tCenter;
+                direction += tDirection;
+                count += tCount;
             }
 
-            _map[key].Get<Behavior>() = new Behavior(center, direction, count);
+            behaviors[_map[key]] = new Behavior(center, direction, count);
         }
 
         public override void Dispose()

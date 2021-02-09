@@ -1,7 +1,6 @@
 ﻿using System;
 using DefaultBoids.Component;
 using DefaultEcs;
-using DefaultEcs.Command;
 using DefaultEcs.System;
 using Microsoft.Xna.Framework;
 
@@ -9,7 +8,7 @@ namespace DefaultBoids.System
 {
     public sealed partial class MoveSystem : AEntitySetSystem<float>
     {
-        private readonly EntityCommandRecorder _recorder = new EntityCommandRecorder();
+        private readonly SafeBuffer<Entity> _buffer = new SafeBuffer<Entity>(DefaultGame.BoidsCount);
 
         [Update]
         private void Update(in Entity entity, float elaspedTime, ref Velocity velocity, ref DrawInfo drawInfo, ref GridId gridId, in Acceleration acceleration)
@@ -27,7 +26,7 @@ namespace DefaultBoids.System
             if (!newId.Equals(gridId))
             {
                 gridId = newId;
-                _recorder.Record(entity).NotifyChanged<GridId>();
+                _buffer.Add(entity);
             }
             drawInfo.Position = newPosition;
 
@@ -45,13 +44,12 @@ namespace DefaultBoids.System
             drawInfo.Rotation = MathF.Atan2(velocity.Value.X, -velocity.Value.Y);
         }
 
-        protected override void PostUpdate(float state) => _recorder.Execute();
-
-        public override void Dispose()
+        protected override void PostUpdate(float state)
         {
-            _recorder.Dispose();
-
-            base.Dispose();
+            foreach (ref readonly Entity entity in _buffer)
+            {
+                entity.NotifyChanged<GridId>();
+            }
         }
     }
 }

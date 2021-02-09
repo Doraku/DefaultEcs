@@ -15,7 +15,7 @@ namespace DefaultBoids
     {
         #region Fields
 
-        public const int BoidsCount = 50000;
+        public const int BoidsCount = 70000;
 
         public const int ResolutionWidth = 1920;
         public const int ResolutionHeight = 1080;
@@ -36,7 +36,7 @@ namespace DefaultBoids
         private readonly World _world;
         private readonly DefaultParallelRunner _runner;
         private readonly ISystem<float> _system;
-        private readonly ISystem<float> _drawSystem;
+        private readonly ISystem<SpriteBatch> _drawSystem;
         private readonly Stopwatch _watch;
 
         private int _frameCount;
@@ -69,7 +69,7 @@ namespace DefaultBoids
 
             _world = new World();
 
-            EntityMap<GridId> grid = _world.GetEntities().With<Behavior>().AsMap<GridId>();
+            EntityMap<GridId> grid = _world.GetEntities().With<Behavior>().AsMap<GridId>(BoidsCount);
 
             _runner = new DefaultParallelRunner(Environment.ProcessorCount);
             _system = new SequentialSystem<float>(
@@ -78,7 +78,7 @@ namespace DefaultBoids
                 new BoidsSystem(_world, _runner, grid),
                 new MoveSystem(_world, _runner));
 
-            _drawSystem = new DrawSystem(_batch, _square, _world, _runner);
+            _drawSystem = new DrawSystem(_square, _world, _runner);
 
             _world.CreateBehaviors();
 
@@ -123,7 +123,7 @@ namespace DefaultBoids
 
         protected override void Draw(GameTime gameTime)
         {
-            _drawSystem.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            _drawSystem.Update(_batch);
 
             ++_frameCount;
             if (_watch.Elapsed.TotalSeconds > .5)
