@@ -26,6 +26,7 @@
     </PackageReference>
     <PackageReference Include="MonoGame.Extended.Entities" Version="3.8.0" />
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DefaultEcs\DefaultEcs.csproj" />
@@ -41,6 +42,9 @@
     <!--v2020.11.22-->
     <Reference Include="Leopotam.Ecs">
       <HintPath>..\..\dependency\Leopotam.Ecs.dll</HintPath>
+    </Reference>
+    <Reference Include="Leopotam.Ecs.Threads">
+      <HintPath>..\..\dependency\Leopotam.Ecs.Threads.dll</HintPath>
     </Reference>
     <!--v3.1.3-->
     <Reference Include="Svelto.ECS">

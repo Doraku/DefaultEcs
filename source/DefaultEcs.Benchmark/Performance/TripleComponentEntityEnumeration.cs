@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using BenchmarkDotNet.Attributes;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
 using Entitas;
 using Leopotam.Ecs;
+using Leopotam.Ecs.Threads;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
@@ -184,15 +184,34 @@ namespace DefaultEcs.Benchmark.Performance
 
         private sealed class LeoSystem : IEcsRunSystem
         {
-            [SuppressMessage("Design", "RCS1169:Make field read-only.")]
-            [SuppressMessage("Style", "IDE0044:Add readonly modifier")]
-            private EcsFilter<LeoA, LeoB, LeoX> _filter = null;
+            private readonly EcsFilter<LeoA, LeoB, LeoX> _filter = null;
 
             public void Run()
             {
-                foreach (var i in _filter)
+                for (int i = 0, iMax = _filter.GetEntitiesCount(); i < iMax; i++)
                 {
                     _filter.Get3(i).Value += (_filter.Get1(i).Value + _filter.Get2(i).Value) * Time;
+                }
+            }
+        }
+
+        private sealed class LeoMultiSystem : EcsMultiThreadSystem<EcsFilter<LeoA, LeoB, LeoX>>
+        {
+            private readonly EcsFilter<LeoA, LeoB, LeoX> _filter = null;
+
+            protected override EcsFilter<LeoA, LeoB, LeoX> GetFilter() => _filter;
+
+            protected override int GetMinJobSize() => 0;
+
+            protected override int GetThreadsCount() => Environment.ProcessorCount - 1;
+
+            protected override EcsMultiThreadWorker GetWorker() => Worker;
+
+            private static void Worker(EcsMultiThreadWorkerDesc workerDesc)
+            {
+                foreach (var i in workerDesc)
+                {
+                    workerDesc.Filter.Get3(i).Value += (workerDesc.Filter.Get1(i).Value + workerDesc.Filter.Get2(i).Value) * Time;
                 }
             }
         }
@@ -255,6 +274,7 @@ namespace DefaultEcs.Benchmark.Performance
         private LeoWorld _leoWorld;
         private LeoSystems _leoSystems;
         private LeoSystem _leoSystem;
+        private IEcsRunSystem _leoMultiSystem;
 
         private EnginesRoot _sveltoWorld;
         private SveltoSystem _sveltoSystem;
@@ -284,7 +304,8 @@ namespace DefaultEcs.Benchmark.Performance
 
             _leoWorld = new LeoWorld();
             _leoSystem = new LeoSystem();
-            _leoSystems = new LeoSystems(_leoWorld).Add(_leoSystem);
+            _leoMultiSystem = new LeoMultiSystem();
+            _leoSystems = new LeoSystems(_leoWorld).Add(_leoSystem).Add(_leoMultiSystem);
             _leoSystems.ProcessInjects().Init();
 
             SimpleEntitiesSubmissionScheduler sveltoScheduler = new SimpleEntitiesSubmissionScheduler();
@@ -310,10 +331,11 @@ namespace DefaultEcs.Benchmark.Performance
                 monoEntity.Attach(new MonoB { Value = 42 });
                 monoEntity.Attach(new MonoX());
 
-                LeoEntity leoEntity = _leoWorld.NewEntity();
-                leoEntity.Get<LeoA>() = new LeoA { Value = 42 };
-                leoEntity.Get<LeoB>() = new LeoB { Value = 42 };
-                leoEntity.Get<LeoX>();
+                LeoEntity leoEntity = _leoWorld
+                    .NewEntity()
+                    .Replace(new LeoA { Value = 42 })
+                    .Replace(new LeoB { Value = 42 })
+                    .Replace(new LeoX());
 
                 EntityInitializer sveltoEntity = sveltoFactory.BuildEntity<SveltoEntity>((uint)i, _sveltoGroup);
                 sveltoEntity.GetOrCreate<SveltoA>() = new SveltoA { Value = 42 };
@@ -368,6 +390,9 @@ namespace DefaultEcs.Benchmark.Performance
 
         [Benchmark]
         public void Leo_System() => _leoSystem.Run();
+
+        [Benchmark]
+        public void Leo_MultiSystem() => _leoMultiSystem.Run();
 
         [Benchmark]
         public void Svelto_System() => _sveltoSystem.Update();

@@ -604,52 +604,55 @@ SingleComponentEntityEnumeration: add one to the basic component (containing one
 
 |                                Method |        Mean |     Error |    StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
 |-------------------------------------- |------------:|----------:|----------:|------:|------:|------:|----------:|
-|                  DefaultEcs_EntitySet |   290.25 μs |  0.029 μs |  0.028 μs |     - |     - |     - |         - |
-|                     DefaultEcs_System |   290.01 μs |  0.049 μs |  0.041 μs |     - |     - |     - |         - |
-|                DefaultEcs_MultiSystem |    81.86 μs |  0.612 μs |  0.542 μs |     - |     - |     - |         - |
-|      DefaultEcs_EntityComponentSystem |   192.09 μs |  0.517 μs |  0.458 μs |     - |     - |     - |         - |
-| DefaultEcs_MultiEntityComponentSystem |    53.35 μs |  0.323 μs |  0.270 μs |     - |     - |     - |         - |
-|                  DefaultEcs_Component |    95.14 μs |  0.031 μs |  0.029 μs |     - |     - |     - |         - |
-|            DefaultEcs_ComponentSystem |    84.67 μs |  0.267 μs |  0.223 μs |     - |     - |     - |         - |
-|       DefaultEcs_ComponentMultiSystem |    27.37 μs |  0.419 μs |  0.350 μs |     - |     - |     - |         - |
-|            DefaultEcs_GeneratorSystem |   191.76 μs |  1.243 μs |  1.102 μs |     - |     - |     - |         - |
-|       DefaultEcs_GeneratorMultiSystem |    54.39 μs |  0.830 μs |  0.736 μs |     - |     - |     - |         - |
-|                        Entitas_System | 6,564.17 μs | 26.630 μs | 23.607 μs |     - |     - |     - |     128 B |
-|                   Entitas_MultiSystem | 3,599.35 μs | 40.843 μs | 36.206 μs |     - |     - |     - |     477 B |
-|       MonoGameExtendedEntities_System | 2,248.81 μs |  7.693 μs |  6.424 μs |     - |     - |     - |     163 B |
-|                            Leo_System |   147.62 μs |  0.012 μs |  0.011 μs |     - |     - |     - |         - |
-|                         Svelto_System |    83.95 μs |  0.048 μs |  0.037 μs |     - |     - |     - |         - |
+|                  DefaultEcs_EntitySet |   291.62 μs |  0.059 μs |  0.049 μs |     - |     - |     - |         - |
+|                     DefaultEcs_System |   291.14 μs |  0.148 μs |  0.124 μs |     - |     - |     - |         - |
+|                DefaultEcs_MultiSystem |    79.77 μs |  0.578 μs |  0.512 μs |     - |     - |     - |         - |
+|      DefaultEcs_EntityComponentSystem |   190.19 μs |  0.207 μs |  0.194 μs |     - |     - |     - |         - |
+| DefaultEcs_MultiEntityComponentSystem |    53.95 μs |  0.640 μs |  0.534 μs |     - |     - |     - |         - |
+|                  DefaultEcs_Component |    95.17 μs |  0.055 μs |  0.046 μs |     - |     - |     - |         - |
+|            DefaultEcs_ComponentSystem |    83.96 μs |  0.062 μs |  0.055 μs |     - |     - |     - |         - |
+|       DefaultEcs_ComponentMultiSystem |    27.40 μs |  0.153 μs |  0.119 μs |     - |     - |     - |         - |
+|            DefaultEcs_GeneratorSystem |   189.30 μs |  0.038 μs |  0.030 μs |     - |     - |     - |         - |
+|       DefaultEcs_GeneratorMultiSystem |    54.03 μs |  0.618 μs |  0.516 μs |     - |     - |     - |         - |
+|                        Entitas_System | 6,718.45 μs | 27.601 μs | 24.467 μs |     - |     - |     - |     128 B |
+|                   Entitas_MultiSystem | 3,729.49 μs | 39.063 μs | 34.628 μs |     - |     - |     - |     478 B |
+|       MonoGameExtendedEntities_System | 2,206.19 μs | 21.454 μs | 19.018 μs |     - |     - |     - |     192 B |
+|                            Leo_System |   145.16 μs |  0.012 μs |  0.010 μs |     - |     - |     - |         - |
+|                       Leo_MultiSystem |    73.94 μs |  0.217 μs |  0.203 μs |     - |     - |     - |         - |
+|                         Svelto_System |    83.93 μs |  0.036 μs |  0.030 μs |     - |     - |     - |         - |
 
 DoubleComponentEntityEnumeration: do basic movement with two components (position, speed) on 100000 entities
 
 |                          Method |       Mean |    Error |   StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
 |-------------------------------- |-----------:|---------:|---------:|------:|------:|------:|----------:|
-|            DefaultEcs_EntitySet |   608.8 μs |  0.45 μs |  0.42 μs |     - |     - |     - |         - |
-|               DefaultEcs_System |   601.1 μs |  0.17 μs |  0.16 μs |     - |     - |     - |         - |
-|          DefaultEcs_MultiSystem |   163.3 μs |  1.07 μs |  0.94 μs |     - |     - |     - |         - |
-|      DefaultEcs_ComponentSystem |   403.0 μs |  0.07 μs |  0.07 μs |     - |     - |     - |         - |
-| DefaultEcs_ComponentMultiSystem |   110.2 μs |  0.30 μs |  0.23 μs |     - |     - |     - |         - |
-|      DefaultEcs_GeneratorSystem |   403.4 μs |  0.64 μs |  0.53 μs |     - |     - |     - |         - |
-| DefaultEcs_GeneratorMultiSystem |   110.3 μs |  0.38 μs |  0.33 μs |     - |     - |     - |         - |
-|                  Entitas_System | 5,847.8 μs |  6.26 μs |  5.55 μs |     - |     - |     - |     128 B |
-|             Entitas_MultiSystem | 3,727.1 μs | 18.70 μs | 17.49 μs |     - |     - |     - |     463 B |
-| MonoGameExtendedEntities_System | 3,133.0 μs |  4.40 μs |  3.90 μs |     - |     - |     - |     183 B |
-|                      Leo_System |   449.0 μs |  0.07 μs |  0.07 μs |     - |     - |     - |         - |
-|                   Svelto_System |   155.7 μs |  0.03 μs |  0.02 μs |     - |     - |     - |         - |
+|            DefaultEcs_EntitySet |   608.2 μs |  0.98 μs |  0.92 μs |     - |     - |     - |         - |
+|               DefaultEcs_System |   594.7 μs |  0.38 μs |  0.31 μs |     - |     - |     - |         - |
+|          DefaultEcs_MultiSystem |   161.8 μs |  2.45 μs |  2.04 μs |     - |     - |     - |         - |
+|      DefaultEcs_ComponentSystem |   402.5 μs |  0.55 μs |  0.52 μs |     - |     - |     - |         - |
+| DefaultEcs_ComponentMultiSystem |   109.7 μs |  0.35 μs |  0.31 μs |     - |     - |     - |         - |
+|      DefaultEcs_GeneratorSystem |   402.5 μs |  0.40 μs |  0.37 μs |     - |     - |     - |         - |
+| DefaultEcs_GeneratorMultiSystem |   109.7 μs |  0.32 μs |  0.27 μs |     - |     - |     - |         - |
+|                  Entitas_System | 6,390.6 μs | 13.91 μs | 12.33 μs |     - |     - |     - |     128 B |
+|             Entitas_MultiSystem | 3,972.4 μs | 22.66 μs | 20.09 μs |     - |     - |     - |     474 B |
+| MonoGameExtendedEntities_System | 3,203.4 μs | 11.93 μs | 11.16 μs |     - |     - |     - |     192 B |
+|                      Leo_System |   481.3 μs |  0.86 μs |  0.80 μs |     - |     - |     - |         - |
+|                 Leo_MultiSystem |   152.8 μs |  0.18 μs |  0.16 μs |     - |     - |     - |         - |
+|                   Svelto_System |   155.3 μs |  0.03 μs |  0.03 μs |     - |     - |     - |         - |
 
 TripleComponentEntityEnumeration: do basic operation with three components on 100000 entities
 
 |                          Method |       Mean |    Error |   StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
 |-------------------------------- |-----------:|---------:|---------:|------:|------:|------:|----------:|
-|            DefaultEcs_EntitySet |   663.8 μs |  0.76 μs |  0.59 μs |     - |     - |     - |         - |
-|               DefaultEcs_System |   646.1 μs |  0.36 μs |  0.34 μs |     - |     - |     - |         - |
-|          DefaultEcs_MultiSystem |   175.0 μs |  0.82 μs |  0.73 μs |     - |     - |     - |         - |
-|      DefaultEcs_ComponentSystem |   371.3 μs |  4.62 μs |  4.32 μs |     - |     - |     - |         - |
-| DefaultEcs_ComponentMultiSystem |   106.3 μs |  0.17 μs |  0.15 μs |     - |     - |     - |         - |
-|      DefaultEcs_GeneratorSystem |   401.2 μs |  0.20 μs |  0.18 μs |     - |     - |     - |         - |
-| DefaultEcs_GeneratorMultiSystem |   109.6 μs |  0.33 μs |  0.30 μs |     - |     - |     - |         - |
-|                  Entitas_System | 5,594.5 μs |  9.43 μs |  8.36 μs |     - |     - |     - |     128 B |
-|             Entitas_MultiSystem | 3,790.2 μs | 22.05 μs | 20.63 μs |     - |     - |     - |     470 B |
-| MonoGameExtendedEntities_System | 3,513.3 μs |  3.07 μs |  2.57 μs |     - |     - |     - |     192 B |
-|                      Leo_System |   834.8 μs |  0.54 μs |  0.48 μs |     - |     - |     - |         - |
-|                   Svelto_System |   129.9 μs |  0.01 μs |  0.01 μs |     - |     - |     - |         - |
+|            DefaultEcs_EntitySet |   661.0 μs |  0.30 μs |  0.23 μs |     - |     - |     - |         - |
+|               DefaultEcs_System |   643.7 μs |  1.20 μs |  1.12 μs |     - |     - |     - |         - |
+|          DefaultEcs_MultiSystem |   173.5 μs |  0.80 μs |  0.75 μs |     - |     - |     - |         - |
+|      DefaultEcs_ComponentSystem |   356.8 μs |  1.19 μs |  1.06 μs |     - |     - |     - |         - |
+| DefaultEcs_ComponentMultiSystem |   106.6 μs |  0.58 μs |  0.54 μs |     - |     - |     - |         - |
+|      DefaultEcs_GeneratorSystem |   384.5 μs |  0.42 μs |  0.40 μs |     - |     - |     - |         - |
+| DefaultEcs_GeneratorMultiSystem |   119.1 μs |  1.43 μs |  1.34 μs |     - |     - |     - |         - |
+|                  Entitas_System | 6,171.5 μs | 13.61 μs | 12.73 μs |     - |     - |     - |     128 B |
+|             Entitas_MultiSystem | 3,995.7 μs | 36.20 μs | 33.86 μs |     - |     - |     - |     487 B |
+| MonoGameExtendedEntities_System | 3,569.5 μs |  6.88 μs |  6.44 μs |     - |     - |     - |     186 B |
+|                      Leo_System |   838.2 μs |  0.48 μs |  0.45 μs |     - |     - |     - |         - |
+|                 Leo_MultiSystem |   289.9 μs |  0.67 μs |  0.60 μs |     - |     - |     - |         - |
+|                   Svelto_System |   130.1 μs |  0.13 μs |  0.12 μs |     - |     - |     - |         - |
