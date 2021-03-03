@@ -54,7 +54,7 @@ namespace DefaultEcs.Test.System
             bool done3 = false;
             bool done4 = false;
 
-            using (DefaultParallelRunner runner = new DefaultParallelRunner(2))
+            using (DefaultParallelRunner runner = new(2))
             using (ISystem<int> system = new ParallelSystem<int>(
                 runner,
                 new ActionSystem<int>(_ => done1 = true),
@@ -79,7 +79,7 @@ namespace DefaultEcs.Test.System
             bool done3 = false;
             bool done4 = false;
 
-            using (DefaultParallelRunner runner = new DefaultParallelRunner(2))
+            using (DefaultParallelRunner runner = new(2))
             using (ISystem<int> system = new ParallelSystem<int>(
                 runner,
                 new ActionSystem<int>(_ => done1 = true),

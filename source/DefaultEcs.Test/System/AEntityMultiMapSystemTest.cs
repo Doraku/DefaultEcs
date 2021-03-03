@@ -13,7 +13,7 @@ namespace DefaultEcs.Test.System
         [With(typeof(bool))]
         private sealed class System<T> : AEntityMultiMapSystem<int, T>
         {
-            public List<T> Keys = new List<T>();
+            public List<T> Keys = new();
 
             public System(EntityMultiMap<T> map)
                 : base(map)
@@ -52,7 +52,7 @@ namespace DefaultEcs.Test.System
         [With(typeof(bool))]
         private sealed class ReverseSystem : AEntityMultiMapSystem<int, int>, IComparer<int>
         {
-            public List<int> Keys = new List<int>();
+            public List<int> Keys = new();
 
             public ReverseSystem(World world)
                 : base(world)
@@ -108,9 +108,9 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void World_Should_return_parent_world()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
-            using System<int> system = new System<int>(world);
+            using System<int> system = new(world);
 
             Check.That(system.World).IsEqualTo(world);
         }
@@ -118,7 +118,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void Update_Should_call_update()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
             Entity entity1 = world.CreateEntity();
             entity1.Set<bool>();
@@ -136,7 +136,7 @@ namespace DefaultEcs.Test.System
             entity4.Set<bool>();
             entity4.Set(1);
 
-            using System<int> system = new System<int>(world.GetEntities().With<bool>().AsMultiMap<int>());
+            using System<int> system = new(world.GetEntities().With<bool>().AsMultiMap<int>());
 
             system.Update(0);
 
@@ -166,7 +166,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void Update_Should_call_update_When_using_buffer()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
             Entity entity1 = world.CreateEntity();
             entity1.Set<bool>();
@@ -184,7 +184,7 @@ namespace DefaultEcs.Test.System
             entity4.Set<bool>();
             entity4.Set(1);
 
-            using System<int> system = new System<int>(world, (_, w) => w.GetEntities().With<bool>().AsMultiMap<int>(), true);
+            using System<int> system = new(world, (_, w) => w.GetEntities().With<bool>().AsMultiMap<int>(), true);
 
             system.Update(0);
 
@@ -214,7 +214,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void Update_Should_call_update_for_nullable_key()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
             Entity entity1 = world.CreateEntity();
             entity1.Set<bool>();
@@ -232,7 +232,7 @@ namespace DefaultEcs.Test.System
             entity4.Set<bool>();
             entity4.Set<int?>(1);
 
-            using System<int?> system = new System<int?>(world);
+            using System<int?> system = new(world);
 
             system.Update(0);
 
@@ -247,9 +247,9 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void Update_Should_call_update_for_non_comparable_key()
         {
-            object key = new object();
+            object key = new();
 
-            using World world = new World(4);
+            using World world = new(4);
 
             Entity entity1 = world.CreateEntity();
             entity1.Set<bool>();
@@ -267,7 +267,7 @@ namespace DefaultEcs.Test.System
             entity4.Set<bool>();
             entity4.Set(key);
 
-            using System<object> system = new System<object>(world);
+            using System<object> system = new(world);
 
             system.Update(0);
 
@@ -282,7 +282,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void Update_Should_call_update_in_order_of_key()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
             Entity entity1 = world.CreateEntity();
             entity1.Set<bool>();
@@ -300,7 +300,7 @@ namespace DefaultEcs.Test.System
             entity4.Set<bool>();
             entity4.Set(4);
 
-            using (ReverseSystem system = new ReverseSystem(world))
+            using (ReverseSystem system = new(world))
             {
                 system.Update(0);
 
@@ -316,7 +316,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void Update_Should_not_call_update_When_disabled()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
             Entity entity1 = world.CreateEntity();
             entity1.Set<bool>();
@@ -351,8 +351,8 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void Update_with_runner_Should_call_update()
         {
-            using DefaultParallelRunner runner = new DefaultParallelRunner(2);
-            using World world = new World(4);
+            using DefaultParallelRunner runner = new(2);
+            using World world = new(4);
 
             Entity entity1 = world.CreateEntity();
             entity1.Set<bool>();
@@ -388,7 +388,7 @@ namespace DefaultEcs.Test.System
             runner.DegreeOfParallelism.Returns(4);
             runner.When(m => m.Run(Arg.Any<IParallelRunnable>())).Throw<Exception>();
 
-            using World world = new World(4);
+            using World world = new(4);
 
             Entity entity1 = world.CreateEntity();
             entity1.Set<bool>();

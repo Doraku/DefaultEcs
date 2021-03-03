@@ -208,7 +208,7 @@ namespace DefaultEcs.Test.Serialization
         [MemberData(nameof(SerializerTypes))]
         public void Serialize_Should_serialize_World(Type serializerType)
         {
-            using World world = new World(42);
+            using World world = new(42);
 
             world.SetMaxCapacity<int>(13);
             world.SetMaxCapacity<float>(60);
@@ -318,7 +318,7 @@ namespace DefaultEcs.Test.Serialization
         [MemberData(nameof(SerializerTypes))]
         public void Serialize_Should_serialize_Entities(Type serializerType)
         {
-            using World world = new World(42);
+            using World world = new(42);
 
             world.SetMaxCapacity<int>(13);
             world.SetMaxCapacity<float>(60);
@@ -370,7 +370,7 @@ namespace DefaultEcs.Test.Serialization
                     serializer.Serialize(stream, entities[0], entities[1], entities[2]);
                 }
 
-                using World copyWorld = new World(42);
+                using World copyWorld = new(42);
 
                 Entity[] entitiesCopy;
 
@@ -428,7 +428,7 @@ namespace DefaultEcs.Test.Serialization
 
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType, new Predicate<Type>(Filter));
 
-            using World world = new World();
+            using World world = new();
 
             world.SetMaxCapacity<string>(10);
 
@@ -475,7 +475,7 @@ namespace DefaultEcs.Test.Serialization
 
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
 
-            using World world = new World();
+            using World world = new();
 
             Entity entity0 = world.CreateEntity();
             entity0.Set(true);
@@ -495,7 +495,7 @@ namespace DefaultEcs.Test.Serialization
 
             stream.Position = 0;
 
-            using World copy = new World();
+            using World copy = new();
 
             Check.ThatCode(() => serializer.Deserialize(stream, copy)).Throws<Exception>();
             Check.That(copy.Count()).IsZero();
@@ -510,7 +510,7 @@ namespace DefaultEcs.Test.Serialization
 
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
 
-            using World world = new World();
+            using World world = new();
 
             Entity entity = world.CreateEntity();
             entity.Set(true);
@@ -537,7 +537,7 @@ namespace DefaultEcs.Test.Serialization
         {
             using (context)
             {
-                using World world = new World();
+                using World world = new();
 
                 Entity entity0 = world.CreateEntity();
 
@@ -609,7 +609,7 @@ namespace DefaultEcs.Test.Serialization
                     binary.Marshal<uint, int>(null);
                 }
 
-                using World world = new World();
+                using World world = new();
 
                 Entity entity = world.CreateEntity();
 
@@ -648,7 +648,7 @@ namespace DefaultEcs.Test.Serialization
                     binary.Unmarshal<int, string>(null);
                 }
 
-                using World world = new World();
+                using World world = new();
 
                 Entity entity = world.CreateEntity();
 

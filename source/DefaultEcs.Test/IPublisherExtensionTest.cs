@@ -172,7 +172,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Subscribe_Should_call_publisher_Subscribe_on_decorated_static_method()
         {
-            using Publisher publisher = new Publisher();
+            using Publisher publisher = new();
 
             publisher.Subscribe<StaticMethod>();
 
@@ -204,8 +204,8 @@ namespace DefaultEcs.Test
         [Fact]
         public void Subscribe_target_Should_call_publisher_Subscribe_on_decorated_instance_method()
         {
-            Publisher publisher = new Publisher();
-            InstanceMethod target = new InstanceMethod();
+            Publisher publisher = new();
+            InstanceMethod target = new();
 
             publisher.Subscribe(target);
 
@@ -215,8 +215,8 @@ namespace DefaultEcs.Test
         [Fact]
         public void Subscribe_target_Should_call_publisher_Subscribe_on_decorated_method_from_base_class()
         {
-            Publisher publisher = new Publisher();
-            DerivedClass target = new DerivedClass();
+            Publisher publisher = new();
+            DerivedClass target = new();
 
             publisher.Subscribe(target);
 
@@ -226,7 +226,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Subscribe_target_Should_call_publisher_Subscribe_on_decorated_abstract_method()
         {
-            Publisher publisher = new Publisher();
+            Publisher publisher = new();
             AbstractMethod target = new ImplementClass();
 
             publisher.Subscribe(target);
@@ -237,7 +237,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Subscribe_target_Should_call_publisher_Subscribe_on_decorated_overriden_method()
         {
-            Publisher publisher = new Publisher();
+            Publisher publisher = new();
             AbstractNonDecoratedMethod target = new ImplementNonDecoratedClass();
 
             publisher.Subscribe(target);
@@ -248,8 +248,8 @@ namespace DefaultEcs.Test
         [Fact]
         public void Subscribe_target_Should_call_publisher_Subscribe_once_for_each_decorate_method()
         {
-            Publisher publisher = new Publisher();
-            ImplementClass target = new ImplementClass();
+            Publisher publisher = new();
+            ImplementClass target = new();
 
             publisher.Subscribe(target);
 
@@ -261,7 +261,7 @@ namespace DefaultEcs.Test
         {
             using IPublisher publisher = new World();
 
-            ValidAndInvalidDecoratedClass item = new ValidAndInvalidDecoratedClass();
+            ValidAndInvalidDecoratedClass item = new();
 
             Check
                 .ThatCode(() => publisher.Subscribe(item))

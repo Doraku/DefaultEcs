@@ -28,7 +28,7 @@ namespace DefaultBrick.System
 
             if (_state.LeftButton == ButtonState.Pressed)
             {
-                Vector2 velocity = new Vector2(offset - 45, -offset);
+                Vector2 velocity = new(offset - 45, -offset);
                 velocity.Normalize();
 
                 entity.Remove<BallStart>();

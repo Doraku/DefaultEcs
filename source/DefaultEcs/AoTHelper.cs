@@ -13,7 +13,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of message.</typeparam>
         public static void RegisterMessage<T>()
         {
-            using World world = new World();
+            using World world = new();
 
             world.Subscribe(default(MessageHandler<T>));
         }
@@ -45,7 +45,7 @@ namespace DefaultEcs
         {
             RegisterComponent<T>();
 
-            using World world = new World();
+            using World world = new();
 
             Entity entity = world.CreateEntity();
 

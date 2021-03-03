@@ -10,7 +10,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void GetComponents_Should_return_fast_access_to_component()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
             Entity entity1 = world.CreateEntity();
             Entity entity2 = world.CreateEntity();

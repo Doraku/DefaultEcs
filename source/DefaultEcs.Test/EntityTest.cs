@@ -47,7 +47,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void World_Should_return_world()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
 
@@ -61,7 +61,7 @@ namespace DefaultEcs.Test
 
             Check.That(entity.World).IsNull();
 
-            using (World world = new World(1))
+            using (World world = new(1))
             {
                 entity = world.CreateEntity();
 
@@ -74,7 +74,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void IsAlive_Should_return_true()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
             Check.That(entity.IsAlive).IsTrue();
@@ -90,7 +90,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void IsAlive_Should_return_false_When_disposed()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
             entity.Dispose();
@@ -100,7 +100,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void IsAlive_Should_return_false_When_disposed_even_if_recreated()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
             entity.Dispose();
@@ -112,7 +112,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void IsEnabled_Should_return_true_by_default()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
             Check.That(entity.IsEnabled()).IsTrue();
@@ -135,7 +135,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Disable_Should_disable_Entity()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
             entity.Disable();
@@ -153,7 +153,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Enable_Should_enable_Entity()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
             entity.Disable();
@@ -173,7 +173,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void IsEnabled_T_Should_return_true_by_default()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
 
@@ -192,7 +192,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Disable_T_Should_disable_component()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
             entity.Set<bool>();
@@ -211,7 +211,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Enable_T_Should_enable_component()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
             entity.Set<bool>();
@@ -224,7 +224,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Has_Should_return_false_When_World_does_not_have_component()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
 
@@ -234,7 +234,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Has_Should_return_false_When_Entity_does_not_have_component()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             world.SetMaxCapacity<bool>(0);
 
@@ -246,7 +246,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Has_Should_return_true_When_Entity_has_component()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             world.SetMaxCapacity<bool>(1);
 
@@ -267,7 +267,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Set_Should_throw_When_max_number_of_component_reached()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             world.SetMaxCapacity<bool>(0);
             Entity entity = world.CreateEntity();
@@ -278,7 +278,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Set_Should_set_component_value()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             world.SetMaxCapacity<bool>(1);
             Entity entity = world.CreateEntity();
@@ -291,7 +291,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Set_Should_not_thow_When_more_than_32_components()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             world.SetMaxCapacity<bool>(1);
             Entity entity = world.CreateEntity();
@@ -333,7 +333,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Set_Should_only_produce_one_component_for_flag_type()
         {
-            using World world = new World(2);
+            using World world = new(2);
 
             Entity entity = world.CreateEntity();
             Entity entity2 = world.CreateEntity();
@@ -350,7 +350,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Set_Should_override_SetSameAs()
         {
-            using World world = new World();
+            using World world = new();
 
             Entity reference = world.CreateEntity();
             Entity entity = world.CreateEntity();
@@ -374,7 +374,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SetSameAs_Should_throw_When_reference_not_created_from_World()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
 
@@ -384,7 +384,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SetSameAs_Should_throw_When_component_type_not_added_to_World()
         {
-            using World world = new World(2);
+            using World world = new(2);
 
             Entity entity = world.CreateEntity();
             Entity reference = world.CreateEntity();
@@ -395,8 +395,8 @@ namespace DefaultEcs.Test
         [Fact]
         public void SetSameAs_Should_throw_When_reference_comes_from_a_different_World()
         {
-            using World world = new World(1);
-            using World worldRef = new World(1);
+            using World world = new(1);
+            using World worldRef = new(1);
 
             Entity entity = world.CreateEntity();
             Entity reference = worldRef.CreateEntity();
@@ -407,7 +407,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SetSameAs_Should_throw_When_reference_does_not_have_a_component()
         {
-            using World world = new World(2);
+            using World world = new(2);
 
             world.SetMaxCapacity<bool>(1);
 
@@ -420,7 +420,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SetSameAs_Should_set_component_to_reference()
         {
-            using World world = new World(2);
+            using World world = new(2);
 
             world.SetMaxCapacity<bool>(1);
 
@@ -444,7 +444,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SetSameAs_Should_override_SetSameAs()
         {
-            using World world = new World();
+            using World world = new();
 
             Entity reference = world.CreateEntity();
             Entity reference2 = world.CreateEntity();
@@ -463,7 +463,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Remove_Should_not_throw_When_no_component()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
 
@@ -473,7 +473,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Remove_Should_remove_component()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             world.SetMaxCapacity<bool>(1);
 
@@ -491,7 +491,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Remove_Should_remove_component_without_removing_reference()
         {
-            using World world = new World(2);
+            using World world = new(2);
 
             world.SetMaxCapacity<bool>(1);
 
@@ -510,7 +510,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Remove_Should_remove_component_and_pass_reference()
         {
-            using World world = new World(3);
+            using World world = new(3);
 
             world.SetMaxCapacity<bool>(2);
 
@@ -533,7 +533,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Remove_Should_not_remove_component_of_all_referenced_Entity()
         {
-            using World world = new World(3);
+            using World world = new(3);
 
             world.SetMaxCapacity<bool>(1);
 
@@ -559,7 +559,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void NotifyChanged_Should_throw_When_Entity_does_not_have_component()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.ThatCode(() => world.CreateEntity().NotifyChanged<bool>()).Throws<InvalidOperationException>();
         }
@@ -575,7 +575,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Get_Should_throw_When_Entity_does_not_have_component()
         {
-            using World world = new World(2);
+            using World world = new(2);
 
             Entity entity = world.CreateEntity();
 
@@ -590,7 +590,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Get_Should_get_component()
         {
-            using World world = new World(2);
+            using World world = new(2);
 
             Entity entity = world.CreateEntity();
 
@@ -606,7 +606,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Get_Should_get_component_of_reference_When_is_same_as()
         {
-            using World world = new World(2);
+            using World world = new(2);
 
             Entity entity = world.CreateEntity();
             Entity reference = world.CreateEntity();
@@ -624,7 +624,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Dispose_Should_release_Entity()
         {
-            using World world = new World(2);
+            using World world = new(2);
 
             Entity deletedEntity = world.CreateEntity();
 
@@ -638,7 +638,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Dispose_Should_remove_all_component()
         {
-            using World world = new World(2);
+            using World world = new(2);
 
             world.SetMaxCapacity<bool>(1);
             world.CreateEntity();
@@ -658,8 +658,8 @@ namespace DefaultEcs.Test
         [Fact]
         public void CopyTo_Should_copy_entity_with_its_components()
         {
-            using World world1 = new World(1);
-            using World world2 = new World(1);
+            using World world1 = new(1);
+            using World world2 = new(1);
 
             Entity main = world1.CreateEntity();
 
@@ -675,8 +675,8 @@ namespace DefaultEcs.Test
         [Fact]
         public void CopyTo_Should_copy_entity_with_its_components_and_its_state()
         {
-            using World world1 = new World(1);
-            using World world2 = new World(1);
+            using World world1 = new(1);
+            using World world2 = new(1);
 
             Entity main = world1.CreateEntity();
 
@@ -695,8 +695,8 @@ namespace DefaultEcs.Test
         [Fact]
         public void CopyTo_Should_left_no_trace_When_there_is_an_exception()
         {
-            using World world1 = new World(1);
-            using World world2 = new World(1);
+            using World world1 = new(1);
+            using World world2 = new(1);
 
             Entity main = world1.CreateEntity();
 
@@ -713,7 +713,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void CopyTo_Should_throw_When_not_created_from_same_World()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = default;
             Check.ThatCode(() => entity.CopyTo(world)).Throws<InvalidOperationException>();
@@ -722,7 +722,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void ReadAllComponents_Should_throw_ArgumentNullException_When_reader_is_null()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Entity entity = world.CreateEntity();
             Check.ThatCode(() => entity.ReadAllComponents(null)).Throws<ArgumentNullException>();
@@ -731,13 +731,13 @@ namespace DefaultEcs.Test
         [Fact]
         public void ReadAllComponents_Should_callback_reader()
         {
-            using World world = new World(42);
+            using World world = new(42);
 
             Entity entity = world.CreateEntity();
             entity.Set(42);
             entity.Set(1337L);
 
-            ComponentReader reader = new ComponentReader();
+            ComponentReader reader = new();
 
             entity.ReadAllComponents(reader);
 
@@ -750,13 +750,13 @@ namespace DefaultEcs.Test
         [Fact]
         public void ReadAllComponents_Should_not_return_previous_value_components()
         {
-            using World world = new World();
+            using World world = new();
             using EntityMap<int> map = world.GetEntities().AsMap<int>();
 
             Entity entity = world.CreateEntity();
             entity.Set(42);
 
-            ComponentReader reader = new ComponentReader();
+            ComponentReader reader = new();
 
             entity.ReadAllComponents(reader);
 
@@ -775,7 +775,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void OperatorEqual_Should_return_true_When_entities_are_equal()
         {
-            using World world = new World();
+            using World world = new();
 
             Entity entity = world.CreateEntity();
             Entity copy = entity;
@@ -786,7 +786,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void OperatorEqual_Should_return_false_When_entities_are_not_equal()
         {
-            using World world = new World();
+            using World world = new();
 
             Entity entity = world.CreateEntity();
             Entity otherEntity = world.CreateEntity();
@@ -797,7 +797,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void OperatorNotEqual_Should_return_false_When_entities_are_equal()
         {
-            using World world = new World();
+            using World world = new();
 
             Entity entity = world.CreateEntity();
             Entity copy = entity;
@@ -808,7 +808,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void OperatorNotEqual_Should_return_true_When_entities_are_not_equal()
         {
-            using World world = new World();
+            using World world = new();
 
             Entity entity = world.CreateEntity();
             Entity otherEntity = world.CreateEntity();

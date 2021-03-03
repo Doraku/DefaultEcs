@@ -49,7 +49,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
             ParameterExpression writer = Expression.Parameter(typeof(StreamWriterWrapper));
             ParameterExpression value = Expression.Parameter(typeof(T).MakeByRefType());
 
-            List<Expression> writeExpressions = new List<Expression>
+            List<Expression> writeExpressions = new()
             {
                 Expression.Call(writer, writeLine, Expression.Constant(_objectBegin)),
                 Expression.Call(writer, addIndentation),
@@ -78,7 +78,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
 
                     writeExpressions.Add(writeField);
 
-                    DynamicMethod readMethod = new DynamicMethod($"Set_{nameof(T)}_{fieldInfo.Name}", typeof(void), new[] { typeof(StreamReaderWrapper), typeof(T).MakeByRefType() }, typeof(ObjectConverter<T>), true);
+                    DynamicMethod readMethod = new($"Set_{nameof(T)}_{fieldInfo.Name}", typeof(void), new[] { typeof(StreamReaderWrapper), typeof(T).MakeByRefType() }, typeof(ObjectConverter<T>), true);
                     ILGenerator readGenerator = readMethod.GetILGenerator();
                     readGenerator.Emit(OpCodes.Ldarg_1);
                     if (!typeInfo.IsValueType)

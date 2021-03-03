@@ -76,7 +76,7 @@ namespace DefaultEcs.Technical.Serialization
 
         private static string GetName(Type type)
         {
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
 
             WriteName(builder, type, true, true);
 

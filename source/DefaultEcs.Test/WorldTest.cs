@@ -21,7 +21,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void ToString_Should_return_id()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.That(Regex.IsMatch(world.ToString(), "^World \\d*$")).IsTrue();
         }
@@ -35,7 +35,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Subscribe_Should_subscribe()
         {
-            using World world = new World(0);
+            using World world = new(0);
 
             bool done = false;
             world.Subscribe((in bool b) => done = b);
@@ -47,7 +47,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Subscribe_Dispose_Should_unsubscribe()
         {
-            using World world = new World(0);
+            using World world = new(0);
 
             bool done = false;
             using (world.Subscribe((in bool b) => done = b))
@@ -65,7 +65,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Publish_Should_publish()
         {
-            using World world = new World(0);
+            using World world = new(0);
 
             bool done = false;
             world.Subscribe((in bool b) => done = b);
@@ -77,7 +77,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void CreateEntity_Should_return_an_Entity()
         {
-            using World world = new World(1);
+            using World world = new(1);
 
             Check.ThatCode(() => world.CreateEntity()).DoesNotThrow();
         }
@@ -85,7 +85,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void CreateEntity_Should_return_different_Entity_each_time()
         {
-            using World world = new World(2);
+            using World world = new(2);
 
             Check.That(world.CreateEntity()).IsNotEqualTo(world.CreateEntity());
         }
@@ -93,7 +93,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void CreateEntity_Should_throw_When_max_number_of_Entity_is_reached()
         {
-            using World world = new World(0);
+            using World world = new(0);
 
             Check.ThatCode(() => world.CreateEntity()).Throws<InvalidOperationException>();
         }
@@ -101,7 +101,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SetMaxCapacity_Should_return_true_When_maxCapacity_is_setted()
         {
-            using World world = new World(0);
+            using World world = new(0);
 
             Check.That(world.SetMaxCapacity<bool>(0)).IsTrue();
         }
@@ -109,7 +109,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SetMaxCapacity_Should_return_false_When_maxCapacity_is_already_setted()
         {
-            using World world = new World(42);
+            using World world = new(42);
 
             Check.That(world.SetMaxCapacity<bool>(0)).IsTrue();
             Check.That(world.SetMaxCapacity<bool>(42)).IsFalse();
@@ -118,7 +118,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void GetMaxCapacity_Should_return_component_max_capacity()
         {
-            using World world = new World(100);
+            using World world = new(100);
 
             world.SetMaxCapacity<bool>(42);
             Check.That(world.GetMaxCapacity<bool>()).IsEqualTo(42);
@@ -127,7 +127,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void GetMaxCapacity_Should_return_minus_one_when_not_handled()
         {
-            using World world = new World(100);
+            using World world = new(100);
 
             Check.That(world.GetMaxCapacity<bool>()).IsEqualTo(-1);
         }
@@ -135,7 +135,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void GetMaxCapacity_Should_return_one_for_flag_type()
         {
-            using World world = new World(100);
+            using World world = new(100);
 
             world.SetMaxCapacity<FlagType>(42);
             Check.That(world.GetMaxCapacity<FlagType>()).IsEqualTo(1);
@@ -144,7 +144,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SetMaxCapacity_Should_throw_When_maxCapacity_is_negative()
         {
-            using World world = new World(0);
+            using World world = new(0);
 
             Check.ThatCode(() => world.SetMaxCapacity<bool>(-1)).Throws<ArgumentException>();
         }
@@ -152,7 +152,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SetMaxCapacity_Should_not_throw_When_already_added()
         {
-            using World world = new World(0);
+            using World world = new(0);
 
             world.SetMaxCapacity<bool>(0);
             Check.ThatCode(() => world.SetMaxCapacity<bool>(0)).DoesNotThrow();
@@ -161,7 +161,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Get_Should_not_throw_When_not_added()
         {
-            using World world = new World(0);
+            using World world = new(0);
 
             Check.ThatCode(() => world.Get<bool>()).DoesNotThrow();
         }
@@ -169,7 +169,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Get_Should_return_component()
         {
-            using World world = new World(2);
+            using World world = new(2);
 
             world.SetMaxCapacity<int>(2);
             Entity entity = world.CreateEntity();
@@ -193,7 +193,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void GetEntities_Should_return_an_EntitySetBuilder()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
             Check.That(world.GetEntities()).IsNotNull();
         }
@@ -201,10 +201,10 @@ namespace DefaultEcs.Test
         [Fact]
         public void GetEnumerator_Should_return_all_entities()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
-            List<Entity> entities = new List<Entity>
-                {
+            List<Entity> entities = new()
+            {
                     world.CreateEntity(),
                     world.CreateEntity()
                 };
@@ -228,10 +228,10 @@ namespace DefaultEcs.Test
         [Fact]
         public void GetEnumerator_Should_return_disabled_entities()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
-            List<Entity> entities = new List<Entity>
-                {
+            List<Entity> entities = new()
+            {
                     world.CreateEntity(),
                     world.CreateEntity()
                 };
@@ -246,7 +246,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void ReadAllComponentTypes_Should_throw_ArgumentNullException_When_reader_is_null()
         {
-            using World world = new World(0);
+            using World world = new(0);
 
             Check.ThatCode(() => world.ReadAllComponentTypes(null)).Throws<ArgumentNullException>();
         }
@@ -254,7 +254,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void ReadAllComponentTypes_Should_callback_reader()
         {
-            using World world = new World(42);
+            using World world = new(42);
 
             bool intIsOk = false;
             bool longIsOk = false;
@@ -278,7 +278,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Optimize_Should_throw_When_runner_is_null()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.ThatCode(() => world.Optimize(null)).Throws<ArgumentNullException>();
 
@@ -288,8 +288,8 @@ namespace DefaultEcs.Test
         [Fact]
         public void Optimize_Should_throw_When_action_is_null()
         {
-            using World world = new World();
-            using DefaultParallelRunner runner = new DefaultParallelRunner(Environment.ProcessorCount);
+            using World world = new();
+            using DefaultParallelRunner runner = new(Environment.ProcessorCount);
 
             Check.ThatCode(() => world.Optimize(runner, null)).Throws<ArgumentNullException>();
         }
@@ -297,7 +297,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Optimize_Should_sort_inner_storages()
         {
-            using World world = new World();
+            using World world = new();
             using EntitySet set = world.GetEntities().With<int>().AsSet();
             using EntityMultiMap<bool> map = world.GetEntities().With<int>().AsMultiMap<bool>();
 
@@ -329,9 +329,9 @@ namespace DefaultEcs.Test
         [Fact]
         public void Optimize_Should_return_When_mainAction_is_done()
         {
-            using World world = new World();
+            using World world = new();
             using EntitySet set = world.GetEntities().With<int>().AsSet();
-            using DefaultParallelRunner runner = new DefaultParallelRunner(Environment.ProcessorCount);
+            using DefaultParallelRunner runner = new(Environment.ProcessorCount);
 
             List<Entity> entities = Enumerable.Repeat(world, 100000).Select(w => w.CreateEntity()).ToList();
 
@@ -353,7 +353,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeWorldDisposed_Should_throw_When_action_is_null()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.ThatCode(() => world.SubscribeWorldDisposed(null)).Throws<ArgumentNullException>();
         }
@@ -361,7 +361,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeWorldDisposed_Should_call_handler_When_world_disposed()
         {
-            World world = new World();
+            World world = new();
             World result = null;
 
             using IDisposable subscription = world.SubscribeWorldDisposed(w => result = w);
@@ -373,7 +373,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeEntityCreated_Should_throw_When_action_is_null()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.ThatCode(() => world.SubscribeEntityCreated(null)).Throws<ArgumentNullException>();
         }
@@ -381,7 +381,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeEntityEnabled_Should_throw_When_action_is_null()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.ThatCode(() => world.SubscribeEntityEnabled(null)).Throws<ArgumentNullException>();
         }
@@ -389,7 +389,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeEntityDisabled_Should_throw_When_action_is_null()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.ThatCode(() => world.SubscribeEntityDisabled(null)).Throws<ArgumentNullException>();
         }
@@ -397,7 +397,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeEntityDisposed_Should_throw_When_action_is_null()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.ThatCode(() => world.SubscribeEntityDisposed(null)).Throws<ArgumentNullException>();
         }
@@ -405,7 +405,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeEntityCreated_Should_call_handler_When_entity_created()
         {
-            using World world = new World();
+            using World world = new();
 
             Entity result = default;
             using IDisposable subscription = world.SubscribeEntityCreated((in Entity e) => result = e);
@@ -417,7 +417,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeEntityEnabled_Should_call_handler_When_entity_enabled()
         {
-            using World world = new World();
+            using World world = new();
 
             Entity entity = world.CreateEntity();
             Entity result = default;
@@ -431,7 +431,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeEntityDisabled_Should_call_handler_When_entity_disabled()
         {
-            using World world = new World();
+            using World world = new();
 
             Entity entity = world.CreateEntity();
             Entity result = default;
@@ -444,7 +444,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeEntityDisposed_Should_call_handler_When_entity_disposed()
         {
-            using World world = new World();
+            using World world = new();
 
             Entity entity = world.CreateEntity();
             Entity result = default;
@@ -457,7 +457,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeEntityDisposed_Should_call_handler_When_world_disposed()
         {
-            World world = new World();
+            World world = new();
 
             Entity entity = world.CreateEntity();
             Entity result = default;
@@ -470,7 +470,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponentAdded_Should_throw_When_action_is_null()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.ThatCode(() => world.SubscribeComponentAdded<bool>(null)).Throws<ArgumentNullException>();
         }
@@ -478,7 +478,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponentChanged_Should_throw_When_action_is_null()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.ThatCode(() => world.SubscribeComponentChanged<bool>(null)).Throws<ArgumentNullException>();
         }
@@ -486,7 +486,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponentRemoved_Should_throw_When_action_is_null()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.ThatCode(() => world.SubscribeComponentRemoved<bool>(null)).Throws<ArgumentNullException>();
         }
@@ -494,7 +494,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponentEnabled_Should_throw_When_action_is_null()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.ThatCode(() => world.SubscribeComponentEnabled<bool>(null)).Throws<ArgumentNullException>();
         }
@@ -502,7 +502,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponentDisabled_Should_throw_When_action_is_null()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.ThatCode(() => world.SubscribeComponentDisabled<bool>(null)).Throws<ArgumentNullException>();
         }
@@ -510,7 +510,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponentAdded_Should_call_handler_When_component_added()
         {
-            using World world = new World();
+            using World world = new();
             Entity entity = world.CreateEntity();
             bool called = false;
             using IDisposable subscription = world.SubscribeComponentAdded((in Entity e, in bool v) =>
@@ -527,7 +527,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponentEnabled_Should_call_handler_When_component_enabled()
         {
-            using World world = new World();
+            using World world = new();
             Entity entity = world.CreateEntity();
             entity.Set(true);
             entity.Disable<bool>();
@@ -546,7 +546,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponentDisabled_Should_call_handler_When_component_disabled()
         {
-            using World world = new World();
+            using World world = new();
             Entity entity = world.CreateEntity();
             entity.Set(true);
             bool called = false;
@@ -564,7 +564,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponentRemoved_Should_call_handler_When_component_removed()
         {
-            using World world = new World();
+            using World world = new();
             Entity entity = world.CreateEntity();
             entity.Set(true);
             bool called = false;
@@ -582,7 +582,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponentRemoved_Should_call_handler_When_entity_disposed()
         {
-            using World world = new World();
+            using World world = new();
             Entity entity = world.CreateEntity();
             entity.Set(true);
             bool called = false;
@@ -600,7 +600,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponentRemoved_Should_call_handler_When_world_disposed()
         {
-            World world = new World();
+            World world = new();
             Entity entity = world.CreateEntity();
             entity.Set(true);
             bool called = false;
@@ -618,7 +618,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponentChanged_Should_call_handler_When_component_changed()
         {
-            using World world = new World();
+            using World world = new();
             Entity entity = world.CreateEntity();
             entity.Set(false);
             bool called = false;
@@ -637,7 +637,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponent_Should_do_nothing_When_entity_disposed_without_component()
         {
-            using World world = new World();
+            using World world = new();
             Entity entity = world.CreateEntity();
             using IDisposable added = world.SubscribeComponentAdded((in Entity _, in bool _) => throw new Exception());
             using IDisposable changed = world.SubscribeComponentChanged((in Entity _, in bool _, in bool _) => throw new Exception());
@@ -651,7 +651,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponent_Should_do_nothing_When_world_disposed_without_component()
         {
-            World world = new World();
+            World world = new();
             Entity entity = world.CreateEntity();
             using IDisposable added = world.SubscribeComponentAdded((in Entity _, in bool _) => throw new Exception());
             using IDisposable changed = world.SubscribeComponentChanged((in Entity _, in bool _, in bool _) => throw new Exception());
@@ -665,7 +665,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void SubscribeComponent_Should_do_nothing_When_subscription_disposed()
         {
-            using World world = new World();
+            using World world = new();
             Entity entity = world.CreateEntity();
             world.SubscribeComponentAdded((in Entity _, in bool _) => throw new Exception()).Dispose();
             world.SubscribeComponentChanged((in Entity _, in bool _, in bool _) => throw new Exception()).Dispose();

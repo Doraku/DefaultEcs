@@ -237,7 +237,7 @@ namespace DefaultEcs
             /// Copies all the rules of the current <see cref="EntityRuleBuilder"/> to a new instance.
             /// </summary>
             /// <returns>A new <see cref="EntityRuleBuilder"/> with all the same rules as the current instance.</returns>
-            public EntityRuleBuilder Copy() => new EntityRuleBuilder(Commit());
+            public EntityRuleBuilder Copy() => new(Commit());
 
             /// <summary>
             /// Returns a <see cref="Predicate{T}"/> representing the specified rules.
@@ -586,7 +586,7 @@ namespace DefaultEcs
         /// Copies all the rules of the current <see cref="EntityRuleBuilder"/> to a new instance.
         /// </summary>
         /// <returns>A new <see cref="EntityRuleBuilder"/> with all the same rules as the current instance.</returns>
-        public EntityRuleBuilder Copy() => new EntityRuleBuilder(this);
+        public EntityRuleBuilder Copy() => new(this);
 
         /// <summary>
         /// Returns a <see cref="Predicate{T}"/> representing the specified rules.
@@ -610,7 +610,7 @@ namespace DefaultEcs
         /// Returns an <see cref="EntitySet"/> with the specified rules.
         /// </summary>
         /// <returns>The <see cref="EntitySet"/>.</returns>
-        public EntitySet AsSet() => new EntitySet(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), GetPredicate(), subscriptions);
+        public EntitySet AsSet() => new(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), GetPredicate(), subscriptions);
 
         /// <summary>
         /// Returns an <see cref="EntityMap{TKey}"/> with the specified rules.

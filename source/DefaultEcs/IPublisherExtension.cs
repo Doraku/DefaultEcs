@@ -22,7 +22,7 @@ namespace DefaultEcs
 
         private static IDisposable Subscribe(IPublisher publisher, Type type, object target)
         {
-            List<IDisposable> subscriptions = new List<IDisposable>();
+            List<IDisposable> subscriptions = new();
 
             MethodInfo subscribeMethod = publisher.GetType().GetTypeInfo()
                 .GetDeclaredMethods(nameof(IPublisher.Subscribe))

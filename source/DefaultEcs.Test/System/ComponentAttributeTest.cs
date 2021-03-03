@@ -159,7 +159,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void WithAttribute_Should_create_correct_EntitySet()
         {
-            using World world = new World();
+            using World world = new();
             using ISystem<int> system = new WithSystem(world);
 
             Entity entity = world.CreateEntity();
@@ -173,7 +173,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void WithPredicateAttribute_Should_create_correct_EntitySet()
         {
-            using World world = new World();
+            using World world = new();
             using ISystem<int> system = new WithPredicateSystem(world);
 
             Entity entity = world.CreateEntity();
@@ -194,7 +194,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void WithPredicateAttribute_Should_throw_When_incorrect_method()
         {
-            using World world = new World();
+            using World world = new();
 
             Check.ThatCode(() => new InvalidWithPredicateSystem(world)).Throws<NotSupportedException>();
         }
@@ -202,7 +202,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void WithEitherAttribute_Should_create_correct_EntitySet()
         {
-            using World world = new World();
+            using World world = new();
             using ISystem<int> system = new WithEitherSystem(world);
 
             Entity entity = world.CreateEntity();
@@ -216,7 +216,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void WithoutAttribute_Should_create_correct_EntitySet()
         {
-            using World world = new World();
+            using World world = new();
             using ISystem<int> system = new WithoutSystem(world);
 
             Entity entity = world.CreateEntity();
@@ -237,7 +237,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void WithoutEitherAttribute_Should_create_correct_EntitySet()
         {
-            using World world = new World();
+            using World world = new();
             using ISystem<int> system = new WithoutEitherSystem(world);
 
             Entity entity = world.CreateEntity();
@@ -259,7 +259,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void WhenAddedAttribute_Should_create_correct_EntitySet()
         {
-            using World world = new World();
+            using World world = new();
             using ISystem<int> system = new WhenAddedSystem(world);
 
             Entity entity = world.CreateEntity();
@@ -273,7 +273,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void WhenAddedEitherAttribute_Should_create_correct_EntitySet()
         {
-            using World world = new World();
+            using World world = new();
             using ISystem<int> system = new WhenAddedEitherSystem(world);
 
             Entity entity = world.CreateEntity();
@@ -299,7 +299,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void WhenChangedAttribute_Should_create_correct_EntitySet()
         {
-            using World world = new World();
+            using World world = new();
             using ISystem<int> system = new WhenChangedSystem(world);
 
             Entity entity = world.CreateEntity();
@@ -319,7 +319,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void WhenChangedEitherAttribute_Should_create_correct_EntitySet()
         {
-            using World world = new World();
+            using World world = new();
             using ISystem<int> system = new WhenChangedEitherSystem(world);
 
             Entity entity = world.CreateEntity();
@@ -347,7 +347,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void WhenRemovedAttribute_Should_create_correct_EntitySet()
         {
-            using World world = new World();
+            using World world = new();
             using ISystem<int> system = new WhenRemovedSystem(world);
 
             Entity entity = world.CreateEntity();
@@ -374,7 +374,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void WhenRemovedEitherAttribute_Should_create_correct_EntitySet()
         {
-            using World world = new World();
+            using World world = new();
             using ISystem<int> system = new WhenRemovedEitherSystem(world);
 
             Entity entity = world.CreateEntity();

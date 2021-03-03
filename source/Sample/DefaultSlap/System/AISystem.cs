@@ -8,7 +8,7 @@ namespace DefaultSlap.System
 {
     public sealed partial class AISystem : AEntitySetSystem<float>
     {
-        private readonly ThreadLocal<Random> _random = new ThreadLocal<Random>(() => new Random());
+        private readonly ThreadLocal<Random> _random = new(() => new Random());
 
         [Update]
         private void Update(float elapsedTime, ref TargetPosition target, ref PositionFloat position, in Speed speed)

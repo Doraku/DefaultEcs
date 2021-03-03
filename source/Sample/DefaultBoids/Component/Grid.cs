@@ -19,7 +19,7 @@ namespace DefaultBoids.Component
                 _position = position;
             }
 
-            public Enumerator GetEnumerator() => new Enumerator(_grid, _position);
+            public Enumerator GetEnumerator() => new(_grid, _position);
 
             IEnumerator<List<Entity>> IEnumerable<List<Entity>>.GetEnumerator() => GetEnumerator();
 
@@ -129,6 +129,6 @@ namespace DefaultBoids.Component
             }
         }
 
-        public Enumerable GetEnumerator(Vector2 position) => new Enumerable(this, position);
+        public Enumerable GetEnumerator(Vector2 position) => new(this, position);
     }
 }

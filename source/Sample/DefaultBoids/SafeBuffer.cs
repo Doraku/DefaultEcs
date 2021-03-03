@@ -70,7 +70,7 @@ namespace DefaultBoids
 
         public Enumerator GetEnumerator()
         {
-            Enumerator enumerator = new Enumerator(new ReadOnlySpan<T>(_items, 0, _count));
+            Enumerator enumerator = new(new ReadOnlySpan<T>(_items, 0, _count));
             _count = 0;
 
             return enumerator;

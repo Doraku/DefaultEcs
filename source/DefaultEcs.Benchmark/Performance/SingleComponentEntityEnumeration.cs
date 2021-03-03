@@ -215,7 +215,7 @@ namespace DefaultEcs.Benchmark.Performance
             }
         }
 
-        private static readonly ExclusiveGroup _sveltoGroup = new ExclusiveGroup();
+        private static readonly ExclusiveGroup _sveltoGroup = new();
 
         private DefaultWorld _defaultWorld;
         private DefaultParallelRunner _defaultRunner;
@@ -275,7 +275,7 @@ namespace DefaultEcs.Benchmark.Performance
             _leoSystems = new LeoSystems(_leoWorld).Add(_leoSystem).Add(_leoMultiSystem);
             _leoSystems.ProcessInjects().Init();
 
-            SimpleEntitiesSubmissionScheduler sveltoScheduler = new SimpleEntitiesSubmissionScheduler();
+            SimpleEntitiesSubmissionScheduler sveltoScheduler = new();
             _sveltoWorld = new EnginesRoot(sveltoScheduler);
             _sveltoSystem = new SveltoSystem();
             _sveltoWorld.AddEngine(_sveltoSystem);

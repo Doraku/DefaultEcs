@@ -32,7 +32,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
                 StreamReaderWrapper.Throw<Dictionary<TKey, TValue>>();
             }
 
-            Dictionary<TKey, TValue> value = new Dictionary<TKey, TValue>();
+            Dictionary<TKey, TValue> value = new();
             while (!reader.EndOfStream && !reader.TryPeek(_dictionaryEnd))
             {
                 KeyValuePair<TKey, TValue> pair = Converter<KeyValuePair<TKey, TValue>>.Read(reader);

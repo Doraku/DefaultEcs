@@ -35,7 +35,7 @@ namespace DefaultEcs
             /// Returns an enumerator that iterates through the collection.
             /// </summary>
             /// <returns>An enumerator that can be used to iterate through the collection.</returns>
-            public KeyEnumerator GetEnumerator() => new KeyEnumerator(_map);
+            public KeyEnumerator GetEnumerator() => new(_map);
 
             IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator() => GetEnumerator();
 
@@ -116,7 +116,7 @@ namespace DefaultEcs
         /// <summary>
         /// Gets the keys contained in the <see cref="EntityMap{TKey}"/>.
         /// </summary>
-        public KeyEnumerable Keys => new KeyEnumerable(this);
+        public KeyEnumerable Keys => new(this);
 
         /// <summary>
         /// Gets the <see cref="Entity"/> associated with the specified key.

@@ -82,7 +82,7 @@ namespace DefaultBoids
 
             _world.CreateBehaviors();
 
-            Random random = new Random();
+            Random random = new();
 
             for (int i = 0; i < BoidsCount; ++i)
             {
@@ -94,7 +94,7 @@ namespace DefaultBoids
                     Size = new Vector2(random.Next(10, 15), random.Next(20, 30)),
                 });
 
-                Vector2 velocity = new Vector2((float)random.NextDouble() - .5f, (float)random.NextDouble() - .5f);
+                Vector2 velocity = new((float)random.NextDouble() - .5f, (float)random.NextDouble() - .5f);
                 if (velocity != Vector2.Zero)
                 {
                     velocity.Normalize();

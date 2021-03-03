@@ -8,7 +8,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void With_Should_return_EntitySetBuilder()
         {
-            using World world = new World();
+            using World world = new();
 
             EntityRuleBuilder builder = world.GetEntities();
 
@@ -18,7 +18,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Without_Should_return_EntitySetBuilder()
         {
-            using World world = new World();
+            using World world = new();
 
             EntityRuleBuilder builder = world.GetEntities();
 
@@ -28,7 +28,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void WhenAdded_Should_return_EntitySetBuilder()
         {
-            using World world = new World();
+            using World world = new();
 
             EntityRuleBuilder builder = world.GetEntities();
 
@@ -38,7 +38,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void WhenChanged_Should_return_EntitySetBuilder()
         {
-            using World world = new World();
+            using World world = new();
 
             EntityRuleBuilder builder = world.GetEntities();
 
@@ -48,7 +48,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void WhenRemoved_Should_return_EntitySetBuilder()
         {
-            using World world = new World();
+            using World world = new();
 
             EntityRuleBuilder builder = world.GetEntities();
 
@@ -58,7 +58,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void WithEither_Should_return_new_EitherBuilder()
         {
-            using World world = new World();
+            using World world = new();
 
             EntityRuleBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
@@ -68,7 +68,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void WithoutEither_Should_return_new_EitherBuilder()
         {
-            using World world = new World();
+            using World world = new();
 
             EntityRuleBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
@@ -78,7 +78,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void WhenAddedEither_Should_return_new_EitherBuilder()
         {
-            using World world = new World();
+            using World world = new();
 
             EntityRuleBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
@@ -88,7 +88,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void WhenChangedEither_Should_return_new_EitherBuilder()
         {
-            using World world = new World();
+            using World world = new();
 
             EntityRuleBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
@@ -98,7 +98,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void WhenRemovedEither_Should_return_new_EitherBuilder()
         {
-            using World world = new World();
+            using World world = new();
 
             EntityRuleBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
@@ -108,7 +108,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Or_Should_return_self()
         {
-            using World world = new World();
+            using World world = new();
 
             EntityRuleBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
@@ -138,7 +138,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Copy_Should_return_different_instance()
         {
-            using World world = new World();
+            using World world = new();
 
             EntityRuleBuilder builder = world.GetEntities();
             EntityRuleBuilder copy = builder.WithEither<bool>().Copy();

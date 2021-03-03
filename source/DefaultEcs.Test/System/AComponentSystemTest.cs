@@ -42,9 +42,9 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void World_Should_return_parent_world()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
-            using System system = new System(world);
+            using System system = new(world);
 
             Check.That(system.World).IsEqualTo(world);
         }
@@ -52,7 +52,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void Update_Should_call_update()
         {
-            using World world = new World(3);
+            using World world = new(3);
 
             Entity entity1 = world.CreateEntity();
             entity1.Set<bool>();
@@ -76,7 +76,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void Update_Should_not_call_update_When_disabled()
         {
-            using World world = new World(3);
+            using World world = new(3);
 
             Entity entity1 = world.CreateEntity();
             entity1.Set<bool>();
@@ -101,8 +101,8 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void Update_with_runner_Should_call_update()
         {
-            using DefaultParallelRunner runner = new DefaultParallelRunner(2);
-            using World world = new World(3);
+            using DefaultParallelRunner runner = new(2);
+            using World world = new(3);
 
             Entity entity1 = world.CreateEntity();
             entity1.Set<bool>();
@@ -129,7 +129,7 @@ namespace DefaultEcs.Test.System
             IParallelRunner runner = Substitute.For<IParallelRunner>();
             runner.DegreeOfParallelism.Returns(4);
             runner.When(m => m.Run(Arg.Any<IParallelRunnable>())).Throw<Exception>();
-            using World world = new World(3);
+            using World world = new(3);
 
             Entity entity1 = world.CreateEntity();
             entity1.Set<bool>();

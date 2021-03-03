@@ -32,7 +32,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction
                 StreamReaderWrapper.Throw<List<T>>();
             }
 
-            List<T> value = new List<T>();
+            List<T> value = new();
             while (!reader.EndOfStream && !reader.TryPeek(_listEnd))
             {
                 value.Add(Converter<T>.Read(reader));

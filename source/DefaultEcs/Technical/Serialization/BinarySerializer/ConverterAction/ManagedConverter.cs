@@ -12,10 +12,10 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer.ConverterAction
             Type type = typeof(T);
             TypeInfo typeInfo = type.GetTypeInfo();
 
-            DynamicMethod writeMethod = new DynamicMethod("Write", typeof(void), new[] { typeof(StreamWriterWrapper).MakeByRefType(), type.MakeByRefType() }, typeof(ManagedConverter), true);
+            DynamicMethod writeMethod = new("Write", typeof(void), new[] { typeof(StreamWriterWrapper).MakeByRefType(), type.MakeByRefType() }, typeof(ManagedConverter), true);
             ILGenerator writeGenerator = writeMethod.GetILGenerator();
 
-            DynamicMethod readMethod = new DynamicMethod("Read", type, new[] { typeof(StreamReaderWrapper).MakeByRefType() }, typeof(ManagedConverter), true);
+            DynamicMethod readMethod = new("Read", type, new[] { typeof(StreamReaderWrapper).MakeByRefType() }, typeof(ManagedConverter), true);
             ILGenerator readGenerator = readMethod.GetILGenerator();
             LocalBuilder readValue = readGenerator.DeclareLocal(type);
 

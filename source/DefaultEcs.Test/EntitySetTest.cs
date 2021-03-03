@@ -12,7 +12,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void World_Should_return_parent_world()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
             using EntitySet set = world.GetEntities().AsSet();
 
@@ -22,10 +22,10 @@ namespace DefaultEcs.Test
         [Fact]
         public void GetEntities_Should_return_previously_created_Entity()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
-            List<Entity> entities = new List<Entity>
-                {
+            List<Entity> entities = new()
+            {
                     world.CreateEntity(),
                     world.CreateEntity(),
                     world.CreateEntity(),
@@ -40,7 +40,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Contains_Should_return_true_When_containing_entity()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
             Entity entity = world.CreateEntity();
 
@@ -52,7 +52,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Contains_Should_return_false_When_not_containing_entity()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
             world.CreateEntity();
             world.CreateEntity();
@@ -67,10 +67,10 @@ namespace DefaultEcs.Test
         [Fact]
         public void GetEntities_Should_not_return_disabled_Entity()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
-            List<Entity> entities = new List<Entity>
-                {
+            List<Entity> entities = new()
+            {
                     world.CreateEntity(),
                     world.CreateEntity(),
                     world.CreateEntity(),
@@ -93,10 +93,10 @@ namespace DefaultEcs.Test
         [Fact]
         public void GetEntities_Should_return_only_disabled_Entity()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
-            List<Entity> entities = new List<Entity>
-                {
+            List<Entity> entities = new()
+            {
                     world.CreateEntity(),
                     world.CreateEntity(),
                     world.CreateEntity(),
@@ -122,10 +122,10 @@ namespace DefaultEcs.Test
         [Fact]
         public void GetEntities_Should_not_return_Entity_with_disabled_component()
         {
-            using World world = new World(4);
+            using World world = new(4);
 
-            List<Entity> entities = new List<Entity>
-                {
+            List<Entity> entities = new()
+            {
                     world.CreateEntity(),
                     world.CreateEntity(),
                     world.CreateEntity(),
@@ -146,7 +146,7 @@ namespace DefaultEcs.Test
         [Fact]
         public void Dispose_Should_not_throw_When_world_already_disposed()
         {
-            World world = new World(4);
+            World world = new(4);
 
             EntitySet set = world.GetEntities().AsSet();
 

@@ -90,7 +90,7 @@ namespace DefaultEcs
         #region Methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal ReadOnlySpan<Entity> GetEntities(int start, int length) => new ReadOnlySpan<Entity>(_entities, start, length);
+        internal ReadOnlySpan<Entity> GetEntities(int start, int length) => new(_entities, start, length);
 
         /// <summary>
         /// Gets the <see cref="Entity"/> contained in the current <see cref="EntitySet"/>.

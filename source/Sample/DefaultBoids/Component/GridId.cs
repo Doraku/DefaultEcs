@@ -46,7 +46,7 @@ namespace DefaultBoids.Component
                 _id = id;
             }
 
-            public Enumerator GetEnumerator() => new Enumerator(_id);
+            public Enumerator GetEnumerator() => new(_id);
 
             IEnumerator<GridId> IEnumerable<GridId>.GetEnumerator() => GetEnumerator();
 
@@ -106,9 +106,9 @@ namespace DefaultBoids.Component
             object IEnumerator.Current => Current;
         }
 
-        public static Enumerable GetNeighbors(this GridId id) => new Enumerable(id);
+        public static Enumerable GetNeighbors(this GridId id) => new(id);
 
-        public static GridId ToGridId(this Vector2 position) => new GridId((int)Math.Clamp(position.X / _cellWidth, 0, _width - 1), (int)Math.Clamp(position.Y / _cellHeight, 0, _height - 1));
+        public static GridId ToGridId(this Vector2 position) => new((int)Math.Clamp(position.X / _cellWidth, 0, _width - 1), (int)Math.Clamp(position.Y / _cellHeight, 0, _height - 1));
 
         public static void CreateBehaviors(this World world)
         {

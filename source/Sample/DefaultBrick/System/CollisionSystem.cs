@@ -26,8 +26,8 @@ namespace DefaultBrick.System
             {
                 ref Position position = ref ball.Get<Position>();
                 ref Velocity velocity = ref ball.Get<Velocity>();
-                Rectangle ballXBound = new Rectangle((int)position.Value.X, (int)(position.Value.Y - (velocity.Value.Y * state)), 10, 10);
-                Rectangle ballYBound = new Rectangle((int)(position.Value.X - (velocity.Value.X * state)), (int)position.Value.Y, 10, 10);
+                Rectangle ballXBound = new((int)position.Value.X, (int)(position.Value.Y - (velocity.Value.Y * state)), 10, 10);
+                Rectangle ballYBound = new((int)(position.Value.X - (velocity.Value.X * state)), (int)position.Value.Y, 10, 10);
 
                 int speedUp = 0;
 
@@ -58,7 +58,7 @@ namespace DefaultBrick.System
                             position.Value.Y = bound.Y - 10;
 
                             int offset = (int)position.Value.X - bound.X;
-                            Vector2 newVelocity = new Vector2(offset - 45, -offset);
+                            Vector2 newVelocity = new(offset - 45, -offset);
                             newVelocity.Normalize();
 
                             velocity.Value = newVelocity * velocity.Value.Length();

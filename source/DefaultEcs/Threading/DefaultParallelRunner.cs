@@ -14,7 +14,7 @@ namespace DefaultEcs.Threading
     {
         #region Fields
 
-        internal static readonly DefaultParallelRunner Default = new DefaultParallelRunner(1);
+        internal static readonly DefaultParallelRunner Default = new(1);
 
         private readonly CancellationTokenSource _disposeHandle;
         private readonly WorkerBarrier _barrier;

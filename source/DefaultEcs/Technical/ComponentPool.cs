@@ -22,7 +22,7 @@ namespace DefaultEcs.Technical
 
             #region IEnumerable
 
-            public EntityEnumerator GetEnumerator() => new EntityEnumerator(_pool);
+            public EntityEnumerator GetEnumerator() => new(_pool);
 
             #endregion
         }
@@ -44,7 +44,7 @@ namespace DefaultEcs.Technical
 
             #region IEnumerator
 
-            public Entity Current => new Entity(_worldId, _index);
+            public Entity Current => new(_worldId, _index);
 
             public bool MoveNext()
             {
@@ -296,12 +296,12 @@ namespace DefaultEcs.Technical
         public ref T Get(int entityId) => ref _components[_mapping[entityId]];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> AsSpan() => new Span<T>(_components, 0, _lastComponentIndex + 1);
+        public Span<T> AsSpan() => new(_components, 0, _lastComponentIndex + 1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Components<T> AsComponents() => new Components<T>(_mapping, _components);
+        public Components<T> AsComponents() => new(_mapping, _components);
 
-        public EntityEnumerable GetEntities() => new EntityEnumerable(this);
+        public EntityEnumerable GetEntities() => new(this);
 
         #endregion
 
