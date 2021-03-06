@@ -52,7 +52,7 @@ public sealed class CollisionSystem : AEntitySystem<float>
     public CollisionSystem(World world, SystemRunner<float> runner)
         : base(world, runner)
     {
-        _allies = world.GetEntities().With<Ally>().With<CollisionBox>().Build();
+        _allies = world.GetEntities().With<Ally>().With<CollisionBox>().AsSet();
     }
 
     protected override void Update(float state, ReadOnlySpan<Entity> entities)
@@ -117,6 +117,6 @@ Once the dlls inside your Unity project you will then need to disable `Validate 
 
 ![Unity](https://github.com/Doraku/DefaultEcs/blob/master/image/unity.png)
 
-Note that this feature has only been enable since a specific version of Unity.
+Note that this feature has only been available since a specific version of Unity.
 
 You should then be able to use DefaultEcs in your Unity project. Keep in mind that if you choose the IL2CPP backend, some features will not work (the provided serializers) and some others will require extra code (check [AoTHelper](https://github.com/Doraku/DefaultEcs/blob/master/documentation/api/DefaultEcs-AoTHelper.md)).
