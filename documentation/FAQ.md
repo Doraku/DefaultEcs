@@ -4,6 +4,7 @@ This page contains some more specific questions you could have which are not cov
 - [How to use DefaultEcs in a game loop?](#game_loop)
 - [How to have multiple entities dependencies in systems?](#system_dependencies)
 - [How to queue messages instead of handling them synchronously?](#queue_message)
+- [How to use DefaultEcs in Unity?](#unity)
 
 <a name='defaultecs'></a>
 ## Why the name DefaultEcs?
@@ -21,7 +22,7 @@ GameState state;
 
 while (true)
 {
-	mainSystem.Update(state);
+    mainSystem.Update(state);
 }
 ```
 It is completely resonable to seperate your update and render process in their own systems as some game frameworks allow the update to run multiple times compared to the presentation of a frame.
@@ -32,8 +33,8 @@ GameState state;
 
 while (true)
 {
-	updateSystem.Update(state);
-	renderSystem.Update(state);
+    updateSystem.Update(state);
+    renderSystem.Update(state);
 }
 ```
 You are free to handle the exit clause however you want as DefaultEcs do not force any specific usage.
@@ -76,31 +77,46 @@ The [IPublisher](https://github.com/Doraku/DefaultEcs/blob/master/documentation/
 ```csharp
 internal sealed class BulletSystem : ISystem<float>
 {
-	private readonly List<NewBulletMessage> _newBullets;
+    private readonly List<NewBulletMessage> _newBullets;
 
-	public BulletSystem(World world, Configuration configuration)
-	{
-		_newBullets = new List<NewBulletMessage>(100);
+    public BulletSystem(World world, Configuration configuration)
+    {
+        _newBullets = new List<NewBulletMessage>(100);
 
-		_subscription = world.Subscribe(this);
-	}
+        _subscription = world.Subscribe(this);
+    }
 
-	[Subscribe]
-	private void On(in NewBulletMessage message) => _newBullets.Add(message);
+    [Subscribe]
+    private void On(in NewBulletMessage message) => _newBullets.Add(message);
 
-	public bool IsEnabled { get; set; } = true;
+    public bool IsEnabled { get; set; } = true;
 
-	public void Update(float state)
-	{
-		if (IsEnabled)
-		{
-			foreach (NewBulletMessage message in _newBullets)
-			{
-				// setup bullet
-			}
-			_newBullets.Clear();
-		}
-	}
+    public void Update(float state)
+    {
+        if (IsEnabled)
+        {
+            foreach (NewBulletMessage message in _newBullets)
+            {
+	            // setup bullet
+            }
+            _newBullets.Clear();
+        }
+    }
 }
 ```
 By handling them as an ISystem  you can then easily decide when in your update workflow you want to actually handle them. Keep in mind to use a thread safe collection to store the received message if you use a multithreaded update.
+
+<a name='unity'></a>
+## How to use DefaultEcs in Unity?
+DefaultEcs is not available as a unity package for now but it is still possible to use it in Unity since the version 0.15.1.
+
+While Unity does not handle directly nuget packages, [NugetForUnity](https://github.com/GlitchEnzo/NuGetForUnity) tries to fill this need and will let you easily add DefaultEcs (and its dependencies) in your Unity project.  
+If you want to add it manually, you will have to download [DefaultEcs](https://www.nuget.org/packages/DefaultEcs/) and its dependencies [System.Buffers](https://www.nuget.org/packages/System.Buffers/), [System.Memory](https://www.nuget.org/packages/System.Memory/) and [System.Runtime.CompilerServices.Unsafe](https://www.nuget.org/packages/System.Runtime.CompilerServices.Unsafe/).
+
+Once the dlls inside your Unity project you will then need to disable `Validate References` on DefaultEcs.dll and System.Memory.dll:
+
+![Unity](https://github.com/Doraku/DefaultEcs/blob/master/image/unity.png)
+
+Note that this feature has only been enable since a specific version of Unity.
+
+You should then be able to use DefaultEcs in your Unity project. Keep in mind that if you choose the IL2CPP backend, some features will not work (the provided serializers) and some others will require extra code (check [AoTHelper](https://github.com/Doraku/DefaultEcs/blob/master/documentation/api/DefaultEcs-AoTHelper.md)).
