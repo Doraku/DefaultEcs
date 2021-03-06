@@ -5,7 +5,7 @@ using Xunit;
 
 namespace DefaultEcs.Test
 {
-    public sealed class EntityRuleBuilderTest
+    public sealed class EntityQueryBuilderTest
     {
         #region Tests
 
@@ -22,8 +22,8 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            EntityRuleBuilder builder = world.GetEntities().WithEither<bool>().WithoutEither<double>().With((in bool b) => b);
-            EntityRuleBuilder copy = builder.Copy();
+            EntityQueryBuilder builder = world.GetEntities().WithEither<bool>().WithoutEither<double>().With((in bool b) => b);
+            EntityQueryBuilder copy = builder.Copy();
 
             Check.That(copy).IsNotEqualTo(builder);
 

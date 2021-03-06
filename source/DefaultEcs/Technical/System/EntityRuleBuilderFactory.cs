@@ -11,7 +11,7 @@ namespace DefaultEcs.Technical.System
         #region Fields
 
         private static readonly MethodInfo _withPredicate;
-        private static readonly ConcurrentDictionary<Type, Func<object, World, EntityRuleBuilder>> _entityRuleBuilderFactories;
+        private static readonly ConcurrentDictionary<Type, Func<object, World, EntityQueryBuilder>> _entityRuleBuilderFactories;
 
         #endregion
 
@@ -19,19 +19,19 @@ namespace DefaultEcs.Technical.System
 
         static EntityRuleBuilderFactory()
         {
-            _withPredicate = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethods(nameof(EntityRuleBuilder.With)).Single(m => m.GetParameters().Length == 1);
-            _entityRuleBuilderFactories = new ConcurrentDictionary<Type, Func<object, World, EntityRuleBuilder>>();
+            _withPredicate = typeof(EntityQueryBuilder).GetTypeInfo().GetDeclaredMethods(nameof(EntityQueryBuilder.With)).Single(m => m.GetParameters().Length == 1);
+            _entityRuleBuilderFactories = new ConcurrentDictionary<Type, Func<object, World, EntityQueryBuilder>>();
         }
 
         #endregion
 
         #region Methods
 
-        private static Func<object, World, EntityRuleBuilder> GetEntityRuleBuilderFactory(Type type)
+        private static Func<object, World, EntityQueryBuilder> GetEntityRuleBuilderFactory(Type type)
         {
             TypeInfo typeInfo = type.GetTypeInfo();
 
-            Func<object, EntityRuleBuilder, EntityRuleBuilder> builderAction = (_, b) => b;
+            Func<object, EntityQueryBuilder, EntityQueryBuilder> builderAction = (_, b) => b;
 
             foreach (ComponentAttribute attribute in typeInfo.GetCustomAttributes<ComponentAttribute>(true))
             {
@@ -66,7 +66,7 @@ namespace DefaultEcs.Technical.System
 
                     Type argType = parameters[0].ParameterType.GetElementType();
 
-                    builderAction += (o, b) => (EntityRuleBuilder)_withPredicate.MakeGenericMethod(argType).Invoke(
+                    builderAction += (o, b) => (EntityQueryBuilder)_withPredicate.MakeGenericMethod(argType).Invoke(
                         b,
                         new object[]
                         {
@@ -84,7 +84,7 @@ namespace DefaultEcs.Technical.System
             return (o, w) => builderAction(o, enabled ? w.GetEntities() : w.GetDisabledEntities());
         }
 
-        public static Func<object, World, EntityRuleBuilder> Create(Type type) => _entityRuleBuilderFactories.GetOrAdd(type, GetEntityRuleBuilderFactory);
+        public static Func<object, World, EntityQueryBuilder> Create(Type type) => _entityRuleBuilderFactories.GetOrAdd(type, GetEntityRuleBuilderFactory);
 
         #endregion
     }

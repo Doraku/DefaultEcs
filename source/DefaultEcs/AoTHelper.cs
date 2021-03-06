@@ -28,7 +28,7 @@ namespace DefaultEcs
 
             Filter(default);
 
-            new EntityRuleBuilder(default, default)
+            new EntityQueryBuilder(default, default)
                 .With<T>().WithEither<T>().Or<T>().WithEither<T>().With<T>().With<T>(Filter).WithEither<T>().With<T>(Filter)
                 .Without<T>().WithoutEither<T>().Or<T>().WithoutEither<T>().Without<T>()
                 .WhenAdded<T>().WhenAddedEither<T>().Or<T>().WhenAddedEither<T>().WhenAdded<T>()

@@ -10,7 +10,7 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            EntityRuleBuilder builder = world.GetEntities();
+            EntityQueryBuilder builder = world.GetEntities();
 
             Check.That(builder.WithEither<bool>().With<int>()).IsEqualTo(builder);
         }
@@ -20,7 +20,7 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            EntityRuleBuilder builder = world.GetEntities();
+            EntityQueryBuilder builder = world.GetEntities();
 
             Check.That(builder.WithEither<bool>().Without<int>()).IsEqualTo(builder);
         }
@@ -30,7 +30,7 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            EntityRuleBuilder builder = world.GetEntities();
+            EntityQueryBuilder builder = world.GetEntities();
 
             Check.That(builder.WithEither<bool>().WhenAdded<int>()).IsEqualTo(builder);
         }
@@ -40,7 +40,7 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            EntityRuleBuilder builder = world.GetEntities();
+            EntityQueryBuilder builder = world.GetEntities();
 
             Check.That(builder.WithEither<bool>().WhenChanged<int>()).IsEqualTo(builder);
         }
@@ -50,7 +50,7 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            EntityRuleBuilder builder = world.GetEntities();
+            EntityQueryBuilder builder = world.GetEntities();
 
             Check.That(builder.WithEither<bool>().WhenRemoved<int>()).IsEqualTo(builder);
         }
@@ -60,7 +60,7 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            EntityRuleBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
+            EntityQueryBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
             Check.That(builder.WithEither<bool>()).IsNotEqualTo(builder);
         }
@@ -70,7 +70,7 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            EntityRuleBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
+            EntityQueryBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
             Check.That(builder.WithoutEither<bool>()).IsNotEqualTo(builder);
         }
@@ -80,7 +80,7 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            EntityRuleBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
+            EntityQueryBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
             Check.That(builder.WhenAddedEither<bool>()).IsNotEqualTo(builder);
         }
@@ -90,7 +90,7 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            EntityRuleBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
+            EntityQueryBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
             Check.That(builder.WhenChangedEither<bool>()).IsNotEqualTo(builder);
         }
@@ -100,7 +100,7 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            EntityRuleBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
+            EntityQueryBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
             Check.That(builder.WhenRemovedEither<bool>()).IsNotEqualTo(builder);
         }
@@ -110,7 +110,7 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            EntityRuleBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
+            EntityQueryBuilder.EitherBuilder builder = world.GetEntities().WithEither<bool>();
 
             Check.That(builder.Or<bool>()).IsEqualTo(builder);
 
@@ -140,8 +140,8 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            EntityRuleBuilder builder = world.GetEntities();
-            EntityRuleBuilder copy = builder.WithEither<bool>().Copy();
+            EntityQueryBuilder builder = world.GetEntities();
+            EntityQueryBuilder copy = builder.WithEither<bool>().Copy();
 
             Check.That(copy).IsNotEqualTo(builder);
         }

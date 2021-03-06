@@ -5,7 +5,7 @@ using System.Reflection;
 namespace DefaultEcs
 {
     /// <summary>
-    /// Provides set of static methods to create more easily rules on a <see cref="EntityRuleBuilder"/> instance.
+    /// Provides set of static methods to create more easily rules on a <see cref="EntityQueryBuilder"/> instance.
     /// </summary>
     public static class EntityRuleBuilderExtension
     {
@@ -30,25 +30,25 @@ namespace DefaultEcs
 
         static EntityRuleBuilderExtension()
         {
-            _with = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethods(nameof(EntityRuleBuilder.With)).Single(m => m.GetParameters().Length == 0);
-            _without = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.Without));
-            _whenAdded = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.WhenAdded));
-            _whenChanged = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.WhenChanged));
-            _whenRemoved = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.WhenRemoved));
-            _withEither = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.WithEither));
-            _withoutEither = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.WithoutEither));
-            _whenAddedEither = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.WhenAddedEither));
-            _whenChangedEither = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.WhenChangedEither));
-            _whenRemovedEither = typeof(EntityRuleBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.WhenRemovedEither));
-            _or = typeof(EntityRuleBuilder.EitherBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.EitherBuilder.Or));
-            _commit = typeof(EntityRuleBuilder.EitherBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityRuleBuilder.EitherBuilder.Commit));
+            _with = typeof(EntityQueryBuilder).GetTypeInfo().GetDeclaredMethods(nameof(EntityQueryBuilder.With)).Single(m => m.GetParameters().Length == 0);
+            _without = typeof(EntityQueryBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityQueryBuilder.Without));
+            _whenAdded = typeof(EntityQueryBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityQueryBuilder.WhenAdded));
+            _whenChanged = typeof(EntityQueryBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityQueryBuilder.WhenChanged));
+            _whenRemoved = typeof(EntityQueryBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityQueryBuilder.WhenRemoved));
+            _withEither = typeof(EntityQueryBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityQueryBuilder.WithEither));
+            _withoutEither = typeof(EntityQueryBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityQueryBuilder.WithoutEither));
+            _whenAddedEither = typeof(EntityQueryBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityQueryBuilder.WhenAddedEither));
+            _whenChangedEither = typeof(EntityQueryBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityQueryBuilder.WhenChangedEither));
+            _whenRemovedEither = typeof(EntityQueryBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityQueryBuilder.WhenRemovedEither));
+            _or = typeof(EntityQueryBuilder.EitherBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityQueryBuilder.EitherBuilder.Or));
+            _commit = typeof(EntityQueryBuilder.EitherBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityQueryBuilder.EitherBuilder.Commit));
         }
 
         #endregion
 
         #region Methods
 
-        private static EntityRuleBuilder Simple(EntityRuleBuilder builder, Type[] componentTypes, MethodInfo method)
+        private static EntityQueryBuilder Simple(EntityQueryBuilder builder, Type[] componentTypes, MethodInfo method)
         {
             foreach (Type componentType in componentTypes)
             {
@@ -58,15 +58,15 @@ namespace DefaultEcs
             return builder;
         }
 
-        private static EntityRuleBuilder Either(EntityRuleBuilder builder, Type[] componentTypes, MethodInfo method)
+        private static EntityQueryBuilder Either(EntityQueryBuilder builder, Type[] componentTypes, MethodInfo method)
         {
-            EntityRuleBuilder.EitherBuilder eitherBuilder = null;
+            EntityQueryBuilder.EitherBuilder eitherBuilder = null;
 
             foreach (Type componentType in componentTypes)
             {
                 if (eitherBuilder is null)
                 {
-                    eitherBuilder = (EntityRuleBuilder.EitherBuilder)method.MakeGenericMethod(componentType).Invoke(builder, null);
+                    eitherBuilder = (EntityQueryBuilder.EitherBuilder)method.MakeGenericMethod(componentType).Invoke(builder, null);
                 }
                 else
                 {
@@ -85,82 +85,82 @@ namespace DefaultEcs
         /// <summary>
         /// Makes a rule to obsverve <see cref="Entity"/> with all component of the given types.
         /// </summary>
-        /// <param name="builder">The <see cref="EntityRuleBuilder"/> on which to create the rule.</param>
+        /// <param name="builder">The <see cref="EntityQueryBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
-        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
-        public static EntityRuleBuilder With(this EntityRuleBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _with);
+        /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+        public static EntityQueryBuilder With(this EntityQueryBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _with);
 
         /// <summary>
         /// Makes a rule to ignore <see cref="Entity"/> with at least one component of the given types.
         /// </summary>
-        /// <param name="builder">The <see cref="EntityRuleBuilder"/> on which to create the rule.</param>
+        /// <param name="builder">The <see cref="EntityQueryBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
-        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
-        public static EntityRuleBuilder Without(this EntityRuleBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _without);
+        /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+        public static EntityQueryBuilder Without(this EntityQueryBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _without);
 
         /// <summary>
         /// Makes a rule to obsverve <see cref="Entity"/> when all component of the given types are added.
         /// </summary>
-        /// <param name="builder">The <see cref="EntityRuleBuilder"/> on which to create the rule.</param>
+        /// <param name="builder">The <see cref="EntityQueryBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
-        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
-        public static EntityRuleBuilder WhenAdded(this EntityRuleBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _whenAdded);
+        /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+        public static EntityQueryBuilder WhenAdded(this EntityQueryBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _whenAdded);
 
         /// <summary>
         /// Makes a rule to obsverve <see cref="Entity"/> when all component of the given types are changed.
         /// </summary>
-        /// <param name="builder">The <see cref="EntityRuleBuilder"/> on which to create the rule.</param>
+        /// <param name="builder">The <see cref="EntityQueryBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
-        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
-        public static EntityRuleBuilder WhenChanged(this EntityRuleBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _whenChanged);
+        /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+        public static EntityQueryBuilder WhenChanged(this EntityQueryBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _whenChanged);
 
         /// <summary>
         /// Makes a rule to obsverve <see cref="Entity"/> when all component of the given types are removed.
         /// </summary>
-        /// <param name="builder">The <see cref="EntityRuleBuilder"/> on which to create the rule.</param>
+        /// <param name="builder">The <see cref="EntityQueryBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
-        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
-        public static EntityRuleBuilder WhenRemoved(this EntityRuleBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _whenRemoved);
+        /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+        public static EntityQueryBuilder WhenRemoved(this EntityQueryBuilder builder, params Type[] componentTypes) => Simple(builder, componentTypes, _whenRemoved);
 
         /// <summary>
         /// Makes a rule to obsverve <see cref="Entity"/> with at least one component of the given types.
         /// </summary>
-        /// <param name="builder">The <see cref="EntityRuleBuilder"/> on which to create the rule.</param>
+        /// <param name="builder">The <see cref="EntityQueryBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
-        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
-        public static EntityRuleBuilder WithEither(this EntityRuleBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _withEither);
+        /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+        public static EntityQueryBuilder WithEither(this EntityQueryBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _withEither);
 
         /// <summary>
         /// Makes a rule to obsverve <see cref="Entity"/> without at least one component of the given types.
         /// </summary>
-        /// <param name="builder">The <see cref="EntityRuleBuilder"/> on which to create the rule.</param>
+        /// <param name="builder">The <see cref="EntityQueryBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
-        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
-        public static EntityRuleBuilder WithoutEither(this EntityRuleBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _withoutEither);
+        /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+        public static EntityQueryBuilder WithoutEither(this EntityQueryBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _withoutEither);
 
         /// <summary>
         /// Makes a rule to observe <see cref="Entity"/> when one component of the given types is added.
         /// </summary>
-        /// <param name="builder">The <see cref="EntityRuleBuilder"/> on which to create the rule.</param>
+        /// <param name="builder">The <see cref="EntityQueryBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
-        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
-        public static EntityRuleBuilder WhenAddedEither(this EntityRuleBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _whenAddedEither);
+        /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+        public static EntityQueryBuilder WhenAddedEither(this EntityQueryBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _whenAddedEither);
 
         /// <summary>
         /// Makes a rule to observe <see cref="Entity"/> when one component of the given types is changed.
         /// </summary>
-        /// <param name="builder">The <see cref="EntityRuleBuilder"/> on which to create the rule.</param>
+        /// <param name="builder">The <see cref="EntityQueryBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
-        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
-        public static EntityRuleBuilder WhenChangedEither(this EntityRuleBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _whenChangedEither);
+        /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+        public static EntityQueryBuilder WhenChangedEither(this EntityQueryBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _whenChangedEither);
 
         /// <summary>
         /// Makes a rule to observe <see cref="Entity"/> when one component of the given types is removed.
         /// </summary>
-        /// <param name="builder">The <see cref="EntityRuleBuilder"/> on which to create the rule.</param>
+        /// <param name="builder">The <see cref="EntityQueryBuilder"/> on which to create the rule.</param>
         /// <param name="componentTypes">The types of component.</param>
-        /// <returns>The current <see cref="EntityRuleBuilder"/>.</returns>
-        public static EntityRuleBuilder WhenRemovedEither(this EntityRuleBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _whenRemovedEither);
+        /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+        public static EntityQueryBuilder WhenRemovedEither(this EntityQueryBuilder builder, params Type[] componentTypes) => Either(builder, componentTypes, _whenRemovedEither);
 
         #endregion
     }

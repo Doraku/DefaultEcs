@@ -344,7 +344,7 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Clears current instance of its entities if it was created with some reactive filter (<seealso cref="EntityRuleBuilder.WhenAdded{T}"/>, <see cref="EntityRuleBuilder.WhenChanged{T}"/> or <see cref="EntityRuleBuilder.WhenRemoved{T}"/>).
+        /// Clears current instance of its entities if it was created with some reactive filter (<seealso cref="EntityQueryBuilder.WhenAdded{T}"/>, <see cref="EntityQueryBuilder.WhenChanged{T}"/> or <see cref="EntityQueryBuilder.WhenRemoved{T}"/>).
         /// Does nothing if it was created from a static filter.
         /// This method need to be called after current instance content has been processed in a update cycle.
         /// </summary>

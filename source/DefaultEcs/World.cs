@@ -308,16 +308,16 @@ namespace DefaultEcs
         public Components<T> GetComponents<T>() => ComponentManager<T>.GetOrCreate(WorldId).AsComponents();
 
         /// <summary>
-        /// Gets an <see cref="EntityRuleBuilder"/> to create a subset of <see cref="Entity"/> of the current <see cref="World"/>.
+        /// Gets an <see cref="EntityQueryBuilder"/> to create a subset of <see cref="Entity"/> of the current <see cref="World"/>.
         /// </summary>
-        /// <returns>An <see cref="EntityRuleBuilder"/>.</returns>
-        public EntityRuleBuilder GetEntities() => new(this, true);
+        /// <returns>An <see cref="EntityQueryBuilder"/>.</returns>
+        public EntityQueryBuilder GetEntities() => new(this, true);
 
         /// <summary>
-        /// Gets an <see cref="EntityRuleBuilder"/> to create a subset of disabled <see cref="Entity"/> of the current <see cref="World"/>.
+        /// Gets an <see cref="EntityQueryBuilder"/> to create a subset of disabled <see cref="Entity"/> of the current <see cref="World"/>.
         /// </summary>
-        /// <returns>An <see cref="EntityRuleBuilder"/>.</returns>
-        public EntityRuleBuilder GetDisabledEntities() => new(this, false);
+        /// <returns>An <see cref="EntityQueryBuilder"/>.</returns>
+        public EntityQueryBuilder GetDisabledEntities() => new(this, false);
 
         /// <summary>
         /// Calls on <paramref name="reader"/> with all the maximum number of component of the current <see cref="World"/>.

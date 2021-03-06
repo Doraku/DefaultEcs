@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DefaultEcs.Technical
 {
-    internal static class EntityRuleFilterFactory
+    internal static class EntityQueryFilterFactory
     {
         #region Fields
 
@@ -14,7 +14,7 @@ namespace DefaultEcs.Technical
 
         #region Initialisation
 
-        static EntityRuleFilterFactory()
+        static EntityQueryFilterFactory()
         {
             _filters = new Dictionary<string, Predicate<ComponentEnum>>();
         }
