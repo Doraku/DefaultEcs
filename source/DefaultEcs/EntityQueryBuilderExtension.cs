@@ -7,7 +7,7 @@ namespace DefaultEcs
     /// <summary>
     /// Provides set of static methods to create more easily rules on a <see cref="EntityQueryBuilder"/> instance.
     /// </summary>
-    public static class EntityRuleBuilderExtension
+    public static class EntityQueryBuilderExtension
     {
         #region Fields
 
@@ -28,7 +28,7 @@ namespace DefaultEcs
 
         #region Initialisation
 
-        static EntityRuleBuilderExtension()
+        static EntityQueryBuilderExtension()
         {
             _with = typeof(EntityQueryBuilder).GetTypeInfo().GetDeclaredMethods(nameof(EntityQueryBuilder.With)).Single(m => m.GetParameters().Length == 0);
             _without = typeof(EntityQueryBuilder).GetTypeInfo().GetDeclaredMethod(nameof(EntityQueryBuilder.Without));
