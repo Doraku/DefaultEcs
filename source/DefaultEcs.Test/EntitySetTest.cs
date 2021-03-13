@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using NFluent;
 using Xunit;
 
@@ -26,11 +28,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             using EntitySet set = world.GetEntities().AsSet();
 
@@ -71,11 +73,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             using EntitySet set = world.GetEntities().AsSet();
 
@@ -97,11 +99,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             using EntitySet set = world.GetDisabledEntities().AsSet();
 
@@ -126,11 +128,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             foreach (Entity entity in entities)
             {
@@ -153,6 +155,23 @@ namespace DefaultEcs.Test
             world.Dispose();
 
             Check.ThatCode(set.Dispose).DoesNotThrow();
+        }
+
+        [Fact]
+        public void TrimExcess_Should_fit_storage_to_number_of_entities()
+        {
+            World world = new();
+
+            EntitySet set = world.GetEntities().AsSet();
+            world.CreateEntity();
+
+            Check.That(((Array)typeof(EntitySet).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsNotEqualTo(set.Count);
+            Check.That(((Array)typeof(EntitySet).GetField("_entities", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsNotEqualTo(set.Count);
+
+            set.TrimExcess();
+
+            Check.That(((Array)typeof(EntitySet).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsEqualTo(set.Count);
+            Check.That(((Array)typeof(EntitySet).GetField("_entities", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsEqualTo(set.Count);
         }
 
         #endregion

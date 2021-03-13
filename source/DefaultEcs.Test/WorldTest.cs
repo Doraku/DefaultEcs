@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using DefaultEcs.Serialization;
@@ -205,9 +206,9 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
             Entity entity = world.CreateEntity();
             entities.Add(world.CreateEntity());
             entity.Dispose();
@@ -232,9 +233,9 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
             Entity entity = world.CreateEntity();
             entities.Add(world.CreateEntity());
             entity.Dispose();
@@ -674,6 +675,22 @@ namespace DefaultEcs.Test
             world.SubscribeComponentDisabled((in Entity _, in bool _) => throw new Exception()).Dispose();
 
             Check.ThatCode(() => entity.Set(true)).DoesNotThrow();
+        }
+
+        [Fact]
+        public void TrimExcess_Should_fit_storage_to_number_of_entities()
+        {
+            World world = new();
+
+            Entity entity = world.CreateEntity();
+            entity.Set(42);
+            entity.Dispose();
+
+            Check.That(((Array)typeof(World).GetField("EntityInfos", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(world)).Length).IsNotZero();
+
+            world.TrimExcess();
+
+            Check.That(((Array)typeof(World).GetField("EntityInfos", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(world)).Length).IsZero();
         }
 
         #endregion

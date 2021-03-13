@@ -411,6 +411,8 @@ namespace DefaultEcs
                 subscriptions.Add((s, w) => w.Subscribe<EntityCreatedMessage>(s.Add));
             }
 
+            subscriptions.Add((s, w) => w.Subscribe<TrimExcessMessage>(s.On));
+
             return hasWhenFilter;
         }
 

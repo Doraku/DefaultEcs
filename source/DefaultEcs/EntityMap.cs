@@ -142,7 +142,7 @@ namespace DefaultEcs
             _worldId = world.WorldId;
             _worldMaxCapacity = world.MaxCapacity;
             _container = new EntityContainerWatcher(this, filter, predicate);
-            _subscriptions = Enumerable.Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(OnChange), 1).Concat(subscriptions.Select(s => s(_container, world))).Merge();
+            _subscriptions = Enumerable.Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(On), 1).Concat(subscriptions.Select(s => s(_container, world))).Merge();
 
             _previousComponents = ComponentManager<TKey>.GetOrCreatePrevious(_worldId);
             _components = ComponentManager<TKey>.GetOrCreate(_worldId);
@@ -167,7 +167,7 @@ namespace DefaultEcs
 
         #region Callbacks
 
-        private void OnChange(in ComponentChangedMessage<TKey> message)
+        private void On(in ComponentChangedMessage<TKey> message)
         {
             if (message.EntityId < _entityIds.Length && _entityIds[message.EntityId] && _entities.Remove(_previousComponents.Get(message.EntityId)))
             {
@@ -237,6 +237,18 @@ namespace DefaultEcs
                 _entityIds[entityId] = false;
                 _entities.Remove(_previousComponents.Get(entityId));
             }
+        }
+
+        /// <summary>
+        /// Resizes inner storage to exactly the number of <see cref="Entity"/> this <see cref="EntityMap{TKey}"/> contains.
+        /// </summary>
+        public void TrimExcess()
+        {
+            ArrayExtension.Trim(ref _entityIds, Array.FindLastIndex(_entityIds, i => i) + 1);
+
+#if NETSTANDARD2_1
+            _entities.TrimExcess();
+#endif
         }
 
         #endregion

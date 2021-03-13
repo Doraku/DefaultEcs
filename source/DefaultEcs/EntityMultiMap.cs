@@ -102,6 +102,8 @@ namespace DefaultEcs
                 Count = 0;
                 _sortedIndex = 0;
             }
+
+            public void TrimExcess() => ArrayExtension.Trim(ref _entities, Count);
         }
 
         internal struct Mapping
@@ -248,7 +250,9 @@ namespace DefaultEcs
             _worldId = world.WorldId;
             _worldMaxCapacity = world.MaxCapacity;
             _container = new EntityContainerWatcher(this, filter, predicate);
-            _subscriptions = Enumerable.Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(OnChange), 1).Concat(subscriptions.Select(s => s(_container, world))).Merge();
+            _subscriptions = Enumerable
+                .Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(On), 1)
+                .Concat(subscriptions.Select(s => s(_container, world))).Merge();
 
             _components = ComponentManager<TKey>.GetOrCreate(_worldId);
             _entities = new Dictionary<TKey, Entities>(capacity, comparer);
@@ -279,7 +283,7 @@ namespace DefaultEcs
 
         #region Callbacks
 
-        private void OnChange(in ComponentChangedMessage<TKey> message)
+        private void On(in ComponentChangedMessage<TKey> message)
         {
             if (message.EntityId < _mapping.Length)
             {
@@ -397,6 +401,23 @@ namespace DefaultEcs
                     }
                     mapping = default;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Resizes inner storage to exactly the number of <see cref="Entity"/> this <see cref="EntityMultiMap{TKey}"/> contains.
+        /// </summary>
+        public void TrimExcess()
+        {
+#if NETSTANDARD2_1
+            _entities.TrimExcess();
+#endif
+
+            ArrayExtension.Trim(ref _mapping, Array.FindLastIndex(_mapping, i => i.Entities != null) + 1);
+
+            foreach (Entities entities in _entities.Values)
+            {
+                entities.TrimExcess();
             }
         }
 

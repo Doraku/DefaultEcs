@@ -167,6 +167,15 @@ namespace DefaultEcs
             }
         }
 
+        /// <summary>
+        /// Resizes inner storage to exactly the number of <see cref="Entity"/> this <see cref="EntitySet"/> contains.
+        /// </summary>
+        public void TrimExcess()
+        {
+            ArrayExtension.Trim(ref _entities, Count);
+            ArrayExtension.Trim(ref _mapping, Array.FindLastIndex(_mapping, i => i != -1) + 1);
+        }
+
         #endregion
 
         #region ISortable

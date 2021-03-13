@@ -8,10 +8,14 @@ namespace DefaultEcs.Technical.Helper
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void InnerEnsureLength<T>(ref T[] array, int index, int maxLength)
         {
-            int newLength = Math.Max(1, array.Length);
+            int newLength = Math.Max(4, array.Length);
             do
             {
                 newLength *= 2;
+                if (newLength < 0)
+                {
+                    newLength = index + 1;
+                }
             }
             while (index >= newLength);
             Array.Resize(ref array, Math.Min(maxLength, newLength));
@@ -44,6 +48,14 @@ namespace DefaultEcs.Technical.Helper
 
                 InnerEnsureLength(ref array, index, maxLength);
                 array.Fill(defaultValue, oldLength);
+            }
+        }
+
+        public static void Trim<T>(ref T[] array, int lenght)
+        {
+            if (array.Length > lenght)
+            {
+                array = lenght is 0 ? EmptyArray<T>.Value : array.AsSpan(0, lenght).ToArray();
             }
         }
     }

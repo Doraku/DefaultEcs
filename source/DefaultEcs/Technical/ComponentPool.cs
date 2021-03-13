@@ -112,6 +112,7 @@ namespace DefaultEcs.Technical
             _lastComponentIndex = -1;
             _sortedIndex = 0;
 
+            Publisher<TrimExcessMessage>.Subscribe(_worldId, On);
             Publisher<ComponentTypeReadMessage>.Subscribe(_worldId, On);
             Publisher<EntityDisposedMessage>.Subscribe(_worldId, On);
             if (!isPrevious)
@@ -151,6 +152,8 @@ namespace DefaultEcs.Technical
                 message.Reader.OnRead(ref _components[componentIndex], new Entity(_worldId, _links[componentIndex].EntityId));
             }
         }
+
+        private void On(in TrimExcessMessage message) => TrimExcess();
 
         #endregion
 
@@ -302,6 +305,13 @@ namespace DefaultEcs.Technical
         public Components<T> AsComponents() => new(_mapping, _components);
 
         public EntityEnumerable GetEntities() => new(this);
+
+        public void TrimExcess()
+        {
+            ArrayExtension.Trim(ref _components, _lastComponentIndex + 1);
+            ArrayExtension.Trim(ref _links, _lastComponentIndex + 1);
+            ArrayExtension.Trim(ref _mapping, Array.FindLastIndex(_mapping, i => i != -1) + 1);
+        }
 
         #endregion
 

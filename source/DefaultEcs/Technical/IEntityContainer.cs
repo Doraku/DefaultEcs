@@ -5,5 +5,7 @@
         void Add(int entityId);
 
         void Remove(int entityId);
+
+        void TrimExcess();
     }
 }

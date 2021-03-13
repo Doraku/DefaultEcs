@@ -26,6 +26,8 @@ namespace DefaultEcs.Technical
 
         #region Callbacks
 
+        public void On(in TrimExcessMessage _) => _container.TrimExcess();
+
         public void Add(in EntityCreatedMessage message) => _container.Add(message.EntityId);
 
         public void AddOrRemove<T>(in ComponentChangedMessage<T> message)

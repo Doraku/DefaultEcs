@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using NFluent;
 using Xunit;
 
@@ -206,6 +207,21 @@ namespace DefaultEcs.Test
             world.Dispose();
 
             Check.ThatCode(set.Dispose).DoesNotThrow();
+        }
+
+        [Fact]
+        public void TrimExcess_Should_fit_storage_to_number_of_entities()
+        {
+            World world = new();
+
+            EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
+            world.CreateEntity().Set(42);
+
+            Check.That(((Array)typeof(EntityMultiMap<int>).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(map)).Length).IsNotEqualTo(1);
+
+            map.TrimExcess();
+
+            Check.That(((Array)typeof(EntityMultiMap<int>).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(map)).Length).IsEqualTo(1);
         }
     }
 }

@@ -359,6 +359,25 @@ namespace DefaultEcs
         public void Optimize() => Optimize(DefaultParallelRunner.Default);
 
         /// <summary>
+        /// Resizes inner storage to exactly the number of <typeparamref name="T"/> components this <see cref="World"/> contains.
+        /// </summary>
+        public void TrimExcess<T>()
+        {
+            ComponentManager<T>.Get(WorldId)?.TrimExcess();
+            ComponentManager<T>.GetPrevious(WorldId)?.TrimExcess();
+        }
+
+        /// <summary>
+        /// Resizes all inner storage to exactly the number of <see cref="Entity"/> and components this <see cref="World"/> contains.
+        /// </summary>
+        public void TrimExcess()
+        {
+            ArrayExtension.Trim(ref EntityInfos, Array.FindLastIndex(EntityInfos, i => i.Components[IsAliveFlag]) + 1);
+
+            Publish(new TrimExcessMessage());
+        }
+
+        /// <summary>
         /// Subscribes an <see cref="WorldDisposedHandler"/> on the current <see cref="World"/> to be called when current instance is disposed.
         /// </summary>
         /// <param name="action">The <see cref="WorldDisposedHandler"/> to be called.</param>
