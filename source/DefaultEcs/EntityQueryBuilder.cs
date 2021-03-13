@@ -355,7 +355,7 @@ namespace DefaultEcs
             _nonReactSubscriptions = new List<Func<EntityContainerWatcher, World, IDisposable>>();
 
             _addCreated = withEnabledEntities;
-            _subscriptions.Add((s, w) => w.Subscribe<EntityDisposingMessage>(s.Remove));
+            _subscriptions.Add((s, w) => w.Subscribe<EntityDisposedMessage>(s.Remove));
             _withFilter[World.IsAliveFlag] = true;
             if (withEnabledEntities)
             {
