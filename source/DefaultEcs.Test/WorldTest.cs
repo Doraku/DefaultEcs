@@ -680,7 +680,8 @@ namespace DefaultEcs.Test
         [Fact]
         public void TrimExcess_Should_fit_storage_to_number_of_entities()
         {
-            World world = new();
+            using World world = new();
+            using EntitySet set = world.GetEntities().AsSet();
 
             Entity entity = world.CreateEntity();
             entity.Set(42);
@@ -688,9 +689,15 @@ namespace DefaultEcs.Test
 
             Check.That(((Array)typeof(World).GetField("EntityInfos", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(world)).Length).IsNotZero();
 
+            Check.That(((Array)typeof(EntitySet).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsNotEqualTo(set.Count);
+            Check.That(((Array)typeof(EntitySet).GetField("_entities", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsNotEqualTo(set.Count);
+
             world.TrimExcess();
 
             Check.That(((Array)typeof(World).GetField("EntityInfos", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(world)).Length).IsZero();
+
+            Check.That(((Array)typeof(EntitySet).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsEqualTo(set.Count);
+            Check.That(((Array)typeof(EntitySet).GetField("_entities", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsEqualTo(set.Count);
         }
 
         #endregion
