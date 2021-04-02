@@ -17,8 +17,8 @@ namespace DefaultEcs.Benchmark
                 //typeof(DefaultEcs.Recorder),
                 //typeof(DefaultEcs.Serialization),
                 typeof(Performance.SingleComponentEntityEnumeration),
-                typeof(Performance.DoubleComponentEntityEnumeration),
-                typeof(Performance.TripleComponentEntityEnumeration),
+                //typeof(Performance.DoubleComponentEntityEnumeration),
+                //typeof(Performance.TripleComponentEntityEnumeration),
                 //typeof(Message.Publish),
             }).RunAll();
             //BenchmarkSwitcher.FromAssembly(typeof(Program).GetTypeInfo().Assembly).RunAll();

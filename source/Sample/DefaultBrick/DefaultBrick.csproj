@@ -1,19 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFramework>net5.0-windows</TargetFramework>
-    <DefineConstants></DefineConstants>
-    <Optimize>true</Optimize>
-    <Configurations>Debug;Release</Configurations>
-    <ApplicationIcon />
     <OutputType>WinExe</OutputType>
-    <StartupObject />
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

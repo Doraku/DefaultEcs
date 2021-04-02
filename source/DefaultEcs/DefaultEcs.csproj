@@ -6,15 +6,9 @@
       netstandard2.0;
       netstandard2.1;
     </TargetFrameworks>
-    <Optimize>true</Optimize>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
-  </PropertyGroup>
-
-  <PropertyGroup Label="Debug" Condition="'$(Configuration)'=='Debug'">
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,7 +23,7 @@
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DefaultDocumentation" Version="0.6.13" PrivateAssets="all" Condition="'$(TargetFramework)'=='netstandard1.1' AND '$(GITHUB_ACTIONS)' == 'true' AND '$(TEST)' != 'true' AND '$(CI_VERSION)' != 'true'" />
+    <PackageReference Include="DefaultDocumentation" Version="0.6.15" PrivateAssets="all" Condition="'$(TargetFramework)'=='netstandard1.1' AND '$(GITHUB_ACTIONS)' == 'true' AND '$(TEST)' != 'true' AND '$(CI_VERSION)' != 'true'" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 

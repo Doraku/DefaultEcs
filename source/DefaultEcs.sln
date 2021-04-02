@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultEcs", "DefaultEcs\De
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultEcs.Test", "DefaultEcs.Test\DefaultEcs.Test.csproj", "{42066393-9C6B-4617-8439-B9C3E6B881C3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EEC6BAC3-A699-42F0-BED3-43985B10DE44}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solution Items", "{EEC6BAC3-A699-42F0-BED3-43985B10DE44}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
 		..\documentation\FAQ.md = ..\documentation\FAQ.md
@@ -15,7 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\documentation\NEXT_RELEASENOTES.txt = ..\documentation\NEXT_RELEASENOTES.txt
 		..\README.md = ..\README.md
 		..\Release.bat = ..\Release.bat
-		..\documentation\RELEASENOTES.md = ..\documentation\RELEASENOTES.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultEcs.Benchmark", "DefaultEcs.Benchmark\DefaultEcs.Benchmark.csproj", "{BD4F95D2-FB6F-4317-8B0A-58FBDF536C0B}"
@@ -37,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultEcs.Extension", "DefaultEcs.Extension\DefaultEcs.Extension.csproj", "{17280FCB-26FC-4999-8831-2810AF764B86}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Tests", "_Tests", "{9704EDE0-A366-4948-9B00-23C004336D11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +78,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{42066393-9C6B-4617-8439-B9C3E6B881C3} = {9704EDE0-A366-4948-9B00-23C004336D11}
 		{6D2BA0F6-177E-454B-8AD7-42AF0AD539B7} = {DC400F20-A383-4C0F-83D4-F19B4F45191A}
 		{95F4D6A0-FD01-4AA8-B603-5811C9FFAEEA} = {DC400F20-A383-4C0F-83D4-F19B4F45191A}
 		{198A12F3-B396-4243-BFD4-B93FA488AB76} = {DC400F20-A383-4C0F-83D4-F19B4F45191A}
