@@ -7,7 +7,6 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
 [![preview package](https://img.shields.io/badge/preview-package-blue?style=flat&logo=github)](https://github.com/Doraku/DefaultEcs/packages/26448)
 [![Join the chat at https://gitter.im/Doraku/DefaultEcs](https://badges.gitter.im/Doraku/DefaultEcs.svg)](https://gitter.im/Doraku/DefaultEcs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-- [Release notes](./documentation/RELEASENOTES.md 'Release notes')
 - [Api documentation](./documentation/api/index.md 'Api documentation')
 - [FAQ](./documentation/FAQ.md 'Frequently Asked Questions')
 <a/>

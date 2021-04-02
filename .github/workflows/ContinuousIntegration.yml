@@ -38,7 +38,7 @@ jobs:
       run: gpg --quiet --batch --yes --decrypt --passphrase="$env:SNK_KEY" --output ds.snk ds.snk.gpg
 
     - name: Create package
-      run: dotnet pack source\DefaultEcs\DefaultEcs.csproj -c Release -o package /p:CI_VERSION=true
+      run: dotnet pack source\DefaultEcs\DefaultEcs.csproj -c Release -o build /p:CI_VERSION=true
 
     - name: Publish package
-      run: nuget push package\*.nupkg
+      run: nuget push build\*.nupkg
