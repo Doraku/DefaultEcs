@@ -21,16 +21,15 @@ namespace DefaultBrick.System
             _random = new Random();
             _world = world;
 
-            _world.Subscribe(this);
+            _world.Subscribe<BallDroppedMessage>(On);
+            _world.Subscribe<BrickBrokenMessage>(On);
+            _world.Subscribe<NewBrickMessage>(On);
         }
 
-        [Subscribe]
         private void On(in BallDroppedMessage _) => --_ballCount;
 
-        [Subscribe]
         private void On(in BrickBrokenMessage _) => --_brickCount;
 
-        [Subscribe]
         private void On(in NewBrickMessage _) => ++_brickCount;
 
         public bool IsEnabled { get; set; } = true;

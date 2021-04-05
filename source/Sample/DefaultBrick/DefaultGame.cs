@@ -63,7 +63,8 @@ namespace DefaultBrick
                 new PositionSystem(_world, _runner),
                 new DrawSystem(_batch, _square, _world));
 
-            _world.Subscribe(this);
+            _world.Subscribe<BrickBrokenMessage>(On);
+            _world.Subscribe<BarBounceMessage>(On);
 
             Level1.CreatePlayer(_world);
         }
@@ -72,10 +73,8 @@ namespace DefaultBrick
 
         #region Callbacks
 
-        [Subscribe]
         private void On(in BrickBrokenMessage _) => _breakSound.Play();
 
-        [Subscribe]
         private void On(in BarBounceMessage _) => _bounceSound.Play();
 
         #endregion

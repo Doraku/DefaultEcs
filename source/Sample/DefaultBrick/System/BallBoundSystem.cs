@@ -5,12 +5,17 @@ using DefaultEcs.System;
 
 namespace DefaultBrick.System
 {
-    [With(typeof(Ball))]
-    public sealed partial class BallBoundSystem : AEntitySetSystem<float>
+    public sealed class BallBoundSystem : AEntitySetSystem<float>
     {
-        [Update(true)]
-        private void Update(in Entity entity, ref Position position, ref Velocity velocity)
+        public BallBoundSystem(World world)
+            : base(world.GetEntities().With<Ball>().With<Position>().With<Velocity>().AsSet(), true)
+        { }
+
+        protected override void Update(float state, in Entity entity)
         {
+            ref Position position = ref entity.Get<Position>();
+            ref Velocity velocity = ref entity.Get<Velocity>();
+
             if (position.Value.X < 0)
             {
                 position.Value.X *= -1;

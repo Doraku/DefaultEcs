@@ -1,15 +1,23 @@
 ﻿using DefaultBrick.Component;
+using DefaultEcs;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
-    public sealed partial class VelocitySystem : AEntitySetSystem<float>
+    public sealed class VelocitySystem : AEntitySetSystem<float>
     {
-        [Update]
-        private static void Update(float elapsedTime, ref Velocity velocity, ref Position position)
+        public VelocitySystem(World world, IParallelRunner runner)
+            : base(world.GetEntities().With<Velocity>().With<Position>().AsSet(), runner)
+        { }
+
+        protected override void Update(float state, in Entity entity)
         {
-            Vector2 offset = velocity.Value * elapsedTime;
+            ref Velocity velocity = ref entity.Get<Velocity>();
+            ref Position position = ref entity.Get<Position>();
+
+            Vector2 offset = velocity.Value * state;
 
             position.Value.X += offset.X;
             position.Value.Y += offset.Y;

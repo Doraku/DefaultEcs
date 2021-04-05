@@ -7,14 +7,13 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.System
 {
-    [With(typeof(Solid), typeof(DrawInfo))]
     public sealed class CollisionSystem : AEntitySetSystem<float>
     {
         private readonly World _world;
         private readonly EntitySet _balls;
 
         public CollisionSystem(World world)
-            : base(world, true)
+            : base(world.GetEntities().With<Solid>().With<DrawInfo>().AsSet(), true)
         {
             _world = world;
             _balls = _world.GetEntities().With<Ball>().With<Position>().With<Velocity>().AsSet();

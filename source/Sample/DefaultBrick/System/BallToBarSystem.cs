@@ -6,21 +6,28 @@ using Microsoft.Xna.Framework.Input;
 
 namespace DefaultBrick.System
 {
-    public sealed partial class BallToBarSystem : AEntitySetSystem<float>
+    public sealed class BallToBarSystem : AEntitySetSystem<float>
     {
-        [ConstructorParameter]
         private readonly GameWindow _window;
 
         private MouseState _state;
+
+        public BallToBarSystem(World world, GameWindow window)
+            : base(world.GetEntities().With<BallStart>().With<DrawInfo>().AsSet(), true)
+        {
+            _window = window;
+        }
 
         protected override void PreUpdate(float state)
         {
             _state = Mouse.GetState(_window);
         }
 
-        [Update(true)]
-        private void Update(in Entity entity, in BallStart ballStart, ref DrawInfo drawInfo)
+        protected override void Update(float state, in Entity entity)
         {
+            ref BallStart ballStart = ref entity.Get<BallStart>();
+            DrawInfo drawInfo = entity.Get<DrawInfo>();
+
             int offset = ballStart.OffSet;
 
             drawInfo.Destination.X = MathHelper.Clamp(_state.X - 50 + offset, offset, _window.ClientBounds.Width - 100 + offset);
