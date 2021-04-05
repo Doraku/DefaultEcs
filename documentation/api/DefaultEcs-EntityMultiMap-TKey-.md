@@ -24,4 +24,5 @@ The type of the component used as key.
 - [ContainsKey(TKey)](./DefaultEcs-EntityMultiMap-TKey--ContainsKey(TKey).md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.ContainsKey(TKey)')
 - [Count(TKey)](./DefaultEcs-EntityMultiMap-TKey--Count(TKey).md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.Count(TKey)')
 - [Dispose()](./DefaultEcs-EntityMultiMap-TKey--Dispose().md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.Dispose()')
+- [TrimExcess()](./DefaultEcs-EntityMultiMap-TKey--TrimExcess().md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.TrimExcess()')
 - [TryGetEntities(TKey, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;)](./DefaultEcs-EntityMultiMap-TKey--TryGetEntities(TKey_System-ReadOnlySpan-DefaultEcs-Entity-).md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.TryGetEntities(TKey, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;)')

@@ -1,6 +1,0 @@
-added World.TrimExcess methods to fit inner storage to the number of entities and components  
-added EntitySet.TrimExcess method to fit inner storage to the number of entities  
-added EntityMap.TrimExcess method to fit inner storage to the number of entities  
-added EntityMultiMap.TrimExcess method to fit inner storage to the number of entities  
-
-fixed Entity.Dispose when called in a non buffered system  

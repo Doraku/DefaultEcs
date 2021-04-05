@@ -23,4 +23,5 @@ The type of the component used as key.
 - [ContainsEntity(DefaultEcs.Entity)](./DefaultEcs-EntityMap-TKey--ContainsEntity(DefaultEcs-Entity).md 'DefaultEcs.EntityMap&lt;TKey&gt;.ContainsEntity(DefaultEcs.Entity)')
 - [ContainsKey(TKey)](./DefaultEcs-EntityMap-TKey--ContainsKey(TKey).md 'DefaultEcs.EntityMap&lt;TKey&gt;.ContainsKey(TKey)')
 - [Dispose()](./DefaultEcs-EntityMap-TKey--Dispose().md 'DefaultEcs.EntityMap&lt;TKey&gt;.Dispose()')
+- [TrimExcess()](./DefaultEcs-EntityMap-TKey--TrimExcess().md 'DefaultEcs.EntityMap&lt;TKey&gt;.TrimExcess()')
 - [TryGetEntity(TKey, DefaultEcs.Entity)](./DefaultEcs-EntityMap-TKey--TryGetEntity(TKey_DefaultEcs-Entity).md 'DefaultEcs.EntityMap&lt;TKey&gt;.TryGetEntity(TKey, DefaultEcs.Entity)')
