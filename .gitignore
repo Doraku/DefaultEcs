@@ -5,4 +5,5 @@
 /**/*.user
 /**/*.snk
 /build
+/coverage
 .idea/
