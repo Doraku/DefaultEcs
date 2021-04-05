@@ -1,18 +1,28 @@
 ﻿using System;
 using System.Threading;
+using DefaultEcs;
 using DefaultEcs.System;
+using DefaultEcs.Threading;
 using DefaultSlap.Component;
 using Microsoft.Xna.Framework;
 
 namespace DefaultSlap.System
 {
-    public sealed partial class AISystem : AEntitySetSystem<float>
+    [With(typeof(TargetPosition), typeof(PositionFloat), typeof(Speed))]
+    public sealed class AISystem : AEntitySetSystem<float>
     {
         private readonly ThreadLocal<Random> _random = new(() => new Random());
 
-        [Update]
-        private void Update(float elapsedTime, ref TargetPosition target, ref PositionFloat position, in Speed speed)
+        public AISystem(World world, IParallelRunner runner)
+            : base(world, runner)
+        { }
+
+        protected override void Update(float state, in Entity entity)
         {
+            ref TargetPosition target = ref entity.Get<TargetPosition>();
+            ref PositionFloat position = ref entity.Get<PositionFloat>();
+            Speed speed = entity.Get<Speed>();
+
             Vector2 offset = new Vector2(target.Value.X, target.Value.Y) - position.Value;
             if (target.Value == Point.Zero
                 || offset.Length() < 10f)
@@ -23,7 +33,7 @@ namespace DefaultSlap.System
 
             offset.Normalize();
 
-            position.Value += offset * elapsedTime * speed.Value;
+            position.Value += offset * state * speed.Value;
         }
     }
 }

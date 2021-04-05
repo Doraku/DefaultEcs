@@ -7,13 +7,19 @@ using Microsoft.Xna.Framework.Input;
 
 namespace DefaultSlap.System
 {
-    internal sealed partial class PlayerSystem : AEntitySetSystem<float>
+    [With(typeof(PlayerState), typeof(Position), typeof(DrawInfo))]
+    internal sealed class PlayerSystem : AEntitySetSystem<float>
     {
-        [ConstructorParameter]
         private readonly GameWindow _window;
 
         private MouseState _mouseState;
         private bool _isSlaping;
+
+        public PlayerSystem(World world, GameWindow window)
+            : base(world)
+        {
+            _window = window;
+        }
 
         protected override void PreUpdate(float state)
         {
@@ -21,9 +27,12 @@ namespace DefaultSlap.System
             _isSlaping = _mouseState.LeftButton == ButtonState.Pressed;
         }
 
-        [Update]
-        private void Update(ref PlayerState playerState, ref Position position, ref DrawInfo drawInfo)
+        protected override void Update(float state, in Entity entity)
         {
+            ref PlayerState playerState = ref entity.Get<PlayerState>();
+            ref Position position = ref entity.Get<Position>();
+            ref DrawInfo drawInfo = ref entity.Get<DrawInfo>();
+
             position.Value = _mouseState.Position;
 
             if (_isSlaping
