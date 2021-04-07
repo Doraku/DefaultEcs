@@ -29,12 +29,11 @@ jobs:
     - name: Create package
       run: dotnet pack source\DefaultEcs\DefaultEcs.csproj -c Release -o build /p:Version=${{ github.event.release.tag_name }}
 
-    - name: Create NEW_RELEASENOTES.txt
+    - name: Create RELEASE.txt
       run: |
-        echo "## DefaultEcs ${{ github.event.release.tag_name }}" | Out-File build\NEW_RELEASENOTES.txt
-        type documentation\NEXT_RELEASENOTES.txt | Out-File build\NEW_RELEASENOTES.txt -Append
-        echo "" | Out-File build\NEW_RELEASENOTES.txt -Append
-        echo "[nuget package](https://www.nuget.org/packages/DefaultEcs/${{ github.event.release.tag_name }})" | Out-File build\NEW_RELEASENOTES.txt -Append
+        type documentation\NEXT_RELEASENOTES.txt | Out-File build\RELEASE.txt
+        echo "" | Out-File build\RELEASE.txt -Append
+        echo "[nuget package](https://www.nuget.org/packages/DefaultEcs/${{ github.event.release.tag_name }})" | Out-File build\RELEASE.txt -Append
 
     - name: Update release
       uses: tubone24/update_release@v1.1.0
@@ -42,11 +41,10 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
       with:
         release_name: DefaultEcs ${{ github.event.release.tag_name }}
-        body_path: .\build\NEW_RELEASENOTES.txt
+        body_path: .\build\RELEASE.txt
         
     - name: Clear NEXT_RELEASENOTES.txt
-      run: |
-        echo "" | Out-File documentation\NEXT_RELEASENOTES.txt -NoNewLine
+      run: echo "" | Out-File documentation\NEXT_RELEASENOTES.txt -NoNewLine
 
     - name: Publish package
       run: dotnet nuget push build\*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
