@@ -41,4 +41,12 @@
         /// </summary>
         internal static class NamespaceDoc { }
     }
+
+    namespace Threading
+    {
+        /// <summary>
+        /// The <see cref="Threading"/> namespace contains types used for multithreading operations.
+        /// </summary>
+        internal static class NamespaceDoc { }
+    }
 }
