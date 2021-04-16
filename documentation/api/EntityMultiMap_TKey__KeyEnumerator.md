@@ -37,3 +37,8 @@ Advances the enumerator to the next [TKey](EntityMultiMap_TKey__KeyEnumerator.md
 [System.Collections.IEnumerator.Current](EntityMultiMap_TKey__KeyEnumerator_System_Collections_IEnumerator_Current.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.KeyEnumerator.System.Collections.IEnumerator.Current')
 
 Gets the [TKey](EntityMultiMap_TKey__KeyEnumerator.md#DefaultEcs_EntityMultiMap_TKey__KeyEnumerator_TKey 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.KeyEnumerator.TKey') at the current position of the enumerator.  
+
+***
+[System.Collections.IEnumerator.Reset()](EntityMultiMap_TKey__KeyEnumerator_System_Collections_IEnumerator_Reset().md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.KeyEnumerator.System.Collections.IEnumerator.Reset()')
+
+Sets the enumerator to its initial position, which is before the first element in the collection.

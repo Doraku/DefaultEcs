@@ -8,16 +8,16 @@ public readonly ref struct EntityRecord
 ### Methods
 
 ***
-[Disable()](EntityRecord_Disable().md 'DefaultEcs.Command.EntityRecord.Disable()')
-
-Disables the corresponding [Entity](Entity.md 'DefaultEcs.Entity') so it does not appear in [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
-This command takes 5 bytes.  
-
-***
 [Disable&lt;T&gt;()](EntityRecord_Disable_T_().md 'DefaultEcs.Command.EntityRecord.Disable&lt;T&gt;()')
 
 Disables the corresponding [Entity](Entity.md 'DefaultEcs.Entity') component of type [T](EntityRecord_Disable_T_().md#DefaultEcs_Command_EntityRecord_Disable_T_()_T 'DefaultEcs.Command.EntityRecord.Disable&lt;T&gt;().T') so it does not appear in [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
 This command takes 9 bytes.  
+
+***
+[Disable()](EntityRecord_Disable().md 'DefaultEcs.Command.EntityRecord.Disable()')
+
+Disables the corresponding [Entity](Entity.md 'DefaultEcs.Entity') so it does not appear in [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
+This command takes 5 bytes.  
 
 ***
 [Dispose()](EntityRecord_Dispose().md 'DefaultEcs.Command.EntityRecord.Dispose()')
@@ -27,17 +27,17 @@ The current [EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord') sh
 This command takes 5 bytes.  
 
 ***
-[Enable()](EntityRecord_Enable().md 'DefaultEcs.Command.EntityRecord.Enable()')
-
-Enables the corresponding [Entity](Entity.md 'DefaultEcs.Entity') so it can appear in [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
-This command takes 5 bytes.  
-
-***
 [Enable&lt;T&gt;()](EntityRecord_Enable_T_().md 'DefaultEcs.Command.EntityRecord.Enable&lt;T&gt;()')
 
 Enables the corresponding [Entity](Entity.md 'DefaultEcs.Entity') component of type [T](EntityRecord_Enable_T_().md#DefaultEcs_Command_EntityRecord_Enable_T_()_T 'DefaultEcs.Command.EntityRecord.Enable&lt;T&gt;().T') so it can appear in [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
 Does nothing if corresponding [Entity](Entity.md 'DefaultEcs.Entity') does not have a component of type [T](EntityRecord_Enable_T_().md#DefaultEcs_Command_EntityRecord_Enable_T_()_T 'DefaultEcs.Command.EntityRecord.Enable&lt;T&gt;().T').  
 This command takes 9 bytes.  
+
+***
+[Enable()](EntityRecord_Enable().md 'DefaultEcs.Command.EntityRecord.Enable()')
+
+Enables the corresponding [Entity](Entity.md 'DefaultEcs.Entity') so it can appear in [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
+This command takes 5 bytes.  
 
 ***
 [NotifyChanged&lt;T&gt;()](EntityRecord_NotifyChanged_T_().md 'DefaultEcs.Command.EntityRecord.NotifyChanged&lt;T&gt;()')

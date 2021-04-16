@@ -40,3 +40,8 @@ Advances the enumerator to the next resource of the [AResourceManager&lt;TInfo,T
 [System.Collections.IEnumerator.Current](AResourceManager_TInfo_TResource__ResourceEnumerator_System_Collections_IEnumerator_Current.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.ResourceEnumerator.System.Collections.IEnumerator.Current')
 
 Gets the resource at the current position of the enumerator.  
+
+***
+[System.Collections.IEnumerator.Reset()](AResourceManager_TInfo_TResource__ResourceEnumerator_System_Collections_IEnumerator_Reset().md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.ResourceEnumerator.System.Collections.IEnumerator.Reset()')
+
+Sets the enumerator to its initial position, which is before the first element in the collection.

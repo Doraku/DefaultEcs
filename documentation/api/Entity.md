@@ -29,15 +29,15 @@ Gets the [World](World.md 'DefaultEcs.World') instance from which current [Entit
 Creates a copy of current [Entity](Entity.md 'DefaultEcs.Entity') with all of its components in the given [World](World.md 'DefaultEcs.World').  
 
 ***
-[Disable()](Entity_Disable().md 'DefaultEcs.Entity.Disable()')
-
-Disables the current [Entity](Entity.md 'DefaultEcs.Entity') so it does not appear in [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
-
-***
 [Disable&lt;T&gt;()](Entity_Disable_T_().md 'DefaultEcs.Entity.Disable&lt;T&gt;()')
 
 Disables the current [Entity](Entity.md 'DefaultEcs.Entity') component of type [T](Entity_Disable_T_().md#DefaultEcs_Entity_Disable_T_()_T 'DefaultEcs.Entity.Disable&lt;T&gt;().T') so it does not appear in [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
 Does nothing if current [Entity](Entity.md 'DefaultEcs.Entity') does not have a component of type [T](Entity_Disable_T_().md#DefaultEcs_Entity_Disable_T_()_T 'DefaultEcs.Entity.Disable&lt;T&gt;().T').  
+
+***
+[Disable()](Entity_Disable().md 'DefaultEcs.Entity.Disable()')
+
+Disables the current [Entity](Entity.md 'DefaultEcs.Entity') so it does not appear in [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
 
 ***
 [Dispose()](Entity_Dispose().md 'DefaultEcs.Entity.Dispose()')
@@ -46,15 +46,15 @@ Clean the current [Entity](Entity.md 'DefaultEcs.Entity') of all its components.
 The current [Entity](Entity.md 'DefaultEcs.Entity') should not be used again after calling this method and [IsAlive](Entity_IsAlive.md 'DefaultEcs.Entity.IsAlive') will return false.  
 
 ***
-[Enable()](Entity_Enable().md 'DefaultEcs.Entity.Enable()')
-
-Enables the current [Entity](Entity.md 'DefaultEcs.Entity') so it can appear in [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
-
-***
 [Enable&lt;T&gt;()](Entity_Enable_T_().md 'DefaultEcs.Entity.Enable&lt;T&gt;()')
 
 Enables the current [Entity](Entity.md 'DefaultEcs.Entity') component of type [T](Entity_Enable_T_().md#DefaultEcs_Entity_Enable_T_()_T 'DefaultEcs.Entity.Enable&lt;T&gt;().T') so it can appear in [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
 Does nothing if current [Entity](Entity.md 'DefaultEcs.Entity') does not have a component of type [T](Entity_Enable_T_().md#DefaultEcs_Entity_Enable_T_()_T 'DefaultEcs.Entity.Enable&lt;T&gt;().T').  
+
+***
+[Enable()](Entity_Enable().md 'DefaultEcs.Entity.Enable()')
+
+Enables the current [Entity](Entity.md 'DefaultEcs.Entity') so it can appear in [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
 
 ***
 [Equals(Entity)](Entity_Equals(Entity).md 'DefaultEcs.Entity.Equals(DefaultEcs.Entity)')
@@ -82,14 +82,14 @@ Returns the hash code for this instance.
 Returns whether the current [Entity](Entity.md 'DefaultEcs.Entity') has a component of type [T](Entity_Has_T_().md#DefaultEcs_Entity_Has_T_()_T 'DefaultEcs.Entity.Has&lt;T&gt;().T').  
 
 ***
-[IsEnabled()](Entity_IsEnabled().md 'DefaultEcs.Entity.IsEnabled()')
-
-Gets whether the current [Entity](Entity.md 'DefaultEcs.Entity') is enabled or not.  
-
-***
 [IsEnabled&lt;T&gt;()](Entity_IsEnabled_T_().md 'DefaultEcs.Entity.IsEnabled&lt;T&gt;()')
 
 Gets whether the current [Entity](Entity.md 'DefaultEcs.Entity') component of type [T](Entity_IsEnabled_T_().md#DefaultEcs_Entity_IsEnabled_T_()_T 'DefaultEcs.Entity.IsEnabled&lt;T&gt;().T') is enabled or not.  
+
+***
+[IsEnabled()](Entity_IsEnabled().md 'DefaultEcs.Entity.IsEnabled()')
+
+Gets whether the current [Entity](Entity.md 'DefaultEcs.Entity') is enabled or not.  
 
 ***
 [NotifyChanged&lt;T&gt;()](Entity_NotifyChanged_T_().md 'DefaultEcs.Entity.NotifyChanged&lt;T&gt;()')

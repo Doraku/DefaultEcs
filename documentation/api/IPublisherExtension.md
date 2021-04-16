@@ -10,7 +10,7 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 ### Methods
 
 ***
-[Subscribe(IPublisher, Type)](IPublisherExtension_Subscribe(IPublisher_Type).md 'DefaultEcs.IPublisherExtension.Subscribe(DefaultEcs.IPublisher, System.Type)')
+[Subscribe&lt;T&gt;(IPublisher)](IPublisherExtension_Subscribe_T_(IPublisher).md 'DefaultEcs.IPublisherExtension.Subscribe&lt;T&gt;(DefaultEcs.IPublisher)')
 
 Subscribes automatically methods of a Type marked with the [SubscribeAttribute](SubscribeAttribute.md 'DefaultEcs.SubscribeAttribute') on an [IPublisher](IPublisher.md 'DefaultEcs.IPublisher') instance.  
 
@@ -20,6 +20,6 @@ Subscribes automatically methods of a Type marked with the [SubscribeAttribute](
 Subscribes automatically methods of an instance and its Type marked with the [SubscribeAttribute](SubscribeAttribute.md 'DefaultEcs.SubscribeAttribute') on an [IPublisher](IPublisher.md 'DefaultEcs.IPublisher') instance.  
 
 ***
-[Subscribe&lt;T&gt;(IPublisher)](IPublisherExtension_Subscribe_T_(IPublisher).md 'DefaultEcs.IPublisherExtension.Subscribe&lt;T&gt;(DefaultEcs.IPublisher)')
+[Subscribe(IPublisher, Type)](IPublisherExtension_Subscribe(IPublisher_Type).md 'DefaultEcs.IPublisherExtension.Subscribe(DefaultEcs.IPublisher, System.Type)')
 
 Subscribes automatically methods of a Type marked with the [SubscribeAttribute](SubscribeAttribute.md 'DefaultEcs.SubscribeAttribute') on an [IPublisher](IPublisher.md 'DefaultEcs.IPublisher') instance.  
