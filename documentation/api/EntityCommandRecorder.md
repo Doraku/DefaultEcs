@@ -18,14 +18,14 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 Creates a default sized [EntityCommandRecorder](EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder') of 1ko which can grow as needed.  
 
 ***
-[EntityCommandRecorder(int)](EntityCommandRecorder_EntityCommandRecorder(int).md 'DefaultEcs.Command.EntityCommandRecorder.EntityCommandRecorder(int)')
-
-Creates a fixed sized [EntityCommandRecorder](EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder').  
-
-***
 [EntityCommandRecorder(int, int)](EntityCommandRecorder_EntityCommandRecorder(int_int).md 'DefaultEcs.Command.EntityCommandRecorder.EntityCommandRecorder(int, int)')
 
 Creates an [EntityCommandRecorder](EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder') with a custom default size which can grow to a maximum capacity.  
+
+***
+[EntityCommandRecorder(int)](EntityCommandRecorder_EntityCommandRecorder(int).md 'DefaultEcs.Command.EntityCommandRecorder.EntityCommandRecorder(int)')
+
+Creates a fixed sized [EntityCommandRecorder](EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder').  
 ### Properties
 
 ***

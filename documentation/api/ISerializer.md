@@ -12,14 +12,14 @@ Derived
 ### Methods
 
 ***
-[Deserialize(Stream)](ISerializer_Deserialize(Stream).md 'DefaultEcs.Serialization.ISerializer.Deserialize(System.IO.Stream)')
-
-Deserializes a [World](World.md 'DefaultEcs.World') instance from the given [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream').  
-
-***
 [Deserialize(Stream, World)](ISerializer_Deserialize(Stream_World).md 'DefaultEcs.Serialization.ISerializer.Deserialize(System.IO.Stream, DefaultEcs.World)')
 
 Deserializes [Entity](Entity.md 'DefaultEcs.Entity') instances with their components from the given [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream') into the given [World](World.md 'DefaultEcs.World').  
+
+***
+[Deserialize(Stream)](ISerializer_Deserialize(Stream).md 'DefaultEcs.Serialization.ISerializer.Deserialize(System.IO.Stream)')
+
+Deserializes a [World](World.md 'DefaultEcs.World') instance from the given [System.IO.Stream](https://docs.microsoft.com/en-us/dotnet/api/System.IO.Stream 'System.IO.Stream').  
 
 ***
 [Serialize(Stream, World)](ISerializer_Serialize(Stream_World).md 'DefaultEcs.Serialization.ISerializer.Serialize(System.IO.Stream, DefaultEcs.World)')

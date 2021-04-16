@@ -18,14 +18,14 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 ### Properties
 
 ***
-[this[TKey]](EntityMap_TKey__this_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;.this[TKey]')
-
-Gets the [Entity](Entity.md 'DefaultEcs.Entity') associated with the specified key.  
-
-***
 [Keys](EntityMap_TKey__Keys.md 'DefaultEcs.EntityMap&lt;TKey&gt;.Keys')
 
 Gets the keys contained in the [EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;').  
+
+***
+[this[TKey]](EntityMap_TKey__this_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;.this[TKey]')
+
+Gets the [Entity](Entity.md 'DefaultEcs.Entity') associated with the specified key.  
 
 ***
 [World](EntityMap_TKey__World.md 'DefaultEcs.EntityMap&lt;TKey&gt;.World')

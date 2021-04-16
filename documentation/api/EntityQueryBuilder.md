@@ -20,7 +20,7 @@ Returns an [System.Collections.Generic.IEnumerable&lt;&gt;](https://docs.microso
 Returns an [EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;') with the specified rules.  
 
 ***
-[AsMap&lt;TKey&gt;(IEqualityComparer&lt;TKey&gt;)](EntityQueryBuilder_AsMap_TKey_(IEqualityComparer_TKey_).md 'DefaultEcs.EntityQueryBuilder.AsMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)')
+[AsMap&lt;TKey&gt;(int, IEqualityComparer&lt;TKey&gt;)](EntityQueryBuilder_AsMap_TKey_(int_IEqualityComparer_TKey_).md 'DefaultEcs.EntityQueryBuilder.AsMap&lt;TKey&gt;(int, System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)')
 
 Returns an [EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;') with the specified rules.  
 
@@ -30,7 +30,7 @@ Returns an [EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;T
 Returns an [EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;') with the specified rules.  
 
 ***
-[AsMap&lt;TKey&gt;(int, IEqualityComparer&lt;TKey&gt;)](EntityQueryBuilder_AsMap_TKey_(int_IEqualityComparer_TKey_).md 'DefaultEcs.EntityQueryBuilder.AsMap&lt;TKey&gt;(int, System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)')
+[AsMap&lt;TKey&gt;(IEqualityComparer&lt;TKey&gt;)](EntityQueryBuilder_AsMap_TKey_(IEqualityComparer_TKey_).md 'DefaultEcs.EntityQueryBuilder.AsMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)')
 
 Returns an [EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;') with the specified rules.  
 
@@ -40,7 +40,7 @@ Returns an [EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;T
 Returns an [EntityMultiMap&lt;TKey&gt;](EntityMultiMap_TKey_.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;') with the specified rules.  
 
 ***
-[AsMultiMap&lt;TKey&gt;(IEqualityComparer&lt;TKey&gt;)](EntityQueryBuilder_AsMultiMap_TKey_(IEqualityComparer_TKey_).md 'DefaultEcs.EntityQueryBuilder.AsMultiMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)')
+[AsMultiMap&lt;TKey&gt;(int, IEqualityComparer&lt;TKey&gt;)](EntityQueryBuilder_AsMultiMap_TKey_(int_IEqualityComparer_TKey_).md 'DefaultEcs.EntityQueryBuilder.AsMultiMap&lt;TKey&gt;(int, System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)')
 
 Returns an [EntityMultiMap&lt;TKey&gt;](EntityMultiMap_TKey_.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;') with the specified rules.  
 
@@ -50,7 +50,7 @@ Returns an [EntityMultiMap&lt;TKey&gt;](EntityMultiMap_TKey_.md 'DefaultEcs.Enti
 Returns an [EntityMultiMap&lt;TKey&gt;](EntityMultiMap_TKey_.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;') with the specified rules.  
 
 ***
-[AsMultiMap&lt;TKey&gt;(int, IEqualityComparer&lt;TKey&gt;)](EntityQueryBuilder_AsMultiMap_TKey_(int_IEqualityComparer_TKey_).md 'DefaultEcs.EntityQueryBuilder.AsMultiMap&lt;TKey&gt;(int, System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)')
+[AsMultiMap&lt;TKey&gt;(IEqualityComparer&lt;TKey&gt;)](EntityQueryBuilder_AsMultiMap_TKey_(IEqualityComparer_TKey_).md 'DefaultEcs.EntityQueryBuilder.AsMultiMap&lt;TKey&gt;(System.Collections.Generic.IEqualityComparer&lt;TKey&gt;)')
 
 Returns an [EntityMultiMap&lt;TKey&gt;](EntityMultiMap_TKey_.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;') with the specified rules.  
 

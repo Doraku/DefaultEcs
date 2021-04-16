@@ -20,14 +20,9 @@ Implements [DefaultEcs.System.ISystem&lt;](ISystem_T_.md 'DefaultEcs.System.ISys
 ### Constructors
 
 ***
-[AEntitySetSystem(EntitySet)](AEntitySetSystem_T__AEntitySetSystem(EntitySet).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.EntitySet)')
+[AEntitySetSystem(EntitySet, bool)](AEntitySetSystem_T__AEntitySetSystem(EntitySet_bool).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.EntitySet, bool)')
 
 Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') class with the given [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
-
-***
-[AEntitySetSystem(EntitySet, IParallelRunner)](AEntitySetSystem_T__AEntitySetSystem(EntitySet_IParallelRunner).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.EntitySet, DefaultEcs.Threading.IParallelRunner)')
-
-Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') class with the given [EntitySet](EntitySet.md 'DefaultEcs.EntitySet') and [IParallelRunner](IParallelRunner.md 'DefaultEcs.Threading.IParallelRunner').  
 
 ***
 [AEntitySetSystem(EntitySet, IParallelRunner, int)](AEntitySetSystem_T__AEntitySetSystem(EntitySet_IParallelRunner_int).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.EntitySet, DefaultEcs.Threading.IParallelRunner, int)')
@@ -35,18 +30,17 @@ Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_
 Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') class with the given [EntitySet](EntitySet.md 'DefaultEcs.EntitySet') and [IParallelRunner](IParallelRunner.md 'DefaultEcs.Threading.IParallelRunner').  
 
 ***
-[AEntitySetSystem(EntitySet, bool)](AEntitySetSystem_T__AEntitySetSystem(EntitySet_bool).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.EntitySet, bool)')
+[AEntitySetSystem(EntitySet, IParallelRunner)](AEntitySetSystem_T__AEntitySetSystem(EntitySet_IParallelRunner).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.EntitySet, DefaultEcs.Threading.IParallelRunner)')
+
+Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') class with the given [EntitySet](EntitySet.md 'DefaultEcs.EntitySet') and [IParallelRunner](IParallelRunner.md 'DefaultEcs.Threading.IParallelRunner').  
+
+***
+[AEntitySetSystem(EntitySet)](AEntitySetSystem_T__AEntitySetSystem(EntitySet).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.EntitySet)')
 
 Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') class with the given [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
 
 ***
-[AEntitySetSystem(World)](AEntitySetSystem_T__AEntitySetSystem(World).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.World)')
-
-Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') class with the given [World](AEntitySetSystem_T__World.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.World').  
-To create the inner [EntitySet](EntitySet.md 'DefaultEcs.EntitySet'), [WithAttribute](WithAttribute.md 'DefaultEcs.System.WithAttribute') and [WithoutAttribute](WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute') attributes will be used.  
-
-***
-[AEntitySetSystem(World, IParallelRunner)](AEntitySetSystem_T__AEntitySetSystem(World_IParallelRunner).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.World, DefaultEcs.Threading.IParallelRunner)')
+[AEntitySetSystem(World, bool)](AEntitySetSystem_T__AEntitySetSystem(World_bool).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.World, bool)')
 
 Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') class with the given [World](AEntitySetSystem_T__World.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.World').  
 To create the inner [EntitySet](EntitySet.md 'DefaultEcs.EntitySet'), [WithAttribute](WithAttribute.md 'DefaultEcs.System.WithAttribute') and [WithoutAttribute](WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute') attributes will be used.  
@@ -58,7 +52,13 @@ Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_
 To create the inner [EntitySet](EntitySet.md 'DefaultEcs.EntitySet'), [WithAttribute](WithAttribute.md 'DefaultEcs.System.WithAttribute') and [WithoutAttribute](WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute') attributes will be used.  
 
 ***
-[AEntitySetSystem(World, bool)](AEntitySetSystem_T__AEntitySetSystem(World_bool).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.World, bool)')
+[AEntitySetSystem(World, IParallelRunner)](AEntitySetSystem_T__AEntitySetSystem(World_IParallelRunner).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.World, DefaultEcs.Threading.IParallelRunner)')
+
+Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') class with the given [World](AEntitySetSystem_T__World.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.World').  
+To create the inner [EntitySet](EntitySet.md 'DefaultEcs.EntitySet'), [WithAttribute](WithAttribute.md 'DefaultEcs.System.WithAttribute') and [WithoutAttribute](WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute') attributes will be used.  
+
+***
+[AEntitySetSystem(World, Func&lt;object,World,EntitySet&gt;, bool)](AEntitySetSystem_T__AEntitySetSystem(World_Func_object_World_EntitySet__bool).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.World, System.Func&lt;object,DefaultEcs.World,DefaultEcs.EntitySet&gt;, bool)')
 
 Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') class with the given [World](AEntitySetSystem_T__World.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.World').  
 To create the inner [EntitySet](EntitySet.md 'DefaultEcs.EntitySet'), [WithAttribute](WithAttribute.md 'DefaultEcs.System.WithAttribute') and [WithoutAttribute](WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute') attributes will be used.  
@@ -70,7 +70,7 @@ Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_
 The current instance will be passed as the first parameter of the factory.  
 
 ***
-[AEntitySetSystem(World, Func&lt;object,World,EntitySet&gt;, bool)](AEntitySetSystem_T__AEntitySetSystem(World_Func_object_World_EntitySet__bool).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.World, System.Func&lt;object,DefaultEcs.World,DefaultEcs.EntitySet&gt;, bool)')
+[AEntitySetSystem(World)](AEntitySetSystem_T__AEntitySetSystem(World).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.AEntitySetSystem(DefaultEcs.World)')
 
 Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') class with the given [World](AEntitySetSystem_T__World.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.World').  
 To create the inner [EntitySet](EntitySet.md 'DefaultEcs.EntitySet'), [WithAttribute](WithAttribute.md 'DefaultEcs.System.WithAttribute') and [WithoutAttribute](WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute') attributes will be used.  
@@ -108,12 +108,6 @@ Performs a post-update treatment.
 Performs a pre-update treatment.  
 
 ***
-[Update(T)](AEntitySetSystem_T__Update(T).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.Update(T)')
-
-Updates the system once.  
-Does nothing if [IsEnabled](AEntitySetSystem_T__IsEnabled.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.IsEnabled') is false or if the inner [EntitySet](EntitySet.md 'DefaultEcs.EntitySet') is empty.  
-
-***
 [Update(T, Entity)](AEntitySetSystem_T__Update(T_Entity).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.Update(T, DefaultEcs.Entity)')
 
 Update the given [Entity](Entity.md 'DefaultEcs.Entity') instance once.  
@@ -122,3 +116,9 @@ Update the given [Entity](Entity.md 'DefaultEcs.Entity') instance once.
 [Update(T, ReadOnlySpan&lt;Entity&gt;)](AEntitySetSystem_T__Update(T_ReadOnlySpan_Entity_).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.Update(T, System.ReadOnlySpan&lt;DefaultEcs.Entity&gt;)')
 
 Update the given [Entity](Entity.md 'DefaultEcs.Entity') instances once.  
+
+***
+[Update(T)](AEntitySetSystem_T__Update(T).md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.Update(T)')
+
+Updates the system once.  
+Does nothing if [IsEnabled](AEntitySetSystem_T__IsEnabled.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.IsEnabled') is false or if the inner [EntitySet](EntitySet.md 'DefaultEcs.EntitySet') is empty.  

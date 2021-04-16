@@ -23,9 +23,9 @@ Implements [DefaultEcs.System.ISystem&lt;](ISystem_T_.md 'DefaultEcs.System.ISys
 ### Constructors
 
 ***
-[AComponentSystem(World)](AComponentSystem_TState_TComponent__AComponentSystem(World).md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.AComponentSystem(DefaultEcs.World)')
+[AComponentSystem(World, IParallelRunner, int)](AComponentSystem_TState_TComponent__AComponentSystem(World_IParallelRunner_int).md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.AComponentSystem(DefaultEcs.World, DefaultEcs.Threading.IParallelRunner, int)')
 
-Initialise a new instance of the [AComponentSystem&lt;TState,TComponent&gt;](AComponentSystem_TState_TComponent_.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;') class with the given [World](AComponentSystem_TState_TComponent__World.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.World').  
+Initialise a new instance of the [AComponentSystem&lt;TState,TComponent&gt;](AComponentSystem_TState_TComponent_.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;') class with the given [World](AComponentSystem_TState_TComponent__World.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.World') and [IParallelRunner](IParallelRunner.md 'DefaultEcs.Threading.IParallelRunner').  
 
 ***
 [AComponentSystem(World, IParallelRunner)](AComponentSystem_TState_TComponent__AComponentSystem(World_IParallelRunner).md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.AComponentSystem(DefaultEcs.World, DefaultEcs.Threading.IParallelRunner)')
@@ -33,9 +33,9 @@ Initialise a new instance of the [AComponentSystem&lt;TState,TComponent&gt;](ACo
 Initialise a new instance of the [AComponentSystem&lt;TState,TComponent&gt;](AComponentSystem_TState_TComponent_.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;') class with the given [World](AComponentSystem_TState_TComponent__World.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.World') and [IParallelRunner](IParallelRunner.md 'DefaultEcs.Threading.IParallelRunner').  
 
 ***
-[AComponentSystem(World, IParallelRunner, int)](AComponentSystem_TState_TComponent__AComponentSystem(World_IParallelRunner_int).md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.AComponentSystem(DefaultEcs.World, DefaultEcs.Threading.IParallelRunner, int)')
+[AComponentSystem(World)](AComponentSystem_TState_TComponent__AComponentSystem(World).md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.AComponentSystem(DefaultEcs.World)')
 
-Initialise a new instance of the [AComponentSystem&lt;TState,TComponent&gt;](AComponentSystem_TState_TComponent_.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;') class with the given [World](AComponentSystem_TState_TComponent__World.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.World') and [IParallelRunner](IParallelRunner.md 'DefaultEcs.Threading.IParallelRunner').  
+Initialise a new instance of the [AComponentSystem&lt;TState,TComponent&gt;](AComponentSystem_TState_TComponent_.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;') class with the given [World](AComponentSystem_TState_TComponent__World.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.World').  
 ### Properties
 
 ***
@@ -65,10 +65,9 @@ Performs a post-update treatment.
 Performs a pre-update treatment.  
 
 ***
-[Update(TState)](AComponentSystem_TState_TComponent__Update(TState).md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.Update(TState)')
+[Update(TState, Span&lt;TComponent&gt;)](AComponentSystem_TState_TComponent__Update(TState_Span_TComponent_).md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.Update(TState, System.Span&lt;TComponent&gt;)')
 
-Updates the system once.  
-Does nothing if [IsEnabled](AComponentSystem_TState_TComponent__IsEnabled.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.IsEnabled') is false or if there is no component of type [TComponent](AComponentSystem_TState_TComponent_.md#DefaultEcs_System_AComponentSystem_TState_TComponent__TComponent 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.TComponent') in the [World](AComponentSystem_TState_TComponent__World.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.World').  
+Update the given [TComponent](AComponentSystem_TState_TComponent_.md#DefaultEcs_System_AComponentSystem_TState_TComponent__TComponent 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.TComponent') once.  
 
 ***
 [Update(TState, TComponent)](AComponentSystem_TState_TComponent__Update(TState_TComponent).md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.Update(TState, TComponent)')
@@ -76,6 +75,7 @@ Does nothing if [IsEnabled](AComponentSystem_TState_TComponent__IsEnabled.md 'De
 Update the given [TComponent](AComponentSystem_TState_TComponent_.md#DefaultEcs_System_AComponentSystem_TState_TComponent__TComponent 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.TComponent') once.  
 
 ***
-[Update(TState, Span&lt;TComponent&gt;)](AComponentSystem_TState_TComponent__Update(TState_Span_TComponent_).md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.Update(TState, System.Span&lt;TComponent&gt;)')
+[Update(TState)](AComponentSystem_TState_TComponent__Update(TState).md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.Update(TState)')
 
-Update the given [TComponent](AComponentSystem_TState_TComponent_.md#DefaultEcs_System_AComponentSystem_TState_TComponent__TComponent 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.TComponent') once.  
+Updates the system once.  
+Does nothing if [IsEnabled](AComponentSystem_TState_TComponent__IsEnabled.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.IsEnabled') is false or if there is no component of type [TComponent](AComponentSystem_TState_TComponent_.md#DefaultEcs_System_AComponentSystem_TState_TComponent__TComponent 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.TComponent') in the [World](AComponentSystem_TState_TComponent__World.md 'DefaultEcs.System.AComponentSystem&lt;TState,TComponent&gt;.World').  

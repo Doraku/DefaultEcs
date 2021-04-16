@@ -27,7 +27,7 @@ Represents a collection of [Entity](Entity.md 'DefaultEcs.Entity') mapped to a [
 Represent an helper object to create rules to retrieve a specific subset of [Entity](Entity.md 'DefaultEcs.Entity').  
 
 ***
-[EitherBuilder](EntityQueryBuilder_EitherBuilder.md 'DefaultEcs.EntityQueryBuilder.EitherBuilder')
+[EntityQueryBuilder.EitherBuilder](EntityQueryBuilder_EitherBuilder.md 'DefaultEcs.EntityQueryBuilder.EitherBuilder')
 
 Represents an helper object to create an either group rule to retrieve a specific subset of [Entity](Entity.md 'DefaultEcs.Entity').  
 
@@ -70,27 +70,27 @@ Represents an item in the [World](World.md 'DefaultEcs.World').
 Only use [Entity](Entity.md 'DefaultEcs.Entity') generated from the [CreateEntity()](World_CreateEntity().md 'DefaultEcs.World.CreateEntity()') method.  
 
 ***
-[KeyEnumerable](EntityMap_TKey__KeyEnumerable.md 'DefaultEcs.EntityMap&lt;TKey&gt;.KeyEnumerable')
+[EntityMap&lt;TKey&gt;.KeyEnumerable](EntityMap_TKey__KeyEnumerable.md 'DefaultEcs.EntityMap&lt;TKey&gt;.KeyEnumerable')
 
 Allows to enumerate the [TKey](EntityMap_TKey__KeyEnumerable.md#DefaultEcs_EntityMap_TKey__KeyEnumerable_TKey 'DefaultEcs.EntityMap&lt;TKey&gt;.KeyEnumerable.TKey') of a [EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;').  
 
 ***
-[KeyEnumerator](EntityMap_TKey__KeyEnumerator.md 'DefaultEcs.EntityMap&lt;TKey&gt;.KeyEnumerator')
+[EntityMap&lt;TKey&gt;.KeyEnumerator](EntityMap_TKey__KeyEnumerator.md 'DefaultEcs.EntityMap&lt;TKey&gt;.KeyEnumerator')
 
 Enumerates the [TKey](EntityMap_TKey__KeyEnumerator.md#DefaultEcs_EntityMap_TKey__KeyEnumerator_TKey 'DefaultEcs.EntityMap&lt;TKey&gt;.KeyEnumerator.TKey') of a [EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;').  
 
 ***
-[KeyEnumerable](EntityMultiMap_TKey__KeyEnumerable.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.KeyEnumerable')
+[EntityMultiMap&lt;TKey&gt;.KeyEnumerable](EntityMultiMap_TKey__KeyEnumerable.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.KeyEnumerable')
 
 Allows to enumerate the [TKey](EntityMultiMap_TKey__KeyEnumerable.md#DefaultEcs_EntityMultiMap_TKey__KeyEnumerable_TKey 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.KeyEnumerable.TKey') of a [EntityMultiMap&lt;TKey&gt;](EntityMultiMap_TKey_.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;').  
 
 ***
-[KeyEnumerator](EntityMultiMap_TKey__KeyEnumerator.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.KeyEnumerator')
+[EntityMultiMap&lt;TKey&gt;.KeyEnumerator](EntityMultiMap_TKey__KeyEnumerator.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.KeyEnumerator')
 
 Enumerates the [TKey](EntityMultiMap_TKey__KeyEnumerator.md#DefaultEcs_EntityMultiMap_TKey__KeyEnumerator_TKey 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.KeyEnumerator.TKey') of a [EntityMultiMap&lt;TKey&gt;](EntityMultiMap_TKey_.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;').  
 
 ***
-[Enumerator](World_Enumerator.md 'DefaultEcs.World.Enumerator')
+[World.Enumerator](World_Enumerator.md 'DefaultEcs.World.Enumerator')
 
 Enumerates the [Entity](Entity.md 'DefaultEcs.Entity') of a [World](World.md 'DefaultEcs.World').  
 ### Interfaces
@@ -197,12 +197,12 @@ Provides static methods for creating [ManagedResource&lt;TInfo,TResource&gt;](Ma
 ### Structs
 
 ***
-[ResourceEnumerable](AResourceManager_TInfo_TResource__ResourceEnumerable.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.ResourceEnumerable')
+[AResourceManager&lt;TInfo,TResource&gt;.ResourceEnumerable](AResourceManager_TInfo_TResource__ResourceEnumerable.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.ResourceEnumerable')
 
 Allows to enumerate the resources of a [AResourceManager&lt;TInfo,TResource&gt;](AResourceManager_TInfo_TResource_.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;').  
 
 ***
-[ResourceEnumerator](AResourceManager_TInfo_TResource__ResourceEnumerator.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.ResourceEnumerator')
+[AResourceManager&lt;TInfo,TResource&gt;.ResourceEnumerator](AResourceManager_TInfo_TResource__ResourceEnumerator.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;.ResourceEnumerator')
 
 Enumerates the resources of a [AResourceManager&lt;TInfo,TResource&gt;](AResourceManager_TInfo_TResource_.md 'DefaultEcs.Resource.AResourceManager&lt;TInfo,TResource&gt;').  
 
