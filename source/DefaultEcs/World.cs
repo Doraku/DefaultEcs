@@ -100,6 +100,7 @@ namespace DefaultEcs
             /// <returns>The <see cref="Entity"/> in the <see cref="World" /> at the current position of the enumerator.</returns>
             public Entity Current => new(_worldId, _index);
 
+            /// <inheritdoc cref="Current" />
             object IEnumerator.Current => Current;
 
             /// <summary>
@@ -573,8 +574,10 @@ namespace DefaultEcs
         /// <returns>An enumerator that can be used to iterate through the <see cref="Entity"/>.</returns>
         public Enumerator GetEnumerator() => new(this);
 
+        /// <inheritdoc cref="GetEnumerator" />
         IEnumerator<Entity> IEnumerable<Entity>.GetEnumerator() => GetEnumerator();
 
+        /// <inheritdoc cref="GetEnumerator" />
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         #endregion

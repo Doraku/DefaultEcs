@@ -37,8 +37,10 @@ namespace DefaultEcs
             /// <returns>An enumerator that can be used to iterate through the collection.</returns>
             public KeyEnumerator GetEnumerator() => new(_map);
 
+            /// <inheritdoc cref="GetEnumerator" />
             IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator() => GetEnumerator();
 
+            /// <inheritdoc cref="GetEnumerator" />
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
             #endregion
@@ -68,12 +70,14 @@ namespace DefaultEcs
             /// <returns>The <typeparamref name="TKey"/> at the current position of the enumerator.</returns>
             public TKey Current => _enumerator.Current;
 
+            /// <inheritdoc cref="Current" />
             object IEnumerator.Current => Current;
 
             /// <summary>Advances the enumerator to the next <typeparamref name="TKey"/> of the <see cref="EntityMap{TKey}" />.</summary>
             /// <returns>true if the enumerator was successfully advanced to the next <typeparamref name="TKey"/>; false if the enumerator has passed the end of the collection.</returns>
             public bool MoveNext() => _enumerator.MoveNext();
 
+            /// <inheritdoc />
             void IEnumerator.Reset() => _enumerator = _map._entities.Keys.GetEnumerator();
 
             #endregion

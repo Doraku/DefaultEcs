@@ -55,8 +55,10 @@ namespace DefaultEcs.Resource
             /// <returns>An enumerator that can be used to iterate through the collection.</returns>
             public ResourceEnumerator GetEnumerator() => new(_manager);
 
+            /// <inheritdoc cref="GetEnumerator" />
             IEnumerator<KeyValuePair<TInfo, TResource>> IEnumerable<KeyValuePair<TInfo, TResource>>.GetEnumerator() => GetEnumerator();
 
+            /// <inheritdoc cref="GetEnumerator" />
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
             #endregion
@@ -96,6 +98,7 @@ namespace DefaultEcs.Resource
             /// <returns>The resource at the current position of the enumerator.</returns>
             public KeyValuePair<TInfo, TResource> Current { get; private set; }
 
+            /// <inheritdoc cref="Current" />
             object IEnumerator.Current => Current;
 
             /// <summary>Advances the enumerator to the next resource of the <see cref="AResourceManager{TInfo, TResource}" />.</summary>
@@ -112,6 +115,7 @@ namespace DefaultEcs.Resource
                 return false;
             }
 
+            /// <inheritdoc />
             void IEnumerator.Reset() => _index = -1;
 
             #endregion

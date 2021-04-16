@@ -132,8 +132,10 @@ namespace DefaultEcs
             /// <returns>An enumerator that can be used to iterate through the collection.</returns>
             public KeyEnumerator GetEnumerator() => new(_map);
 
+            /// <inheritdoc cref="GetEnumerator" />
             IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator() => GetEnumerator();
 
+            /// <inheritdoc cref="GetEnumerator" />
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
             #endregion
@@ -165,6 +167,7 @@ namespace DefaultEcs
             /// <returns>The <typeparamref name="TKey"/> at the current position of the enumerator.</returns>
             public TKey Current { get; private set; }
 
+            /// <inheritdoc cref="Current" />
             object IEnumerator.Current => Current;
 
             /// <summary>Advances the enumerator to the next <typeparamref name="TKey"/> of the <see cref="EntityMultiMap{TKey}" />.</summary>
@@ -183,6 +186,7 @@ namespace DefaultEcs
                 return false;
             }
 
+            /// <inheritdoc />
             void IEnumerator.Reset() => _enumerator = _map._entities.GetEnumerator();
 
             #endregion
