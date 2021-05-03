@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Command](index.md#DefaultEcs_Command 'DefaultEcs.Command')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Command](DefaultEcs.md#DefaultEcs_Command 'DefaultEcs.Command')
 ## EntityCommandRecorder Class
 Represents a buffer of structural modifications to apply on [Entity](Entity.md 'DefaultEcs.Entity') to record as postoned commands.  
 ```csharp

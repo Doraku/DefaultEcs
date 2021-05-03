@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
 ## World.CreateEntity() Method
 Creates a new instance of the [Entity](Entity.md 'DefaultEcs.Entity') struct.  
 ```csharp

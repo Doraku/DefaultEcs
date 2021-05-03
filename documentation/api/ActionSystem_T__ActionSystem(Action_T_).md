@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.System](index.md#DefaultEcs_System 'DefaultEcs.System').[ActionSystem&lt;T&gt;](ActionSystem_T_.md 'DefaultEcs.System.ActionSystem&lt;T&gt;')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.System](DefaultEcs.md#DefaultEcs_System 'DefaultEcs.System').[ActionSystem&lt;T&gt;](ActionSystem_T_.md 'DefaultEcs.System.ActionSystem&lt;T&gt;')
 ## ActionSystem&lt;T&gt;.ActionSystem(Action&lt;T&gt;) Constructor
 Initialises a new instance of the [ActionSystem&lt;T&gt;](ActionSystem_T_.md 'DefaultEcs.System.ActionSystem&lt;T&gt;') class with the given [System.Action&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Action-1 'System.Action`1').  
 ```csharp

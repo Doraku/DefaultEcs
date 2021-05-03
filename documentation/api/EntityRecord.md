@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Command](index.md#DefaultEcs_Command 'DefaultEcs.Command')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Command](DefaultEcs.md#DefaultEcs_Command 'DefaultEcs.Command')
 ## EntityRecord Struct
 Represents an [Entity](Entity.md 'DefaultEcs.Entity') on which to create commands to record in a [EntityCommandRecorder](EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder').  
 ```csharp

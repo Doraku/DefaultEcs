@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## EntityMap&lt;TKey&gt; Class
 Represents a collection of [Entity](Entity.md 'DefaultEcs.Entity') mapped to a [TKey](EntityMap_TKey_.md#DefaultEcs_EntityMap_TKey__TKey 'DefaultEcs.EntityMap&lt;TKey&gt;.TKey') component. Only one [Entity](Entity.md 'DefaultEcs.Entity') can be associated with a given [TKey](EntityMap_TKey_.md#DefaultEcs_EntityMap_TKey__TKey 'DefaultEcs.EntityMap&lt;TKey&gt;.TKey').  
 ```csharp

@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## MessageHandler&lt;T&gt;(T) Delegate
 Encapsulates a method that has a single in parameter and does not return a value used for [Subscribe&lt;T&gt;(MessageHandler&lt;T&gt;)](IPublisher_Subscribe_T_(MessageHandler_T_).md 'DefaultEcs.IPublisher.Subscribe&lt;T&gt;(DefaultEcs.MessageHandler&lt;T&gt;)') method.  
 ```csharp

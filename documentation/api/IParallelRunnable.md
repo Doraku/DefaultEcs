@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Threading](index.md#DefaultEcs_Threading 'DefaultEcs.Threading')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Threading](DefaultEcs.md#DefaultEcs_Threading 'DefaultEcs.Threading')
 ## IParallelRunnable Interface
 Exposes a method to run a process in parallel.  
 ```csharp

@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.System](index.md#DefaultEcs_System 'DefaultEcs.System')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.System](DefaultEcs.md#DefaultEcs_System 'DefaultEcs.System')
 ## ActionSystem&lt;T&gt; Class
 Represents a class to set up easily a custom action as a system update.  
 ```csharp

@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[EntityMultiMap&lt;TKey&gt;](EntityMultiMap_TKey_.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[EntityMultiMap&lt;TKey&gt;](EntityMultiMap_TKey_.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;')
 ## EntityMultiMap&lt;TKey&gt;.TryGetEntities(TKey, ReadOnlySpan&lt;Entity&gt;) Method
 Gets the [Entity](Entity.md 'DefaultEcs.Entity') instances associated with the specified key.  
 ```csharp

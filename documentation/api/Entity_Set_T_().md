@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[Entity](Entity.md 'DefaultEcs.Entity')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[Entity](Entity.md 'DefaultEcs.Entity')
 ## Entity.Set&lt;T&gt;() Method
 Sets the value of the component of type [T](Entity_Set_T_().md#DefaultEcs_Entity_Set_T_()_T 'DefaultEcs.Entity.Set&lt;T&gt;().T') to its default value on the current [Entity](Entity.md 'DefaultEcs.Entity').  
 ```csharp

@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[Entity](Entity.md 'DefaultEcs.Entity')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[Entity](Entity.md 'DefaultEcs.Entity')
 ## Entity.ReadAllComponents(IComponentReader) Method
 Calls on [reader](Entity_ReadAllComponents(IComponentReader).md#DefaultEcs_Entity_ReadAllComponents(DefaultEcs_Serialization_IComponentReader)_reader 'DefaultEcs.Entity.ReadAllComponents(DefaultEcs.Serialization.IComponentReader).reader') with all the component of the current [Entity](Entity.md 'DefaultEcs.Entity').  
 This method is primiraly used for serialization purpose and should not be called in game logic.  

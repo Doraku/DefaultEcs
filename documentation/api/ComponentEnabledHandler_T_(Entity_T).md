@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## ComponentEnabledHandler&lt;T&gt;(Entity, T) Delegate
 Represents the method that will called when a component of type [T](ComponentEnabledHandler_T_(Entity_T).md#DefaultEcs_ComponentEnabledHandler_T_(DefaultEcs_Entity_T)_T 'DefaultEcs.ComponentEnabledHandler&lt;T&gt;(DefaultEcs.Entity, T).T') is enabled on an [Entity](Entity.md 'DefaultEcs.Entity').  
 ```csharp

@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.System](index.md#DefaultEcs_System 'DefaultEcs.System').[WhenRemovedEitherAttribute](WhenRemovedEitherAttribute.md 'DefaultEcs.System.WhenRemovedEitherAttribute')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.System](DefaultEcs.md#DefaultEcs_System 'DefaultEcs.System').[WhenRemovedEitherAttribute](WhenRemovedEitherAttribute.md 'DefaultEcs.System.WhenRemovedEitherAttribute')
 ## WhenRemovedEitherAttribute.WhenRemovedEitherAttribute(Type[]) Constructor
 Initialize a new instance of the [WithEitherAttribute](WithEitherAttribute.md 'DefaultEcs.System.WithEitherAttribute') type.  
 ```csharp

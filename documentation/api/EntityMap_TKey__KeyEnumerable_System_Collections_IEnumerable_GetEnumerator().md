@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;').[KeyEnumerable](EntityMap_TKey__KeyEnumerable.md 'DefaultEcs.EntityMap&lt;TKey&gt;.KeyEnumerable')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;').[KeyEnumerable](EntityMap_TKey__KeyEnumerable.md 'DefaultEcs.EntityMap&lt;TKey&gt;.KeyEnumerable')
 ## EntityMap&lt;TKey&gt;.KeyEnumerable.System.Collections.IEnumerable.GetEnumerator() Method
 Returns an enumerator that iterates through the collection.  
 ```csharp

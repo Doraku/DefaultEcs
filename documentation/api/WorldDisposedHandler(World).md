@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## WorldDisposedHandler(World) Delegate
 Represents the method that will called when a [World](World.md 'DefaultEcs.World') is created.  
 ```csharp

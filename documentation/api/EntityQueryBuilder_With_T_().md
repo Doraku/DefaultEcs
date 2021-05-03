@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[EntityQueryBuilder](EntityQueryBuilder.md 'DefaultEcs.EntityQueryBuilder')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[EntityQueryBuilder](EntityQueryBuilder.md 'DefaultEcs.EntityQueryBuilder')
 ## EntityQueryBuilder.With&lt;T&gt;() Method
 Makes a rule to observe [Entity](Entity.md 'DefaultEcs.Entity') with a component of type [T](EntityQueryBuilder_With_T_().md#DefaultEcs_EntityQueryBuilder_With_T_()_T 'DefaultEcs.EntityQueryBuilder.With&lt;T&gt;().T').  
 ```csharp

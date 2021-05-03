@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Command](index.md#DefaultEcs_Command 'DefaultEcs.Command').[EntityCommandRecorder](EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Command](DefaultEcs.md#DefaultEcs_Command 'DefaultEcs.Command').[EntityCommandRecorder](EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder')
 ## EntityCommandRecorder.Record(Entity) Method
 Gives an [EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord') to record action on the given [Entity](Entity.md 'DefaultEcs.Entity').  
 This command takes 9 bytes.  

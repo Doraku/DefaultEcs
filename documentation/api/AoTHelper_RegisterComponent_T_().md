@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[AoTHelper](AoTHelper.md 'DefaultEcs.AoTHelper')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[AoTHelper](AoTHelper.md 'DefaultEcs.AoTHelper')
 ## AoTHelper.RegisterComponent&lt;T&gt;() Method
 Registers the type [T](AoTHelper_RegisterComponent_T_().md#DefaultEcs_AoTHelper_RegisterComponent_T_()_T 'DefaultEcs.AoTHelper.RegisterComponent&lt;T&gt;().T') so it can freely be used in [ComponentAttribute](ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute').  
 ```csharp

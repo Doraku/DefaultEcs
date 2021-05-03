@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Serialization](index.md#DefaultEcs_Serialization 'DefaultEcs.Serialization').[TextSerializationContext](TextSerializationContext.md 'DefaultEcs.Serialization.TextSerializationContext')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Serialization](DefaultEcs.md#DefaultEcs_Serialization 'DefaultEcs.Serialization').[TextSerializationContext](TextSerializationContext.md 'DefaultEcs.Serialization.TextSerializationContext')
 ## TextSerializationContext.Unmarshal&lt;TIn,TOut&gt;(Func&lt;TIn,TOut&gt;) Method
 Adds a convertion between the type [TIn](TextSerializationContext_Unmarshal_TIn_TOut_(Func_TIn_TOut_).md#DefaultEcs_Serialization_TextSerializationContext_Unmarshal_TIn_TOut_(System_Func_TIn_TOut_)_TIn 'DefaultEcs.Serialization.TextSerializationContext.Unmarshal&lt;TIn,TOut&gt;(System.Func&lt;TIn,TOut&gt;).TIn') and the type [TOut](TextSerializationContext_Unmarshal_TIn_TOut_(Func_TIn_TOut_).md#DefaultEcs_Serialization_TextSerializationContext_Unmarshal_TIn_TOut_(System_Func_TIn_TOut_)_TOut 'DefaultEcs.Serialization.TextSerializationContext.Unmarshal&lt;TIn,TOut&gt;(System.Func&lt;TIn,TOut&gt;).TOut') during a deserialization operation.  
 ```csharp

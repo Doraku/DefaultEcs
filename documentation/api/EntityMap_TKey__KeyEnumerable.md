@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;')
 ## EntityMap&lt;TKey&gt;.KeyEnumerable Struct
 Allows to enumerate the [TKey](EntityMap_TKey__KeyEnumerable.md#DefaultEcs_EntityMap_TKey__KeyEnumerable_TKey 'DefaultEcs.EntityMap&lt;TKey&gt;.KeyEnumerable.TKey') of a [EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;').  
 ```csharp

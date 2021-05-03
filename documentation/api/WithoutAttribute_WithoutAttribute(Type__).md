@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.System](index.md#DefaultEcs_System 'DefaultEcs.System').[WithoutAttribute](WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.System](DefaultEcs.md#DefaultEcs_System 'DefaultEcs.System').[WithoutAttribute](WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute')
 ## WithoutAttribute.WithoutAttribute(Type[]) Constructor
 Initialize a new instance of the [WithoutAttribute](WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute') type.  
 ```csharp

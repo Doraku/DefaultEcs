@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## EntityMultiMap&lt;TKey&gt; Class
 Represents a collection of [Entity](Entity.md 'DefaultEcs.Entity') mapped to a [TKey](EntityMultiMap_TKey_.md#DefaultEcs_EntityMultiMap_TKey__TKey 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.TKey') component. Multiple [Entity](Entity.md 'DefaultEcs.Entity') can be associated with a given [TKey](EntityMultiMap_TKey_.md#DefaultEcs_EntityMultiMap_TKey__TKey 'DefaultEcs.EntityMultiMap&lt;TKey&gt;.TKey').  
 ```csharp

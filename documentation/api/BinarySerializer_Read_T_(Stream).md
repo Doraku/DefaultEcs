@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Serialization](index.md#DefaultEcs_Serialization 'DefaultEcs.Serialization').[BinarySerializer](BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Serialization](DefaultEcs.md#DefaultEcs_Serialization 'DefaultEcs.Serialization').[BinarySerializer](BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer')
 ## BinarySerializer.Read&lt;T&gt;(Stream) Method
 Read an object of type [T](BinarySerializer_Read_T_(Stream).md#DefaultEcs_Serialization_BinarySerializer_Read_T_(System_IO_Stream)_T 'DefaultEcs.Serialization.BinarySerializer.Read&lt;T&gt;(System.IO.Stream).T') from the given stream.  
 ```csharp

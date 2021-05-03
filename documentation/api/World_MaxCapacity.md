@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
 ## World.MaxCapacity Property
 Gets the maximum number of [Entity](Entity.md 'DefaultEcs.Entity') this [World](World.md 'DefaultEcs.World') can handle.  
 ```csharp

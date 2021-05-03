@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## EntityCreatedHandler(Entity) Delegate
 Represents the method that will called when an [Entity](Entity.md 'DefaultEcs.Entity') is created.  
 ```csharp

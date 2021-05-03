@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[EntitySet](EntitySet.md 'DefaultEcs.EntitySet')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[EntitySet](EntitySet.md 'DefaultEcs.EntitySet')
 ## EntitySet.Contains(Entity) Method
 Determines whether an [Entity](Entity.md 'DefaultEcs.Entity') is in the [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
 ```csharp

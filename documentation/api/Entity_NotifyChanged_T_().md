@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[Entity](Entity.md 'DefaultEcs.Entity')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[Entity](Entity.md 'DefaultEcs.Entity')
 ## Entity.NotifyChanged&lt;T&gt;() Method
 Notifies the value of the component of type [T](Entity_NotifyChanged_T_().md#DefaultEcs_Entity_NotifyChanged_T_()_T 'DefaultEcs.Entity.NotifyChanged&lt;T&gt;().T') has changed.  
 ```csharp

@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[IPublisher](IPublisher.md 'DefaultEcs.IPublisher')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[IPublisher](IPublisher.md 'DefaultEcs.IPublisher')
 ## IPublisher.Subscribe&lt;T&gt;(MessageHandler&lt;T&gt;) Method
 Subscribes an [MessageHandler&lt;T&gt;(T)](MessageHandler_T_(T).md 'DefaultEcs.MessageHandler&lt;T&gt;(T)') to be called back when a [T](IPublisher_Subscribe_T_(MessageHandler_T_).md#DefaultEcs_IPublisher_Subscribe_T_(DefaultEcs_MessageHandler_T_)_T 'DefaultEcs.IPublisher.Subscribe&lt;T&gt;(DefaultEcs.MessageHandler&lt;T&gt;).T') object is published.  
 ```csharp

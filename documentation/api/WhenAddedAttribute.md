@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.System](index.md#DefaultEcs_System 'DefaultEcs.System')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.System](DefaultEcs.md#DefaultEcs_System 'DefaultEcs.System')
 ## WhenAddedAttribute Class
 Represents a component type to react to its addition when building the inner [EntitySet](EntitySet.md 'DefaultEcs.EntitySet') of [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') when giving a [World](World.md 'DefaultEcs.World') instance.  
 ```csharp

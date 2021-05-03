@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## ComponentPredicate&lt;T&gt;(T) Delegate
 Represents the method that defines a set of criteria and determines whether the specified component meets those criteria.  
 ```csharp

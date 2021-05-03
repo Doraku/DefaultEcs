@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## EntityQueryBuilder Class
 Represent an helper object to create rules to retrieve a specific subset of [Entity](Entity.md 'DefaultEcs.Entity').  
 ```csharp

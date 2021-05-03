@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Threading](index.md#DefaultEcs_Threading 'DefaultEcs.Threading').[IParallelRunner](IParallelRunner.md 'DefaultEcs.Threading.IParallelRunner')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Threading](DefaultEcs.md#DefaultEcs_Threading 'DefaultEcs.Threading').[IParallelRunner](IParallelRunner.md 'DefaultEcs.Threading.IParallelRunner')
 ## IParallelRunner.Run(IParallelRunnable) Method
 Runs the provided [IParallelRunnable](IParallelRunnable.md 'DefaultEcs.Threading.IParallelRunnable').  
 ```csharp

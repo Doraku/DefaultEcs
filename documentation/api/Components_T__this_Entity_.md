@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[Components&lt;T&gt;](Components_T_.md 'DefaultEcs.Components&lt;T&gt;')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[Components&lt;T&gt;](Components_T_.md 'DefaultEcs.Components&lt;T&gt;')
 ## Components&lt;T&gt;.this[Entity] Property
 Gets the component of type [T](Components_T_.md#DefaultEcs_Components_T__T 'DefaultEcs.Components&lt;T&gt;.T') on the provided [Entity](Entity.md 'DefaultEcs.Entity').  
 ```csharp

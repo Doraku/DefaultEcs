@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
 ## World.System.Collections.Generic.IEnumerable&lt;DefaultEcs.Entity&gt;.GetEnumerator() Method
 Returns an enumerator that iterates through the [Entity](Entity.md 'DefaultEcs.Entity') of the current [World](World.md 'DefaultEcs.World') instance.  
 ```csharp

@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Command](index.md#DefaultEcs_Command 'DefaultEcs.Command').[EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Command](DefaultEcs.md#DefaultEcs_Command 'DefaultEcs.Command').[EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord')
 ## EntityRecord.NotifyChanged&lt;T&gt;() Method
 Notifies the value of the component of type [T](EntityRecord_NotifyChanged_T_().md#DefaultEcs_Command_EntityRecord_NotifyChanged_T_()_T 'DefaultEcs.Command.EntityRecord.NotifyChanged&lt;T&gt;().T') has changed on the corresponding [Entity](Entity.md 'DefaultEcs.Entity').  
 This command takes 9 bytes.  

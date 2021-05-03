@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Serialization](index.md#DefaultEcs_Serialization 'DefaultEcs.Serialization')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Serialization](DefaultEcs.md#DefaultEcs_Serialization 'DefaultEcs.Serialization')
 ## BinarySerializationContext Class
 Represents a context used by the [BinarySerializer](BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer') to convert types during serialization and deserialization operations.  
 The context marshalling will not be applied on members of unmanaged type as [BinarySerializer](BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer') just past their memory location with no transformation.  

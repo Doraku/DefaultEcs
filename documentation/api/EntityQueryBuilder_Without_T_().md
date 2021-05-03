@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[EntityQueryBuilder](EntityQueryBuilder.md 'DefaultEcs.EntityQueryBuilder')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[EntityQueryBuilder](EntityQueryBuilder.md 'DefaultEcs.EntityQueryBuilder')
 ## EntityQueryBuilder.Without&lt;T&gt;() Method
 Makes a rule to ignore [Entity](Entity.md 'DefaultEcs.Entity') with a component of type [T](EntityQueryBuilder_Without_T_().md#DefaultEcs_EntityQueryBuilder_Without_T_()_T 'DefaultEcs.EntityQueryBuilder.Without&lt;T&gt;().T').  
 ```csharp

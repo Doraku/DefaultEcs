@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
 ## World.SubscribeComponentRemoved&lt;T&gt;(ComponentRemovedHandler&lt;T&gt;) Method
 Subscribes an [ComponentRemovedHandler&lt;T&gt;(Entity, T)](ComponentRemovedHandler_T_(Entity_T).md 'DefaultEcs.ComponentRemovedHandler&lt;T&gt;(DefaultEcs.Entity, T)') on the current [World](World.md 'DefaultEcs.World') to be called when a component of type [T](World_SubscribeComponentRemoved_T_(ComponentRemovedHandler_T_).md#DefaultEcs_World_SubscribeComponentRemoved_T_(DefaultEcs_ComponentRemovedHandler_T_)_T 'DefaultEcs.World.SubscribeComponentRemoved&lt;T&gt;(DefaultEcs.ComponentRemovedHandler&lt;T&gt;).T') is removed.  
 ```csharp

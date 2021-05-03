@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.System](index.md#DefaultEcs_System 'DefaultEcs.System').[AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.System](DefaultEcs.md#DefaultEcs_System 'DefaultEcs.System').[AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;')
 ## AEntitySetSystem&lt;T&gt;.Update(T) Method
 Updates the system once.  
 Does nothing if [IsEnabled](AEntitySetSystem_T__IsEnabled.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.IsEnabled') is false or if the inner [EntitySet](EntitySet.md 'DefaultEcs.EntitySet') is empty.  
@@ -11,3 +11,5 @@ public void Update(T state);
 `state` [T](AEntitySetSystem_T_.md#DefaultEcs_System_AEntitySetSystem_T__T 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;.T')  
 The state to use.
   
+
+Implements [Update(T)](ISystem_T__Update(T).md 'DefaultEcs.System.ISystem&lt;T&gt;.Update(T)')  

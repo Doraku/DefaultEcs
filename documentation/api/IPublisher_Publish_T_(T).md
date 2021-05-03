@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[IPublisher](IPublisher.md 'DefaultEcs.IPublisher')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[IPublisher](IPublisher.md 'DefaultEcs.IPublisher')
 ## IPublisher.Publish&lt;T&gt;(T) Method
 Publishes a [T](IPublisher_Publish_T_(T).md#DefaultEcs_IPublisher_Publish_T_(T)_T 'DefaultEcs.IPublisher.Publish&lt;T&gt;(T).T') object.  
 ```csharp

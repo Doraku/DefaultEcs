@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.System](index.md#DefaultEcs_System 'DefaultEcs.System').[WhenAddedAttribute](WhenAddedAttribute.md 'DefaultEcs.System.WhenAddedAttribute')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.System](DefaultEcs.md#DefaultEcs_System 'DefaultEcs.System').[WhenAddedAttribute](WhenAddedAttribute.md 'DefaultEcs.System.WhenAddedAttribute')
 ## WhenAddedAttribute.WhenAddedAttribute(Type[]) Constructor
 Initialize a new instance of the [WhenAddedAttribute](WhenAddedAttribute.md 'DefaultEcs.System.WhenAddedAttribute') type.  
 ```csharp

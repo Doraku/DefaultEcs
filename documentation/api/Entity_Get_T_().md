@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[Entity](Entity.md 'DefaultEcs.Entity')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[Entity](Entity.md 'DefaultEcs.Entity')
 ## Entity.Get&lt;T&gt;() Method
 Gets the component of type [T](Entity_Get_T_().md#DefaultEcs_Entity_Get_T_()_T 'DefaultEcs.Entity.Get&lt;T&gt;().T') on the current [Entity](Entity.md 'DefaultEcs.Entity').  
 ```csharp

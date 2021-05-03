@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.System](index.md#DefaultEcs_System 'DefaultEcs.System').[ComponentAttribute](ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.System](DefaultEcs.md#DefaultEcs_System 'DefaultEcs.System').[ComponentAttribute](ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute')
 ## ComponentAttribute.ComponentTypes Field
 The types of the component.  
 ```csharp

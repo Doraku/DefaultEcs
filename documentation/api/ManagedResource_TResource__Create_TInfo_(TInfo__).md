@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Resource](index.md#DefaultEcs_Resource 'DefaultEcs.Resource').[ManagedResource&lt;TResource&gt;](ManagedResource_TResource_.md 'DefaultEcs.Resource.ManagedResource&lt;TResource&gt;')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Resource](DefaultEcs.md#DefaultEcs_Resource 'DefaultEcs.Resource').[ManagedResource&lt;TResource&gt;](ManagedResource_TResource_.md 'DefaultEcs.Resource.ManagedResource&lt;TResource&gt;')
 ## ManagedResource&lt;TResource&gt;.Create&lt;TInfo&gt;(TInfo[]) Method
 Create a [ManagedResource&lt;TInfo,TResource&gt;](ManagedResource_TInfo_TResource_.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') object with multiple infos.  
 ```csharp

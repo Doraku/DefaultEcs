@@ -1,9 +1,9 @@
-#### [DefaultEcs](index.md 'index')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
 This is the full API documentation of DefaultEcs.  
 ### Namespaces
 <a name='DefaultEcs'></a>
 ## DefaultEcs Namespace
-The [DefaultEcs](index.md#DefaultEcs 'DefaultEcs') namespace contains types to put in place the Entity Component System pattern.  
+The [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs') namespace contains types to put in place the Entity Component System pattern.  
 ### Classes
 
 ***
@@ -163,7 +163,7 @@ Represents the method that will called when a [World](World.md 'DefaultEcs.World
   
 <a name='DefaultEcs_Command'></a>
 ## DefaultEcs.Command Namespace
-The [DefaultEcs.Command](index.md#DefaultEcs_Command 'DefaultEcs.Command') namespace contains types used in the recording and deferred execution of modifications on entities.  
+The [DefaultEcs.Command](DefaultEcs.md#DefaultEcs_Command 'DefaultEcs.Command') namespace contains types used in the recording and deferred execution of modifications on entities.  
 ### Classes
 
 ***
@@ -179,7 +179,7 @@ Represents an [Entity](Entity.md 'DefaultEcs.Entity') on which to create command
   
 <a name='DefaultEcs_Resource'></a>
 ## DefaultEcs.Resource Namespace
-The [DefaultEcs.Resource](index.md#DefaultEcs_Resource 'DefaultEcs.Resource') namespace contains types used in the loading of unmanaged resources needed as components.  
+The [DefaultEcs.Resource](DefaultEcs.md#DefaultEcs_Resource 'DefaultEcs.Resource') namespace contains types used in the loading of unmanaged resources needed as components.  
 ### Classes
 
 ***
@@ -213,7 +213,7 @@ Component type used to load managed resource with a [AResourceManager&lt;TInfo,T
   
 <a name='DefaultEcs_Serialization'></a>
 ## DefaultEcs.Serialization Namespace
-The [DefaultEcs.Serialization](index.md#DefaultEcs_Serialization 'DefaultEcs.Serialization') namespace contains types used to save and load DefaultEcs objects.  
+The [DefaultEcs.Serialization](DefaultEcs.md#DefaultEcs_Serialization 'DefaultEcs.Serialization') namespace contains types used to save and load DefaultEcs objects.  
 ### Classes
 
 ***
@@ -260,7 +260,7 @@ Provides a set of methods to save and load DefaultEcs objects.
   
 <a name='DefaultEcs_System'></a>
 ## DefaultEcs.System Namespace
-The [DefaultEcs.System](index.md#DefaultEcs_System 'DefaultEcs.System') namespace contains types to define workflows of modification on entities and components.  
+The [DefaultEcs.System](DefaultEcs.md#DefaultEcs_System 'DefaultEcs.System') namespace contains types to define workflows of modification on entities and components.  
 ### Classes
 
 ***
@@ -375,7 +375,7 @@ Specifies which filter rule should be applied when using a [ComponentAttribute](
   
 <a name='DefaultEcs_Threading'></a>
 ## DefaultEcs.Threading Namespace
-The [DefaultEcs.Threading](index.md#DefaultEcs_Threading 'DefaultEcs.Threading') namespace contains types used for multithreading operations.  
+The [DefaultEcs.Threading](DefaultEcs.md#DefaultEcs_Threading 'DefaultEcs.Threading') namespace contains types used for multithreading operations.  
 ### Classes
 
 ***

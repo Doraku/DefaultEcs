@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
 ## World.Optimize(IParallelRunner, Action) Method
 Sorts current instance inner storage so accessing [Entity](Entity.md 'DefaultEcs.Entity') and their components from [EntitySet](EntitySet.md 'DefaultEcs.EntitySet') and [EntityMultiMap&lt;TKey&gt;](EntityMultiMap_TKey_.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;') always move forward in memory.  
 This method will return once [mainAction](World_Optimize(IParallelRunner_Action).md#DefaultEcs_World_Optimize(DefaultEcs_Threading_IParallelRunner_System_Action)_mainAction 'DefaultEcs.World.Optimize(DefaultEcs.Threading.IParallelRunner, System.Action).mainAction') is executed even if the optimization process has not finished.  

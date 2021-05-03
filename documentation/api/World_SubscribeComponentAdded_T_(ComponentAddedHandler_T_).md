@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
 ## World.SubscribeComponentAdded&lt;T&gt;(ComponentAddedHandler&lt;T&gt;) Method
 Subscribes a [ComponentAddedHandler&lt;T&gt;(Entity, T)](ComponentAddedHandler_T_(Entity_T).md 'DefaultEcs.ComponentAddedHandler&lt;T&gt;(DefaultEcs.Entity, T)') on the current [World](World.md 'DefaultEcs.World') to be called when a component of type [T](World_SubscribeComponentAdded_T_(ComponentAddedHandler_T_).md#DefaultEcs_World_SubscribeComponentAdded_T_(DefaultEcs_ComponentAddedHandler_T_)_T 'DefaultEcs.World.SubscribeComponentAdded&lt;T&gt;(DefaultEcs.ComponentAddedHandler&lt;T&gt;).T') is added.  
 ```csharp

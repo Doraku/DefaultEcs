@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
 ## World.SubscribeComponentEnabled&lt;T&gt;(ComponentEnabledHandler&lt;T&gt;) Method
 Subscribes a [ComponentEnabledHandler&lt;T&gt;(Entity, T)](ComponentEnabledHandler_T_(Entity_T).md 'DefaultEcs.ComponentEnabledHandler&lt;T&gt;(DefaultEcs.Entity, T)') on the current [World](World.md 'DefaultEcs.World') to be called when a component of type [T](World_SubscribeComponentEnabled_T_(ComponentEnabledHandler_T_).md#DefaultEcs_World_SubscribeComponentEnabled_T_(DefaultEcs_ComponentEnabledHandler_T_)_T 'DefaultEcs.World.SubscribeComponentEnabled&lt;T&gt;(DefaultEcs.ComponentEnabledHandler&lt;T&gt;).T') is enabled.  
 ```csharp

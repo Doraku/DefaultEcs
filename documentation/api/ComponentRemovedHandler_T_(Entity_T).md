@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## ComponentRemovedHandler&lt;T&gt;(Entity, T) Delegate
 Represents the method that will called when a component of type [T](ComponentRemovedHandler_T_(Entity_T).md#DefaultEcs_ComponentRemovedHandler_T_(DefaultEcs_Entity_T)_T 'DefaultEcs.ComponentRemovedHandler&lt;T&gt;(DefaultEcs.Entity, T).T') is removed from an [Entity](Entity.md 'DefaultEcs.Entity').  
 ```csharp

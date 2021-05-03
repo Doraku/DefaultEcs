@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Command](index.md#DefaultEcs_Command 'DefaultEcs.Command').[EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Command](DefaultEcs.md#DefaultEcs_Command 'DefaultEcs.Command').[EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord')
 ## EntityRecord.Set&lt;T&gt;(T) Method
 Sets the value of the component of type [T](EntityRecord_Set_T_(T).md#DefaultEcs_Command_EntityRecord_Set_T_(T)_T 'DefaultEcs.Command.EntityRecord.Set&lt;T&gt;(T).T') on the corresponding [Entity](Entity.md 'DefaultEcs.Entity').  
 For a blittable component, this command takes 9 bytes + the size of the component.  

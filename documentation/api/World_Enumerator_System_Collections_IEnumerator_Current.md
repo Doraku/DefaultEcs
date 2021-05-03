@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World').[Enumerator](World_Enumerator.md 'DefaultEcs.World.Enumerator')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World').[Enumerator](World_Enumerator.md 'DefaultEcs.World.Enumerator')
 ## World.Enumerator.System.Collections.IEnumerator.Current Property
 Gets the [Entity](Entity.md 'DefaultEcs.Entity') at the current position of the enumerator.  
 ```csharp

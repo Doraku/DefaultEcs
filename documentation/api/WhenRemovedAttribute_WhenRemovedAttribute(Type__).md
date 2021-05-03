@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.System](index.md#DefaultEcs_System 'DefaultEcs.System').[WhenRemovedAttribute](WhenRemovedAttribute.md 'DefaultEcs.System.WhenRemovedAttribute')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.System](DefaultEcs.md#DefaultEcs_System 'DefaultEcs.System').[WhenRemovedAttribute](WhenRemovedAttribute.md 'DefaultEcs.System.WhenRemovedAttribute')
 ## WhenRemovedAttribute.WhenRemovedAttribute(Type[]) Constructor
 Initialize a new instance of the [WhenRemovedAttribute](WhenRemovedAttribute.md 'DefaultEcs.System.WhenRemovedAttribute') type.  
 ```csharp

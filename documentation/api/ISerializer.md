@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Serialization](index.md#DefaultEcs_Serialization 'DefaultEcs.Serialization')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Serialization](DefaultEcs.md#DefaultEcs_Serialization 'DefaultEcs.Serialization')
 ## ISerializer Interface
 Provides a set of methods to save and load DefaultEcs objects.  
 ```csharp
@@ -7,7 +7,7 @@ public interface ISerializer
 ```
 
 Derived  
-&#8627; [BinarySerializer](BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer')
+&#8627; [BinarySerializer](BinarySerializer.md 'DefaultEcs.Serialization.BinarySerializer')  
 &#8627; [TextSerializer](TextSerializer.md 'DefaultEcs.Serialization.TextSerializer')  
 ### Methods
 

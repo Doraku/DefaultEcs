@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.System](index.md#DefaultEcs_System 'DefaultEcs.System')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.System](DefaultEcs.md#DefaultEcs_System 'DefaultEcs.System')
 ## ComponentFilterType Enum
 Specifies which filter rule should be applied when using a [ComponentAttribute](ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute').  
 ```csharp

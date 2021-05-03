@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Serialization](index.md#DefaultEcs_Serialization 'DefaultEcs.Serialization').[IComponentTypeReader](IComponentTypeReader.md 'DefaultEcs.Serialization.IComponentTypeReader')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Serialization](DefaultEcs.md#DefaultEcs_Serialization 'DefaultEcs.Serialization').[IComponentTypeReader](IComponentTypeReader.md 'DefaultEcs.Serialization.IComponentTypeReader')
 ## IComponentTypeReader.OnRead&lt;T&gt;(int) Method
 Processes the maximum number of component of type [T](IComponentTypeReader_OnRead_T_(int).md#DefaultEcs_Serialization_IComponentTypeReader_OnRead_T_(int)_T 'DefaultEcs.Serialization.IComponentTypeReader.OnRead&lt;T&gt;(int).T').  
 ```csharp

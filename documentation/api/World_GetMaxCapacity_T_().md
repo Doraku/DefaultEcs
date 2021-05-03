@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
 ## World.GetMaxCapacity&lt;T&gt;() Method
 Gets the maximum number of [T](World_GetMaxCapacity_T_().md#DefaultEcs_World_GetMaxCapacity_T_()_T 'DefaultEcs.World.GetMaxCapacity&lt;T&gt;().T') components this [World](World.md 'DefaultEcs.World') can create.  
 ```csharp

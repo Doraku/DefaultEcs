@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
 ## World.Get&lt;T&gt;() Method
 Gets all the component of a given type [T](World_Get_T_().md#DefaultEcs_World_Get_T_()_T 'DefaultEcs.World.Get&lt;T&gt;().T').  
 ```csharp

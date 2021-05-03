@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## Entity Struct
 Represents an item in the [World](World.md 'DefaultEcs.World').  
 Only use [Entity](Entity.md 'DefaultEcs.Entity') generated from the [CreateEntity()](World_CreateEntity().md 'DefaultEcs.World.CreateEntity()') method.  

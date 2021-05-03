@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;').[KeyEnumerator](EntityMap_TKey__KeyEnumerator.md 'DefaultEcs.EntityMap&lt;TKey&gt;.KeyEnumerator')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[EntityMap&lt;TKey&gt;](EntityMap_TKey_.md 'DefaultEcs.EntityMap&lt;TKey&gt;').[KeyEnumerator](EntityMap_TKey__KeyEnumerator.md 'DefaultEcs.EntityMap&lt;TKey&gt;.KeyEnumerator')
 ## EntityMap&lt;TKey&gt;.KeyEnumerator.System.Collections.IEnumerator.Reset() Method
 Sets the enumerator to its initial position, which is before the first element in the collection.
 ```csharp

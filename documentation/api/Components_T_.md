@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## Components&lt;T&gt; Struct
 Provides a fast access to the components of type [T](Components_T_.md#DefaultEcs_Components_T__T 'DefaultEcs.Components&lt;T&gt;.T').  
 ```csharp

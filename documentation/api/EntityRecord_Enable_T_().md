@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs.Command](index.md#DefaultEcs_Command 'DefaultEcs.Command').[EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs.Command](DefaultEcs.md#DefaultEcs_Command 'DefaultEcs.Command').[EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord')
 ## EntityRecord.Enable&lt;T&gt;() Method
 Enables the corresponding [Entity](Entity.md 'DefaultEcs.Entity') component of type [T](EntityRecord_Enable_T_().md#DefaultEcs_Command_EntityRecord_Enable_T_()_T 'DefaultEcs.Command.EntityRecord.Enable&lt;T&gt;().T') so it can appear in [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
 Does nothing if corresponding [Entity](Entity.md 'DefaultEcs.Entity') does not have a component of type [T](EntityRecord_Enable_T_().md#DefaultEcs_Command_EntityRecord_Enable_T_()_T 'DefaultEcs.Command.EntityRecord.Enable&lt;T&gt;().T').  

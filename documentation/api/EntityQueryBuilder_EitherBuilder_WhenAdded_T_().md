@@ -1,5 +1,5 @@
-#### [DefaultEcs](index.md 'index')
-### [DefaultEcs](index.md#DefaultEcs 'DefaultEcs').[EntityQueryBuilder](EntityQueryBuilder.md 'DefaultEcs.EntityQueryBuilder').[EitherBuilder](EntityQueryBuilder_EitherBuilder.md 'DefaultEcs.EntityQueryBuilder.EitherBuilder')
+#### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
+### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[EntityQueryBuilder](EntityQueryBuilder.md 'DefaultEcs.EntityQueryBuilder').[EitherBuilder](EntityQueryBuilder_EitherBuilder.md 'DefaultEcs.EntityQueryBuilder.EitherBuilder')
 ## EntityQueryBuilder.EitherBuilder.WhenAdded&lt;T&gt;() Method
 Makes a rule to observe [Entity](Entity.md 'DefaultEcs.Entity') when a component of type [T](EntityQueryBuilder_EitherBuilder_WhenAdded_T_().md#DefaultEcs_EntityQueryBuilder_EitherBuilder_WhenAdded_T_()_T 'DefaultEcs.EntityQueryBuilder.EitherBuilder.WhenAdded&lt;T&gt;().T') is added.  
 ```csharp
