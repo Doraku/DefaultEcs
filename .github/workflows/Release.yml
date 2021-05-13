@@ -41,6 +41,7 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
       with:
         release_name: DefaultEcs ${{ github.event.release.tag_name }}
+        prerelease: ${{ contains(github.event.release.tag_name, '-') }}
         body_path: .\build\RELEASE.txt
         
     - name: Clear NEXT_RELEASENOTES.txt
@@ -50,6 +51,7 @@ jobs:
       run: dotnet nuget push build\*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
 
     - name: Commit RELEASENOTES and documentation api
+      if: "!contains(github.event.release.tag_name, '-')"
       run: |
         git config --local user.email "$(git log --format='%ae' HEAD^!)"
         git config --local user.name "$(git log --format='%an' HEAD^!)"
