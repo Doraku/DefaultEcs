@@ -97,7 +97,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         #region IComponentReader
 
-        void IComponentReader.OnRead<T>(ref T component, in Entity componentOwner)
+        void IComponentReader.OnRead<T>(in T component, in Entity componentOwner)
         {
             if (_componentFilter(typeof(T)))
             {

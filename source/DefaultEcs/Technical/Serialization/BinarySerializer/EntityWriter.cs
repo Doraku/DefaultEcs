@@ -83,7 +83,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region IComponentReader
 
-        void IComponentReader.OnRead<T>(ref T component, in Entity componentOwner)
+        void IComponentReader.OnRead<T>(in T component, in Entity componentOwner)
         {
             if (_componentFilter(typeof(T)))
             {

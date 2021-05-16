@@ -149,7 +149,7 @@ namespace DefaultEcs.Technical
             int componentIndex = message.EntityId < _mapping.Length ? _mapping[message.EntityId] : -1;
             if (componentIndex != -1)
             {
-                message.Reader.OnRead(ref _components[componentIndex], new Entity(_worldId, _links[componentIndex].EntityId));
+                message.Reader.OnRead(_components[componentIndex], new Entity(_worldId, _links[componentIndex].EntityId));
             }
         }
 

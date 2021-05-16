@@ -33,7 +33,7 @@ namespace DefaultEcs.Technical.Debug
                 _entity = entity;
             }
 
-            public void OnRead<T>(ref T component, in Entity componentOwner) => _components.Add(new Component<T>(_entity.IsEnabled<T>(), component));
+            public void OnRead<T>(in T component, in Entity componentOwner) => _components.Add(new Component<T>(_entity.IsEnabled<T>(), component));
         }
 
         private readonly Entity _entity;
