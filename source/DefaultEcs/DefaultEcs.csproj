@@ -1,6 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup Label="Compilation">
-    <LangVersion>latest</LangVersion>
     <TargetFrameworks>
       netstandard1.1;
       netstandard2.0;

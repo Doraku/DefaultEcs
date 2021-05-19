@@ -23,6 +23,16 @@ namespace DefaultEcs.Hierarchy
 
         public override int GetHashCode() => Value.GetHashCode();
 
+        public static bool operator ==(Parent left, Parent right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Parent left, Parent right)
+        {
+            return !(left == right);
+        }
+
         #endregion
     }
 }

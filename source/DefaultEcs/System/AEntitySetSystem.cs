@@ -283,7 +283,12 @@ namespace DefaultEcs.System
         /// <summary>
         /// Disposes of the inner <see cref="EntitySet"/> instance.
         /// </summary>
-        public virtual void Dispose() => Set.Dispose();
+        public virtual void Dispose()
+        {
+            GC.SuppressFinalize(this);
+
+            Set.Dispose();
+        }
 
         #endregion
     }

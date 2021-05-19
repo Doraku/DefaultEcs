@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -294,6 +295,9 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region IDisposable
 
+#if NETSTANDARD2_1
+        [SuppressMessage("Performance", "CA1822")]
+#endif
         public void Dispose()
         {
 #if NETSTANDARD1_1 || NETSTANDARD2_0

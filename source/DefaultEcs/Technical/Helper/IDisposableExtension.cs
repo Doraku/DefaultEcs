@@ -27,7 +27,7 @@ namespace DefaultEcs.Technical.Helper
 
             #region Methods
 
-            private IEnumerable<IDisposable> GetDisposables(IEnumerable<IDisposable> disposables)
+            private static IEnumerable<IDisposable> GetDisposables(IEnumerable<IDisposable> disposables)
             {
                 foreach (IDisposable disposable in disposables)
                 {

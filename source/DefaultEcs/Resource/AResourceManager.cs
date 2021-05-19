@@ -313,6 +313,8 @@ namespace DefaultEcs.Resource
         /// </summary>
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
+
             foreach (var pair in _resources)
             {
                 Unload(pair.Key, pair.Value.Value);

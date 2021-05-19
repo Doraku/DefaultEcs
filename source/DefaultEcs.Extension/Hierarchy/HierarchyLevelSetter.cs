@@ -5,7 +5,7 @@ namespace DefaultEcs.Hierarchy
 {
     internal sealed class HierarchyLevelSetter : IDisposable
     {
-        private static readonly HashSet<World> _worlds = new HashSet<World>();
+        private static readonly HashSet<World> _worlds = new();
 
         private readonly EntityMultiMap<Parent> _map;
         private readonly IDisposable _addedSubscription;
@@ -74,7 +74,7 @@ namespace DefaultEcs.Hierarchy
         {
             if (_worlds.Add(world))
             {
-                HierarchyLevelSetter setter = new HierarchyLevelSetter(world);
+                HierarchyLevelSetter setter = new(world);
                 world.SubscribeWorldDisposed(_ => setter.Dispose());
             }
         }

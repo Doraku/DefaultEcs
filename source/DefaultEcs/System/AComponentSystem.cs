@@ -174,7 +174,9 @@ namespace DefaultEcs.System
         /// Does nothing.
         /// </summary>
         public virtual void Dispose()
-        { }
+        {
+            GC.SuppressFinalize(this);
+        }
 
         #endregion
     }

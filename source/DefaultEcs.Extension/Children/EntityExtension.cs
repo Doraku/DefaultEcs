@@ -14,7 +14,7 @@ namespace DefaultEcs.Children
             }
         }
 
-        private static readonly HashSet<World> _worlds = new HashSet<World>();
+        private static readonly HashSet<World> _worlds = new();
 
         private static void OnEntityDisposed(in Entity entity)
         {

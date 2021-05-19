@@ -36,11 +36,5 @@ namespace DefaultEcs.Benchmark.Message
 
         [Benchmark]
         public void DefaultEcs_Publish() => _world.Publish(_temp);
-
-        [Benchmark]
-        public void SveltoEcs_Publish()
-        {
-            //Primal.Api.
-        }
     }
 }

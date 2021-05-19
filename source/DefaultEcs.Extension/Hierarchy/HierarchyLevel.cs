@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DefaultEcs.Hierarchy
 {
+    [SuppressMessage("Usage", "CA2231:Overload operator equals on overriding value type Equals")]
     public readonly struct HierarchyLevel : IComparable<HierarchyLevel>
     {
         public readonly int Value;

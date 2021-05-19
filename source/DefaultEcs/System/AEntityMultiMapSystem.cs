@@ -374,7 +374,12 @@ namespace DefaultEcs.System
         /// <summary>
         /// Disposes of the inner <see cref="EntityMultiMap{TKey}"/> instance.
         /// </summary>
-        public virtual void Dispose() => MultiMap.Dispose();
+        public virtual void Dispose()
+        {
+            GC.SuppressFinalize(this);
+
+            MultiMap.Dispose();
+        }
 
         #endregion
     }

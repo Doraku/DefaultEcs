@@ -64,9 +64,7 @@ namespace DefaultEcs.Test
         private class InstanceMethod
         {
             [Subscribe]
-#if NET5_0
             [SuppressMessage("Performance", "CA1822")]
-#endif
             public void Method(in object _) { }
         }
 
@@ -85,9 +83,7 @@ namespace DefaultEcs.Test
             { }
 
             [Subscribe]
-#if NET5_0
             [SuppressMessage("Performance", "CA1822")]
-#endif
             public void NewMethod(in int _)
             { }
         }

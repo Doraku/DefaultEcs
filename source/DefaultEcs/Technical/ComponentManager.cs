@@ -102,8 +102,10 @@ namespace DefaultEcs.Technical
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComponentPool<T> GetOrCreate(short worldId) => Get(worldId) ?? Add(worldId, World.Worlds[worldId].MaxCapacity, World.Worlds[worldId].MaxCapacity);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComponentPool<T> GetPrevious(short worldId) => worldId < _previousPools.Length ? _previousPools[worldId] : null;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComponentPool<T> GetOrCreatePrevious(short worldId) => GetPrevious(worldId) ?? AddPrevious(worldId, World.Worlds[worldId].MaxCapacity);
 
         #endregion
