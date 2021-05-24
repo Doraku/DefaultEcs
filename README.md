@@ -37,7 +37,7 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
 - [Extension](#Extension)
 - [Sample](#Sample)
 - [Projects using DefaultEcs](#Projects)
-- [Performance](#Performance)
+- [Performance](https://github.com/Doraku/Ecs.CSharp.Benchmark)
 
 <a name='Requirement'></a>
 # Requirement
@@ -583,76 +583,3 @@ Basic fly swatter clone. Every five seconds, flies (blue square) will damage the
 Your game uses DefaultEcs? Don't hesitate to contact me.  
 
 [![Chambers of Anubis](https://img.itch.zone/aW1nLzQ2MDYzODcucG5n/original/IALw4S.png)](https://github.com/PodeCaradox/HellowIInJam)
-
-<a name='Performance'></a>
-# Performance
-Feel free to correct my use of the compared ecs libraries as I looked only for basic uses which may not be the most performant way.
-
-[Entitas](https://github.com/sschmid/Entitas-CSharp)  
-[MonoGameExtendedEntities](https://github.com/craftworkgames/MonoGame.Extended)  
-[Leo](https://github.com/Leopotam/ecs)  
-[Svelto](https://github.com/sebas77/Svelto.ECS)  
-
-```
-BenchmarkDotNet=v0.12.0, OS=Windows 10.0.18362
-Intel Core i5-3570K CPU 3.40GHz (Ivy Bridge), 1 CPU, 4 logical and 4 physical cores
-  [Host]     : .NET Framework 4.8 (4.8.4075.0), X64 RyuJIT
-  DefaultJob : .NET Framework 4.8 (4.8.4075.0), X64 RyuJIT
-```
-
-SingleComponentEntityEnumeration: add one to the basic component (containing one int) of 100000 entities
-
-|                                Method |        Mean |     Error |    StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
-|-------------------------------------- |------------:|----------:|----------:|------:|------:|------:|----------:|
-|                  DefaultEcs_EntitySet |   291.62 μs |  0.059 μs |  0.049 μs |     - |     - |     - |         - |
-|                     DefaultEcs_System |   291.14 μs |  0.148 μs |  0.124 μs |     - |     - |     - |         - |
-|                DefaultEcs_MultiSystem |    79.77 μs |  0.578 μs |  0.512 μs |     - |     - |     - |         - |
-|      DefaultEcs_EntityComponentSystem |   190.19 μs |  0.207 μs |  0.194 μs |     - |     - |     - |         - |
-| DefaultEcs_MultiEntityComponentSystem |    53.95 μs |  0.640 μs |  0.534 μs |     - |     - |     - |         - |
-|                  DefaultEcs_Component |    95.17 μs |  0.055 μs |  0.046 μs |     - |     - |     - |         - |
-|            DefaultEcs_ComponentSystem |    83.96 μs |  0.062 μs |  0.055 μs |     - |     - |     - |         - |
-|       DefaultEcs_ComponentMultiSystem |    27.40 μs |  0.153 μs |  0.119 μs |     - |     - |     - |         - |
-|            DefaultEcs_GeneratorSystem |   189.30 μs |  0.038 μs |  0.030 μs |     - |     - |     - |         - |
-|       DefaultEcs_GeneratorMultiSystem |    54.03 μs |  0.618 μs |  0.516 μs |     - |     - |     - |         - |
-|                        Entitas_System | 6,718.45 μs | 27.601 μs | 24.467 μs |     - |     - |     - |     128 B |
-|                   Entitas_MultiSystem | 3,729.49 μs | 39.063 μs | 34.628 μs |     - |     - |     - |     478 B |
-|       MonoGameExtendedEntities_System | 2,206.19 μs | 21.454 μs | 19.018 μs |     - |     - |     - |     192 B |
-|                            Leo_System |   145.16 μs |  0.012 μs |  0.010 μs |     - |     - |     - |         - |
-|                       Leo_MultiSystem |    73.94 μs |  0.217 μs |  0.203 μs |     - |     - |     - |         - |
-|                         Svelto_System |    83.93 μs |  0.036 μs |  0.030 μs |     - |     - |     - |         - |
-
-DoubleComponentEntityEnumeration: do basic movement with two components (position, speed) on 100000 entities
-
-|                          Method |       Mean |    Error |   StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
-|-------------------------------- |-----------:|---------:|---------:|------:|------:|------:|----------:|
-|            DefaultEcs_EntitySet |   608.2 μs |  0.98 μs |  0.92 μs |     - |     - |     - |         - |
-|               DefaultEcs_System |   594.7 μs |  0.38 μs |  0.31 μs |     - |     - |     - |         - |
-|          DefaultEcs_MultiSystem |   161.8 μs |  2.45 μs |  2.04 μs |     - |     - |     - |         - |
-|      DefaultEcs_ComponentSystem |   402.5 μs |  0.55 μs |  0.52 μs |     - |     - |     - |         - |
-| DefaultEcs_ComponentMultiSystem |   109.7 μs |  0.35 μs |  0.31 μs |     - |     - |     - |         - |
-|      DefaultEcs_GeneratorSystem |   402.5 μs |  0.40 μs |  0.37 μs |     - |     - |     - |         - |
-| DefaultEcs_GeneratorMultiSystem |   109.7 μs |  0.32 μs |  0.27 μs |     - |     - |     - |         - |
-|                  Entitas_System | 6,390.6 μs | 13.91 μs | 12.33 μs |     - |     - |     - |     128 B |
-|             Entitas_MultiSystem | 3,972.4 μs | 22.66 μs | 20.09 μs |     - |     - |     - |     474 B |
-| MonoGameExtendedEntities_System | 3,203.4 μs | 11.93 μs | 11.16 μs |     - |     - |     - |     192 B |
-|                      Leo_System |   481.3 μs |  0.86 μs |  0.80 μs |     - |     - |     - |         - |
-|                 Leo_MultiSystem |   152.8 μs |  0.18 μs |  0.16 μs |     - |     - |     - |         - |
-|                   Svelto_System |   155.3 μs |  0.03 μs |  0.03 μs |     - |     - |     - |         - |
-
-TripleComponentEntityEnumeration: do basic operation with three components on 100000 entities
-
-|                          Method |       Mean |    Error |   StdDev | Gen 0 | Gen 1 | Gen 2 | Allocated |
-|-------------------------------- |-----------:|---------:|---------:|------:|------:|------:|----------:|
-|            DefaultEcs_EntitySet |   661.0 μs |  0.30 μs |  0.23 μs |     - |     - |     - |         - |
-|               DefaultEcs_System |   643.7 μs |  1.20 μs |  1.12 μs |     - |     - |     - |         - |
-|          DefaultEcs_MultiSystem |   173.5 μs |  0.80 μs |  0.75 μs |     - |     - |     - |         - |
-|      DefaultEcs_ComponentSystem |   356.8 μs |  1.19 μs |  1.06 μs |     - |     - |     - |         - |
-| DefaultEcs_ComponentMultiSystem |   106.6 μs |  0.58 μs |  0.54 μs |     - |     - |     - |         - |
-|      DefaultEcs_GeneratorSystem |   384.5 μs |  0.42 μs |  0.40 μs |     - |     - |     - |         - |
-| DefaultEcs_GeneratorMultiSystem |   119.1 μs |  1.43 μs |  1.34 μs |     - |     - |     - |         - |
-|                  Entitas_System | 6,171.5 μs | 13.61 μs | 12.73 μs |     - |     - |     - |     128 B |
-|             Entitas_MultiSystem | 3,995.7 μs | 36.20 μs | 33.86 μs |     - |     - |     - |     487 B |
-| MonoGameExtendedEntities_System | 3,569.5 μs |  6.88 μs |  6.44 μs |     - |     - |     - |     186 B |
-|                      Leo_System |   838.2 μs |  0.48 μs |  0.45 μs |     - |     - |     - |         - |
-|                 Leo_MultiSystem |   289.9 μs |  0.67 μs |  0.60 μs |     - |     - |     - |         - |
-|                   Svelto_System |   130.1 μs |  0.13 μs |  0.12 μs |     - |     - |     - |         - |

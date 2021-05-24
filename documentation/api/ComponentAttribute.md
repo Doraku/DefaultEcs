@@ -20,20 +20,12 @@ Derived
 &#8627; [WithEitherAttribute](WithEitherAttribute.md 'DefaultEcs.System.WithEitherAttribute')  
 &#8627; [WithoutAttribute](WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute')  
 &#8627; [WithoutEitherAttribute](WithoutEitherAttribute.md 'DefaultEcs.System.WithoutEitherAttribute')  
-### Constructors
 
-***
-[ComponentAttribute(ComponentFilterType, Type[])](ComponentAttribute_ComponentAttribute(ComponentFilterType_Type__).md 'DefaultEcs.System.ComponentAttribute.ComponentAttribute(DefaultEcs.System.ComponentFilterType, System.Type[])')
+| Constructors | |
+| :--- | :--- |
+| [ComponentAttribute(ComponentFilterType, Type[])](ComponentAttribute_ComponentAttribute(ComponentFilterType_Type__).md 'DefaultEcs.System.ComponentAttribute.ComponentAttribute(DefaultEcs.System.ComponentFilterType, System.Type[])') | Initialize a new instance of the [ComponentAttribute](ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') type.<br/> |
 
-Initialize a new instance of the [ComponentAttribute](ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') type.  
-### Fields
-
-***
-[ComponentTypes](ComponentAttribute_ComponentTypes.md 'DefaultEcs.System.ComponentAttribute.ComponentTypes')
-
-The types of the component.  
-
-***
-[FilterType](ComponentAttribute_FilterType.md 'DefaultEcs.System.ComponentAttribute.FilterType')
-
-Whether the component type should be included or excluded.  
+| Fields | |
+| :--- | :--- |
+| [ComponentTypes](ComponentAttribute_ComponentTypes.md 'DefaultEcs.System.ComponentAttribute.ComponentTypes') | The types of the component.<br/> |
+| [FilterType](ComponentAttribute_FilterType.md 'DefaultEcs.System.ComponentAttribute.FilterType') | Whether the component type should be included or excluded.<br/> |

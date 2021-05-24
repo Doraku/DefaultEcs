@@ -7,9 +7,7 @@ public sealed class WithoutEitherAttribute : DefaultEcs.System.ComponentAttribut
 ```
 
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; [ComponentAttribute](ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &#129106; WithoutEitherAttribute  
-### Constructors
 
-***
-[WithoutEitherAttribute(Type[])](WithoutEitherAttribute_WithoutEitherAttribute(Type__).md 'DefaultEcs.System.WithoutEitherAttribute.WithoutEitherAttribute(System.Type[])')
-
-Initialize a new instance of the [WithEitherAttribute](WithEitherAttribute.md 'DefaultEcs.System.WithEitherAttribute') type.  
+| Constructors | |
+| :--- | :--- |
+| [WithoutEitherAttribute(Type[])](WithoutEitherAttribute_WithoutEitherAttribute(Type__).md 'DefaultEcs.System.WithoutEitherAttribute.WithoutEitherAttribute(System.Type[])') | Initialize a new instance of the [WithEitherAttribute](WithEitherAttribute.md 'DefaultEcs.System.WithEitherAttribute') type.<br/> |

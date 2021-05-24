@@ -10,9 +10,7 @@ public readonly ref struct Components<T>
 `T`  
 The type of the component.
   
-### Properties
 
-***
-[this[Entity]](Components_T__this_Entity_.md 'DefaultEcs.Components&lt;T&gt;.this[DefaultEcs.Entity]')
-
-Gets the component of type [T](Components_T_.md#DefaultEcs_Components_T__T 'DefaultEcs.Components&lt;T&gt;.T') on the provided [Entity](Entity.md 'DefaultEcs.Entity').  
+| Properties | |
+| :--- | :--- |
+| [this[Entity]](Components_T__this_Entity_.md 'DefaultEcs.Components&lt;T&gt;.this[DefaultEcs.Entity]') | Gets the component of type [T](Components_T_.md#DefaultEcs_Components_T__T 'DefaultEcs.Components&lt;T&gt;.T') on the provided [Entity](Entity.md 'DefaultEcs.Entity').<br/> |

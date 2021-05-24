@@ -21,16 +21,11 @@ Derived
 &#8627; [SequentialSystem&lt;T&gt;](SequentialSystem_T_.md 'DefaultEcs.System.SequentialSystem&lt;T&gt;')  
 
 Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
-### Properties
 
-***
-[IsEnabled](ISystem_T__IsEnabled.md 'DefaultEcs.System.ISystem&lt;T&gt;.IsEnabled')
+| Properties | |
+| :--- | :--- |
+| [IsEnabled](ISystem_T__IsEnabled.md 'DefaultEcs.System.ISystem&lt;T&gt;.IsEnabled') | Gets or sets whether the current [ISystem&lt;T&gt;](ISystem_T_.md 'DefaultEcs.System.ISystem&lt;T&gt;') instance should update or not.<br/> |
 
-Gets or sets whether the current [ISystem&lt;T&gt;](ISystem_T_.md 'DefaultEcs.System.ISystem&lt;T&gt;') instance should update or not.  
-### Methods
-
-***
-[Update(T)](ISystem_T__Update(T).md 'DefaultEcs.System.ISystem&lt;T&gt;.Update(T)')
-
-Updates the system once.  
-Does nothing if [IsEnabled](ISystem_T__IsEnabled.md 'DefaultEcs.System.ISystem&lt;T&gt;.IsEnabled') is false.  
+| Methods | |
+| :--- | :--- |
+| [Update(T)](ISystem_T__Update(T).md 'DefaultEcs.System.ISystem&lt;T&gt;.Update(T)') | Updates the system once.<br/>Does nothing if [IsEnabled](ISystem_T__IsEnabled.md 'DefaultEcs.System.ISystem&lt;T&gt;.IsEnabled') is false.<br/> |

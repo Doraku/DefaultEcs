@@ -14,15 +14,11 @@ The type used to identify a resource.
 `TResource`  
 The type of the resource.
   
-### Constructors
 
-***
-[ManagedResource(TInfo)](ManagedResource_TInfo_TResource__ManagedResource(TInfo).md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;.ManagedResource(TInfo)')
+| Constructors | |
+| :--- | :--- |
+| [ManagedResource(TInfo)](ManagedResource_TInfo_TResource__ManagedResource(TInfo).md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;.ManagedResource(TInfo)') | Creates a component of type [ManagedResource&lt;TInfo,TResource&gt;](ManagedResource_TInfo_TResource_.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') used to load a resource of type [TResource](ManagedResource_TInfo_TResource_.md#DefaultEcs_Resource_ManagedResource_TInfo_TResource__TResource 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;.TResource').<br/> |
 
-Creates a component of type [ManagedResource&lt;TInfo,TResource&gt;](ManagedResource_TInfo_TResource_.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') used to load a resource of type [TResource](ManagedResource_TInfo_TResource_.md#DefaultEcs_Resource_ManagedResource_TInfo_TResource__TResource 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;.TResource').  
-### Fields
-
-***
-[Info](ManagedResource_TInfo_TResource__Info.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;.Info')
-
-Gets the info about the resource to load.  
+| Fields | |
+| :--- | :--- |
+| [Info](ManagedResource_TInfo_TResource__Info.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;.Info') | Gets the info about the resource to load.<br/> |

@@ -7,9 +7,7 @@ public sealed class WhenAddedEitherAttribute : DefaultEcs.System.ComponentAttrib
 ```
 
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [System.Attribute](https://docs.microsoft.com/en-us/dotnet/api/System.Attribute 'System.Attribute') &#129106; [ComponentAttribute](ComponentAttribute.md 'DefaultEcs.System.ComponentAttribute') &#129106; WhenAddedEitherAttribute  
-### Constructors
 
-***
-[WhenAddedEitherAttribute(Type[])](WhenAddedEitherAttribute_WhenAddedEitherAttribute(Type__).md 'DefaultEcs.System.WhenAddedEitherAttribute.WhenAddedEitherAttribute(System.Type[])')
-
-Initialize a new instance of the [WithEitherAttribute](WithEitherAttribute.md 'DefaultEcs.System.WithEitherAttribute') type.  
+| Constructors | |
+| :--- | :--- |
+| [WhenAddedEitherAttribute(Type[])](WhenAddedEitherAttribute_WhenAddedEitherAttribute(Type__).md 'DefaultEcs.System.WhenAddedEitherAttribute.WhenAddedEitherAttribute(System.Type[])') | Initialize a new instance of the [WithEitherAttribute](WithEitherAttribute.md 'DefaultEcs.System.WithEitherAttribute') type.<br/> |

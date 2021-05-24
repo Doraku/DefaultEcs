@@ -3,7 +3,7 @@
 ## IComponentReader.OnRead&lt;T&gt;(T, Entity) Method
 Processes the component of type [T](IComponentReader_OnRead_T_(T_Entity).md#DefaultEcs_Serialization_IComponentReader_OnRead_T_(T_DefaultEcs_Entity)_T 'DefaultEcs.Serialization.IComponentReader.OnRead&lt;T&gt;(T, DefaultEcs.Entity).T').  
 ```csharp
-void OnRead<T>(ref T component, in DefaultEcs.Entity componentOwner);
+void OnRead<T>(in T component, in DefaultEcs.Entity componentOwner);
 ```
 #### Type parameters
 <a name='DefaultEcs_Serialization_IComponentReader_OnRead_T_(T_DefaultEcs_Entity)_T'></a>

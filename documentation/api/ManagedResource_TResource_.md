@@ -12,14 +12,8 @@ The type of the resource.
   
 
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; ManagedResource&lt;TResource&gt;  
-### Methods
 
-***
-[Create&lt;TInfo&gt;(TInfo)](ManagedResource_TResource__Create_TInfo_(TInfo).md 'DefaultEcs.Resource.ManagedResource&lt;TResource&gt;.Create&lt;TInfo&gt;(TInfo)')
-
-Create a [ManagedResource&lt;TInfo,TResource&gt;](ManagedResource_TInfo_TResource_.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') object  
-
-***
-[Create&lt;TInfo&gt;(TInfo[])](ManagedResource_TResource__Create_TInfo_(TInfo__).md 'DefaultEcs.Resource.ManagedResource&lt;TResource&gt;.Create&lt;TInfo&gt;(TInfo[])')
-
-Create a [ManagedResource&lt;TInfo,TResource&gt;](ManagedResource_TInfo_TResource_.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') object with multiple infos.  
+| Methods | |
+| :--- | :--- |
+| [Create&lt;TInfo&gt;(TInfo)](ManagedResource_TResource__Create_TInfo_(TInfo).md 'DefaultEcs.Resource.ManagedResource&lt;TResource&gt;.Create&lt;TInfo&gt;(TInfo)') | Create a [ManagedResource&lt;TInfo,TResource&gt;](ManagedResource_TInfo_TResource_.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') object<br/> |
+| [Create&lt;TInfo&gt;(TInfo[])](ManagedResource_TResource__Create_TInfo_(TInfo__).md 'DefaultEcs.Resource.ManagedResource&lt;TResource&gt;.Create&lt;TInfo&gt;(TInfo[])') | Create a [ManagedResource&lt;TInfo,TResource&gt;](ManagedResource_TInfo_TResource_.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') object with multiple infos.<br/> |
