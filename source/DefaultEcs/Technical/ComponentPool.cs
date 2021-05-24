@@ -117,7 +117,6 @@ namespace DefaultEcs.Technical
             Publisher<EntityDisposedMessage>.Subscribe(_worldId, On);
             if (!isPrevious)
             {
-                Publisher<EntityCopyMessage>.Subscribe(_worldId, On);
                 Publisher<ComponentReadMessage>.Subscribe(_worldId, On);
             }
 
@@ -131,18 +130,6 @@ namespace DefaultEcs.Technical
         private void On(in ComponentTypeReadMessage message) => message.Reader.OnRead<T>(MaxCapacity);
 
         private void On(in EntityDisposedMessage message) => Remove(message.EntityId);
-
-        private void On(in EntityCopyMessage message)
-        {
-            if (Has(message.EntityId))
-            {
-                message.Copy.Set(Get(message.EntityId));
-                if (!message.Components[ComponentManager<T>.Flag])
-                {
-                    message.Copy.Disable<T>();
-                }
-            }
-        }
 
         private void On(in ComponentReadMessage message)
         {

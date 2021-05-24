@@ -1,2 +1,7 @@
 breaking changes:
 changed IComponentReader.OnRead component passed as in instead of ref
+
+---
+
+added ComponentCloner type to clone components between entities
+added Entity.CopyTo method overload taking a ComponentCloner

@@ -269,13 +269,17 @@ namespace DefaultEcs
         public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
 
         /// <summary>
-        /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="DefaultEcs.World"/>.
+        /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="DefaultEcs.World"/> using the given <see cref="ComponentCloner"/>.
         /// </summary>
         /// <param name="world">The <see cref="DefaultEcs.World"/> instance to which copy current <see cref="Entity"/> and its components.</param>
+        /// <param name="cloner">The <see cref="ComponentCloner"/> to use to copy the components.</param>
         /// <returns>The created <see cref="Entity"/> in the given <see cref="DefaultEcs.World"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="world"/> or <paramref name="cloner"/> was null.</exception>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
-        public Entity CopyTo(World world)
+        public Entity CopyTo(World world, ComponentCloner cloner)
         {
+            if (world is null) throw new ArgumentNullException(nameof(world));
+            if (cloner is null) throw new ArgumentNullException(nameof(cloner));
             if (WorldId == 0) Throw("Entity was not created from a World");
 
             Entity copy = world.CreateEntity();
@@ -287,7 +291,7 @@ namespace DefaultEcs
 
             try
             {
-                Publisher.Publish(WorldId, new EntityCopyMessage(EntityId, copy, Components));
+                cloner.Clone(this, copy);
             }
             catch
             {
@@ -298,6 +302,14 @@ namespace DefaultEcs
 
             return copy;
         }
+
+        /// <summary>
+        /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="DefaultEcs.World"/>.
+        /// </summary>
+        /// <param name="world">The <see cref="DefaultEcs.World"/> instance to which copy current <see cref="Entity"/> and its components.</param>
+        /// <returns>The created <see cref="Entity"/> in the given <see cref="DefaultEcs.World"/>.</returns>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
+        public Entity CopyTo(World world) => CopyTo(world, ComponentCloner.Instance);
 
         /// <summary>
         /// Calls on <paramref name="reader"/> with all the component of the current <see cref="Entity"/>.

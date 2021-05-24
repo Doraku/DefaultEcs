@@ -720,6 +720,22 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void CopyTo_Should_throw_When_World_is_null()
+        {
+            Entity entity = default;
+            Check.ThatCode(() => entity.CopyTo(null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void CopyTo_Should_throw_When_cloner_is_null()
+        {
+            using World world = new(1);
+
+            Entity entity = default;
+            Check.ThatCode(() => entity.CopyTo(world, null)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
         public void ReadAllComponents_Should_throw_ArgumentNullException_When_reader_is_null()
         {
             using World world = new(1);
