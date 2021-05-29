@@ -34,18 +34,21 @@ namespace DefaultEcs.Test
         {
             [Subscribe]
             [SuppressMessage("Style", "IDE0060:Remove unused parameter")]
+            [SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
             public static void Method(object _, object __) { }
         }
 
         private sealed class InvalidReturnType
         {
             [Subscribe]
+            [SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
             public static object Method(in object _) { return null; }
         }
 
         private sealed class InvalidByRefParameterType
         {
             [Subscribe]
+            [SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
             public static void Method(object _) { }
         }
 
@@ -108,6 +111,7 @@ namespace DefaultEcs.Test
             public void Valid(in object arg) => Arg = arg;
 
             [Subscribe]
+            [SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
             public object Invalid(in object arg) => Arg = arg;
         }
 

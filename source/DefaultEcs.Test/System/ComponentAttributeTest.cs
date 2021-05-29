@@ -44,6 +44,7 @@ namespace DefaultEcs.Test.System
 
             [WithPredicate]
             [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
+            [SuppressMessage("Runtime Error", "DEA0002:WithPredicateAttribute used on an invalid method")]
             private static void Predicate(in bool _)
             { }
 
