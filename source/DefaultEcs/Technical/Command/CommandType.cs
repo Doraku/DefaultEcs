@@ -12,6 +12,7 @@
         SetSameAs = 7,
         Remove = 8,
         NotifyChanged = 9,
-        Dispose = 10
+        Clone = 10,
+        Dispose = 11
     }
 }

@@ -103,6 +103,30 @@ namespace DefaultEcs.Command
         public void NotifyChanged<T>() => _recorder.WriteCommand(new EntityOffsetComponentCommand(CommandType.NotifyChanged, ComponentCommands.ComponentCommand<T>.Index, _offset));
 
         /// <summary>
+        /// Creates a copy of current <see cref="EntityRecord"/> with all of its components in the given <see cref="DefaultEcs.World"/> using the given <see cref="ComponentCloner"/>.
+        /// </summary>
+        /// <param name="world">The <see cref="DefaultEcs.World"/> instance to which copy current <see cref="EntityRecord"/> and its components.</param>
+        /// <param name="cloner">The <see cref="ComponentCloner"/> to use to copy the components.</param>
+        /// <returns>The created <see cref="EntityRecord"/> in the given <see cref="DefaultEcs.World"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="world"/> or <paramref name="cloner"/> was null.</exception>
+        public EntityRecord CopyTo(World world, ComponentCloner cloner)
+        {
+            EntityRecord copy = _recorder.CreateEntity(world);
+
+            _recorder.WriteCloneCommand(_offset, copy._offset, cloner ?? throw new ArgumentNullException(nameof(cloner)));
+
+            return copy;
+        }
+
+        /// <summary>
+        /// Creates a copy of current <see cref="EntityRecord"/> with all of its components in the given <see cref="DefaultEcs.World"/>.
+        /// </summary>
+        /// <param name="world">The <see cref="DefaultEcs.World"/> instance to which copy current <see cref="EntityRecord"/> and its components.</param>
+        /// <returns>The created <see cref="EntityRecord"/> in the given <see cref="DefaultEcs.World"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="world"/> was null.</exception>
+        public EntityRecord CopyTo(World world) => CopyTo(world, ComponentCloner.Instance);
+
+        /// <summary>
         /// Clean the corresponding <see cref="Entity"/> of all its components.
         /// The current <see cref="EntityRecord"/> should not be used again after calling this method.
         /// This command takes 5 bytes.

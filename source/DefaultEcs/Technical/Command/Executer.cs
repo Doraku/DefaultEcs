@@ -73,6 +73,12 @@ namespace DefaultEcs.Technical.Command
                             commandSize = sizeof(EntityOffsetComponentCommand);
                             break;
 
+                        case CommandType.Clone:
+                            CloneCommand* cloneCommand = (CloneCommand*)commands;
+                            ((ComponentCloner)objects[cloneCommand->ClonerIndex]).Clone(*(Entity*)(memoryP + cloneCommand->SourceOffset), *(Entity*)(memoryP + cloneCommand->TargetOffset));
+                            commandSize = sizeof(CloneCommand);
+                            break;
+
                         case CommandType.Dispose:
                             ((Entity*)(memoryP + ((EntityOffsetCommand*)commands)->EntityOffset))->Dispose();
                             commandSize = sizeof(EntityOffsetCommand);

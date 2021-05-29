@@ -23,6 +23,14 @@ namespace DefaultEcs.Test.Command
         #region Tests
 
         [Fact]
+        public void CreateEntity_Should_throw_When_world_is_null()
+        {
+            using EntityCommandRecorder recorder = new(1024);
+
+            Check.ThatCode(() => recorder.CreateEntity(default)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
         public void CreateEntity_Should_create_an_entity()
         {
             using EntityCommandRecorder recorder = new(1024);
@@ -487,6 +495,33 @@ namespace DefaultEcs.Test.Command
             recorder.Execute();
 
             Check.That(world.Count()).IsZero();
+        }
+
+        [Fact]
+        public void CopyTo_Should_throw_When_cloner_is_null()
+        {
+            using EntityCommandRecorder recorder = new(1024);
+            using World world = new();
+
+            Check.ThatCode(() => recorder.CreateEntity(world).CopyTo(world, default)).Throws<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void CopyTo_Should_clone_entity()
+        {
+            using EntityCommandRecorder recorder = new(1024);
+            using World world = new();
+
+            Entity entity = world.CreateEntity();
+            entity.Set(42);
+
+            EntityRecord record = recorder.Record(entity);
+
+            record.CopyTo(world);
+
+            recorder.Execute();
+
+            Check.That(world.GetEntities().With((in int i) => i == 42).AsEnumerable().Count()).IsEqualTo(2);
         }
 
         #endregion

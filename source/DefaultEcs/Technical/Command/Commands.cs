@@ -77,4 +77,28 @@ namespace DefaultEcs.Technical.Command
             ReferenceOffset = referenceOffset;
         }
     }
+
+    [StructLayout(LayoutKind.Explicit, Pack = 1)]
+    internal readonly struct CloneCommand
+    {
+        [FieldOffset(0)]
+        public readonly CommandType CommandType;
+
+        [FieldOffset(1)]
+        public readonly int SourceOffset;
+
+        [FieldOffset(5)]
+        public readonly int TargetOffset;
+
+        [FieldOffset(9)]
+        public readonly int ClonerIndex;
+
+        public CloneCommand(int sourceOffset, int targetOffset, int clonerIndex)
+        {
+            CommandType = CommandType.Clone;
+            SourceOffset = sourceOffset;
+            TargetOffset = targetOffset;
+            ClonerIndex = clonerIndex;
+        }
+    }
 }

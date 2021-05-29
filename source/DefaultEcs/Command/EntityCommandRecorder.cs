@@ -160,6 +160,18 @@ namespace DefaultEcs.Command
             }
         }
 
+        internal void WriteCloneCommand(int sourceOffset, int targetOffset, ComponentCloner cloner)
+        {
+            int clonerIndex;
+            lock (_objects)
+            {
+                clonerIndex  = _objects.Count;
+                _objects.Add(cloner);
+            }
+
+            WriteCommand(new CloneCommand(sourceOffset, targetOffset, clonerIndex));
+        }
+
         /// <summary>
         /// Gives an <see cref="EntityRecord"/> to record action on the given <see cref="Entity"/>.
         /// This command takes 9 bytes.
@@ -185,6 +197,8 @@ namespace DefaultEcs.Command
         /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public EntityRecord CreateEntity(World world)
         {
+            if (world is null) throw new ArgumentNullException(nameof(world));
+
             int offset = ReserveNextCommand(sizeof(EntityCommand));
 
             WriteCommand(offset, new EntityCommand(CommandType.CreateEntity, new Entity(world.WorldId)));
