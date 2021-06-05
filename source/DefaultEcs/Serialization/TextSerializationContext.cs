@@ -33,9 +33,13 @@ namespace DefaultEcs.Serialization
 
             public void SetMaxCapacity(World world, int maxCapacity) => world.SetMaxCapacity<TOut>(maxCapacity);
 
+            public void Set(World world, StreamReaderWrapper reader) => world.Set(_converter(Converter<TIn>.Read(reader)));
+
             public void Set(in Entity entity, StreamReaderWrapper reader) => entity.Set(_converter(Converter<TIn>.Read(reader)));
 
             public void SetSameAs(in Entity entity, in Entity reference) => entity.SetSameAs<TOut>(reference);
+
+            public void SetSameAsWorld(in Entity entity) => entity.SetSameAsWorld<TOut>();
 
             public void SetDisabled(in Entity entity, StreamReaderWrapper reader)
             {
@@ -46,6 +50,12 @@ namespace DefaultEcs.Serialization
             public void SetDisabledSameAs(in Entity entity, in Entity reference)
             {
                 SetSameAs(entity, reference);
+                entity.Disable<TOut>();
+            }
+
+            public void SetDisabledSameAsWorld(in Entity entity)
+            {
+                SetSameAsWorld(entity);
                 entity.Disable<TOut>();
             }
 
@@ -78,7 +88,7 @@ namespace DefaultEcs.Serialization
 
         #region Methods
 
-        internal Action<ComponentTypeWriter, int> GetWorldWrite<T>() => _id < SerializationContext<T>.Actions.Length ? SerializationContext<T>.Actions[_id].WorldWrite as Action<ComponentTypeWriter, int> : null;
+        internal Action<ComponentTypeWriter, int, bool> GetWorldWrite<T>() => _id < SerializationContext<T>.Actions.Length ? SerializationContext<T>.Actions[_id].WorldWrite as Action<ComponentTypeWriter, int, bool> : null;
 
         internal Action<EntityWriter, T, Entity, bool> GetEntityWrite<T>() => _id < SerializationContext<T>.Actions.Length ? SerializationContext<T>.Actions[_id].EntityWrite as Action<EntityWriter, T, Entity, bool> : null;
 
@@ -105,7 +115,7 @@ namespace DefaultEcs.Serialization
             {
                 SerializationContext<TIn>.SetWriteActions(
                     _id,
-                    new Action<ComponentTypeWriter, int>((writer, maxCapacity) => writer.WriteComponent<TOut>(maxCapacity)),
+                    new Action<ComponentTypeWriter, int, bool>((writer, maxCapacity, hasComponent) => writer.WriteComponent(maxCapacity, hasComponent, w => converter(w.Get<TIn>()))),
                     new Action<EntityWriter, TIn, Entity, bool>((writer, value, owner, isEnabled) => writer.WriteComponent(converter(value), owner, isEnabled)),
                     new WriteAction<TIn>((StreamWriterWrapper writer, in TIn value) =>
                     {

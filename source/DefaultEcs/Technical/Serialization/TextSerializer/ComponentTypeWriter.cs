@@ -10,6 +10,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
     {
         #region Fields
 
+        private readonly World _world;
         private readonly StreamWriterWrapper _writer;
         private readonly Dictionary<Type, string> _types;
         private readonly int _worldMaxCapacity;
@@ -19,8 +20,9 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         #region Initialisation
 
-        public ComponentTypeWriter(StreamWriterWrapper writer, Dictionary<Type, string> types, int worldMaxCapacity, Predicate<Type> componentFilter)
+        public ComponentTypeWriter(World world, StreamWriterWrapper writer, Dictionary<Type, string> types, int worldMaxCapacity, Predicate<Type> componentFilter)
         {
+            _world = world;
             _writer = writer;
             _types = types;
             _worldMaxCapacity = worldMaxCapacity;
@@ -31,7 +33,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
 
         #region Methods
 
-        public void WriteComponent<T>(int maxCapacity)
+        public void WriteComponent<T>(int maxCapacity, bool hasComponent, Func<World, T> getter)
         {
             string shortName = typeof(T).Name;
 
@@ -48,6 +50,7 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
             _writer.Write(shortName);
             _writer.WriteSpace();
             _writer.WriteLine(TypeNames.Get(typeof(T)));
+
             if (maxCapacity != _worldMaxCapacity && !typeof(T).GetTypeInfo().IsFlagType())
             {
                 _writer.Write(nameof(EntryType.ComponentMaxCapacity));
@@ -55,6 +58,15 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 _writer.Write(shortName);
                 _writer.WriteSpace();
                 _writer.Stream.WriteLine(maxCapacity);
+            }
+
+            if (hasComponent)
+            {
+                _writer.Write(nameof(EntryType.Component));
+                _writer.WriteSpace();
+                _writer.Write(shortName);
+                _writer.WriteSpace();
+                Converter<T>.Write(_writer, getter(_world));
             }
         }
 
@@ -66,14 +78,14 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
         {
             if (_componentFilter(typeof(T)))
             {
-                Action<ComponentTypeWriter, int> action = _writer.Context?.GetWorldWrite<T>();
+                Action<ComponentTypeWriter, int, bool> action = _writer.Context?.GetWorldWrite<T>();
                 if (action is null)
                 {
-                    WriteComponent<T>(maxCapacity);
+                    WriteComponent(maxCapacity, _world.Has<T>(), w => w.Get<T>());
                 }
                 else
                 {
-                    action(this, maxCapacity);
+                    action(this, maxCapacity, _world.Has<T>());
                 }
             }
         }

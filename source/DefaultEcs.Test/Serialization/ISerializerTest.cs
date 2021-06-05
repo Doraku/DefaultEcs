@@ -210,6 +210,8 @@ namespace DefaultEcs.Test.Serialization
         {
             using World world = new(42);
 
+            world.Set("hello");
+
             world.SetMaxCapacity<int>(13);
             world.SetMaxCapacity<float>(60);
 
@@ -238,12 +240,15 @@ namespace DefaultEcs.Test.Serialization
             entities[0].Set(new ClassTest { Id = 12345, Inner = new Test(66), Test = new InnerTest2() });
             entities[2].Set(new InnerTest { Lol = 313 });
             entities[1].SetSameAs<InnerTest>(entities[2]);
+            entities[1].SetSameAsWorld<string>();
             entities[1].Set(new Test(42));
             entities[2].SetSameAs<Test>(entities[1]);
             entities[2].SetSameAs<bool>(entities[0]);
             entities[2].Disable<bool>();
             entities[2].Set<sbyte>(42);
             entities[2].Disable<sbyte>();
+            entities[2].SetSameAsWorld<string>();
+            entities[2].Disable<string>();
 
             entities[0].Set<InnerClass>();
             entities[0].Set<IEnumerable<int>>(new int[] { 1, 2, 3 });
@@ -270,6 +275,8 @@ namespace DefaultEcs.Test.Serialization
                 {
                     Check.That(copyWorld.MaxCapacity).IsEqualTo(world.MaxCapacity);
 
+                    Check.That(copyWorld.Get<string>()).IsEqualTo(world.Get<string>());
+
                     Entity[] entitiesCopy = copyWorld.ToArray();
 
                     Check.That(entitiesCopy[0].Has<Int32>());
@@ -292,6 +299,7 @@ namespace DefaultEcs.Test.Serialization
                     Check.That(entitiesCopy[0].Get<Test>()).IsEqualTo(entities[0].Get<Test>());
 
                     Check.That(entitiesCopy[1].Get<Test>()).IsEqualTo(entities[1].Get<Test>());
+                    Check.That(entitiesCopy[1].Get<string>()).IsEqualTo(entities[1].Get<string>());
                     Check.That(entitiesCopy[1].Get<InnerTest>()).IsEqualTo(entities[1].Get<InnerTest>());
 
                     Check.That(entitiesCopy[1].Get<Test>()).IsEqualTo(entitiesCopy[2].Get<Test>());
@@ -306,6 +314,8 @@ namespace DefaultEcs.Test.Serialization
                     Check.That(entitiesCopy[2].IsEnabled<bool>()).IsFalse();
                     Check.That(entitiesCopy[2].Get<sbyte>()).IsEqualTo(entities[2].Get<sbyte>());
                     Check.That(entitiesCopy[2].IsEnabled<sbyte>()).IsFalse();
+                    Check.That(entitiesCopy[2].Get<string>()).IsEqualTo(entities[2].Get<string>());
+                    Check.That(entitiesCopy[2].IsEnabled<string>()).IsFalse();
                 }
             }
             finally
@@ -539,9 +549,11 @@ namespace DefaultEcs.Test.Serialization
             {
                 using World world = new();
 
+                world.SetMaxCapacity<uint>(10);
+                world.Set<uint>(42);
+
                 Entity entity0 = world.CreateEntity();
 
-                world.SetMaxCapacity<uint>(10);
                 entity0.Set<uint>(42);
                 entity0.Set<double>(1);
 
@@ -559,6 +571,15 @@ namespace DefaultEcs.Test.Serialization
                 entity3.SetSameAs<uint>(entity0);
                 entity3.Disable<uint>();
 
+                Entity entity4 = world.CreateEntity();
+
+                entity4.SetSameAsWorld<uint>();
+
+                Entity entity5 = world.CreateEntity();
+
+                entity5.SetSameAsWorld<uint>();
+                entity5.Disable<uint>();
+
                 using Stream stream = new MemoryStream();
 
                 serializer.Serialize(stream, world);
@@ -567,9 +588,11 @@ namespace DefaultEcs.Test.Serialization
 
                 using World copy = serializer.Deserialize(stream);
 
+                Check.That(copy.Get<string>()).IsEqualTo("42");
+
                 Entity[] entities = copy.ToArray();
                 Check.That(copy.GetMaxCapacity<string>()).IsEqualTo(10);
-                Check.That(entities.Length).IsEqualTo(4);
+                Check.That(entities.Length).IsEqualTo(6);
                 Check.That(entities[0].Get<double>()).IsEqualTo(entity0.Get<double>());
                 Check.That(entities[0].Has<int>()).IsFalse();
                 Check.That(entities[0].Has<uint>()).IsFalse();
@@ -591,6 +614,9 @@ namespace DefaultEcs.Test.Serialization
                 Check.That(entities[3].Has<string>()).IsTrue();
                 Check.That(entities[3].IsEnabled<string>()).IsFalse();
                 Check.That(entities[3].Get<string>()).IsEqualTo("42");
+                Check.That(entities[4].Get<string>()).IsEqualTo("42");
+                Check.That(entities[5].Get<string>()).IsEqualTo("42");
+                Check.That(entities[5].IsEnabled<string>()).IsFalse();
             }
         }
 

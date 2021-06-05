@@ -69,27 +69,38 @@ namespace DefaultEcs.Technical.Serialization.TextSerializer
                 _writer.WriteLine(TypeNames.Get(typeof(T)));
             }
 
-            (Entity, Type) componentKey = (componentOwner, typeof(T));
-            if (_components.TryGetValue(componentKey, out int key))
+            if (componentOwner.IsAlive)
             {
-                string entry = isEnabled ? nameof(EntryType.ComponentSameAs) : nameof(EntryType.DisabledComponentSameAs);
+                (Entity, Type) componentKey = (componentOwner, typeof(T));
+                if (_components.TryGetValue(componentKey, out int key))
+                {
+                    string entry = isEnabled ? nameof(EntryType.ComponentSameAs) : nameof(EntryType.DisabledComponentSameAs);
 
-                _writer.Write(entry);
-                _writer.WriteSpace();
-                _writer.Write(_types[typeof(T)]);
-                _writer.WriteSpace();
-                _writer.Stream.WriteLine(key);
+                    _writer.Write(entry);
+                    _writer.WriteSpace();
+                    _writer.Write(_types[typeof(T)]);
+                    _writer.WriteSpace();
+                    _writer.Stream.WriteLine(key);
+                }
+                else
+                {
+                    _components.Add(componentKey, _entityCount);
+                    string entry = isEnabled ? nameof(EntryType.Component) : nameof(EntryType.DisabledComponent);
+
+                    _writer.Write(entry);
+                    _writer.WriteSpace();
+                    _writer.Write(_types[typeof(T)]);
+                    _writer.WriteSpace();
+                    Converter<T>.Write(_writer, component);
+                }
             }
             else
             {
-                _components.Add(componentKey, _entityCount);
-                string entry = isEnabled ? nameof(EntryType.Component) : nameof(EntryType.DisabledComponent);
+                string entry = isEnabled ? nameof(EntryType.ComponentSameAsWorld) : nameof(EntryType.DisabledComponentSameAsWorld);
 
                 _writer.Write(entry);
                 _writer.WriteSpace();
-                _writer.Write(_types[typeof(T)]);
-                _writer.WriteSpace();
-                Converter<T>.Write(_writer, component);
+                _writer.WriteLine(_types[typeof(T)]);
             }
         }
 

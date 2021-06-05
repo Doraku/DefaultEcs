@@ -8,6 +8,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
     {
         #region Fields
 
+        private readonly World _world;
         private readonly StreamWriterWrapper _writer;
         private readonly Dictionary<Type, ushort> _types;
         private readonly int _worldMaxCapacity;
@@ -19,8 +20,9 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region Initialisation
 
-        public ComponentTypeWriter(in StreamWriterWrapper writer, Dictionary<Type, ushort> types, int worldMaxCapacity, Predicate<Type> componentFilter)
+        public ComponentTypeWriter(World world, in StreamWriterWrapper writer, Dictionary<Type, ushort> types, int worldMaxCapacity, Predicate<Type> componentFilter)
         {
+            _world = world;
             _writer = writer;
             _types = types;
             _worldMaxCapacity = worldMaxCapacity;
@@ -31,7 +33,7 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
 
         #region Methods
 
-        public void WriteComponent<T>(int maxCapacity)
+        public void WriteComponent<T>(int maxCapacity, bool hasComponent, Func<World, T> getter)
         {
             _types.Add(typeof(T), _currentType);
 
@@ -46,6 +48,13 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 _writer.Write(maxCapacity);
             }
 
+            if (hasComponent)
+            {
+                _writer.WriteByte((byte)EntryType.Component);
+                _writer.Write(_currentType);
+                Converter<T>.Write(_writer, getter(_world));
+            }
+
             ++_currentType;
         }
 
@@ -57,14 +66,14 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
         {
             if (_componentFilter(typeof(T)))
             {
-                Action<ComponentTypeWriter, int> action = _writer.Context?.GetWorldWrite<T>();
+                Action<ComponentTypeWriter, int, bool> action = _writer.Context?.GetWorldWrite<T>();
                 if (action is null)
                 {
-                    WriteComponent<T>(maxCapacity);
+                    WriteComponent(maxCapacity, _world.Has<T>(), w => w.Get<T>());
                 }
                 else
                 {
-                    action(this, maxCapacity);
+                    action(this, maxCapacity, _world.Has<T>());
                 }
             }
         }

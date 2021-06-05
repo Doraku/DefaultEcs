@@ -10,6 +10,8 @@
         ComponentSameAs = 5,
         DisabledEntity = 6,
         DisabledComponent = 7,
-        DisabledComponentSameAs = 8
+        DisabledComponentSameAs = 8,
+        ComponentSameAsWorld = 9,
+        DisabledComponentSameAsWorld = 10
     }
 }

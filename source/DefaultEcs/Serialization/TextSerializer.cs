@@ -19,10 +19,13 @@ namespace DefaultEcs.Serialization
         internal interface IComponentOperation
         {
             void SetMaxCapacity(World world, int maxCapacity);
+            void Set(World world, StreamReaderWrapper reader);
             void Set(in Entity entity, StreamReaderWrapper reader);
             void SetSameAs(in Entity entity, in Entity reference);
+            void SetSameAsWorld(in Entity entity);
             void SetDisabled(in Entity entity, StreamReaderWrapper reader);
             void SetDisabledSameAs(in Entity entity, in Entity reference);
+            void SetDisabledSameAsWorld(in Entity entity);
             IComponentOperation ApplyContext(TextSerializationContext context);
         }
 
@@ -32,9 +35,13 @@ namespace DefaultEcs.Serialization
 
             public void SetMaxCapacity(World world, int maxCapacity) => world.SetMaxCapacity<T>(maxCapacity);
 
+            public void Set(World world, StreamReaderWrapper reader) => world.Set(Converter<T>.Read(reader));
+
             public void Set(in Entity entity, StreamReaderWrapper reader) => entity.Set(Converter<T>.Read(reader));
 
             public void SetSameAs(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
+
+            public void SetSameAsWorld(in Entity entity) => entity.SetSameAsWorld<T>();
 
             public void SetDisabled(in Entity entity, StreamReaderWrapper reader)
             {
@@ -45,6 +52,12 @@ namespace DefaultEcs.Serialization
             public void SetDisabledSameAs(in Entity entity, in Entity reference)
             {
                 SetSameAs(entity, reference);
+                entity.Disable<T>();
+            }
+
+            public void SetDisabledSameAsWorld(in Entity entity)
+            {
+                SetSameAsWorld(entity);
                 entity.Disable<T>();
             }
 
@@ -59,13 +72,19 @@ namespace DefaultEcs.Serialization
 
             public void SetMaxCapacity(World world, int maxCapacity) { }
 
+            public void Set(World world, StreamReaderWrapper reader) => Converter<T>.Read(reader);
+
             public void Set(in Entity entity, StreamReaderWrapper reader) => Converter<T>.Read(reader);
 
             public void SetSameAs(in Entity entity, in Entity reference) { }
 
+            public void SetSameAsWorld(in Entity entity) { }
+
             public void SetDisabled(in Entity entity, StreamReaderWrapper reader) => Set(entity, reader);
 
             public void SetDisabledSameAs(in Entity entity, in Entity reference) { }
+
+            public void SetDisabledSameAsWorld(in Entity entity) { }
 
             public IComponentOperation ApplyContext(TextSerializationContext context) => this;
 
@@ -237,15 +256,30 @@ namespace DefaultEcs.Serialization
                             break;
 
                         case nameof(EntryType.Component):
-                            if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
+                            if (currentEntity == default)
+                            {
+                                if (!isNewWorld) throw new ArgumentException($"Encoutered {nameof(EntryType.ComponentMaxCapacity)} line");
 
-                            ReadComponentOperation(reader, componentOperations).Set(currentEntity, reader);
+                                world ??= new World();
+
+                                ReadComponentOperation(reader, componentOperations).Set(world, reader);
+                            }
+                            else
+                            {
+                                ReadComponentOperation(reader, componentOperations).Set(currentEntity, reader);
+                            }
                             break;
 
                         case nameof(EntryType.ComponentSameAs):
                             if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
 
                             ReadComponentOperation(reader, componentOperations).SetSameAs(currentEntity, ReadEntity(reader, entities));
+                            break;
+
+                        case nameof(EntryType.ComponentSameAsWorld):
+                            if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
+
+                            ReadComponentOperation(reader, componentOperations).SetSameAsWorld(currentEntity);
                             break;
 
                         case nameof(EntryType.DisabledComponent):
@@ -258,6 +292,12 @@ namespace DefaultEcs.Serialization
                             if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
 
                             ReadComponentOperation(reader, componentOperations).SetDisabledSameAs(currentEntity, ReadEntity(reader, entities));
+                            break;
+
+                        case nameof(EntryType.DisabledComponentSameAsWorld):
+                            if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
+
+                            ReadComponentOperation(reader, componentOperations).SetDisabledSameAsWorld(currentEntity);
                             break;
                     }
 
@@ -363,7 +403,7 @@ namespace DefaultEcs.Serialization
                 writer.Stream.WriteLine(world.MaxCapacity);
             }
 
-            world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxCapacity, _componentFilter));
+            world.ReadAllComponentTypes(new ComponentTypeWriter(world, writer, types, world.MaxCapacity, _componentFilter));
 
             new EntityWriter(writer, types, _componentFilter).Write(world);
         }

@@ -61,21 +61,29 @@ namespace DefaultEcs.Technical.Serialization.BinarySerializer
                 _writer.WriteString(TypeNames.Get(typeof(T)));
             }
 
-            (Entity, Type) componentKey = (componentOwner, typeof(T));
-            if (_components.TryGetValue(componentKey, out int key))
+            if (componentOwner.IsAlive)
             {
-                _writer.WriteByte((byte)(isEnabled ? EntryType.ComponentSameAs : EntryType.DisabledComponentSameAs));
-                _writer.Write(typeId);
-                _writer.Write(key);
+                (Entity, Type) componentKey = (componentOwner, typeof(T));
+                if (_components.TryGetValue(componentKey, out int key))
+                {
+                    _writer.WriteByte((byte)(isEnabled ? EntryType.ComponentSameAs : EntryType.DisabledComponentSameAs));
+                    _writer.Write(typeId);
+                    _writer.Write(key);
+                }
+                else
+                {
+                    _components.Add(componentKey, _entityCount);
+
+                    _writer.WriteByte((byte)(isEnabled ? EntryType.Component : EntryType.DisabledComponent));
+                    _writer.Write(typeId);
+
+                    Converter<T>.Write(_writer, component);
+                }
             }
             else
             {
-                _components.Add(componentKey, _entityCount);
-
-                _writer.WriteByte((byte)(isEnabled ? EntryType.Component : EntryType.DisabledComponent));
+                _writer.WriteByte((byte)(isEnabled ? EntryType.ComponentSameAsWorld : EntryType.DisabledComponentSameAsWorld));
                 _writer.Write(typeId);
-
-                Converter<T>.Write(_writer, component);
             }
         }
 

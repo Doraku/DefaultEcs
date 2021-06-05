@@ -17,10 +17,13 @@ namespace DefaultEcs.Serialization
         internal interface IComponentOperation
         {
             void SetMaxCapacity(World world, int maxCapacity);
+            void Set(World world, in StreamReaderWrapper reader);
             void Set(in Entity entity, in StreamReaderWrapper reader);
             void SetSameAs(in Entity entity, in Entity reference);
+            void SetSameAsWorld(in Entity entity);
             void SetDisabled(in Entity entity, in StreamReaderWrapper reader);
             void SetDisabledSameAs(in Entity entity, in Entity reference);
+            void SetDisabledSameAsWorld(in Entity entity);
             IComponentOperation ApplyContext(BinarySerializationContext context);
         }
 
@@ -30,9 +33,13 @@ namespace DefaultEcs.Serialization
 
             public void SetMaxCapacity(World world, int maxCapacity) => world.SetMaxCapacity<T>(maxCapacity);
 
+            public void Set(World world, in StreamReaderWrapper reader) => world.Set(Converter<T>.Read(reader));
+
             public void Set(in Entity entity, in StreamReaderWrapper reader) => entity.Set(Converter<T>.Read(reader));
 
             public void SetSameAs(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
+
+            public void SetSameAsWorld(in Entity entity) => entity.SetSameAsWorld<T>();
 
             public void SetDisabled(in Entity entity, in StreamReaderWrapper reader)
             {
@@ -43,6 +50,12 @@ namespace DefaultEcs.Serialization
             public void SetDisabledSameAs(in Entity entity, in Entity reference)
             {
                 SetSameAs(entity, reference);
+                entity.Disable<T>();
+            }
+
+            public void SetDisabledSameAsWorld(in Entity entity)
+            {
+                SetSameAsWorld(entity);
                 entity.Disable<T>();
             }
 
@@ -57,13 +70,19 @@ namespace DefaultEcs.Serialization
 
             public void SetMaxCapacity(World world, int maxCapacity) { }
 
+            public void Set(World world, in StreamReaderWrapper reader) => Converter<T>.Read(reader);
+
             public void Set(in Entity entity, in StreamReaderWrapper reader) => Converter<T>.Read(reader);
 
             public void SetSameAs(in Entity entity, in Entity reference) { }
 
+            public void SetSameAsWorld(in Entity entity) { }
+
             public void SetDisabled(in Entity entity, in StreamReaderWrapper reader) => Set(entity, reader);
 
             public void SetDisabledSameAs(in Entity entity, in Entity reference) { }
+
+            public void SetDisabledSameAsWorld(in Entity entity) { }
 
             public IComponentOperation ApplyContext(BinarySerializationContext context) => this;
 
@@ -164,11 +183,22 @@ namespace DefaultEcs.Serialization
                             break;
 
                         case EntryType.Component:
-                            componentOperations[reader.Read<ushort>()].Set(currentEntity, reader);
+                            if (currentEntity == default)
+                            {
+                                componentOperations[reader.Read<ushort>()].Set(world, reader);
+                            }
+                            else
+                            {
+                                componentOperations[reader.Read<ushort>()].Set(currentEntity, reader);
+                            }
                             break;
 
                         case EntryType.ComponentSameAs:
                             componentOperations[reader.Read<ushort>()].SetSameAs(currentEntity, entities[reader.Read<int>()]);
+                            break;
+
+                        case EntryType.ComponentSameAsWorld:
+                            componentOperations[reader.Read<ushort>()].SetSameAsWorld(currentEntity);
                             break;
 
                         case EntryType.DisabledEntity:
@@ -183,6 +213,10 @@ namespace DefaultEcs.Serialization
 
                         case EntryType.DisabledComponentSameAs:
                             componentOperations[reader.Read<ushort>()].SetDisabledSameAs(currentEntity, entities[reader.Read<int>()]);
+                            break;
+
+                        case EntryType.DisabledComponentSameAsWorld:
+                            componentOperations[reader.Read<ushort>()].SetDisabledSameAsWorld(currentEntity);
                             break;
                     }
                 }
@@ -281,7 +315,7 @@ namespace DefaultEcs.Serialization
 
             Dictionary<Type, ushort> types = new();
 
-            world.ReadAllComponentTypes(new ComponentTypeWriter(writer, types, world.MaxCapacity, _componentFilter));
+            world.ReadAllComponentTypes(new ComponentTypeWriter(world, writer, types, world.MaxCapacity, _componentFilter));
 
             new EntityWriter(writer, types, _componentFilter).Write(world);
         }
