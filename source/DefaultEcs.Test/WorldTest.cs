@@ -701,6 +701,14 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void TrimExcess_Should_not_throw_When_no_component()
+        {
+            using World world = new();
+
+            Check.ThatCode(world.TrimExcess<bool>).DoesNotThrow();
+        }
+
+        [Fact]
         public void Set_Should_set_value()
         {
             using World world = new();
@@ -739,6 +747,32 @@ namespace DefaultEcs.Test
             world.Remove<bool>();
 
             Check.That(world.GetAll<bool>().ToArray()).IsEmpty();
+        }
+
+        [Fact]
+        public void Remove_Should_not_throw_When_no_component()
+        {
+            using World world = new();
+
+            Check.ThatCode(world.Remove<bool>).DoesNotThrow();
+        }
+
+        [Fact]
+        public void Has_Should_return_true_when_has_component()
+        {
+            using World world = new();
+
+            world.Set(true);
+
+            Check.That(world.Has<bool>()).IsTrue();
+        }
+
+        [Fact]
+        public void Has_Should_return_false_when_has_not_component()
+        {
+            using World world = new();
+
+            Check.That(world.Has<bool>()).IsFalse();
         }
 
         #endregion
