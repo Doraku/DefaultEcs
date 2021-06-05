@@ -73,6 +73,22 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void Throw(string message) => throw new InvalidOperationException(message);
 
+        private void InnerSet<T>(bool isNew)
+        {
+            ref ComponentEnum components = ref Components;
+            if (isNew)
+            {
+                components[ComponentManager<T>.Flag] = true;
+                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
+            }
+            else
+            {
+                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
+            }
+
+            ComponentManager<T>.GetPrevious(WorldId)?.Set(EntityId, Get<T>());
+        }
+
         /// <summary>
         /// Gets whether the current <see cref="Entity"/> is enabled or not.
         /// </summary>
@@ -170,18 +186,7 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            ref ComponentEnum components = ref Components;
-            if (ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component))
-            {
-                components[ComponentManager<T>.Flag] = true;
-                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
-            }
-            else
-            {
-                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
-            }
-
-            ComponentManager<T>.GetPrevious(WorldId)?.Set(EntityId, component);
+            InnerSet<T>(ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component));
         }
 
         /// <summary>
@@ -207,18 +212,22 @@ namespace DefaultEcs
             ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
             if (!(pool?.Has(reference.EntityId) ?? false)) Throw($"Reference Entity does not have a component of type {nameof(T)}");
 
-            ref ComponentEnum components = ref Components;
-            if (pool.SetSameAs(EntityId, reference.EntityId))
-            {
-                components[ComponentManager<T>.Flag] = true;
-                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
-            }
-            else
-            {
-                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
-            }
+            InnerSet<T>(pool.SetSameAs(EntityId, reference.EntityId));
+        }
 
-            ComponentManager<T>.GetPrevious(WorldId)?.Set(EntityId, Get<T>());
+        /// <summary>
+        /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/> to the same instance of an other <see cref="Entity"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="World"/> does not have a component of type <typeparamref name="T"/>.</exception>
+        public void SetSameAsWorld<T>()
+        {
+            if (WorldId == 0) Throw("Entity was not created from a World");
+            ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
+            if (!(pool?.Has(0) ?? false)) Throw($"World does not have a component of type {nameof(T)}");
+
+            InnerSet<T>(pool.SetSameAs(EntityId, 0));
         }
 
         /// <summary>

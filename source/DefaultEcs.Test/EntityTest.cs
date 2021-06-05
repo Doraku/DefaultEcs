@@ -461,6 +461,39 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void SetSameAsWorld_Should_throw_When_Entity_not_created_from_World()
+        {
+            Entity entity = default;
+
+            Check.ThatCode(() => entity.SetSameAsWorld<bool>()).Throws<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void SetSameAsWorld_Should_throw_When_world_does_not_have_a_component()
+        {
+            using World world = new();
+
+            Entity entity = world.CreateEntity();
+
+            Check.ThatCode(() => entity.SetSameAsWorld<bool>()).Throws<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void SetSameAsWorld_Should_set_component_to_world()
+        {
+            using World world = new();
+
+            world.Set(true);
+            Entity entity = world.CreateEntity();
+            entity.SetSameAsWorld<bool>();
+
+            Check.That(entity.Get<bool>()).IsTrue();
+
+            world.Get<bool>() = false;
+            Check.That(entity.Get<bool>()).IsFalse();
+        }
+
+        [Fact]
         public void Remove_Should_not_throw_When_no_component()
         {
             using World world = new(1);
