@@ -160,15 +160,15 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void Get_Should_not_throw_When_not_added()
+        public void GetAll_Should_not_throw_When_not_added()
         {
             using World world = new(0);
 
-            Check.ThatCode(() => world.Get<bool>()).DoesNotThrow();
+            Check.ThatCode(() => world.GetAll<bool>()).DoesNotThrow();
         }
 
         [Fact]
-        public void Get_Should_return_component()
+        public void GetAll_Should_return_component()
         {
             using World world = new(2);
 
@@ -179,7 +179,7 @@ namespace DefaultEcs.Test
             entity.Set(1);
             entity2.Set(2);
 
-            Span<int> components = world.Get<int>();
+            Span<int> components = world.GetAll<int>();
 
             Check.That(components[0]).IsEqualTo(entity.Get<int>());
             Check.That(components[1]).IsEqualTo(entity2.Get<int>());
@@ -262,7 +262,7 @@ namespace DefaultEcs.Test
             bool floatIsOk = true;
 
             world.SetMaxCapacity<int>(1);
-            world.Get<long>();
+            world.GetAll<long>();
 
             IComponentTypeReader reader = Substitute.For<IComponentTypeReader>();
             reader.When(m => m.OnRead<int>(1)).Do(_ => intIsOk = true);
@@ -317,13 +317,13 @@ namespace DefaultEcs.Test
             e1.Set(1);
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(e4, e3, e2, e1);
-            Check.That(world.Get<int>().ToArray()).ContainsExactly(4, 3, 2, 1);
+            Check.That(world.GetAll<int>().ToArray()).ContainsExactly(4, 3, 2, 1);
             Check.That(map[true].ToArray()).ContainsExactly(e4, e3, e2, e1);
 
             world.Optimize();
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(e1, e2, e3, e4);
-            Check.That(world.Get<int>().ToArray()).ContainsExactly(1, 2, 3, 4);
+            Check.That(world.GetAll<int>().ToArray()).ContainsExactly(1, 2, 3, 4);
             Check.That(map[true].ToArray()).ContainsExactly(e1, e2, e3, e4);
         }
 
@@ -343,12 +343,12 @@ namespace DefaultEcs.Test
             }
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities.AsEnumerable().Reverse());
-            Check.That(world.Get<int>().ToArray()).ContainsExactly(Enumerable.Range(1, entities.Count).Reverse());
+            Check.That(world.GetAll<int>().ToArray()).ContainsExactly(Enumerable.Range(1, entities.Count).Reverse());
 
             world.Optimize(runner, () => Thread.Sleep(1));
 
             Check.That(set.GetEntities().ToArray().Select((e, i) => (i, e)).Any(t => entities[t.i] != t.e)).IsTrue();
-            Check.That(world.Get<int>().ToArray().Select((v, i) => (i, v)).Any(t => t.i != t.v)).IsTrue();
+            Check.That(world.GetAll<int>().ToArray().Select((v, i) => (i, v)).Any(t => t.i != t.v)).IsTrue();
         }
 
         [Fact]

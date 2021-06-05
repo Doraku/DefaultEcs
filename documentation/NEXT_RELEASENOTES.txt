@@ -1,5 +1,6 @@
 breaking changes:
 changed IComponentReader.OnRead component passed as in instead of ref
+renamed World.Get to World.GetAll
 
 ---
 

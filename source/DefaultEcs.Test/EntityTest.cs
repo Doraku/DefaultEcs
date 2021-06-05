@@ -344,7 +344,7 @@ namespace DefaultEcs.Test
             Check.That(entity.Has<FlagType>()).IsTrue();
             Check.That(entity2.Has<FlagType>()).IsTrue();
 
-            Check.That(world.Get<FlagType>().Length).IsEqualTo(1);
+            Check.That(world.GetAll<FlagType>().Length).IsEqualTo(1);
         }
 
         [Fact]
@@ -706,7 +706,7 @@ namespace DefaultEcs.Test
             world2.SetMaxCapacity<string>(0);
 
             Check.ThatCode(() => main.CopyTo(world2)).ThrowsAny();
-            Check.That(world2.Get<int>().Length).IsEqualTo(0);
+            Check.That(world2.GetAll<int>().Length).IsEqualTo(0);
             Check.That(world2.GetEntities().AsSet().Count).IsEqualTo(0);
         }
 

@@ -298,7 +298,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of component.</typeparam>
         /// <returns>A <see cref="Span{T}"/> pointing directly to the component values to edit them.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> Get<T>() => ComponentManager<T>.GetOrCreate(WorldId).AsSpan();
+        public Span<T> GetAll<T>() => ComponentManager<T>.GetOrCreate(WorldId).AsSpan();
 
         /// <summary>
         /// Gets an <see cref="Components{T}"/> to get a fast access to the component of type <typeparamref name="T"/> of this <see cref="World"/> instance <see cref="Entity"/>.

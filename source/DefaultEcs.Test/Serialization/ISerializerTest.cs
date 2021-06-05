@@ -499,7 +499,7 @@ namespace DefaultEcs.Test.Serialization
 
             Check.ThatCode(() => serializer.Deserialize(stream, copy)).Throws<Exception>();
             Check.That(copy.Count()).IsZero();
-            Check.That(copy.Get<bool>().Length).IsZero();
+            Check.That(copy.GetAll<bool>().Length).IsZero();
         }
 
         [Theory]

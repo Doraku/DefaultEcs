@@ -18,7 +18,7 @@ namespace DefaultEcs.Technical.Debug
 
             public int MaxCapacity { get; }
 
-            public T[] Components => _world.Get<T>().ToArray();
+            public T[] Components => _world.GetAll<T>().ToArray();
 
             public WorldComponents(World world, int maxCapacity)
             {
