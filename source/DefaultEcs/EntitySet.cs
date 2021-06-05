@@ -61,7 +61,7 @@ namespace DefaultEcs
         {
             _needClearing = needClearing;
             _worldId = world.WorldId;
-            _worldMaxCapacity = world.MaxCapacity;
+            _worldMaxCapacity = world.MaxCapacity == int.MaxValue ? int.MaxValue : (world.MaxCapacity + 1);
             _container = new EntityContainerWatcher(this, filter, predicate);
             _subscriptions = subscriptions.Select(s => s(_container, world)).Merge();
 
@@ -72,7 +72,7 @@ namespace DefaultEcs
             if (!_needClearing)
             {
                 IEntityContainer @this = this;
-                for (int i = 0; i <= Math.Min(world.EntityInfos.Length, world.LastEntityId); ++i)
+                for (int i = 1; i <= Math.Min(world.EntityInfos.Length, world.LastEntityId); ++i)
                 {
                     if (filter(world.EntityInfos[i].Components) && predicate(i))
                     {

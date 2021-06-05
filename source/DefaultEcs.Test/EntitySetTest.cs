@@ -165,12 +165,12 @@ namespace DefaultEcs.Test
             EntitySet set = world.GetEntities().AsSet();
             world.CreateEntity();
 
-            Check.That(((Array)typeof(EntitySet).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsNotEqualTo(set.Count);
+            Check.That(((Array)typeof(EntitySet).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsNotEqualTo(set.Count + 1);
             Check.That(((Array)typeof(EntitySet).GetField("_entities", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsNotEqualTo(set.Count);
 
             set.TrimExcess();
 
-            Check.That(((Array)typeof(EntitySet).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsEqualTo(set.Count);
+            Check.That(((Array)typeof(EntitySet).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsEqualTo(set.Count + 1);
             Check.That(((Array)typeof(EntitySet).GetField("_entities", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsEqualTo(set.Count);
         }
 

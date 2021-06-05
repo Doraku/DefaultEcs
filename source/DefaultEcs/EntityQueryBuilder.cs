@@ -377,7 +377,7 @@ namespace DefaultEcs
 
         private static IEnumerable<Entity> AsEnumerable(World world, Predicate<ComponentEnum> filter, Predicate<int> predicate)
         {
-            for (int i = 0; i <= Math.Min(world.EntityInfos.Length, world.LastEntityId); ++i)
+            for (int i = 1; i <= Math.Min(world.EntityInfos.Length, world.LastEntityId); ++i)
             {
                 if (filter(world.EntityInfos[i].Components) && predicate(i))
                 {

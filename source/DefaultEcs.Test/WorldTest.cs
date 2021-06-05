@@ -700,6 +700,47 @@ namespace DefaultEcs.Test
             Check.That(((Array)typeof(EntitySet).GetField("_entities", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsEqualTo(set.Count);
         }
 
+        [Fact]
+        public void Set_Should_set_value()
+        {
+            using World world = new();
+
+            world.Set(true);
+
+            Check.That(world.GetAll<bool>().ToArray()).ContainsExactly(true);
+        }
+
+        [Fact]
+        public void Set_Should_set_default_value()
+        {
+            using World world = new();
+
+            world.Set<bool>();
+
+            Check.That(world.GetAll<bool>().ToArray()).ContainsExactly(false);
+        }
+
+        [Fact]
+        public void Get_Should_get_value()
+        {
+            using World world = new();
+
+            world.Set(true);
+
+            Check.That(world.Get<bool>()).IsTrue();
+        }
+
+        [Fact]
+        public void Remove_Should_remove_value()
+        {
+            using World world = new();
+
+            world.Set(true);
+            world.Remove<bool>();
+
+            Check.That(world.GetAll<bool>().ToArray()).IsEmpty();
+        }
+
         #endregion
     }
 }

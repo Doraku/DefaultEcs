@@ -144,7 +144,7 @@ namespace DefaultEcs
         {
             _needClearing = needClearing;
             _worldId = world.WorldId;
-            _worldMaxCapacity = world.MaxCapacity;
+            _worldMaxCapacity = world.MaxCapacity == int.MaxValue ? int.MaxValue : (world.MaxCapacity + 1);
             _container = new EntityContainerWatcher(this, filter, predicate);
             _subscriptions = Enumerable.Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(On), 1).Concat(subscriptions.Select(s => s(_container, world))).Merge();
 

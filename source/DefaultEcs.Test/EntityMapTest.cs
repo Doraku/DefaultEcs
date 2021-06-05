@@ -202,11 +202,11 @@ namespace DefaultEcs.Test
             EntityMap<int> map = world.GetEntities().AsMap<int>();
             world.CreateEntity().Set(42);
 
-            Check.That(((Array)typeof(EntityMap<int>).GetField("_entityIds", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(map)).Length).IsNotEqualTo(map.Keys.Count());
+            Check.That(((Array)typeof(EntityMap<int>).GetField("_entityIds", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(map)).Length).IsNotEqualTo(map.Keys.Count() + 1);
 
             map.TrimExcess();
 
-            Check.That(((Array)typeof(EntityMap<int>).GetField("_entityIds", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(map)).Length).IsEqualTo(map.Keys.Count());
+            Check.That(((Array)typeof(EntityMap<int>).GetField("_entityIds", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(map)).Length).IsEqualTo(map.Keys.Count() + 1);
         }
     }
 }

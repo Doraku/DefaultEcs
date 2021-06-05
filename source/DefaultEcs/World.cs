@@ -197,7 +197,7 @@ namespace DefaultEcs
                 throw new ArgumentException("Argument cannot be negative", nameof(maxCapacity));
             }
 
-            _entityIdDispenser = new IntDispenser(-1);
+            _entityIdDispenser = new IntDispenser(0);
             _optimizer = new Optimizer();
             WorldId = (short)_worldIdDispenser.GetFreeInt();
 
@@ -253,12 +253,12 @@ namespace DefaultEcs
         {
             int entityId = _entityIdDispenser.GetFreeInt();
 
-            if (entityId >= MaxCapacity)
+            if (entityId < 0 || entityId > MaxCapacity)
             {
                 throw new InvalidOperationException("Max number of Entity reached");
             }
 
-            ArrayExtension.EnsureLength(ref EntityInfos, entityId, MaxCapacity);
+            ArrayExtension.EnsureLength(ref EntityInfos, entityId, MaxCapacity == int.MaxValue ? int.MaxValue : (MaxCapacity + 1));
 
             EntityInfos[entityId].Components[IsAliveFlag] = true;
             EntityInfos[entityId].Components[IsEnabledFlag] = true;
@@ -307,6 +307,44 @@ namespace DefaultEcs
         /// <returns>A <see cref="Components{T}"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Components<T> GetComponents<T>() => ComponentManager<T>.GetOrCreate(WorldId).AsComponents();
+
+        /// <summary>
+        /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <param name="component">The value of the component.</param>
+        /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
+        public void Set<T>(in T component) => ComponentManager<T>.GetOrCreate(WorldId).Set(0, component);
+
+        /// <summary>
+        /// Sets the value of the component of type <typeparamref name="T"/> to its default value on the current <see cref="Entity"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
+        public void Set<T>() => Set<T>(default);
+
+        /// <summary>
+        /// Returns whether the current <see cref="World"/> has a component of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <returns>true if the <see cref="World"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Has<T>() => ComponentManager<T>.Get(WorldId)?.Has(0) ?? false;
+
+        /// <summary>
+        /// Gets the component of type <typeparamref name="T"/> on the current <see cref="World"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <returns>A reference to the component.</returns>
+        /// <exception cref="Exception"><see cref="World"/> does not have a component of type <typeparamref name="T"/>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(0);
+
+        /// <summary>
+        /// Removes the component of type <typeparamref name="T"/> on the current <see cref="World"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        public void Remove<T>() => ComponentManager<T>.Get(WorldId)?.Remove(0);
 
         /// <summary>
         /// Gets an <see cref="EntityQueryBuilder"/> to create a subset of <see cref="Entity"/> of the current <see cref="World"/>.

@@ -217,11 +217,11 @@ namespace DefaultEcs.Test
             EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
             world.CreateEntity().Set(42);
 
-            Check.That(((Array)typeof(EntityMultiMap<int>).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(map)).Length).IsNotEqualTo(1);
+            Check.That(((Array)typeof(EntityMultiMap<int>).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(map)).Length).IsNotEqualTo(2);
 
             map.TrimExcess();
 
-            Check.That(((Array)typeof(EntityMultiMap<int>).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(map)).Length).IsEqualTo(1);
+            Check.That(((Array)typeof(EntityMultiMap<int>).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(map)).Length).IsEqualTo(2);
         }
     }
 }

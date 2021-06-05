@@ -39,7 +39,7 @@ namespace DefaultEcs.Technical
                 _worldId = pool._worldId;
                 _mapping = pool._mapping;
 
-                _index = -1;
+                _index = 0;
             }
 
             #region IEnumerator
@@ -103,8 +103,8 @@ namespace DefaultEcs.Technical
         public ComponentPool(short worldId, int worldMaxCapacity, int maxCapacity, bool isPrevious)
         {
             _worldId = worldId;
-            _worldMaxCapacity = worldMaxCapacity;
-            MaxCapacity = _isFlagType ? 1 : Math.Min(worldMaxCapacity, maxCapacity);
+            _worldMaxCapacity = worldMaxCapacity == int.MaxValue ? int.MaxValue : (worldMaxCapacity + 1);
+            MaxCapacity = _isFlagType ? 1 : Math.Min(_worldMaxCapacity, maxCapacity);
 
             _mapping = EmptyArray<int>.Value;
             _links = EmptyArray<ComponentLink>.Value;
