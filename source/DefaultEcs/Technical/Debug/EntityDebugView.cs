@@ -10,8 +10,9 @@ namespace DefaultEcs.Technical.Debug
         [DebuggerDisplay("Component {Type}")]
         private sealed class Component<T> : IComponent
         {
-            public readonly bool IsEnabled;
-            public readonly T Value;
+            public bool IsEnabled { get; }
+
+            public T Value { get; }
 
             public Type Type => typeof(T);
 

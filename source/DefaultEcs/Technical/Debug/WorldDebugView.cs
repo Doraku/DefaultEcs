@@ -20,10 +20,16 @@ namespace DefaultEcs.Technical.Debug
 
             public T[] Components => _world.GetAll<T>().ToArray();
 
+            public bool HasValue { get; }
+
+            public T Value { get; }
+
             public WorldComponents(World world, int maxCapacity)
             {
                 _world = world;
                 MaxCapacity = maxCapacity;
+                HasValue = world.Has<T>();
+                Value = HasValue ? world.Get<T>() : default;
             }
         }
 
