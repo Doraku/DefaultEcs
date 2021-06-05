@@ -409,6 +409,22 @@ namespace DefaultEcs.Test.Command
         }
 
         [Fact]
+        public void SetSameAsWorld_Should_set_same_as_on_created_entity()
+        {
+            using EntityCommandRecorder recorder = new(1024);
+            using World world = new();
+
+            world.Set(true);
+
+            EntityRecord record = recorder.CreateEntity(world);
+            record.SetSameAsWorld<bool>();
+
+            recorder.Execute();
+
+            Check.That(world.Single().Get<bool>()).IsTrue();
+        }
+
+        [Fact]
         public void Should_work_in_multithread()
         {
             using EntityCommandRecorder recorder = new(8, int.MaxValue);

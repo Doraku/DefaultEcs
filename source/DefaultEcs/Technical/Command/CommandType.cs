@@ -10,9 +10,10 @@
         DisableT = 5,
         Set = 6,
         SetSameAs = 7,
-        Remove = 8,
-        NotifyChanged = 9,
-        Clone = 10,
-        Dispose = 11
+        SetSameAsWorld = 8,
+        Remove = 9,
+        NotifyChanged = 10,
+        Clone = 11,
+        Dispose = 12
     }
 }

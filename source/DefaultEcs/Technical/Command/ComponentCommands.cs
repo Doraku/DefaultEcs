@@ -77,6 +77,8 @@ namespace DefaultEcs.Technical.Command
 
             public void SetSameAs(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
 
+            public void SetSameAsWorld(in Entity entity) => entity.SetSameAsWorld<T>();
+
             public void Remove(in Entity entity) => entity.Remove<T>();
 
             public void NotifyChanged(in Entity entity) => entity.NotifyChanged<T>();

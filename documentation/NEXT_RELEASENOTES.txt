@@ -7,7 +7,8 @@ renamed World.Get to World.GetAll
 added ComponentCloner type to clone components between entities
 added Entity.CopyTo method overload taking a ComponentCloner
 added Entity.SetSameAsWorld method
-added EntityRecorder.CopyTo methods
+added EntityRecord.CopyTo methods
+added EntityRecord.SetSameAsWorld method
 added World.Set method to set a world component
 added World.Get method to get a world component
 added World.Remove method to remove a world component

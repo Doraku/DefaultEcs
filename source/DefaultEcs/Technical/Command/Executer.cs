@@ -61,6 +61,12 @@ namespace DefaultEcs.Technical.Command
                             commandSize = sizeof(EntityReferenceOffsetComponentCommand);
                             break;
 
+                        case CommandType.SetSameAsWorld:
+                            componentCommand = (EntityOffsetComponentCommand*)commands;
+                            ComponentCommands.GetCommand(componentCommand->ComponentIndex).SetSameAsWorld(*(Entity*)(memoryP + componentCommand->EntityOffset));
+                            commandSize = sizeof(EntityOffsetComponentCommand);
+                            break;
+
                         case CommandType.Remove:
                             componentCommand = (EntityOffsetComponentCommand*)commands;
                             ComponentCommands.GetCommand(componentCommand->ComponentIndex).Remove(*(Entity*)(memoryP + componentCommand->EntityOffset));
