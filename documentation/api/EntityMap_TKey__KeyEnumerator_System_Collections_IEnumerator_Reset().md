@@ -7,6 +7,6 @@ void System.Collections.IEnumerator.Reset();
 ```
 #### Exceptions
 [System.InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/System.InvalidOperationException 'System.InvalidOperationException')  
-The collection was modified after the enumerator was created. 
+The collection was modified after the enumerator was created.
 
 Implements [Reset()](https://docs.microsoft.com/en-us/dotnet/api/System.Collections.IEnumerator.Reset 'System.Collections.IEnumerator.Reset')  
