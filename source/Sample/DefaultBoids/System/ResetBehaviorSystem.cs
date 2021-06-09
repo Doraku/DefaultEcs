@@ -8,8 +8,8 @@ namespace DefaultBoids.System
 {
     public sealed class ResetBehaviorSystem : AComponentSystem<float, Behavior>
     {
-        public ResetBehaviorSystem(World world, IParallelRunner runner)
-            : base(world, runner)
+        public ResetBehaviorSystem(World world)
+            : base(world, world.Get<IParallelRunner>())
         { }
 
         protected override void Update(float state, Span<Behavior> components) => components.Fill(default);

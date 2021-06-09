@@ -7,7 +7,7 @@ namespace DefaultBoids.System
 {
     public sealed partial class BoidsSystem : AEntitySetSystem<float>
     {
-        [ConstructorParameter]
+        [WorldComponent]
         private readonly EntityMap<GridId> _grid;
 
         [Update]

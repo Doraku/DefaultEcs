@@ -16,11 +16,11 @@ namespace DefaultBoids.System
 
         private int _updateCount;
 
-        public SetBehaviorSystem(World world, IParallelRunner runner, EntityMap<GridId> grid)
-            : base(world, runner, 1)
+        public SetBehaviorSystem(World world)
+            : base(world, world.Get<IParallelRunner>(), 1)
         {
-            _map = grid;
-            _temp = new (Vector2 center, Vector2 direction, int count)[runner?.DegreeOfParallelism ?? 1];
+            _map = world.Get<EntityMap<GridId>>();
+            _temp = new (Vector2 center, Vector2 direction, int count)[world.Get<IParallelRunner>().DegreeOfParallelism];
         }
 
         protected override void PreUpdate(float state, GridId key)

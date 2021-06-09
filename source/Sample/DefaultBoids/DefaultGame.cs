@@ -67,18 +67,22 @@ namespace DefaultBoids
             }
             _font = Content.Load<SpriteFont>("font");
 
+            _runner = new DefaultParallelRunner(Environment.ProcessorCount);
+
             _world = new World();
 
             EntityMap<GridId> grid = _world.GetEntities().With<Behavior>().AsMap<GridId>(BoidsCount);
 
-            _runner = new DefaultParallelRunner(Environment.ProcessorCount);
+            _world.Set<IParallelRunner>(_runner);
+            _world.Set(grid);
+
             _system = new SequentialSystem<float>(
-                new ResetBehaviorSystem(_world, _runner),
-                new SetBehaviorSystem(_world, _runner, grid),
-                new BoidsSystem(_world, _runner, grid),
+                new ResetBehaviorSystem(_world),
+                new SetBehaviorSystem(_world),
+                new BoidsSystem(_world, _runner),
                 new MoveSystem(_world, _runner));
 
-            _drawSystem = new DrawSystem(_square, _world, _runner);
+            _drawSystem = new DrawSystem(_square, _world);
 
             _world.CreateBehaviors();
 

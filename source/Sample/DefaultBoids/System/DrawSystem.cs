@@ -14,12 +14,12 @@ namespace DefaultBoids.System
         private readonly World _world;
         private readonly IParallelRunner _runner;
 
-        public DrawSystem(Texture2D square, World world, IParallelRunner runner)
+        public DrawSystem(Texture2D square, World world)
             : base(world)
         {
             _square = square;
             _world = world;
-            _runner = runner;
+            _runner = world.Get<IParallelRunner>();
         }
 
         protected override void PreUpdate(SpriteBatch state) => state.Begin();
