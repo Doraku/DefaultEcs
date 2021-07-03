@@ -309,7 +309,7 @@ namespace DefaultEcs
         public Components<T> GetComponents<T>() => ComponentManager<T>.GetOrCreate(WorldId).AsComponents();
 
         /// <summary>
-        /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
+        /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="World"/>.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
@@ -317,7 +317,7 @@ namespace DefaultEcs
         public void Set<T>(in T component) => ComponentManager<T>.GetOrCreate(WorldId).Set(0, component);
 
         /// <summary>
-        /// Sets the value of the component of type <typeparamref name="T"/> to its default value on the current <see cref="Entity"/>.
+        /// Sets the value of the component of type <typeparamref name="T"/> to its default value on the current <see cref="World"/>.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
@@ -325,6 +325,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Returns whether the current <see cref="World"/> has a component of type <typeparamref name="T"/>.
+        /// It has nothing to do whether or not the current <see cref="World"/> instance has an <see cref="Entity"/> with a component of type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="World"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
