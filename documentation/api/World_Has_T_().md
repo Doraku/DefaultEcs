@@ -2,6 +2,7 @@
 ### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
 ## World.Has&lt;T&gt;() Method
 Returns whether the current [World](World.md 'DefaultEcs.World') has a component of type [T](World_Has_T_().md#DefaultEcs_World_Has_T_()_T 'DefaultEcs.World.Has&lt;T&gt;().T').  
+It has nothing to do whether or not the current [World](World.md 'DefaultEcs.World') instance has an [Entity](Entity.md 'DefaultEcs.Entity') with a component of type [T](World_Has_T_().md#DefaultEcs_World_Has_T_()_T 'DefaultEcs.World.Has&lt;T&gt;().T').  
 ```csharp
 public bool Has<T>();
 ```

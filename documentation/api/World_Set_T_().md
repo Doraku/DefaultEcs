@@ -1,7 +1,7 @@
 #### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
 ### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
 ## World.Set&lt;T&gt;() Method
-Sets the value of the component of type [T](World_Set_T_().md#DefaultEcs_World_Set_T_()_T 'DefaultEcs.World.Set&lt;T&gt;().T') to its default value on the current [Entity](Entity.md 'DefaultEcs.Entity').  
+Sets the value of the component of type [T](World_Set_T_().md#DefaultEcs_World_Set_T_()_T 'DefaultEcs.World.Set&lt;T&gt;().T') to its default value on the current [World](World.md 'DefaultEcs.World').  
 ```csharp
 public void Set<T>();
 ```
