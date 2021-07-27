@@ -1,0 +1,1 @@
+fixed Entity.Dispose when using multiple EntityMap/MultiMap with the same component key (#123)

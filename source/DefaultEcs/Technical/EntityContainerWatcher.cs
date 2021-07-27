@@ -101,7 +101,7 @@ namespace DefaultEcs.Technical
             }
         }
 
-        public void Remove(in EntityDisposedMessage message) => _container.Remove(message.EntityId);
+        public void Remove(in EntityDisposingMessage message) => _container.Remove(message.EntityId);
 
         public void Remove(in EntityEnabledMessage message) => _container.Remove(message.EntityId);
 

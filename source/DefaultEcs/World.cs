@@ -479,7 +479,7 @@ namespace DefaultEcs
         {
             IEnumerable<IDisposable> GetSubscriptions(EntityDisposedHandler a)
             {
-                yield return Subscribe((in EntityDisposingMessage message) => action(new Entity(WorldId, message.EntityId)));
+                yield return Subscribe((in EntityDisposingMessage message) => a(new Entity(WorldId, message.EntityId)));
                 yield return Subscribe((in WorldDisposedMessage _) =>
                 {
                     foreach (Entity entity in this)
