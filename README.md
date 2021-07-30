@@ -374,7 +374,7 @@ If `When...` rules are present, you should call its `Complete()` method once you
 This is the base type used in the provided system implementation.
 
 <a name='Overview_Query_AsMap'></a>
-### AsSet
+### AsMap
 ```csharp
 world
     .GetEntities()
@@ -386,7 +386,7 @@ If `When...` rules are present, you should call its `Complete()` method once you
 This is usefull if you need o(1) access to an entity based on a key.
 
 <a name='Overview_Query_AsMultiMap'></a>
-### AsSet
+### AsMultiMap
 ```csharp
 world
     .GetEntities()
