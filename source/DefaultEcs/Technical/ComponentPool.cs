@@ -113,10 +113,10 @@ namespace DefaultEcs.Technical
             _sortedIndex = 0;
 
             Publisher<TrimExcessMessage>.Subscribe(_worldId, On);
-            Publisher<ComponentTypeReadMessage>.Subscribe(_worldId, On);
             Publisher<EntityDisposedMessage>.Subscribe(_worldId, On);
             if (!isPrevious)
             {
+                Publisher<ComponentTypeReadMessage>.Subscribe(_worldId, On);
                 Publisher<ComponentReadMessage>.Subscribe(_worldId, On);
             }
 
