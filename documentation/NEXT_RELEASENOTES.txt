@@ -1,1 +1,0 @@
-fixed serialization when subscribing to component change (#127)
