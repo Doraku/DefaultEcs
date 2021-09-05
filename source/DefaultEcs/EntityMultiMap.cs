@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using DefaultEcs.Technical;
+using DefaultEcs.Technical.Debug;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
 
@@ -15,6 +16,8 @@ namespace DefaultEcs
     /// Represents a collection of <see cref="Entity"/> mapped to a <typeparamref name="TKey"/> component. Multiple <see cref="Entity"/> can be associated with a given <typeparamref name="TKey"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the component used as key.</typeparam>
+    [DebuggerTypeProxy(typeof(EntityMultiMapDebugView<>))]
+    [DebuggerDisplay("EntityMultiMap[{_entities.Count}]")]
     public sealed class EntityMultiMap<TKey> : IEntityContainer, ISortable, IDisposable
     {
         #region Types

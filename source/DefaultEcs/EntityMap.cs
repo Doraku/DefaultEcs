@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using DefaultEcs.Technical;
+using DefaultEcs.Technical.Debug;
 using DefaultEcs.Technical.Helper;
 using DefaultEcs.Technical.Message;
 
@@ -13,6 +14,8 @@ namespace DefaultEcs
     /// Represents a collection of <see cref="Entity"/> mapped to a <typeparamref name="TKey"/> component. Only one <see cref="Entity"/> can be associated with a given <typeparamref name="TKey"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the component used as key.</typeparam>
+    [DebuggerTypeProxy(typeof(EntityMapDebugView<>))]
+    [DebuggerDisplay("EntityMap[{_entities.Count}]")]
     public sealed class EntityMap<TKey> : IEntityContainer, IDisposable
     {
         #region Types

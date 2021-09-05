@@ -1,3 +1,6 @@
 added EntitySortedSet type (#113)
 added EntityQueryBuilder.AsSortedSet methods to create EntitySortedSet
 added AEntitySortedSetSystem type
+added debug view for EntitySortedSet
+added debug view for EntityMap
+added debug view for EntityMultiMap
