@@ -150,7 +150,7 @@ namespace DefaultEcs.Test
         {
             World world = new(4);
 
-            EntitySet set = world.GetEntities().AsSet();
+            using EntitySet set = world.GetEntities().AsSet();
 
             world.Dispose();
 
@@ -160,9 +160,9 @@ namespace DefaultEcs.Test
         [Fact]
         public void TrimExcess_Should_fit_storage_to_number_of_entities()
         {
-            World world = new();
+            using World world = new();
 
-            EntitySet set = world.GetEntities().AsSet();
+            using EntitySet set = world.GetEntities().AsSet();
             world.CreateEntity();
 
             Check.That(((Array)typeof(EntitySet).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsNotEqualTo(set.Count + 1);

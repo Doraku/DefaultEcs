@@ -156,7 +156,7 @@ namespace DefaultEcs.System
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="factory"/> is null.</exception>
         protected AEntityMultiMapSystem(World world, Func<object, World, EntityMultiMap<TKey>> factory, IParallelRunner runner, int minEntityCountByRunnerIndex)
-            : this(s => (factory ?? throw new ArgumentNullException(nameof(factory)))(s, world ?? throw new ArgumentNullException(nameof(world))), runner, minEntityCountByRunnerIndex)
+            : this(o => (factory ?? throw new ArgumentNullException(nameof(factory)))(o, world ?? throw new ArgumentNullException(nameof(world))), runner, minEntityCountByRunnerIndex)
         { }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace DefaultEcs.System
         /// <param name="minEntityCountByRunnerIndex">The minimum number of <see cref="Entity"/> per runner index to use the given <paramref name="runner"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntityMultiMapSystem(World world, IParallelRunner runner, int minEntityCountByRunnerIndex)
-            : this(world, static (s, w) => EntityRuleBuilderFactory.Create(s.GetType())(s, w).AsMultiMap(s as IEqualityComparer<TKey>), runner, minEntityCountByRunnerIndex)
+            : this(world, static (o, w) => EntityRuleBuilderFactory.Create(o.GetType())(o, w).AsMultiMap(o as IEqualityComparer<TKey>), runner, minEntityCountByRunnerIndex)
         { }
 
         /// <summary>

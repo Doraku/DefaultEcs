@@ -1,0 +1,3 @@
+added EntitySortedSet type (#113)
+added EntityQueryBuilder.AsSortedSet methods to create EntitySortedSet
+added AEntitySortedSetSystem type

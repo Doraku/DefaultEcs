@@ -155,137 +155,80 @@ namespace DefaultEcs
                 _ => OrWith<T>()
             };
 
-            /// <summary>
-            /// Makes a rule to observe <see cref="Entity"/> with a component of type <typeparamref name="T"/>.
-            /// </summary>
-            /// <typeparam name="T">The type of component.</typeparam>
-            /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.With{T}()"/>
             public EntityQueryBuilder With<T>() => Commit().With<T>();
 
-            /// <summary>
-            /// Makes a rule to observe <see cref="Entity"/> with a component of type <typeparamref name="T"/> validating the given <see cref="ComponentPredicate{T}"/>.
-            /// </summary>
-            /// <typeparam name="T">The type of component.</typeparam>
-            /// <param name="predicate">The <see cref="ComponentPredicate{T}"/> which needs to be validated.</param>
-            /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.With{T}(ComponentPredicate{T})"/>
             public EntityQueryBuilder With<T>(ComponentPredicate<T> predicate) => Commit().With(predicate);
 
-            /// <summary>
-            /// Makes a rule to ignore <see cref="Entity"/> with a component of type <typeparamref name="T"/>.
-            /// </summary>
-            /// <typeparam name="T">The type of component.</typeparam>
-            /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.Without{T}"/>
             public EntityQueryBuilder Without<T>() => Commit().Without<T>();
 
-            /// <summary>
-            /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is added.
-            /// </summary>
-            /// <typeparam name="T">The type of component.</typeparam>
-            /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.WhenAdded{T}"/>
             public EntityQueryBuilder WhenAdded<T>() => Commit().WhenAdded<T>();
 
-            /// <summary>
-            /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is changed.
-            /// </summary>
-            /// <typeparam name="T">The type of component.</typeparam>
-            /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.WhenChanged{T}"/>
             public EntityQueryBuilder WhenChanged<T>() => Commit().WhenChanged<T>();
 
-            /// <summary>
-            /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is removed.
-            /// </summary>
-            /// <typeparam name="T">The type of component.</typeparam>
-            /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.WhenRemoved{T}"/>
             public EntityQueryBuilder WhenRemoved<T>() => Commit().WhenRemoved<T>();
 
-            /// <summary>
-            /// Makes a rule to obsverve <see cref="Entity"/> with at least one component of the either group.
-            /// </summary>
-            /// <typeparam name="T">The type of component to add to the either group.</typeparam>
-            /// <returns>A <see cref="EitherBuilder"/> to create a either group.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.WithEither{T}"/>
             public EitherBuilder WithEither<T>() => Commit().WithEither<T>();
 
-            /// <summary>
-            /// Makes a rule to obsverve <see cref="Entity"/> without at least one component of the either group.
-            /// </summary>
-            /// <typeparam name="T">The type of component to add to the either group.</typeparam>
-            /// <returns>A <see cref="EitherBuilder"/> to create a either group.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.WithoutEither{T}"/>
             public EitherBuilder WithoutEither<T>() => Commit().WithoutEither<T>();
 
-            /// <summary>
-            /// Makes a rule to observe <see cref="Entity"/> when one component of the either group is added.
-            /// </summary>
-            /// <typeparam name="T">The type of component to add to the either group.</typeparam>
-            /// <returns>A <see cref="EitherBuilder"/> to create a either group.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.WhenAddedEither{T}"/>
             public EitherBuilder WhenAddedEither<T>() => Commit().WhenAddedEither<T>();
 
-            /// <summary>
-            /// Makes a rule to observe <see cref="Entity"/> when one component of the either group is changed.
-            /// </summary>
-            /// <typeparam name="T">The type of component to add to the either group.</typeparam>
-            /// <returns>A <see cref="EitherBuilder"/> to create a either group.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.WhenChangedEither{T}"/>
             public EitherBuilder WhenChangedEither<T>() => Commit().WhenChangedEither<T>();
 
-            /// <summary>
-            /// Makes a rule to observe <see cref="Entity"/> when one component of the either group is removed.
-            /// </summary>
-            /// <typeparam name="T">The type of component to add to the either group.</typeparam>
-            /// <returns>A <see cref="EitherBuilder"/> to create a either group.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.WhenRemovedEither{T}"/>
             public EitherBuilder WhenRemovedEither<T>() => Commit().WhenRemovedEither<T>();
 
-            /// <summary>
-            /// Copies all the rules of the current <see cref="EntityQueryBuilder"/> to a new instance.
-            /// </summary>
-            /// <returns>A new <see cref="EntityQueryBuilder"/> with all the same rules as the current instance.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.Copy"/>
             public EntityQueryBuilder Copy() => new(Commit());
 
-            /// <summary>
-            /// Returns a <see cref="Predicate{T}"/> representing the specified rules.
-            /// </summary>
-            /// <returns>The <see cref="Predicate{T}"/>.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.AsPredicate"/>
             public Predicate<Entity> AsPredicate() => Commit().AsPredicate();
 
-            /// <summary>
-            /// Returns an <see cref="IEnumerable{T}"/> of <see cref="Entity"/> with the specified rules.
-            /// </summary>
-            /// <returns>The <see cref="IEnumerable{T}"/> of <see cref="Entity"/>.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.AsEnumerable()"/>
             public IEnumerable<Entity> AsEnumerable() => Commit().AsEnumerable();
 
-            /// <summary>
-            /// Returns an <see cref="EntitySet"/> with the specified rules.
-            /// </summary>
-            /// <returns>The <see cref="EntitySet"/>.</returns>
+            /// <inheritdoc cref="EntityQueryBuilder.AsSet"/>
             public EntitySet AsSet() => Commit().AsSet();
 
-            /// <summary>
-            /// Returns an <see cref="EntityMap{TKey}"/> with the specified rules.
-            /// </summary>
-            /// <typeparam name="TKey">The component type to use as key.</typeparam>
-            /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the key.</param>
-            /// <returns>The <see cref="EntityMap{TKey}"/>.</returns>
-            public EntityMap<TKey> AsMap<TKey>(IEqualityComparer<TKey> comparer) => Commit().AsMap(comparer);
+            /// <inheritdoc cref="EntityQueryBuilder.AsSortedSet{T}(IComparer{T})"/>
+            public EntitySortedSet<TComponent> AsSortedSet<TComponent>(IComparer<TComponent> comparer) => Commit().AsSortedSet(comparer);
 
-            /// <summary>
-            /// Returns an <see cref="EntityMap{TKey}"/> with the specified rules.
-            /// </summary>
-            /// <typeparam name="TKey">The component type to use as key.</typeparam>
-            /// <returns>The <see cref="EntityMap{TKey}"/>.</returns>
-            public EntityMap<TKey> AsMap<TKey>() => AsMap<TKey>(default);
+            /// <inheritdoc cref="EntityQueryBuilder.AsSortedSet{T}()"/>
+            public EntitySortedSet<TComponent> AsSortedSet<TComponent>() => AsSortedSet<TComponent>(default);
 
-            /// <summary>
-            /// Returns an <see cref="EntityMultiMap{TKey}"/> with the specified rules.
-            /// </summary>
-            /// <typeparam name="TKey">The component type to use as key.</typeparam>
-            /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> implementation to use when comparing keys, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the key.</param>
-            /// <returns>The <see cref="EntityMultiMap{TKey}"/>.</returns>
-            public EntityMultiMap<TKey> AsMultiMap<TKey>(IEqualityComparer<TKey> comparer) => Commit().AsMultiMap(comparer);
+            /// <inheritdoc cref="EntityQueryBuilder.AsMap{TKey}(int, IEqualityComparer{TKey})"/>
+            public EntityMap<TKey> AsMap<TKey>(int capacity, IEqualityComparer<TKey> comparer) => Commit().AsMap(capacity, comparer);
 
-            /// <summary>
-            /// Returns an <see cref="EntityMultiMap{TKey}"/> with the specified rules.
-            /// </summary>
-            /// <typeparam name="TKey">The component type to use as key.</typeparam>
-            /// <returns>The <see cref="EntityMultiMap{TKey}"/>.</returns>
-            public EntityMultiMap<TKey> AsMultiMap<TKey>() => AsMultiMap<TKey>(default);
+            /// <inheritdoc cref="EntityQueryBuilder.AsMap{TKey}(IEqualityComparer{TKey})"/>
+            public EntityMap<TKey> AsMap<TKey>(IEqualityComparer<TKey> comparer) => AsMap(0, comparer);
+
+            /// <inheritdoc cref="EntityQueryBuilder.AsMap{TKey}(int)"/>
+            public EntityMap<TKey> AsMap<TKey>(int capacity) => AsMap<TKey>(capacity, default);
+
+            /// <inheritdoc cref="EntityQueryBuilder.AsMap{TKey}()"/>
+            public EntityMap<TKey> AsMap<TKey>() => AsMap<TKey>(0);
+
+            /// <inheritdoc cref="EntityQueryBuilder.AsMultiMap{TKey}(int, IEqualityComparer{TKey})"/>
+            public EntityMultiMap<TKey> AsMultiMap<TKey>(int capacity, IEqualityComparer<TKey> comparer) => Commit().AsMultiMap(capacity, comparer);
+
+            /// <inheritdoc cref="EntityQueryBuilder.AsMultiMap{TKey}(IEqualityComparer{TKey})"/>
+            public EntityMultiMap<TKey> AsMultiMap<TKey>(IEqualityComparer<TKey> comparer) => Commit().AsMultiMap(0, comparer);
+
+            /// <inheritdoc cref="EntityQueryBuilder.AsMultiMap{TKey}(int)"/>
+            public EntityMultiMap<TKey> AsMultiMap<TKey>(int capacity) => AsMultiMap<TKey>(capacity, default);
+
+            /// <inheritdoc cref="EntityQueryBuilder.AsMultiMap{TKey}()"/>
+            public EntityMultiMap<TKey> AsMultiMap<TKey>() => AsMultiMap<TKey>(0);
 
             #endregion
         }
@@ -613,6 +556,26 @@ namespace DefaultEcs
         /// </summary>
         /// <returns>The <see cref="EntitySet"/>.</returns>
         public EntitySet AsSet() => new(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), GetPredicate(), subscriptions);
+
+        /// <summary>
+        /// Returns an <see cref="EntitySortedSet{T}"/> with the specified rules.
+        /// </summary>
+        /// <typeparam name="TComponent">The component type by which <see cref="Entity"/> will be sorted.</typeparam>
+        /// <param name="comparer">The custom <see cref="IComparer{T}"/> to use to sort <see cref="Entity"/>.</param>
+        /// <returns>The <see cref="EntitySortedSet{T}"/>.</returns>
+        public EntitySortedSet<TComponent> AsSortedSet<TComponent>(IComparer<TComponent> comparer)
+        {
+            With<TComponent>();
+
+            return new(GetSubscriptions(out List<Func<EntityContainerWatcher, World, IDisposable>> subscriptions), _world, GetFilter(), GetPredicate(), subscriptions, comparer);
+        }
+
+        /// <summary>
+        /// Returns an <see cref="EntitySortedSet{T}"/> with the specified rules.
+        /// </summary>
+        /// <typeparam name="TComponent">The component type by which <see cref="Entity"/> will be sorted.</typeparam>
+        /// <returns>The <see cref="EntitySortedSet{T}"/>.</returns>
+        public EntitySortedSet<TComponent> AsSortedSet<TComponent>() => AsSortedSet<TComponent>(default);
 
         /// <summary>
         /// Returns an <see cref="EntityMap{TKey}"/> with the specified rules.

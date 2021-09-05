@@ -202,7 +202,7 @@ namespace DefaultEcs.Test
         {
             World world = new(4);
 
-            EntityMultiMap<int> set = world.GetEntities().AsMultiMap<int>();
+            using EntityMultiMap<int> set = world.GetEntities().AsMultiMap<int>();
 
             world.Dispose();
 
@@ -212,9 +212,9 @@ namespace DefaultEcs.Test
         [Fact]
         public void TrimExcess_Should_fit_storage_to_number_of_entities()
         {
-            World world = new();
+            using World world = new();
 
-            EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
+            using EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
             world.CreateEntity().Set(42);
 
             Check.That(((Array)typeof(EntityMultiMap<int>).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(map)).Length).IsNotEqualTo(2);

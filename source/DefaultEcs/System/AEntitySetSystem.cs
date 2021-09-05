@@ -126,7 +126,7 @@ namespace DefaultEcs.System
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="factory"/> is null.</exception>
         protected AEntitySetSystem(World world, Func<object, World, EntitySet> factory, IParallelRunner runner, int minEntityCountByRunnerIndex)
-            : this(s => (factory ?? throw new ArgumentNullException(nameof(factory)))(s, world ?? throw new ArgumentNullException(nameof(world))), runner, minEntityCountByRunnerIndex)
+            : this(o => (factory ?? throw new ArgumentNullException(nameof(factory)))(o, world ?? throw new ArgumentNullException(nameof(world))), runner, minEntityCountByRunnerIndex)
         { }
 
         /// <summary>
