@@ -22,7 +22,6 @@ namespace DefaultEcs
         private readonly bool _needClearing;
         private readonly short _worldId;
         private readonly int _worldMaxCapacity;
-        private readonly EntityContainerWatcher _container;
         private readonly IDisposable _subscriptions;
 
         private int[] _mapping;
@@ -62,8 +61,8 @@ namespace DefaultEcs
             _needClearing = needClearing;
             _worldId = world.WorldId;
             _worldMaxCapacity = world.MaxCapacity == int.MaxValue ? int.MaxValue : (world.MaxCapacity + 1);
-            _container = new EntityContainerWatcher(this, filter, predicate);
-            _subscriptions = subscriptions.Select(s => s(_container, world)).Merge();
+            EntityContainerWatcher container = new(this, filter, predicate);
+            _subscriptions = subscriptions.Select(s => s(container, world)).Merge();
 
             _mapping = EmptyArray<int>.Value;
             _entities = EmptyArray<Entity>.Value;

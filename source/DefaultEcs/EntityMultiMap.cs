@@ -208,7 +208,6 @@ namespace DefaultEcs
         private readonly bool _needClearing;
         private readonly short _worldId;
         private readonly int _worldMaxCapacity;
-        private readonly EntityContainerWatcher _container;
         private readonly IDisposable _subscriptions;
         private readonly ComponentPool<TKey> _components;
         private readonly Dictionary<TKey, Entities> _entities;
@@ -253,10 +252,10 @@ namespace DefaultEcs
             _needClearing = needClearing;
             _worldId = world.WorldId;
             _worldMaxCapacity = world.MaxCapacity == int.MaxValue ? int.MaxValue : (world.MaxCapacity + 1);
-            _container = new EntityContainerWatcher(this, filter, predicate);
+            EntityContainerWatcher container = new(this, filter, predicate);
             _subscriptions = Enumerable
                 .Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(On), 1)
-                .Concat(subscriptions.Select(s => s(_container, world))).Merge();
+                .Concat(subscriptions.Select(s => s(container, world))).Merge();
 
             _components = ComponentManager<TKey>.GetOrCreate(_worldId);
             _entities = new Dictionary<TKey, Entities>(capacity, comparer);
