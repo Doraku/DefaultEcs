@@ -146,10 +146,10 @@ namespace DefaultEcs.System
         { }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntityMultiMapSystem{T, TKey}"/> class with the given <see cref="World"/> and factory.
+        /// Initialise a new instance of the <see cref="AEntityMultiMapSystem{T, TKey}"/> class with the given <see cref="DefaultEcs.World"/> and factory.
         /// The current instance will be passed as the first parameter of the factory.
         /// </summary>
-        /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
+        /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="factory">The factory used to create the <see cref="EntityMultiMap{TKey}"/>.</param>
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="minEntityCountByRunnerIndex">The minimum number of <see cref="Entity"/> per runner index to use the given <paramref name="runner"/>.</param>
@@ -160,10 +160,10 @@ namespace DefaultEcs.System
         { }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntityMultiMapSystem{T, TKey}"/> class with the given <see cref="World"/>.
+        /// Initialise a new instance of the <see cref="AEntityMultiMapSystem{T, TKey}"/> class with the given <see cref="DefaultEcs.World"/>.
         /// To create the inner <see cref="EntityMultiMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
-        /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
+        /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="minEntityCountByRunnerIndex">The minimum number of <see cref="Entity"/> per runner index to use the given <paramref name="runner"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
@@ -172,10 +172,10 @@ namespace DefaultEcs.System
         { }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntityMultiMapSystem{T,TKey}"/> class with the given <see cref="World"/>.
+        /// Initialise a new instance of the <see cref="AEntityMultiMapSystem{T,TKey}"/> class with the given <see cref="DefaultEcs.World"/>.
         /// To create the inner <see cref="EntityMultiMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
-        /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
+        /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntityMultiMapSystem(World world, IParallelRunner runner)
@@ -183,10 +183,10 @@ namespace DefaultEcs.System
         { }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntityMultiMapSystem{T,TKey}"/> class with the given <see cref="World"/>.
+        /// Initialise a new instance of the <see cref="AEntityMultiMapSystem{T,TKey}"/> class with the given <see cref="DefaultEcs.World"/>.
         /// To create the inner <see cref="EntityMultiMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
-        /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
+        /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="factory">The factory used to create the <see cref="EntitySet"/>.</param>
         /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
@@ -198,10 +198,10 @@ namespace DefaultEcs.System
         }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntityMultiMapSystem{T,TKey}"/> class with the given <see cref="World"/>.
+        /// Initialise a new instance of the <see cref="AEntityMultiMapSystem{T,TKey}"/> class with the given <see cref="DefaultEcs.World"/>.
         /// To create the inner <see cref="EntityMultiMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
-        /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
+        /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntityMultiMapSystem(World world, bool useBuffer)
@@ -211,10 +211,10 @@ namespace DefaultEcs.System
         }
 
         /// <summary>
-        /// Initialise a new instance of the <see cref="AEntityMultiMapSystem{T,TKey}"/> class with the given <see cref="World"/>.
+        /// Initialise a new instance of the <see cref="AEntityMultiMapSystem{T,TKey}"/> class with the given <see cref="DefaultEcs.World"/>.
         /// To create the inner <see cref="EntityMultiMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
-        /// <param name="world">The <see cref="World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
+        /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         protected AEntityMultiMapSystem(World world)
             : this(world, false)
