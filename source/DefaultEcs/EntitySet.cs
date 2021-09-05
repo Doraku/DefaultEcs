@@ -62,7 +62,9 @@ namespace DefaultEcs
             _worldId = world.WorldId;
             _worldMaxCapacity = world.MaxCapacity == int.MaxValue ? int.MaxValue : (world.MaxCapacity + 1);
             EntityContainerWatcher container = new(this, filter, predicate);
-            _subscriptions = subscriptions.Select(s => s(container, world)).Merge();
+            _subscriptions = subscriptions
+                .Select(s => s(container, world))
+                .Merge();
 
             _mapping = EmptyArray<int>.Value;
             _entities = EmptyArray<Entity>.Value;

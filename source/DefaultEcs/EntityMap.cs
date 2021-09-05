@@ -145,8 +145,10 @@ namespace DefaultEcs
             _worldId = world.WorldId;
             _worldMaxCapacity = world.MaxCapacity == int.MaxValue ? int.MaxValue : (world.MaxCapacity + 1);
             EntityContainerWatcher container = new(this, filter, predicate);
-            _subscriptions = Enumerable.Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(On), 1).Concat(subscriptions.Select(s => s(container, world))).Merge();
-
+            _subscriptions = Enumerable
+                .Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(On), 1)
+                .Concat(subscriptions.Select(s => s(container, world)))
+                .Merge();
             _previousComponents = ComponentManager<TKey>.GetOrCreatePrevious(_worldId);
             _components = ComponentManager<TKey>.GetOrCreate(_worldId);
             _entities = new Dictionary<TKey, Entity>(capacity, comparer);

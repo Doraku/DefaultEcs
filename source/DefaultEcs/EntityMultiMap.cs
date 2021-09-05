@@ -255,8 +255,8 @@ namespace DefaultEcs
             EntityContainerWatcher container = new(this, filter, predicate);
             _subscriptions = Enumerable
                 .Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(On), 1)
-                .Concat(subscriptions.Select(s => s(container, world))).Merge();
-
+                .Concat(subscriptions.Select(s => s(container, world)))
+                .Merge();
             _components = ComponentManager<TKey>.GetOrCreate(_worldId);
             _entities = new Dictionary<TKey, Entities>(capacity, comparer);
 
