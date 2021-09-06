@@ -222,7 +222,7 @@ namespace DefaultEcs
             public EntityMultiMap<TKey> AsMultiMap<TKey>(int capacity, IEqualityComparer<TKey> comparer) => Commit().AsMultiMap(capacity, comparer);
 
             /// <inheritdoc cref="EntityQueryBuilder.AsMultiMap{TKey}(IEqualityComparer{TKey})"/>
-            public EntityMultiMap<TKey> AsMultiMap<TKey>(IEqualityComparer<TKey> comparer) => Commit().AsMultiMap(0, comparer);
+            public EntityMultiMap<TKey> AsMultiMap<TKey>(IEqualityComparer<TKey> comparer) => AsMultiMap(0, comparer);
 
             /// <inheritdoc cref="EntityQueryBuilder.AsMultiMap{TKey}(int)"/>
             public EntityMultiMap<TKey> AsMultiMap<TKey>(int capacity) => AsMultiMap<TKey>(capacity, default);

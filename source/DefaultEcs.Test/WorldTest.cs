@@ -701,6 +701,20 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void TrimExcess_Should_fit_storage_of_component()
+        {
+            using World world = new();
+
+            Entity entity = world.CreateEntity();
+            entity.Set(42);
+            entity.Dispose();
+
+            world.TrimExcess<int>();
+
+            Check.ThatCode(() => world.GetComponents<int>()[default]).Throws<IndexOutOfRangeException>();
+        }
+
+        [Fact]
         public void TrimExcess_Should_not_throw_When_no_component()
         {
             using World world = new();

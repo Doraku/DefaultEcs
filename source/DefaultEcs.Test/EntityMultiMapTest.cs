@@ -25,9 +25,13 @@ namespace DefaultEcs.Test
             using World world = new();
 
             Entity entity = world.CreateEntity();
-            entity.Set(42);
 
             using EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
+
+            Check.That(map.ContainsEntity(entity)).IsFalse();
+
+            entity.Set(42);
+            world.CreateEntity().Set(42);
 
             Check.That(map.ContainsEntity(entity)).IsTrue();
 
@@ -78,16 +82,21 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            using EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
+            using EntityMultiMap<int> map = world.GetEntities().WithEither<int>().AsMultiMap<int>(null);
 
+            world.CreateEntity().Set(42);
             Entity entity = world.CreateEntity();
             entity.Set(42);
 
             Check.That(map.Keys as IEnumerable).ContainsExactly(42);
 
+            entity.Set(1337);
+
+            Check.That(map.Keys as IEnumerable).ContainsExactly(42, 1337);
+
             entity.Remove<int>();
 
-            Check.That(map.Keys).IsEmpty();
+            Check.That(map.Keys as IEnumerable).ContainsExactly(42);
 
             entity.Set(42);
 

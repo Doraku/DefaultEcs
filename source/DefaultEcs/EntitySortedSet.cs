@@ -156,7 +156,7 @@ namespace DefaultEcs
                 if (Count > 1 && _comparer.Compare(_entities[index], _entities[index - 1]) < 0)
                 {
                     Array.Sort(_entities, 0, Count, _comparer);
-                    for (int i = 0; index < Count; ++i)
+                    for (int i = 0; i < Count; ++i)
                     {
                         _mapping[_entities[i].EntityId] = i;
                     }

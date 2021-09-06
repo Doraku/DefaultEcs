@@ -26,9 +26,12 @@ namespace DefaultEcs.Test
             using World world = new();
 
             Entity entity = world.CreateEntity();
-            entity.Set(42);
 
             using EntityMap<int> map = world.GetEntities().AsMap<int>();
+
+            Check.That(map.ContainsEntity(entity)).IsFalse();
+
+            entity.Set(42);
 
             Check.That(map.ContainsEntity(entity)).IsTrue();
 
@@ -89,9 +92,9 @@ namespace DefaultEcs.Test
         [Fact]
         public void Keys_Should_return_keys()
         {
-            using World world = new();
+            using World world = new(3);
 
-            using EntityMap<int> map = world.GetEntities().AsMap<int>();
+            using EntityMap<int> map = world.GetEntities().WithEither<int>().AsMap<int>(null);
 
             Entity entity = world.CreateEntity();
             entity.Set(42);
@@ -120,7 +123,7 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            using EntityMap<int> map = world.GetEntities().AsMap<int>();
+            using EntityMap<int> map = world.GetEntities().AsMap<int>(null);
 
             Entity entity = world.CreateEntity();
 

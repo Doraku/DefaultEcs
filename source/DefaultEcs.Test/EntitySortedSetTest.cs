@@ -156,9 +156,9 @@ namespace DefaultEcs.Test
                 entities[i].Set(i);
             }
 
-            entities[0].Disable<int>();
-
             using EntitySortedSet<int> sortedSet = world.GetEntities().AsSortedSet<int>();
+
+            entities[0].Disable<int>();
 
             Check.That(sortedSet.GetEntities().ToArray()).ContainsExactly(entities.Skip(1));
         }
@@ -176,14 +176,7 @@ namespace DefaultEcs.Test
                 world.CreateEntity()
             };
 
-            for (int i = 0; i < entities.Count; ++i)
-            {
-                entities[i].Set(i);
-            }
-
-            using EntitySortedSet<int> sortedSet = world.GetEntities().AsSortedSet<int>();
-
-            Check.That(sortedSet.GetEntities().ToArray()).ContainsExactly(entities);
+            using EntitySortedSet<int> sortedSet = world.GetEntities().WithEither<int>().AsSortedSet<int>();
 
             for (int i = 0; i < entities.Count; ++i)
             {
@@ -191,6 +184,31 @@ namespace DefaultEcs.Test
             }
 
             Check.That(sortedSet.GetEntities().ToArray()).ContainsExactly(entities.AsEnumerable().Reverse());
+
+            for (int i = 0; i < entities.Count; ++i)
+            {
+                entities[i].Set(i);
+            }
+
+            Check.That(sortedSet.GetEntities().ToArray()).ContainsExactly(entities);
+        }
+
+        [Fact]
+        public void Complete_Should_empty_When_reative()
+        {
+            using World world = new();
+
+            using EntitySortedSet<int> sortedSet = world.GetEntities().WhenAdded<int>().AsSortedSet<int>();
+
+            world.CreateEntity().Set(0);
+            world.CreateEntity().Set(1);
+            world.CreateEntity().Set(2);
+
+            Check.That(sortedSet.Count).IsEqualTo(3);
+
+            sortedSet.Complete();
+
+            Check.That(sortedSet.Count).IsZero();
         }
 
         [Fact]
