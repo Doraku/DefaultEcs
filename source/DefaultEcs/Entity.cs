@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using DefaultEcs.Serialization;
-using DefaultEcs.Technical;
-using DefaultEcs.Technical.Debug;
-using DefaultEcs.Technical.Message;
+using DefaultEcs.Internal;
+using DefaultEcs.Internal.Debug;
+using DefaultEcs.Internal.Message;
 
 namespace DefaultEcs
 {

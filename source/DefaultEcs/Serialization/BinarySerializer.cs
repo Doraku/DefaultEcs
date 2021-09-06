@@ -2,8 +2,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using DefaultEcs.Technical.Serialization;
-using DefaultEcs.Technical.Serialization.BinarySerializer;
+using DefaultEcs.Internal.Serialization;
+using DefaultEcs.Internal.Serialization.BinarySerializer;
 
 namespace DefaultEcs.Serialization
 {

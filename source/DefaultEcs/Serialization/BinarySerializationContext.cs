@@ -1,7 +1,7 @@
 ﻿using System;
-using DefaultEcs.Technical.Serialization;
-using DefaultEcs.Technical.Serialization.BinarySerializer;
-using DefaultEcs.Technical.Serialization.BinarySerializer.ConverterAction;
+using DefaultEcs.Internal.Serialization;
+using DefaultEcs.Internal.Serialization.BinarySerializer;
+using DefaultEcs.Internal.Serialization.BinarySerializer.ConverterAction;
 
 namespace DefaultEcs.Serialization
 {

@@ -5,10 +5,10 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using DefaultEcs.Serialization;
-using DefaultEcs.Technical;
-using DefaultEcs.Technical.Debug;
-using DefaultEcs.Technical.Helper;
-using DefaultEcs.Technical.Message;
+using DefaultEcs.Internal;
+using DefaultEcs.Internal.Debug;
+using DefaultEcs.Internal.Helper;
+using DefaultEcs.Internal.Message;
 using DefaultEcs.Threading;
 
 namespace DefaultEcs

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using DefaultEcs.Technical.Command;
-using DefaultEcs.Technical.Helper;
+using DefaultEcs.Internal.Command;
+using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs.Command
 {

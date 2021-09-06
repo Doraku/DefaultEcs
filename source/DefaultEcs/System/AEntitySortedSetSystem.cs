@@ -2,7 +2,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
-using DefaultEcs.Technical.System;
+using DefaultEcs.Internal.System;
 
 namespace DefaultEcs.System
 {

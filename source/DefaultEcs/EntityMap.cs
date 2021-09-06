@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using DefaultEcs.Technical;
-using DefaultEcs.Technical.Debug;
-using DefaultEcs.Technical.Helper;
-using DefaultEcs.Technical.Message;
+using DefaultEcs.Internal;
+using DefaultEcs.Internal.Debug;
+using DefaultEcs.Internal.Helper;
+using DefaultEcs.Internal.Message;
 
 namespace DefaultEcs
 {

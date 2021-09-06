@@ -2,8 +2,8 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Reflection;
-using DefaultEcs.Technical.Helper;
-using DefaultEcs.Technical.System;
+using DefaultEcs.Internal.Helper;
+using DefaultEcs.Internal.System;
 using DefaultEcs.Threading;
 
 namespace DefaultEcs.System

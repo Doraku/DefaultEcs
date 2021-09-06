@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using DefaultEcs.Serialization;
-using DefaultEcs.Technical;
+using DefaultEcs.Internal;
 
 namespace DefaultEcs
 {

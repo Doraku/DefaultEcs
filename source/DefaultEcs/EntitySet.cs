@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using DefaultEcs.Technical;
-using DefaultEcs.Technical.Debug;
-using DefaultEcs.Technical.Helper;
+using DefaultEcs.Internal;
+using DefaultEcs.Internal.Debug;
+using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs
 {

@@ -1,4 +1,4 @@
-﻿using DefaultEcs.Technical.Command;
+﻿using DefaultEcs.Internal.Command;
 
 namespace DefaultEcs
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Diagnostics;
-using DefaultEcs.Technical.System;
+using DefaultEcs.Internal.System;
 using DefaultEcs.Threading;
 
 namespace DefaultEcs.System

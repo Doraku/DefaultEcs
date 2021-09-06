@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using DefaultEcs.Technical;
+using DefaultEcs.Internal;
 using DefaultEcs.Threading;
 
 namespace DefaultEcs.System

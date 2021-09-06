@@ -1,7 +1,7 @@
 ﻿using System;
-using DefaultEcs.Technical.Serialization;
-using DefaultEcs.Technical.Serialization.TextSerializer;
-using DefaultEcs.Technical.Serialization.TextSerializer.ConverterAction;
+using DefaultEcs.Internal.Serialization;
+using DefaultEcs.Internal.Serialization.TextSerializer;
+using DefaultEcs.Internal.Serialization.TextSerializer.ConverterAction;
 
 namespace DefaultEcs.Serialization
 {

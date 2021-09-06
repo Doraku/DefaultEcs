@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DefaultEcs.Technical;
-using DefaultEcs.Technical.Helper;
-using DefaultEcs.Technical.Message;
+using DefaultEcs.Internal;
+using DefaultEcs.Internal.Helper;
+using DefaultEcs.Internal.Message;
 
 namespace DefaultEcs
 {

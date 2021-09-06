@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using DefaultEcs.Technical.Serialization;
-using DefaultEcs.Technical.Serialization.TextSerializer;
+using DefaultEcs.Internal.Serialization;
+using DefaultEcs.Internal.Serialization.TextSerializer;
 
 namespace DefaultEcs.Serialization
 {

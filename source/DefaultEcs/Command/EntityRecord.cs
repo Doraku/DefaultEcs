@@ -1,5 +1,5 @@
 ﻿using System;
-using DefaultEcs.Technical.Command;
+using DefaultEcs.Internal.Command;
 
 namespace DefaultEcs.Command
 {

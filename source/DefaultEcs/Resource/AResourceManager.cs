@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using DefaultEcs.Technical;
-using DefaultEcs.Technical.Helper;
+using DefaultEcs.Internal;
+using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs.Resource
 {
