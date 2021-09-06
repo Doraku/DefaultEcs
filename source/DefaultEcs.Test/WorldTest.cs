@@ -708,6 +708,7 @@ namespace DefaultEcs.Test
             Entity entity = world.CreateEntity();
             entity.Set(42);
             entity.Dispose();
+            world.SubscribeComponentChanged((in Entity _, in int __, in int ___) => { });
 
             world.TrimExcess<int>();
 

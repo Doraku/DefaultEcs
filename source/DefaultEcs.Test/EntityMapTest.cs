@@ -180,10 +180,10 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            using EntityMap<int> map = world.GetEntities().WhenAddedEither<int>().AsMap<int>();
-
             Entity entity = world.CreateEntity();
             entity.Set(42);
+
+            using EntityMap<int> map = world.GetEntities().WhenAddedEither<int>().AsMap<int>();
 
             Check.That(map.TryGetEntity(42, out Entity result)).IsTrue();
             Check.That(result).IsEqualTo(entity);

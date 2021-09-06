@@ -84,9 +84,9 @@ namespace DefaultEcs.Test
 
             using EntityMultiMap<int> map = world.GetEntities().WithEither<int>().AsMultiMap<int>(null);
 
-            world.CreateEntity().Set(42);
             Entity entity = world.CreateEntity();
             entity.Set(42);
+            world.CreateEntity().Set(42);
 
             Check.That(map.Keys as IEnumerable).ContainsExactly(42);
 
