@@ -5,10 +5,11 @@ using System.Reflection;
 using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs
-{    /// <summary>
-     /// Specifies that the method should be automatically subscribed when its parent type or instance is called with <see cref="IPublisherExtension"/>.
-     /// The decorated method should be of the type <see cref="MessageHandler{T}"/>.
-     /// </summary>
+{
+    /// <summary>
+    /// Specifies that the method should be automatically subscribed when its parent type or instance is called with <see cref="IPublisherExtension"/>.
+    /// The decorated method should be of the type <see cref="MessageHandler{T}"/>.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class SubscribeAttribute : Attribute
     { }

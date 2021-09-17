@@ -98,6 +98,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Enables the current <see cref="Entity"/> so it can appear in <see cref="EntitySet"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Enable()
@@ -114,6 +115,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Disables the current <see cref="Entity"/> so it does not appear in <see cref="EntitySet"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Disable()
@@ -139,6 +141,7 @@ namespace DefaultEcs
         /// <summary>
         /// Enables the current <see cref="Entity"/> component of type <typeparamref name="T"/> so it can appear in <see cref="EntitySet"/>.
         /// Does nothing if current <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
@@ -160,6 +163,7 @@ namespace DefaultEcs
         /// <summary>
         /// Disables the current <see cref="Entity"/> component of type <typeparamref name="T"/> so it does not appear in <see cref="EntitySet"/>.
         /// Does nothing if current <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
@@ -177,6 +181,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
@@ -191,6 +196,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> to its default value on the current <see cref="Entity"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
@@ -199,6 +205,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/> to the same instance of an other <see cref="Entity"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="reference">The other <see cref="Entity"/> used as reference.</param>
@@ -217,6 +224,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/> to the same instance of an other <see cref="Entity"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
@@ -232,6 +240,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Removes the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         public void Remove<T>()
@@ -247,6 +256,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Notifies the value of the component of type <typeparamref name="T"/> has changed.
+        /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
@@ -279,6 +289,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="DefaultEcs.World"/> using the given <see cref="ComponentCloner"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <param name="world">The <see cref="DefaultEcs.World"/> instance to which copy current <see cref="Entity"/> and its components.</param>
         /// <param name="cloner">The <see cref="ComponentCloner"/> to use to copy the components.</param>
@@ -314,6 +325,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="DefaultEcs.World"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <param name="world">The <see cref="DefaultEcs.World"/> instance to which copy current <see cref="Entity"/> and its components.</param>
         /// <returns>The created <see cref="Entity"/> in the given <see cref="DefaultEcs.World"/>.</returns>

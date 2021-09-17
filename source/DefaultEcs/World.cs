@@ -246,6 +246,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Creates a new instance of the <see cref="Entity"/> struct.
+        /// This method is not thread safe.
         /// </summary>
         /// <returns>The created <see cref="Entity"/>.</returns>
         /// <exception cref="InvalidOperationException">Max number of <see cref="Entity"/> reached.</exception>
@@ -270,6 +271,7 @@ namespace DefaultEcs
         /// <summary>
         /// Sets up the current <see cref="World"/> to handle component of type <typeparamref name="T"/> with a different maximum count than <see cref="MaxCapacity"/>.
         /// If the type of component is already handled by the current <see cref="World"/>, does nothing.
+        /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
         /// <param name="maxCapacity">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
@@ -310,6 +312,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="World"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
@@ -318,6 +321,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> to its default value on the current <see cref="World"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
@@ -343,6 +347,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Removes the component of type <typeparamref name="T"/> on the current <see cref="World"/>.
+        /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
         public void Remove<T>() => ComponentManager<T>.Get(WorldId)?.Remove(0);
@@ -369,6 +374,7 @@ namespace DefaultEcs
         /// <summary>
         /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntityMultiMap{TKey}"/> always move forward in memory.
         /// This method will return once <paramref name="mainAction"/> is executed even if the optimization process has not finished.
+        /// This method is not thread safe.
         /// </summary>
         /// <param name="runner">The <see cref="IParallelRunner"/> to process this operation in parallel.</param>
         /// <param name="mainAction">An <see cref="Action"/> to execute on the main thread while the optimization is in process.</param>
@@ -383,6 +389,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntityMultiMap{TKey}"/> always move forward in memory.
+        /// This method is not thread safe.
         /// </summary>
         /// <param name="runner">The <see cref="IParallelRunner"/> to process this operation in parallel.</param>
         public void Optimize(IParallelRunner runner)
@@ -395,11 +402,13 @@ namespace DefaultEcs
 
         /// <summary>
         /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntityMultiMap{TKey}"/> always move forward in memory.
+        /// This method is not thread safe.
         /// </summary>
         public void Optimize() => Optimize(DefaultParallelRunner.Default);
 
         /// <summary>
         /// Resizes inner storage to exactly the number of <typeparamref name="T"/> components this <see cref="World"/> contains.
+        /// This method is not thread safe.
         /// </summary>
         public void TrimExcess<T>()
         {
@@ -409,6 +418,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Resizes all inner storage to exactly the number of <see cref="Entity"/> and components this <see cref="World"/> contains.
+        /// This method is not thread safe.
         /// </summary>
         public void TrimExcess()
         {

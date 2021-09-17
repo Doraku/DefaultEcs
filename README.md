@@ -583,9 +583,22 @@ ISystem<float> system = new VelocitySystem(world, runner);
 system.Update(elaspedTime);
 ```
 It is safe to run a system with multithreading when:
-* for an AEntitySetSystem
+* for an AEntitySetSystem or an AEntityMultiMapSystem
   * each entity can be safely updated separately with no dependency to an other entity
-  * there is no new Set, Remove or Dispose action on entity (only read or update)
+  * there is no composition altering operation done on a world nor on an entity. Here is a list of non thread safe operations you shouldn't do, see [Command](#Overview_Command) for how to perform such operations safely:
+    * Create an Entity
+    * SetMaxCapacity on a World
+    * Optimize a World
+    * TrimExcess a World
+    * Dispose an Entity
+    * Set/SameAs/SameAsWorld a component on an Entity or a World
+    * Remove a component on an Entity or a World
+    * Enable an Entity
+    * Disable an Entity
+    * Enable a component on an Entity
+    * Disable a component on an Entity
+    * NotifyChanged a component on an Entity
+    * CopyTo an Entity
 * for an AComponentSystem
   * each component can be safely updated separately with no dependency to an other component
 
