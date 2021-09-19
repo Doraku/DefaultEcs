@@ -3,6 +3,26 @@
 namespace DefaultEcs.Internal.Command
 {
     [StructLayout(LayoutKind.Explicit, Pack = 1)]
+    internal struct WorldCommand
+    {
+        [FieldOffset(0)]
+        public CommandType CommandType;
+
+        [FieldOffset(1)]
+        public readonly int ComponentIndex;
+
+        [FieldOffset(5)]
+        public short WorldId;
+
+        public WorldCommand(CommandType commandType, int componentIndex, short worldId)
+        {
+            CommandType = commandType;
+            ComponentIndex = componentIndex;
+            WorldId = worldId;
+        }
+    }
+
+    [StructLayout(LayoutKind.Explicit, Pack = 1)]
     internal struct EntityCommand
     {
         [FieldOffset(0)]

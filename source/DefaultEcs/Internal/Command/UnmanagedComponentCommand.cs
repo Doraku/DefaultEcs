@@ -11,7 +11,14 @@ namespace DefaultEcs.Internal.Command
 
         public static void WriteComponent(List<object> _, byte* data, in T component) => *(T*)data = component;
 
-        public static int SetComponent(in Entity entity, List<object> _, byte* memory)
+        public static int SetWorldComponent(World world, List<object> _, byte* memory)
+        {
+            world.Set(*(T*)memory);
+
+            return SizeOfT;
+        }
+
+        public static int SetEntityComponent(in Entity entity, List<object> _, byte* memory)
         {
             entity.Set(*(T*)memory);
 

@@ -4,6 +4,8 @@ namespace DefaultEcs.Internal.Command
 {
     internal unsafe interface IComponentCommand
     {
+        int Set(World world, List<object> objects, byte* memory);
+        void Remove(World world);
         void Enable(in Entity entity);
         void Disable(in Entity entity);
         int Set(in Entity entity, List<object> objects, byte* memory);

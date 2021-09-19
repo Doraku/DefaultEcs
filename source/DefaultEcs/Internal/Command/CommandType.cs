@@ -4,16 +4,18 @@
     {
         Entity = 0,
         CreateEntity = 1,
-        Enable = 2,
-        Disable = 3,
-        EnableT = 4,
-        DisableT = 5,
-        Set = 6,
-        SetSameAs = 7,
-        SetSameAsWorld = 8,
-        Remove = 9,
-        NotifyChanged = 10,
-        Clone = 11,
-        Dispose = 12
+        WorldSet = 2,
+        WorldRemove = 3,
+        Enable = 4,
+        Disable = 5,
+        EnableT = 6,
+        DisableT = 7,
+        Set = 8,
+        SetSameAs = 9,
+        SetSameAsWorld = 10,
+        Remove = 11,
+        NotifyChanged = 12,
+        Clone = 13,
+        Dispose = 14
     }
 }

@@ -1,3 +1,10 @@
+breaking changes:
+remove EntityCommandRecorder.CreateEntity method, see new WorldRecord type
+
+---
+
+added EntityCommandRecorder.Record(World) method
+added WorldRecord type to record action on World
 added EntitySortedSet type (#113)
 added EntityQueryBuilder.AsSortedSet methods to create EntitySortedSet
 added AEntitySortedSetSystem type

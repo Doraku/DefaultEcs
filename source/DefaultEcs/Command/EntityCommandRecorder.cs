@@ -88,23 +88,6 @@ namespace DefaultEcs.Command
 
         #region Methods
 
-        private void WriteCommand<T>(int offset, in T command)
-            where T : unmanaged
-        {
-            _lockObject?.EnterReadLock();
-            try
-            {
-                fixed (byte* memory = _memory)
-                {
-                    *(T*)(memory + offset) = command;
-                }
-            }
-            finally
-            {
-                _lockObject?.ExitReadLock();
-            }
-        }
-
         private int ReserveNextCommand(int commandSize)
         {
             static void Throw() => throw new InvalidOperationException("CommandBuffer is full.");
@@ -139,25 +122,45 @@ namespace DefaultEcs.Command
             return commandOffset;
         }
 
-        internal void WriteCommand<T>(in T command) where T : unmanaged => WriteCommand(ReserveNextCommand(sizeof(T)), command);
-
-        internal void WriteSetCommand<T>(int entityOffset, in T component)
+        internal int WriteCommand<T>(in T command) where T : unmanaged
         {
-            int offset = ReserveNextCommand(sizeof(EntityOffsetComponentCommand) + ComponentCommands.ComponentCommand<T>.SizeOfT);
+            int offset = ReserveNextCommand(sizeof(T));
 
             _lockObject?.EnterReadLock();
             try
             {
                 fixed (byte* memory = _memory)
                 {
-                    *(EntityOffsetComponentCommand*)(memory + offset) = new EntityOffsetComponentCommand(CommandType.Set, ComponentCommands.ComponentCommand<T>.Index, entityOffset);
-                    ComponentCommands.ComponentCommand<T>.WriteComponent(_objects, memory + offset + sizeof(EntityOffsetComponentCommand), component);
+                    *(T*)(memory + offset) = command;
                 }
             }
             finally
             {
                 _lockObject?.ExitReadLock();
             }
+
+            return offset;
+        }
+
+        internal int WriteComponentCommand<TCommand, TComponent>(in TCommand command, in TComponent component) where TCommand : unmanaged
+        {
+            int offset = ReserveNextCommand(sizeof(TCommand) + ComponentCommands.ComponentCommand<TComponent>.SizeOfT);
+
+            _lockObject?.EnterReadLock();
+            try
+            {
+                fixed (byte* memory = _memory)
+                {
+                    *(TCommand*)(memory + offset) = command;
+                    ComponentCommands.ComponentCommand<TComponent>.WriteComponent(_objects, memory + offset + sizeof(TCommand), component);
+                }
+            }
+            finally
+            {
+                _lockObject?.ExitReadLock();
+            }
+
+            return offset;
         }
 
         internal void WriteCloneCommand(int sourceOffset, int targetOffset, ComponentCloner cloner)
@@ -165,7 +168,7 @@ namespace DefaultEcs.Command
             int clonerIndex;
             lock (_objects)
             {
-                clonerIndex  = _objects.Count;
+                clonerIndex = _objects.Count;
                 _objects.Add(cloner);
             }
 
@@ -173,38 +176,20 @@ namespace DefaultEcs.Command
         }
 
         /// <summary>
+        /// Gives an <see cref="WorldRecord"/> to record action on the given <see cref="World"/>.
+        /// </summary>
+        /// <param name="world">The <see cref="World"/> to record action for.</param>
+        /// <returns>The <see cref="WorldRecord"/> used to record actions on the given <see cref="World"/>.</returns>
+        public WorldRecord Record(World world) => new(this, world ?? throw new ArgumentNullException(nameof(world)));
+
+        /// <summary>
         /// Gives an <see cref="EntityRecord"/> to record action on the given <see cref="Entity"/>.
         /// This command takes 9 bytes.
         /// </summary>
-        /// <param name="entity">The <see cref="EntityRecord"/> used to record action on the given <see cref="Entity"/>.</param>
+        /// <param name="entity">The <see cref="Entity"/> to record action for.</param>
         /// <returns>The <see cref="EntityRecord"/> used to record actions on the given <see cref="Entity"/>.</returns>
         /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
-        public EntityRecord Record(in Entity entity)
-        {
-            int offset = ReserveNextCommand(sizeof(EntityCommand));
-
-            WriteCommand(offset, new EntityCommand(CommandType.Entity, entity));
-
-            return new EntityRecord(this, offset + sizeof(CommandType));
-        }
-
-        /// <summary>
-        /// Records the creation of an <see cref="Entity"/> on a <see cref="World"/> and returns an <see cref="EntityRecord"/> to record action on it.
-        /// This command takes 9 bytes.
-        /// </summary>
-        /// <param name="world">The <see cref="World"/> on which the entity need to be created.</param>
-        /// <returns>The <see cref="EntityRecord"/> used to record actions on the later created <see cref="Entity"/>.</returns>
-        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
-        public EntityRecord CreateEntity(World world)
-        {
-            if (world is null) throw new ArgumentNullException(nameof(world));
-
-            int offset = ReserveNextCommand(sizeof(EntityCommand));
-
-            WriteCommand(offset, new EntityCommand(CommandType.CreateEntity, new Entity(world.WorldId)));
-
-            return new EntityRecord(this, offset + sizeof(CommandType));
-        }
+        public EntityRecord Record(in Entity entity) => new(this, WriteCommand(new EntityCommand(CommandType.Entity, entity)) + sizeof(CommandType));
 
         /// <summary>
         /// Executes all recorded commands and clears those commands.

@@ -11,14 +11,17 @@ namespace DefaultEcs.Internal.Command
 
         public unsafe delegate void WriteComponent<T>(List<object> objects, byte* memory, in T component);
 
-        public unsafe delegate int SetComponent(in Entity entity, List<object> objects, byte* memory);
+        public unsafe delegate int WorldSetComponent(World world, List<object> objects, byte* memory);
+
+        public unsafe delegate int EntitySetComponent(in Entity entity, List<object> objects, byte* memory);
 
         public unsafe class ComponentCommand<T> : IComponentCommand
         {
             #region Fields
 
             private static readonly WriteComponent<T> _writeComponentAction;
-            private static readonly SetComponent _setAction;
+            private static readonly WorldSetComponent _worldSetAction;
+            private static readonly EntitySetComponent _entitySetAction;
 
             [SuppressMessage("Design", "RCS1158:Static member in generic type should use a type parameter.")]
             public static readonly int Index;
@@ -46,16 +49,20 @@ namespace DefaultEcs.Internal.Command
                     _writeComponentAction = (WriteComponent<T>)typeInfo
                         .GetDeclaredMethod(nameof(UnmanagedComponentCommand<bool>.WriteComponent))
                         .CreateDelegate(typeof(WriteComponent<T>));
-                    _setAction = (SetComponent)typeInfo
-                        .GetDeclaredMethod(nameof(UnmanagedComponentCommand<bool>.SetComponent))
-                        .CreateDelegate(typeof(SetComponent));
+                    _worldSetAction = (WorldSetComponent)typeInfo
+                        .GetDeclaredMethod(nameof(UnmanagedComponentCommand<bool>.SetWorldComponent))
+                        .CreateDelegate(typeof(WorldSetComponent));
+                    _entitySetAction = (EntitySetComponent)typeInfo
+                        .GetDeclaredMethod(nameof(UnmanagedComponentCommand<bool>.SetEntityComponent))
+                        .CreateDelegate(typeof(EntitySetComponent));
                 }
                 else
                 {
                     SizeOfT = sizeof(int);
 
                     _writeComponentAction = ManagedComponentCommand<T>.WriteComponent;
-                    _setAction = ManagedComponentCommand<T>.Set;
+                    _worldSetAction = ManagedComponentCommand<T>.Set;
+                    _entitySetAction = ManagedComponentCommand<T>.Set;
                 }
             }
 
@@ -69,11 +76,15 @@ namespace DefaultEcs.Internal.Command
 
             #region IComponentCommand
 
+            public int Set(World world, List<object> objects, byte* memory) => _worldSetAction(world, objects, memory);
+
+            public void Remove(World world) => world.Remove<T>();
+
             public void Enable(in Entity entity) => entity.Enable<T>();
 
             public void Disable(in Entity entity) => entity.Disable<T>();
 
-            public int Set(in Entity entity, List<object> objects, byte* memory) => _setAction(entity, objects, memory);
+            public int Set(in Entity entity, List<object> objects, byte* memory) => _entitySetAction(entity, objects, memory);
 
             public void SetSameAs(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
 

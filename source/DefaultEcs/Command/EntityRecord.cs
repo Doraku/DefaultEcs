@@ -66,7 +66,7 @@ namespace DefaultEcs.Command
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
         /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
-        public void Set<T>(in T component) => _recorder.WriteSetCommand(_offset, component);
+        public void Set<T>(in T component) => _recorder.WriteComponentCommand(new EntityOffsetComponentCommand(CommandType.Set, ComponentCommands.ComponentCommand<T>.Index, _offset), component);
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> to its default value on the corresponding <see cref="Entity"/>.
@@ -119,7 +119,7 @@ namespace DefaultEcs.Command
         /// <exception cref="ArgumentNullException"><paramref name="world"/> or <paramref name="cloner"/> was null.</exception>
         public EntityRecord CopyTo(World world, ComponentCloner cloner)
         {
-            EntityRecord copy = _recorder.CreateEntity(world);
+            EntityRecord copy = _recorder.Record(world).CreateEntity();
 
             _recorder.WriteCloneCommand(_offset, copy._offset, cloner ?? throw new ArgumentNullException(nameof(cloner)));
 

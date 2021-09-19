@@ -13,6 +13,13 @@ namespace DefaultEcs.Internal.Command
             }
         }
 
+        public static int Set(World world, List<object> objects, byte* memory)
+        {
+            world.Set((T)objects[*(int*)memory]);
+
+            return sizeof(int);
+        }
+
         public static int Set(in Entity entity, List<object> objects, byte* memory)
         {
             entity.Set((T)objects[*(int*)memory]);
