@@ -5,13 +5,13 @@ This page contains some more specific questions you could have which are not cov
 - [How to have multiple entities dependencies in systems?](#system_dependencies)
 - [How to queue messages instead of handling them synchronously?](#queue_message)
 - [How to use DefaultEcs in Unity?](#unity)
+- [How to update systems at half the framerate?](#system_decorator)
 
 <a name='defaultecs'></a>
 ## Why the name DefaultEcs?
 Naming things is hard, and I am certainly bad at it. The name DefaultEcs has two opposite meaning:
 - making this framework as good as possible so it just become the default choice for ecs
 - a play on the C# `default()` syntax, which return a zeroed variable for a struct type or null for a reference type, `default(ecs)` giving you nothing of importance in the end as I am not that bright and the framework may not be that good
-
 
 <a name='game_loop'></a>
 ## How to use DefaultEcs in a game loop?
@@ -120,3 +120,34 @@ Once the dlls inside your Unity project you will then need to disable `Validate 
 Note that this feature has only been available since a specific version of Unity.
 
 You should then be able to use DefaultEcs in your Unity project. Keep in mind that if you choose the IL2CPP backend, some features will not work (the provided serializers) and some others will require extra code (check [AoTHelper](https://github.com/Doraku/DefaultEcs/blob/master/documentation/api/DefaultEcs-AoTHelper.md)).
+
+<a name='system_decorator'></a>
+## How to update systems at half the framerate?
+Sometimes you may want to execute your systems update under certain condition (different framerate, some other condition). To do so it is preferable use the decorator pattern with the `ISystem<T>` as base.
+```csharp
+public sealed HalfUpdateSystem<T> : ISystem<T>
+{
+    private readonly ISystem<T> _system;
+    
+    private bool _oddUpdate;
+    
+    public HalfUpdateSystem(params ISystem<T> systems)
+    {
+        _systems = new SequentialSystem<T>(systems);
+	_oddUpdate = false;
+    }
+    
+    public bool IsEnabled { get; set; } = true;
+    
+    public void Update(T state)
+    {
+        if (IsEnabled && (_oddUpdate = !_oddUpdate))
+	{
+	    _system.Update(state);
+	}
+    }
+    
+    public void Dispose() => _system.Dispose();
+}
+```
+Obviously you can use the rule you want for the update (check a specific amount of time has passed, ...) this is just an example.
