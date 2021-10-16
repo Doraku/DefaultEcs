@@ -49,6 +49,20 @@ namespace DefaultEcs
 
         #endregion
 
+        #region Events
+
+        /// <summary>
+        /// Occurs when an <see cref="Entity"/> is added in the current <see cref="EntitySet"/>.
+        /// </summary>
+        public event EntityAddedHandler EntityAdded;
+
+        /// <summary>
+        /// Occurs when an <see cref="Entity"/> is removed from the current <see cref="EntitySet"/>.
+        /// </summary>
+        public event EntityRemovedHandler EntityRemoved;
+
+        #endregion
+
         #region Initialisation
 
         internal EntitySet(
@@ -143,6 +157,8 @@ namespace DefaultEcs
                 ArrayExtension.EnsureLength(ref _entities, index, _worldMaxCapacity);
 
                 _entities[index] = new Entity(_worldId, entityId);
+
+                EntityAdded?.Invoke(new Entity(_worldId, entityId));
             }
         }
 
@@ -164,6 +180,8 @@ namespace DefaultEcs
                     }
 
                     index = -1;
+
+                    EntityRemoved?.Invoke(new Entity(_worldId, entityId));
                 }
             }
         }

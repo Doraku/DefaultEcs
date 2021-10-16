@@ -241,6 +241,20 @@ namespace DefaultEcs
 
         #endregion
 
+        #region Events
+
+        /// <summary>
+        /// Occurs when an <see cref="Entity"/> is added in the current <see cref="EntityMap{TKey}"/>.
+        /// </summary>
+        public event EntityAddedHandler EntityAdded;
+
+        /// <summary>
+        /// Occurs when an <see cref="Entity"/> is removed from the current <see cref="EntityMap{TKey}"/>.
+        /// </summary>
+        public event EntityRemovedHandler EntityRemoved;
+
+        #endregion
+
         #region Initialisation
 
         internal EntityMultiMap(
@@ -390,6 +404,8 @@ namespace DefaultEcs
                 }
 
                 mapping.ItemIndex = mapping.Entities.Add(new Entity(_worldId, entityId), _worldMaxCapacity);
+
+                EntityAdded?.Invoke(new Entity(_worldId, entityId));
             }
         }
 
@@ -406,6 +422,8 @@ namespace DefaultEcs
                         _mapping[newId].ItemIndex = mapping.ItemIndex;
                     }
                     mapping = default;
+
+                    EntityRemoved?.Invoke(new Entity(_worldId, entityId));
                 }
             }
         }

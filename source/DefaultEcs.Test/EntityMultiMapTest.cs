@@ -232,5 +232,40 @@ namespace DefaultEcs.Test
 
             Check.That(((Array)typeof(EntityMultiMap<int>).GetField("_mapping", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(map)).Length).IsEqualTo(2);
         }
+
+        [Fact]
+        public void EntityAdded_Should_be_called()
+        {
+            using World world = new();
+
+            using EntityMultiMap<int> set = world.GetEntities().AsMultiMap<int>();
+
+            Entity addedEntity = default;
+
+            set.EntityAdded += (in Entity e) => addedEntity = e;
+
+            Entity entity = world.CreateEntity();
+            entity.Set(42);
+
+            Check.That(entity).IsEqualTo(addedEntity);
+        }
+
+        [Fact]
+        public void EntityRemoved_Should_be_called()
+        {
+            using World world = new();
+
+            using EntityMultiMap<int> set = world.GetEntities().AsMultiMap<int>();
+
+            Entity removedEntity = default;
+
+            set.EntityRemoved += (in Entity e) => removedEntity = e;
+
+            Entity entity = world.CreateEntity();
+            entity.Set(42);
+            entity.Disable();
+
+            Check.That(entity).IsEqualTo(removedEntity);
+        }
     }
 }

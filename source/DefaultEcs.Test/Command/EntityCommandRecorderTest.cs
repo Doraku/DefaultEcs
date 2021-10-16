@@ -27,7 +27,7 @@ namespace DefaultEcs.Test.Command
         {
             using EntityCommandRecorder recorder = new(1024);
 
-            Check.ThatCode(() => recorder.Record(default(World))).Throws<ArgumentNullException>();
+            Check.ThatCode(() => recorder.Record(default)).Throws<ArgumentNullException>();
         }
 
         [Fact]

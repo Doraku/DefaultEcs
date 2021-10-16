@@ -133,6 +133,20 @@ namespace DefaultEcs
 
         #endregion
 
+        #region Events
+
+        /// <summary>
+        /// Occurs when an <see cref="Entity"/> is added in the current <see cref="EntityMap{TKey}"/>.
+        /// </summary>
+        public event EntityAddedHandler EntityAdded;
+
+        /// <summary>
+        /// Occurs when an <see cref="Entity"/> is removed from the current <see cref="EntityMap{TKey}"/>.
+        /// </summary>
+        public event EntityRemovedHandler EntityRemoved;
+
+        #endregion
+
         #region Initialisation
 
         internal EntityMap(
@@ -234,7 +248,10 @@ namespace DefaultEcs
             if (!_entityIds[entityId])
             {
                 _entityIds[entityId] = true;
+
                 _entities.Add(_components.Get(entityId), new Entity(_worldId, entityId));
+
+                EntityAdded?.Invoke(new Entity(_worldId, entityId));
             }
         }
 
@@ -244,6 +261,8 @@ namespace DefaultEcs
             {
                 _entityIds[entityId] = false;
                 _entities.Remove(_previousComponents.Get(entityId));
+
+                EntityRemoved?.Invoke(new Entity(_worldId, entityId));
             }
         }
 

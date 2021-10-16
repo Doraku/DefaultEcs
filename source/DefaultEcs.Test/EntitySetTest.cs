@@ -174,6 +174,39 @@ namespace DefaultEcs.Test
             Check.That(((Array)typeof(EntitySet).GetField("_entities", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(set)).Length).IsEqualTo(set.Count);
         }
 
+        [Fact]
+        public void EntityAdded_Should_be_called()
+        {
+            using World world = new();
+
+            using EntitySet set = world.GetEntities().AsSet();
+
+            Entity addedEntity = default;
+
+            set.EntityAdded += (in Entity e) => addedEntity = e;
+
+            Entity entity = world.CreateEntity();
+
+            Check.That(entity).IsEqualTo(addedEntity);
+        }
+
+        [Fact]
+        public void EntityRemoved_Should_be_called()
+        {
+            using World world = new();
+
+            using EntitySet set = world.GetEntities().AsSet();
+
+            Entity removedEntity = default;
+
+            set.EntityRemoved += (in Entity e) => removedEntity = e;
+
+            Entity entity = world.CreateEntity();
+            entity.Disable();
+
+            Check.That(entity).IsEqualTo(removedEntity);
+        }
+
         #endregion
     }
 }

@@ -5,6 +5,12 @@ remove EntityCommandRecorder.CreateEntity method, see new WorldRecord type
 
 added EntityCommandRecorder.Record(World) method
 added WorldRecord type to record action on World
+added EntitySet.EntityAdded event
+added EntitySet.EntityRemoved event
+added EntityMap.EntityAdded event
+added EntityMap.EntityRemoved event
+added EntityMultiMap.EntityAdded event
+added EntityMultiMap.EntityRemoved event
 added EntitySortedSet type (#113)
 added EntityQueryBuilder.AsSortedSet methods to create EntitySortedSet
 added AEntitySortedSetSystem type

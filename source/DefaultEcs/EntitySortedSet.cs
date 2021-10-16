@@ -50,6 +50,20 @@ namespace DefaultEcs
 
         #endregion
 
+        #region Events
+
+        /// <summary>
+        /// Occurs when an <see cref="Entity"/> is added in the current <see cref="EntitySortedSet{TComponent}"/>.
+        /// </summary>
+        public event EntityAddedHandler EntityAdded;
+
+        /// <summary>
+        /// Occurs when an <see cref="Entity"/> is removed from the current <see cref="EntitySortedSet{TComponent}"/>.
+        /// </summary>
+        public event EntityRemovedHandler EntityRemoved;
+
+        #endregion
+
         #region Initialisation
 
         internal EntitySortedSet(
@@ -161,6 +175,8 @@ namespace DefaultEcs
                         _mapping[_entities[i].EntityId] = i;
                     }
                 }
+
+                EntityAdded?.Invoke(new Entity(_worldId, entityId));
             }
         }
 
@@ -184,6 +200,8 @@ namespace DefaultEcs
                     }
 
                     index = -1;
+
+                    EntityRemoved?.Invoke(new Entity(_worldId, entityId));
                 }
             }
         }

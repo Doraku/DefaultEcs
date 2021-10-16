@@ -85,4 +85,16 @@
     /// <param name="value">The component value.</param>
     /// <returns>true if the component meets the criteria; otherwise, false.</returns>
     public delegate bool ComponentPredicate<T>(in T value);
+
+    /// <summary>
+    /// Represents the method that will called when an <see cref="Entity"/> is added to a container.
+    /// </summary>
+    /// <param name="entity">The added <see cref="Entity"/>.</param>
+    public delegate void EntityAddedHandler(in Entity entity);
+
+    /// <summary>
+    /// Represents the method that will called when an <see cref="Entity"/> is removed from a container.
+    /// </summary>
+    /// <param name="entity">The removed <see cref="Entity"/>.</param>
+    public delegate void EntityRemovedHandler(in Entity entity);
 }

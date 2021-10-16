@@ -240,6 +240,41 @@ namespace DefaultEcs.Test
             Check.That(((Array)typeof(EntitySortedSet<int>).GetField("_entities", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(sortedSet)).Length).IsEqualTo(sortedSet.Count);
         }
 
+        [Fact]
+        public void EntityAdded_Should_be_called()
+        {
+            using World world = new();
+
+            using EntitySortedSet<int> set = world.GetEntities().AsSortedSet<int>();
+
+            Entity addedEntity = default;
+
+            set.EntityAdded += (in Entity e) => addedEntity = e;
+
+            Entity entity = world.CreateEntity();
+            entity.Set(42);
+
+            Check.That(entity).IsEqualTo(addedEntity);
+        }
+
+        [Fact]
+        public void EntityRemoved_Should_be_called()
+        {
+            using World world = new();
+
+            using EntitySortedSet<int> set = world.GetEntities().AsSortedSet<int>();
+
+            Entity removedEntity = default;
+
+            set.EntityRemoved += (in Entity e) => removedEntity = e;
+
+            Entity entity = world.CreateEntity();
+            entity.Set(42);
+            entity.Disable();
+
+            Check.That(entity).IsEqualTo(removedEntity);
+        }
+
         #endregion
     }
 }
