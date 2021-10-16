@@ -16,7 +16,7 @@ namespace DefaultEcs
     /// <typeparam name="TKey">The type of the component used as key.</typeparam>
     [DebuggerTypeProxy(typeof(EntityMapDebugView<>))]
     [DebuggerDisplay("EntityMap[{_entities.Count}]")]
-    public sealed class EntityMap<TKey> : IEntityContainer, IDisposable
+    public sealed class EntityMap<TKey> : IEntityContainer
     {
         #region Types
 
@@ -133,20 +133,6 @@ namespace DefaultEcs
 
         #endregion
 
-        #region Events
-
-        /// <summary>
-        /// Occurs when an <see cref="Entity"/> is added in the current <see cref="EntityMap{TKey}"/>.
-        /// </summary>
-        public event EntityAddedHandler EntityAdded;
-
-        /// <summary>
-        /// Occurs when an <see cref="Entity"/> is removed from the current <see cref="EntityMap{TKey}"/>.
-        /// </summary>
-        public event EntityRemovedHandler EntityRemoved;
-
-        #endregion
-
         #region Initialisation
 
         internal EntityMap(
@@ -202,13 +188,6 @@ namespace DefaultEcs
         #region Methods
 
         /// <summary>
-        /// Determines whether the <see cref="EntityMap{TKey}"/> contains a specific <see cref="Entity"/>.
-        /// </summary>
-        /// <param name="entity">The <see cref="Entity"/> to locate in the <see cref="EntityMap{TKey}"/>.</param>
-        /// <returns>true if the <see cref="EntityMap{TKey}"/> contains the specified <see cref="Entity"/>; otherwise, false.</returns>
-        public bool ContainsEntity(Entity entity) => entity.EntityId < _entityIds.Length && _entityIds[entity.EntityId];
-
-        /// <summary>
         /// Determines whether the <see cref="EntityMap{TKey}"/> contains the specified key.
         /// </summary>
         /// <param name="key">The key to locate in the <see cref="EntityMap{TKey}"/>.</param>
@@ -223,11 +202,20 @@ namespace DefaultEcs
         /// <returns>true if the <see cref="EntityMap{TKey}"/> contains an <see cref="Entity"/> with the specified key; otherwise, false.</returns>
         public bool TryGetEntity(TKey key, out Entity entity) => _entities.TryGetValue(key, out entity);
 
-        /// <summary>
-        /// Clears current instance of its entities if it was created with some reactive filter (<see cref="EntityQueryBuilder.WhenAdded{T}"/>, <see cref="EntityQueryBuilder.WhenChanged{T}"/> or <see cref="EntityQueryBuilder.WhenRemoved{T}"/>).
-        /// Does nothing if it was created from a static filter.
-        /// This method need to be called after current instance content has been processed in a update cycle.
-        /// </summary>
+        #endregion
+
+        #region IEntityContainer
+
+        /// <inheritdoc/>
+        public event EntityAddedHandler EntityAdded;
+
+        /// <inheritdoc/>
+        public event EntityRemovedHandler EntityRemoved;
+
+        /// <inheritdoc/>
+        public bool Contains(in Entity entity) => entity.EntityId < _entityIds.Length && _entityIds[entity.EntityId];
+
+        /// <inheritdoc/>
         public void Complete()
         {
             if (_needClearing)
@@ -237,11 +225,17 @@ namespace DefaultEcs
             }
         }
 
-        #endregion
+        /// <inheritdoc/>
+        public void TrimExcess()
+        {
+            ArrayExtension.Trim(ref _entityIds, Array.FindLastIndex(_entityIds, i => i) + 1);
 
-        #region IEntityContainer
+#if NETSTANDARD2_1
+            _entities.TrimExcess();
+#endif
+        }
 
-        void IEntityContainer.Add(int entityId)
+        void Internal.IEntityContainer.Add(int entityId)
         {
             ArrayExtension.EnsureLength(ref _entityIds, entityId, _worldMaxCapacity);
 
@@ -255,7 +249,7 @@ namespace DefaultEcs
             }
         }
 
-        void IEntityContainer.Remove(int entityId)
+        void Internal.IEntityContainer.Remove(int entityId)
         {
             if (entityId < _entityIds.Length && _entityIds[entityId])
             {
@@ -264,18 +258,6 @@ namespace DefaultEcs
 
                 EntityRemoved?.Invoke(new Entity(_worldId, entityId));
             }
-        }
-
-        /// <summary>
-        /// Resizes inner storage to exactly the number of <see cref="Entity"/> this <see cref="EntityMap{TKey}"/> contains.
-        /// </summary>
-        public void TrimExcess()
-        {
-            ArrayExtension.Trim(ref _entityIds, Array.FindLastIndex(_entityIds, i => i) + 1);
-
-#if NETSTANDARD2_1
-            _entities.TrimExcess();
-#endif
         }
 
         #endregion

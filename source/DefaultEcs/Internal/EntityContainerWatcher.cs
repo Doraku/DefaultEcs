@@ -7,7 +7,7 @@ namespace DefaultEcs.Internal
     {
         #region Fields
 
-        private readonly IEntityContainer _container;
+        private readonly DefaultEcs.IEntityContainer _container;
         private readonly Predicate<ComponentEnum> _filter;
         private readonly Predicate<int> _predicate;
 
@@ -15,7 +15,7 @@ namespace DefaultEcs.Internal
 
         #region Initialisation
 
-        public EntityContainerWatcher(IEntityContainer container, Predicate<ComponentEnum> filter, Predicate<int> predicate)
+        public EntityContainerWatcher(DefaultEcs.IEntityContainer container, Predicate<ComponentEnum> filter, Predicate<int> predicate)
         {
             _container = container;
             _filter = filter;

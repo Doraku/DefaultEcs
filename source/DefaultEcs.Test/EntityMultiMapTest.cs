@@ -20,7 +20,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void ContainsEntity_Should_return_weither_an_entity_is_in_or_not()
+        public void Contains_Should_return_weither_an_entity_is_in_or_not()
         {
             using World world = new();
 
@@ -28,24 +28,24 @@ namespace DefaultEcs.Test
 
             using EntityMultiMap<int> map = world.GetEntities().AsMultiMap<int>();
 
-            Check.That(map.ContainsEntity(entity)).IsFalse();
+            Check.That(map.Contains(entity)).IsFalse();
 
             entity.Set(42);
             world.CreateEntity().Set(42);
 
-            Check.That(map.ContainsEntity(entity)).IsTrue();
+            Check.That(map.Contains(entity)).IsTrue();
 
             entity.Disable<int>();
 
-            Check.That(map.ContainsEntity(entity)).IsFalse();
+            Check.That(map.Contains(entity)).IsFalse();
 
             entity.Enable<int>();
 
-            Check.That(map.ContainsEntity(entity)).IsTrue();
+            Check.That(map.Contains(entity)).IsTrue();
 
             entity.Remove<int>();
 
-            Check.That(map.ContainsEntity(entity)).IsFalse();
+            Check.That(map.Contains(entity)).IsFalse();
         }
 
         [Fact]

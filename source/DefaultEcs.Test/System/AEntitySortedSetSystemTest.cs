@@ -1,8 +1,6 @@
 ﻿using System;
 using DefaultEcs.System;
-using DefaultEcs.Threading;
 using NFluent;
-using NSubstitute;
 using Xunit;
 
 namespace DefaultEcs.Test.System

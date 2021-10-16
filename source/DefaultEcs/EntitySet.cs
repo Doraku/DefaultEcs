@@ -15,7 +15,7 @@ namespace DefaultEcs
     /// </summary>
     [DebuggerTypeProxy(typeof(EntitySetDebugView))]
     [DebuggerDisplay("EntitySet[{Count}]")]
-    public sealed class EntitySet : IEntityContainer, ISortable, IDisposable
+    public sealed class EntitySet : IEntityContainer, ISortable
     {
         #region Fields
 
@@ -46,20 +46,6 @@ namespace DefaultEcs
             get;
             private set;
         }
-
-        #endregion
-
-        #region Events
-
-        /// <summary>
-        /// Occurs when an <see cref="Entity"/> is added in the current <see cref="EntitySet"/>.
-        /// </summary>
-        public event EntityAddedHandler EntityAdded;
-
-        /// <summary>
-        /// Occurs when an <see cref="Entity"/> is removed from the current <see cref="EntitySet"/>.
-        /// </summary>
-        public event EntityRemovedHandler EntityRemoved;
 
         #endregion
 
@@ -114,11 +100,20 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<Entity> GetEntities() => GetEntities(0, Count);
 
-        /// <summary>
-        /// Clears current instance of its entities if it was created with some reactive filter (<see cref="EntityQueryBuilder.WhenAdded{T}"/>, <see cref="EntityQueryBuilder.WhenChanged{T}"/> or <see cref="EntityQueryBuilder.WhenRemoved{T}"/>).
-        /// Does nothing if it was created from a static filter.
-        /// This method need to be called after current instance content has been processed in a update cycle.
-        /// </summary>
+        #endregion
+
+        #region IEntityContainer
+
+        /// <inheritdoc/>
+        public event EntityAddedHandler EntityAdded;
+
+        /// <inheritdoc/>
+        public event EntityRemovedHandler EntityRemoved;
+
+        /// <inheritdoc/>
+        public bool Contains(in Entity entity) => entity.WorldId == _worldId && entity.EntityId < _mapping.Length && _mapping[entity.EntityId] != -1;
+
+        /// <inheritdoc/>
         public void Complete()
         {
             if (_needClearing && Count > 0)
@@ -129,18 +124,14 @@ namespace DefaultEcs
             }
         }
 
-        /// <summary>
-        /// Determines whether an <see cref="Entity"/> is in the <see cref="EntitySet"/>.
-        /// </summary>
-        /// <param name="entity">The <see cref="Entity"/> to locate in the <see cref="EntitySet"/>.</param>
-        /// <returns>true if <paramref name="entity" /> is found in the <see cref="EntitySet" />; otherwise, false.</returns>
-        public bool Contains(in Entity entity) => entity.WorldId == _worldId && entity.EntityId < _mapping.Length && _mapping[entity.EntityId] != -1;
+        /// <inheritdoc/>
+        public void TrimExcess()
+        {
+            ArrayExtension.Trim(ref _entities, Count);
+            ArrayExtension.Trim(ref _mapping, Array.FindLastIndex(_mapping, i => i != -1) + 1);
+        }
 
-        #endregion
-
-        #region IEntityContainer
-
-        void IEntityContainer.Add(int entityId)
+        void Internal.IEntityContainer.Add(int entityId)
         {
             ArrayExtension.EnsureLength(ref _mapping, entityId, _worldMaxCapacity, -1);
 
@@ -162,7 +153,7 @@ namespace DefaultEcs
             }
         }
 
-        void IEntityContainer.Remove(int entityId)
+        void Internal.IEntityContainer.Remove(int entityId)
         {
             if (entityId < _mapping.Length)
             {
@@ -184,15 +175,6 @@ namespace DefaultEcs
                     EntityRemoved?.Invoke(new Entity(_worldId, entityId));
                 }
             }
-        }
-
-        /// <summary>
-        /// Resizes inner storage to exactly the number of <see cref="Entity"/> this <see cref="EntitySet"/> contains.
-        /// </summary>
-        public void TrimExcess()
-        {
-            ArrayExtension.Trim(ref _entities, Count);
-            ArrayExtension.Trim(ref _mapping, Array.FindLastIndex(_mapping, i => i != -1) + 1);
         }
 
         #endregion

@@ -1,8 +1,11 @@
 breaking changes:
 remove EntityCommandRecorder.CreateEntity method, see new WorldRecord type
+renamed EntityMap.ContainsEntity method to Contains
+renamed EntityMultiMap.ContainsEntity method to Contains
 
 ---
 
+added IEntityContainer type as common base interface for all entity container (EntitySet, EntitySortedSet, EntityMap, EntityMultiMap)
 added EntityCommandRecorder.Record(World) method
 added WorldRecord type to record action on World
 added EntitySet.EntityAdded event
