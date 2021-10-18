@@ -5,6 +5,11 @@ namespace DefaultEcs
     internal interface IEntityContainer : Internal.IEntityContainer, IDisposable
     {
         /// <summary>
+        /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="IEntityContainer"/> originate.
+        /// </summary>
+        World World { get; }
+
+        /// <summary>
         /// Occurs when an <see cref="Entity"/> is added in the current <see cref="IEntityContainer"/>.
         /// </summary>
         event EntityAddedHandler EntityAdded;
