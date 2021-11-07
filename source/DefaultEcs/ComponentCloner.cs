@@ -68,7 +68,7 @@ namespace DefaultEcs
         /// <param name="to">The target <see cref="Entity"/>.</param>
         public void Clone(in Entity from, in Entity to)
         {
-            _from = from.Components;
+            _from = from.World.EntityInfos[from.EntityId].Components;
             _to = to;
 
             from.ReadAllComponents(_reader);

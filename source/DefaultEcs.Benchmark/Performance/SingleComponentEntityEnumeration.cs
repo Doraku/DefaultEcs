@@ -1,5 +1,6 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
+using DefaultEcs.Internal;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
 
@@ -88,6 +89,8 @@ namespace DefaultEcs.Benchmark.Performance
         private World _defaultWorld;
         private DefaultParallelRunner _defaultRunner;
         private EntitySet _defaultEntitySet;
+        private Archetype _archetype;
+        private DefaultComponent[] _components;
         private DefaultEcsSystem _defaultSystem;
         private DefaultEcsSystem _defaultMultiSystem;
         private DefaultEcsEntityComponentSystem _defaultEntityComponentSystem;
@@ -120,6 +123,9 @@ namespace DefaultEcs.Benchmark.Performance
                 Entity defaultEntity = _defaultWorld.CreateEntity();
                 defaultEntity.Set<DefaultComponent>();
             }
+
+            _archetype = _defaultWorld.GetArchetype<DefaultComponent>();
+            _components = _archetype.GetArray<DefaultComponent>();
         }
 
         [GlobalCleanup]
@@ -129,46 +135,55 @@ namespace DefaultEcs.Benchmark.Performance
             _defaultWorld.Dispose();
         }
 
+        //[Benchmark]
+        //public void DefaultEcs_EntitySet()
+        //{
+        //    foreach (ref readonly Entity entity in _defaultEntitySet.GetEntities())
+        //    {
+        //        ++entity.Get<DefaultComponent>().Value;
+        //    }
+        //}
+
         [Benchmark]
-        public void DefaultEcs_EntitySet()
+        public void DefaultEcs_Archetype()
         {
-            foreach (ref readonly Entity entity in _defaultEntitySet.GetEntities())
-            {
-                ++entity.Get<DefaultComponent>().Value;
-            }
-        }
-
-        [Benchmark]
-        public void DefaultEcs_System() => _defaultSystem.Update(42);
-
-        [Benchmark]
-        public void DefaultEcs_MultiSystem() => _defaultMultiSystem.Update(42);
-
-        [Benchmark]
-        public void DefaultEcs_EntityComponentSystem() => _defaultEntityComponentSystem.Update(42);
-
-        [Benchmark]
-        public void DefaultEcs_MultiEntityComponentSystem() => _defaultMultiEntityComponentSystem.Update(42);
-
-        [Benchmark]
-        public void DefaultEcs_Component()
-        {
-            foreach (ref DefaultComponent component in _defaultWorld.GetAll<DefaultComponent>())
+            foreach (ref DefaultComponent component in _archetype.GetPool<DefaultComponent>().Span)
             {
                 ++component.Value;
             }
         }
 
         [Benchmark]
-        public void DefaultEcs_ComponentSystem() => _defaultComponentSystem.Update(42);
+        public void DefaultEcs_System() => _defaultSystem.Update(42);
 
-        [Benchmark]
-        public void DefaultEcs_ComponentMultiSystem() => _defaultComponentMultiSystem.Update(42);
+        //[Benchmark]
+        //public void DefaultEcs_MultiSystem() => _defaultMultiSystem.Update(42);
 
-        [Benchmark]
-        public void DefaultEcs_GeneratorSystem() => _defaultGeneratorSystem.Update(42);
+        //[Benchmark]
+        //public void DefaultEcs_EntityComponentSystem() => _defaultEntityComponentSystem.Update(42);
 
-        [Benchmark]
-        public void DefaultEcs_GeneratorMultiSystem() => _defaultGeneratorMultiSystem.Update(42);
+        //[Benchmark]
+        //public void DefaultEcs_MultiEntityComponentSystem() => _defaultMultiEntityComponentSystem.Update(42);
+
+        //[Benchmark]
+        //public void DefaultEcs_Component()
+        //{
+        //    foreach (ref DefaultComponent component in _defaultWorld.GetAll<DefaultComponent>())
+        //    {
+        //        ++component.Value;
+        //    }
+        //}
+
+        //[Benchmark]
+        //public void DefaultEcs_ComponentSystem() => _defaultComponentSystem.Update(42);
+
+        //[Benchmark]
+        //public void DefaultEcs_ComponentMultiSystem() => _defaultComponentMultiSystem.Update(42);
+
+        //[Benchmark]
+        //public void DefaultEcs_GeneratorSystem() => _defaultGeneratorSystem.Update(42);
+
+        //[Benchmark]
+        //public void DefaultEcs_GeneratorMultiSystem() => _defaultGeneratorMultiSystem.Update(42);
     }
 }

@@ -1,10 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs.Internal
 {
-    internal struct ComponentEnum
+    internal struct ComponentEnum : IEquatable<ComponentEnum>
     {
         #region Fields
 
@@ -99,6 +100,71 @@ namespace DefaultEcs.Internal
             {
                 return new string((char*)bits, 0, (_bitArray?.Length ?? 0) * 2);
             }
+        }
+
+        #endregion
+
+        #region IEquatable
+
+        public bool Equals(ComponentEnum other)
+        {
+            static bool Equals(uint[] first, uint[] second)
+            {
+                int i = 0;
+                for (; i < first.Length; ++i)
+                {
+                    if (first[i] != second[i])
+                    {
+                        return false;
+                    }
+                }
+
+                for (; i < second.Length; ++i)
+                {
+                    if (second[i] > 0)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            uint[] bits = _bitArray ?? EmptyArray<uint>.Value;
+            uint[] otherBits = other._bitArray ?? EmptyArray<uint>.Value;
+
+            return bits.Length > otherBits.Length ? Equals(otherBits, bits) : Equals(bits, otherBits);
+        }
+
+        #endregion
+
+        #region Object
+
+        public override bool Equals(object obj)
+        {
+            return obj is ComponentEnum componentEnum && Equals(componentEnum);
+        }
+
+        public override int GetHashCode()
+        {
+#if NETSTANDARD2_1_OR_GREATER
+            HashCode hashCode = new();
+
+            foreach (uint bits in _bitArray ?? EmptyArray<uint>.Value)
+            {
+                hashCode.Add(bits);
+            }
+
+            return hashCode.ToHashCode();
+#else
+            int hashCode = 0;
+            foreach (uint bits in _bitArray ?? EmptyArray<uint>.Value)
+            {
+                hashCode = unchecked((hashCode * 17) + (int)bits);
+            }
+
+            return hashCode;
+#endif
         }
 
         #endregion

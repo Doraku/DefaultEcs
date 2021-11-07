@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using DefaultEcs.Serialization;
 using DefaultEcs.Internal;
 using DefaultEcs.Internal.Debug;
 using DefaultEcs.Internal.Helper;
 using DefaultEcs.Internal.Message;
+using DefaultEcs.Serialization;
 using DefaultEcs.Threading;
 
 namespace DefaultEcs
@@ -147,9 +147,11 @@ namespace DefaultEcs
 
         internal static readonly ComponentFlag IsAliveFlag;
         internal static readonly ComponentFlag IsEnabledFlag;
+        internal static readonly ComponentEnum BaseArchetypeComponents;
 
         internal static World[] Worlds;
 
+        private readonly IntDispenser _archetypeIdDispenser;
         private readonly IntDispenser _entityIdDispenser;
         private readonly Optimizer _optimizer;
 
@@ -158,6 +160,8 @@ namespace DefaultEcs
         private volatile bool _isDisposed;
 
         internal EntityInfo[] EntityInfos;
+        internal Dictionary<ComponentEnum, Archetype> ArchetypesByCompositions;
+        internal Archetype[] Archetypes;
 
         #endregion
 
@@ -183,6 +187,8 @@ namespace DefaultEcs
 
             IsAliveFlag = ComponentFlag.GetNextFlag();
             IsEnabledFlag = ComponentFlag.GetNextFlag();
+            BaseArchetypeComponents[IsAliveFlag] = true;
+            BaseArchetypeComponents[IsEnabledFlag] = true;
         }
 
         /// <summary>
@@ -197,12 +203,15 @@ namespace DefaultEcs
                 throw new ArgumentException("Argument cannot be negative", nameof(maxCapacity));
             }
 
+            _archetypeIdDispenser = new IntDispenser(0);
             _entityIdDispenser = new IntDispenser(0);
             _optimizer = new Optimizer();
             WorldId = (short)_worldIdDispenser.GetFreeInt();
 
             MaxCapacity = maxCapacity;
             EntityInfos = EmptyArray<EntityInfo>.Value;
+            ArchetypesByCompositions = new Dictionary<ComponentEnum, Archetype>();
+            Archetypes = EmptyArray<Archetype>.Value;
 
             lock (_lockObject)
             {
@@ -214,6 +223,8 @@ namespace DefaultEcs
             Subscribe<EntityDisposedMessage>(On);
 
             _isDisposed = false;
+
+            CreateArchetype(BaseArchetypeComponents);
         }
 
         /// <summary>
@@ -244,6 +255,21 @@ namespace DefaultEcs
 
         internal void Remove(ISortable optimizable) => _optimizer.Remove(optimizable);
 
+        internal Archetype CreateArchetype(ComponentEnum components)
+        {
+            int archetypeId = _archetypeIdDispenser.GetFreeInt();
+
+            ArrayExtension.EnsureLength(ref Archetypes, archetypeId);
+
+            components = components.Copy();
+            Archetype archetype = new(this, archetypeId, components);
+
+            ArchetypesByCompositions.Add(components, archetype);
+            Archetypes[archetypeId] = archetype;
+
+            return archetype;
+        }
+
         /// <summary>
         /// Creates a new instance of the <see cref="Entity"/> struct.
         /// This method is not thread safe.
@@ -263,36 +289,38 @@ namespace DefaultEcs
 
             EntityInfos[entityId].Components[IsAliveFlag] = true;
             EntityInfos[entityId].Components[IsEnabledFlag] = true;
+            EntityInfos[entityId].ArchetypeId = 1;
+            Archetypes[1].Add(entityId);
             Publish(new EntityCreatedMessage(entityId));
 
             return new Entity(WorldId, entityId);
         }
 
-        /// <summary>
-        /// Sets up the current <see cref="World"/> to handle component of type <typeparamref name="T"/> with a different maximum count than <see cref="MaxCapacity"/>.
-        /// If the type of component is already handled by the current <see cref="World"/>, does nothing.
-        /// This method is not thread safe.
-        /// </summary>
-        /// <typeparam name="T">The type of component.</typeparam>
-        /// <param name="maxCapacity">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
-        /// <returns>Whether the maximum count has been setted or not.</returns>
-        /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
-        public bool SetMaxCapacity<T>(int maxCapacity)
-        {
-            if (maxCapacity < 0)
-            {
-                throw new ArgumentException("Argument cannot be negative", nameof(maxCapacity));
-            }
+        ///// <summary>
+        ///// Sets up the current <see cref="World"/> to handle component of type <typeparamref name="T"/> with a different maximum count than <see cref="MaxCapacity"/>.
+        ///// If the type of component is already handled by the current <see cref="World"/>, does nothing.
+        ///// This method is not thread safe.
+        ///// </summary>
+        ///// <typeparam name="T">The type of component.</typeparam>
+        ///// <param name="maxCapacity">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
+        ///// <returns>Whether the maximum count has been setted or not.</returns>
+        ///// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
+        //public bool SetMaxCapacity<T>(int maxCapacity)
+        //{
+        //    if (maxCapacity < 0)
+        //    {
+        //        throw new ArgumentException("Argument cannot be negative", nameof(maxCapacity));
+        //    }
 
-            return ComponentManager<T>.GetOrCreate(WorldId, maxCapacity).MaxCapacity == maxCapacity;
-        }
+        //    return ComponentManager<T>.GetOrCreate(WorldId, maxCapacity).MaxCapacity == maxCapacity;
+        //}
 
-        /// <summary>
-        /// Gets the maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create.
-        /// </summary>
-        /// <typeparam name="T">The type of component.</typeparam>
-        /// <returns>The maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create, or -1 if it is currently not handled.</returns>
-        public int GetMaxCapacity<T>() => ComponentManager<T>.Get(WorldId)?.MaxCapacity ?? -1;
+        ///// <summary>
+        ///// Gets the maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create.
+        ///// </summary>
+        ///// <typeparam name="T">The type of component.</typeparam>
+        ///// <returns>The maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create, or -1 if it is currently not handled.</returns>
+        //public int GetMaxCapacity<T>() => ComponentManager<T>.Get(WorldId)?.MaxCapacity ?? -1;
 
         /// <summary>
         /// Gets all the component of a given type <typeparamref name="T"/>.
@@ -343,7 +371,7 @@ namespace DefaultEcs
         /// <returns>A reference to the component.</returns>
         /// <exception cref="Exception"><see cref="World"/> does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(0);
+        public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId][0].Get(0);
 
         /// <summary>
         /// Removes the component of type <typeparamref name="T"/> on the current <see cref="World"/>.
@@ -611,6 +639,33 @@ namespace DefaultEcs
             return Subscribe((in ComponentDisabledMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
                 ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
+        }
+
+        public Archetype GetArchetype<T>()
+        {
+            ComponentEnum components = BaseArchetypeComponents.Copy();
+            components[ComponentManager<T>.Flag] = true;
+
+            return ArchetypesByCompositions[components];
+        }
+
+        public Archetype GetArchetype<T1, T2>()
+        {
+            ComponentEnum components = BaseArchetypeComponents.Copy();
+            components[ComponentManager<T1>.Flag] = true;
+            components[ComponentManager<T2>.Flag] = true;
+
+            return ArchetypesByCompositions[components];
+        }
+
+        public Archetype GetArchetype<T1, T2, T3>()
+        {
+            ComponentEnum components = BaseArchetypeComponents.Copy();
+            components[ComponentManager<T1>.Flag] = true;
+            components[ComponentManager<T2>.Flag] = true;
+            components[ComponentManager<T3>.Flag] = true;
+
+            return ArchetypesByCompositions[components];
         }
 
         #endregion

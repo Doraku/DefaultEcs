@@ -1,5 +1,6 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
+using DefaultEcs.Internal;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
 
@@ -85,6 +86,7 @@ namespace DefaultEcs.Benchmark.Performance
         private DefaultEcsComponentSystem _defaultMultiComponentSystem;
         private DefaultEcsGeneratorSystem _defaultGeneratorSystem;
         private DefaultEcsGeneratorSystem _defaultMultiGeneratorSystem;
+        private Archetype _archetype;
 
         [Params(100000)]
         public int EntityCount { get; set; }
@@ -109,6 +111,8 @@ namespace DefaultEcs.Benchmark.Performance
                 defaultEntity.Set(new DefaultA { Value = 42 });
                 defaultEntity.Set(new DefaultB { Value = 42 });
             }
+
+            _archetype = _defaultWorld.GetArchetype<DefaultX, DefaultA, DefaultB>();
         }
 
         [GlobalCleanup]
@@ -119,30 +123,43 @@ namespace DefaultEcs.Benchmark.Performance
         }
 
         [Benchmark]
-        public void DefaultEcs_EntitySet()
+        public void DefaultEcs_Artifact()
         {
-            foreach (ref readonly Entity entity in _defaultEntitySet.GetEntities())
+            Span<DefaultX> Xs = _archetype.GetPool<DefaultX>().Span;
+            Span<DefaultA> As = _archetype.GetPool<DefaultA>().Span;
+            Span<DefaultB> Bs = _archetype.GetPool<DefaultB>().Span;
+
+            for (int i = 0; i < Xs.Length; ++i)
             {
-                entity.Get<DefaultX>().Value += (entity.Get<DefaultA>().Value + entity.Get<DefaultB>().Value) * Time;
+                Xs[i].Value += (As[i].Value + Bs[i].Value) * Time;
             }
         }
 
-        [Benchmark]
-        public void DefaultEcs_System() => _defaultSystem.Update(Time);
+        //[Benchmark]
+        //public void DefaultEcs_EntitySet()
+        //{
+        //    foreach (ref readonly Entity entity in _defaultEntitySet.GetEntities())
+        //    {
+        //        entity.Get<DefaultX>().Value += (entity.Get<DefaultA>().Value + entity.Get<DefaultB>().Value) * Time;
+        //    }
+        //}
 
-        [Benchmark]
-        public void DefaultEcs_MultiSystem() => _defaultMultiSystem.Update(Time);
+        //[Benchmark]
+        //public void DefaultEcs_System() => _defaultSystem.Update(Time);
 
-        [Benchmark]
-        public void DefaultEcs_ComponentSystem() => _defaultComponentSystem.Update(Time);
+        //[Benchmark]
+        //public void DefaultEcs_MultiSystem() => _defaultMultiSystem.Update(Time);
 
-        [Benchmark]
-        public void DefaultEcs_ComponentMultiSystem() => _defaultMultiComponentSystem.Update(Time);
+        //[Benchmark]
+        //public void DefaultEcs_ComponentSystem() => _defaultComponentSystem.Update(Time);
 
-        [Benchmark]
-        public void DefaultEcs_GeneratorSystem() => _defaultGeneratorSystem.Update(Time);
+        //[Benchmark]
+        //public void DefaultEcs_ComponentMultiSystem() => _defaultMultiComponentSystem.Update(Time);
 
-        [Benchmark]
-        public void DefaultEcs_GeneratorMultiSystem() => _defaultMultiGeneratorSystem.Update(Time);
+        //[Benchmark]
+        //public void DefaultEcs_GeneratorSystem() => _defaultGeneratorSystem.Update(Time);
+
+        //[Benchmark]
+        //public void DefaultEcs_GeneratorMultiSystem() => _defaultMultiGeneratorSystem.Update(Time);
     }
 }

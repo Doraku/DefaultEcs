@@ -415,7 +415,7 @@ namespace DefaultEcs
                 }
             }
 
-            (_predicates ??= new List<Predicate<int>>()).Add(i => predicate(ComponentManager<T>.Pools[_world.WorldId].Get(i)));
+            (_predicates ??= new List<Predicate<int>>()).Add(i => predicate(ComponentManager<T>.Pools[_world.WorldId][_world.EntityInfos[i].ArchetypeId].Get(i)));
 
             return With<T>();
         }
@@ -542,7 +542,7 @@ namespace DefaultEcs
             Predicate<ComponentEnum> filter = GetFilter();
             Predicate<int> predicate = GetPredicate();
 
-            return e => filter(e.Components) && predicate(e.EntityId);
+            return e => filter(e.World.EntityInfos[e.EntityId].Components) && predicate(e.EntityId);
         }
 
         /// <summary>

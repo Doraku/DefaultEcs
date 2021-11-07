@@ -77,22 +77,22 @@ namespace DefaultEcs.Command
         /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
         public void Set<T>() => Set<T>(default);
 
-        /// <summary>
-        /// Sets the value of the component of type <typeparamref name="T"/> on the corresponding <see cref="Entity"/> to the same instance of an other <see cref="EntityRecord"/>.
-        /// This command takes 13 bytes.
-        /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="reference">The other <see cref="EntityRecord"/> used as reference.</param>
-        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
-        public void SetSameAs<T>(in EntityRecord reference) => _recorder.WriteCommand(new EntityReferenceOffsetComponentCommand(CommandType.SetSameAs, ComponentCommands.ComponentCommand<T>.Index, _offset, reference._offset));
+        ///// <summary>
+        ///// Sets the value of the component of type <typeparamref name="T"/> on the corresponding <see cref="Entity"/> to the same instance of an other <see cref="EntityRecord"/>.
+        ///// This command takes 13 bytes.
+        ///// </summary>
+        ///// <typeparam name="T">The type of the component.</typeparam>
+        ///// <param name="reference">The other <see cref="EntityRecord"/> used as reference.</param>
+        ///// <exception cref="InvalidOperationException">Command buffer is full.</exception>
+        //public void SetSameAs<T>(in EntityRecord reference) => _recorder.WriteCommand(new EntityReferenceOffsetComponentCommand(CommandType.SetSameAs, ComponentCommands.ComponentCommand<T>.Index, _offset, reference._offset));
 
-        /// <summary>
-        /// Sets the value of the component of type <typeparamref name="T"/> on the corresponding <see cref="Entity"/> to the same instance of its <see cref="World"/>.
-        /// This command takes 9 bytes.
-        /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
-        /// <exception cref="InvalidOperationException">Command buffer is full.</exception>
-        public void SetSameAsWorld<T>() => _recorder.WriteCommand(new EntityOffsetComponentCommand(CommandType.SetSameAsWorld, ComponentCommands.ComponentCommand<T>.Index, _offset));
+        ///// <summary>
+        ///// Sets the value of the component of type <typeparamref name="T"/> on the corresponding <see cref="Entity"/> to the same instance of its <see cref="World"/>.
+        ///// This command takes 9 bytes.
+        ///// </summary>
+        ///// <typeparam name="T">The type of the component.</typeparam>
+        ///// <exception cref="InvalidOperationException">Command buffer is full.</exception>
+        //public void SetSameAsWorld<T>() => _recorder.WriteCommand(new EntityOffsetComponentCommand(CommandType.SetSameAsWorld, ComponentCommands.ComponentCommand<T>.Index, _offset));
 
         /// <summary>
         /// Removes the component of type <typeparamref name="T"/> on the corresponding <see cref="Entity"/>.

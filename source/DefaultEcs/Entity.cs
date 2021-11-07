@@ -2,10 +2,10 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using DefaultEcs.Serialization;
 using DefaultEcs.Internal;
 using DefaultEcs.Internal.Debug;
 using DefaultEcs.Internal.Message;
+using DefaultEcs.Serialization;
 
 namespace DefaultEcs
 {
@@ -50,9 +50,6 @@ namespace DefaultEcs
 
         #region Properties
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal ref ComponentEnum Components => ref World.EntityInfos[EntityId].Components;
-
         /// <summary>
         /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="Entity"/> originate.
         /// </summary>
@@ -73,28 +70,12 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void Throw(string message) => throw new InvalidOperationException(message);
 
-        private void InnerSet<T>(bool isNew)
-        {
-            ref ComponentEnum components = ref Components;
-            if (isNew)
-            {
-                components[ComponentManager<T>.Flag] = true;
-                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
-            }
-            else
-            {
-                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
-            }
-
-            ComponentManager<T>.GetPrevious(WorldId)?.Set(EntityId, Get<T>());
-        }
-
         /// <summary>
         /// Gets whether the current <see cref="Entity"/> is enabled or not.
         /// </summary>
         /// <returns>true if the <see cref="Entity"/> is enabled; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsEnabled() => WorldId != 0 && Components[World.IsEnabledFlag];
+        public bool IsEnabled() => WorldId != 0 && World.EntityInfos[EntityId].Components[World.IsEnabledFlag];
 
         /// <summary>
         /// Enables the current <see cref="Entity"/> so it can appear in <see cref="EntitySet"/>.
@@ -105,11 +86,12 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            ref ComponentEnum components = ref Components;
-            if (!components[World.IsEnabledFlag])
+            World world = World;
+            ref EntityInfo info = ref world.EntityInfos[EntityId];
+
+            if (world.Archetypes[info.ArchetypeId].Enable(EntityId, ref info.Components))
             {
-                components[World.IsEnabledFlag] = true;
-                Publisher.Publish(WorldId, new EntityEnabledMessage(EntityId, components));
+                Publisher.Publish(WorldId, new EntityEnabledMessage(EntityId, info.Components));
             }
         }
 
@@ -122,11 +104,12 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            ref ComponentEnum components = ref Components;
-            if (components[World.IsEnabledFlag])
+            World world = World;
+            ref EntityInfo info = ref world.EntityInfos[EntityId];
+
+            if (world.Archetypes[info.ArchetypeId].Disable(EntityId, ref info.Components))
             {
-                components[World.IsEnabledFlag] = false;
-                Publisher.Publish(WorldId, new EntityDisabledMessage(EntityId, components));
+                Publisher.Publish(WorldId, new EntityDisabledMessage(EntityId, info.Components));
             }
         }
 
@@ -136,7 +119,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/> enabled; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsEnabled<T>() => WorldId != 0 && Components[ComponentManager<T>.Flag];
+        public bool IsEnabled<T>() => WorldId != 0 && World.EntityInfos[EntityId].Components[ComponentManager<T>.Flag];
 
         /// <summary>
         /// Enables the current <see cref="Entity"/> component of type <typeparamref name="T"/> so it can appear in <see cref="EntitySet"/>.
@@ -149,14 +132,12 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            if (Has<T>())
+            World world = World;
+            ref EntityInfo info = ref world.EntityInfos[EntityId];
+
+            if (world.Archetypes[info.ArchetypeId].Enable<T>(EntityId, ref info.Components))
             {
-                ref ComponentEnum components = ref Components;
-                if (!components[ComponentManager<T>.Flag])
-                {
-                    components[ComponentManager<T>.Flag] = true;
-                    Publisher.Publish(WorldId, new ComponentEnabledMessage<T>(EntityId, components));
-                }
+                Publisher.Publish(WorldId, new ComponentEnabledMessage<T>(EntityId, info.Components));
             }
         }
 
@@ -171,11 +152,12 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            ref ComponentEnum components = ref Components;
-            if (components[ComponentManager<T>.Flag])
+            World world = World;
+            ref EntityInfo info = ref world.EntityInfos[EntityId];
+
+            if (world.Archetypes[info.ArchetypeId].Disable<T>(EntityId, ref info.Components))
             {
-                components[ComponentManager<T>.Flag] = false;
-                Publisher.Publish(WorldId, new ComponentDisabledMessage<T>(EntityId, components));
+                Publisher.Publish(WorldId, new ComponentDisabledMessage<T>(EntityId, info.Components));
             }
         }
 
@@ -191,7 +173,17 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            InnerSet<T>(ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component));
+            World world = World;
+            ref EntityInfo info = ref world.EntityInfos[EntityId];
+
+            if (world.Archetypes[info.ArchetypeId].Set(EntityId, ref info.Components, component))
+            {
+                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, info.Components));
+            }
+            else
+            {
+                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, info.Components));
+            }
         }
 
         /// <summary>
@@ -203,40 +195,40 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
         public void Set<T>() => Set<T>(default);
 
-        /// <summary>
-        /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/> to the same instance of an other <see cref="Entity"/>.
-        /// This method is not thread safe.
-        /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="reference">The other <see cref="Entity"/> used as reference.</param>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
-        /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> comes from a different <see cref="DefaultEcs.World"/>.</exception>
-        /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
-        public void SetSameAs<T>(in Entity reference)
-        {
-            if (WorldId == 0) Throw("Entity was not created from a World");
-            if (WorldId != reference.WorldId) Throw("Reference Entity comes from a different World");
-            ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
-            if (!(pool?.Has(reference.EntityId) ?? false)) Throw($"Reference Entity does not have a component of type {nameof(T)}");
+        ///// <summary>
+        ///// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/> to the same instance of an other <see cref="Entity"/>.
+        ///// This method is not thread safe.
+        ///// </summary>
+        ///// <typeparam name="T">The type of the component.</typeparam>
+        ///// <param name="reference">The other <see cref="Entity"/> used as reference.</param>
+        ///// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
+        ///// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> comes from a different <see cref="DefaultEcs.World"/>.</exception>
+        ///// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
+        //public void SetSameAs<T>(in Entity reference)
+        //{
+        //    if (WorldId == 0) Throw("Entity was not created from a World");
+        //    if (WorldId != reference.WorldId) Throw("Reference Entity comes from a different World");
+        //    ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
+        //    if (!(pool?.Has(reference.EntityId) ?? false)) Throw($"Reference Entity does not have a component of type {nameof(T)}");
 
-            InnerSet<T>(pool.SetSameAs(EntityId, reference.EntityId));
-        }
+        //    InnerSet<T>(pool.SetSameAs(EntityId, reference.EntityId));
+        //}
 
-        /// <summary>
-        /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/> to the same instance of an other <see cref="Entity"/>.
-        /// This method is not thread safe.
-        /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
-        /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
-        /// <exception cref="InvalidOperationException"><see cref="World"/> does not have a component of type <typeparamref name="T"/>.</exception>
-        public void SetSameAsWorld<T>()
-        {
-            if (WorldId == 0) Throw("Entity was not created from a World");
-            ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
-            if (!(pool?.Has(0) ?? false)) Throw($"World does not have a component of type {nameof(T)}");
+        ///// <summary>
+        ///// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="Entity"/> to the same instance of an other <see cref="Entity"/>.
+        ///// This method is not thread safe.
+        ///// </summary>
+        ///// <typeparam name="T">The type of the component.</typeparam>
+        ///// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
+        ///// <exception cref="InvalidOperationException"><see cref="World"/> does not have a component of type <typeparamref name="T"/>.</exception>
+        //public void SetSameAsWorld<T>()
+        //{
+        //    if (WorldId == 0) Throw("Entity was not created from a World");
+        //    ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
+        //    if (!(pool?.Has(0) ?? false)) Throw($"World does not have a component of type {nameof(T)}");
 
-            InnerSet<T>(pool.SetSameAs(EntityId, 0));
-        }
+        //    InnerSet<T>(pool.SetSameAs(EntityId, 0));
+        //}
 
         /// <summary>
         /// Removes the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
@@ -245,11 +237,12 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         public void Remove<T>()
         {
-            if (ComponentManager<T>.Get(WorldId)?.Remove(EntityId) == true)
+            World world = World;
+            ref EntityInfo info = ref world.EntityInfos[EntityId];
+
+            if (world.Archetypes[info.ArchetypeId].Remove<T>(EntityId, ref info.Components))
             {
-                ref ComponentEnum components = ref Components;
-                components[ComponentManager<T>.Flag] = false;
-                Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
+                Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, info.Components));
                 ComponentManager<T>.GetPrevious(WorldId)?.Remove(EntityId);
             }
         }
@@ -266,7 +259,7 @@ namespace DefaultEcs
             if (WorldId == 0) Throw("Entity was not created from a World");
             if (!Has<T>()) Throw($"Entity does not have a component of type {nameof(T)}");
 
-            Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, Components));
+            Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, World.EntityInfos[EntityId].Components));
             ComponentManager<T>.GetPrevious(WorldId)?.Set(EntityId, Get<T>());
         }
 
@@ -276,7 +269,12 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has<T>() => ComponentManager<T>.Get(WorldId)?.Has(EntityId) ?? false;
+        public bool Has<T>()
+        {
+            World world = World;
+
+            return world.Archetypes[world.EntityInfos[EntityId].ArchetypeId].Has<T>(EntityId);
+        }
 
         /// <summary>
         /// Gets the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
@@ -285,7 +283,12 @@ namespace DefaultEcs
         /// <returns>A reference to the component.</returns>
         /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/> or does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
+        public ref T Get<T>()
+        {
+            World world = World;
+
+            return ref world.Archetypes[world.EntityInfos[EntityId].ArchetypeId].Get<T>(EntityId);
+        }
 
         /// <summary>
         /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="DefaultEcs.World"/> using the given <see cref="ComponentCloner"/>.

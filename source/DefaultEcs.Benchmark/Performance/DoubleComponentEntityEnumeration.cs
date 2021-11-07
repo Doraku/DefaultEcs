@@ -1,5 +1,6 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
+using DefaultEcs.Internal;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
 
@@ -90,6 +91,7 @@ namespace DefaultEcs.Benchmark.Performance
         private DefaultEcsComponentSystem _defaultMultiComponentSystem;
         private DefaultEcsGeneratorSystem _defaultGeneratorSystem;
         private DefaultEcsGeneratorSystem _defaultMultiGeneratorSystem;
+        private Archetype _archetype;
 
         [Params(100000)]
         public int EntityCount { get; set; }
@@ -113,6 +115,8 @@ namespace DefaultEcs.Benchmark.Performance
                 defaultEntity.Set<DefaultPosition>();
                 defaultEntity.Set(new DefaultSpeed { X = 42, Y = 42 });
             }
+
+            _archetype = _defaultWorld.GetArchetype<DefaultPosition, DefaultSpeed>();
         }
 
         [GlobalCleanup]
@@ -122,7 +126,7 @@ namespace DefaultEcs.Benchmark.Performance
             _defaultWorld.Dispose();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void DefaultEcs_EntitySet()
         {
             foreach (ref readonly Entity entity in _defaultEntitySet.GetEntities())
@@ -136,21 +140,37 @@ namespace DefaultEcs.Benchmark.Performance
         }
 
         [Benchmark]
-        public void DefaultEcs_System() => _defaultSystem.Update(Time);
+        public void DefaultEcs_Archetype()
+        {
+            Span<DefaultSpeed> speeds = _archetype.GetPool<DefaultSpeed>().Span;
+            Span<DefaultPosition> positions = _archetype.GetPool<DefaultPosition>().Span;
 
-        [Benchmark]
-        public void DefaultEcs_MultiSystem() => _defaultMultiSystem.Update(Time);
+            for (int i = 0; i < speeds.Length; ++i)
+            {
+                DefaultSpeed speed = speeds[i];
+                ref DefaultPosition position = ref positions[i];
 
-        [Benchmark]
-        public void DefaultEcs_ComponentSystem() => _defaultComponentSystem.Update(Time);
+                position.X += speed.X * Time;
+                position.Y += speed.Y * Time;
+            }
+        }
 
-        [Benchmark]
-        public void DefaultEcs_ComponentMultiSystem() => _defaultMultiComponentSystem.Update(Time);
+        //    [Benchmark]
+        //    public void DefaultEcs_System() => _defaultSystem.Update(Time);
 
-        [Benchmark]
-        public void DefaultEcs_GeneratorSystem() => _defaultGeneratorSystem.Update(Time);
+        //    [Benchmark]
+        //    public void DefaultEcs_MultiSystem() => _defaultMultiSystem.Update(Time);
 
-        [Benchmark]
-        public void DefaultEcs_GeneratorMultiSystem() => _defaultMultiGeneratorSystem.Update(Time);
+        //    [Benchmark]
+        //    public void DefaultEcs_ComponentSystem() => _defaultComponentSystem.Update(Time);
+
+        //    [Benchmark]
+        //    public void DefaultEcs_ComponentMultiSystem() => _defaultMultiComponentSystem.Update(Time);
+
+        //    [Benchmark]
+        //    public void DefaultEcs_GeneratorSystem() => _defaultGeneratorSystem.Update(Time);
+
+        //    [Benchmark]
+        //    public void DefaultEcs_GeneratorMultiSystem() => _defaultMultiGeneratorSystem.Update(Time);
     }
 }

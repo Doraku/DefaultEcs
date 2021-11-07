@@ -168,7 +168,7 @@ namespace DefaultEcs.Test.Resource
                 entity.Set(ManagedResource<IDisposable>.Create("dummy"));
 
                 Entity entity2 = world.CreateEntity();
-                entity2.SetSameAs<ManagedResource<string, IDisposable>>(entity);
+                //entity2.SetSameAs<ManagedResource<string, IDisposable>>(entity);
             }
 
             Check.That(disposedCount).IsEqualTo(1);

@@ -212,8 +212,8 @@ namespace DefaultEcs.Test.Serialization
 
             world.Set("hello");
 
-            world.SetMaxCapacity<int>(13);
-            world.SetMaxCapacity<float>(60);
+            //world.SetMaxCapacity<int>(13);
+            //world.SetMaxCapacity<float>(60);
 
             Entity[] entities = new[]
             {
@@ -239,15 +239,15 @@ namespace DefaultEcs.Test.Serialization
             entities[0].Set(new Test(666));
             entities[0].Set(new ClassTest { Id = 12345, Inner = new Test(66), Test = new InnerTest2() });
             entities[2].Set(new InnerTest { Lol = 313 });
-            entities[1].SetSameAs<InnerTest>(entities[2]);
-            entities[1].SetSameAsWorld<string>();
+            //entities[1].SetSameAs<InnerTest>(entities[2]);
+            //entities[1].SetSameAsWorld<string>();
             entities[1].Set(new Test(42));
-            entities[2].SetSameAs<Test>(entities[1]);
-            entities[2].SetSameAs<bool>(entities[0]);
+            //entities[2].SetSameAs<Test>(entities[1]);
+            //entities[2].SetSameAs<bool>(entities[0]);
             entities[2].Disable<bool>();
             entities[2].Set<sbyte>(42);
             entities[2].Disable<sbyte>();
-            entities[2].SetSameAsWorld<string>();
+            //entities[2].SetSameAsWorld<string>();
             entities[2].Disable<string>();
 
             entities[0].Set<InnerClass>();
@@ -330,8 +330,8 @@ namespace DefaultEcs.Test.Serialization
         {
             using World world = new(42);
 
-            world.SetMaxCapacity<int>(13);
-            world.SetMaxCapacity<float>(60);
+            //world.SetMaxCapacity<int>(13);
+            //world.SetMaxCapacity<float>(60);
 
             Entity[] entities = new[]
             {
@@ -357,10 +357,10 @@ namespace DefaultEcs.Test.Serialization
             entities[0].Set(new Test(666));
             entities[0].Set(new ClassTest { Id = 12345, Inner = new Test(66), Test = new InnerTest2() });
             entities[2].Set(new InnerTest { Lol = 313 });
-            entities[1].SetSameAs<InnerTest>(entities[2]);
+            //entities[1].SetSameAs<InnerTest>(entities[2]);
             entities[1].Set(new Test(42));
-            entities[2].SetSameAs<Test>(entities[1]);
-            entities[2].SetSameAs<bool>(entities[0]);
+            //entities[2].SetSameAs<Test>(entities[1]);
+            //entities[2].SetSameAs<bool>(entities[0]);
             entities[2].Disable<bool>();
             entities[2].Set<sbyte>(42);
             entities[2].Disable<sbyte>();
@@ -440,7 +440,7 @@ namespace DefaultEcs.Test.Serialization
 
             using World world = new();
 
-            world.SetMaxCapacity<string>(10);
+            //world.SetMaxCapacity<string>(10);
 
             Entity entity0 = world.CreateEntity();
             entity0.Set(true);
@@ -451,10 +451,10 @@ namespace DefaultEcs.Test.Serialization
             entity1.Disable<string>();
 
             Entity entity2 = world.CreateEntity();
-            entity2.SetSameAs<string>(entity0);
+            //entity2.SetSameAs<string>(entity0);
 
             Entity entity3 = world.CreateEntity();
-            entity3.SetSameAs<string>(entity0);
+            //entity3.SetSameAs<string>(entity0);
             entity3.Disable<string>();
 
             using Stream stream = new MemoryStream();
@@ -468,7 +468,7 @@ namespace DefaultEcs.Test.Serialization
             using World copy = serializer.Deserialize(stream);
             Entity[] entities = copy.ToArray();
 
-            Check.That(copy.GetMaxCapacity<string>()).IsEqualTo(-1);
+            //Check.That(copy.GetMaxCapacity<string>()).IsEqualTo(-1);
             Check.That(entities.Length).IsEqualTo(world.Count());
             Check.That(entities[0].Get<bool>()).IsEqualTo(world.First().Get<bool>());
             Check.That(entities[0].Has<string>()).IsFalse();
@@ -549,7 +549,7 @@ namespace DefaultEcs.Test.Serialization
             {
                 using World world = new();
 
-                world.SetMaxCapacity<uint>(10);
+                //world.SetMaxCapacity<uint>(10);
                 world.Set<uint>(42);
 
                 Entity entity0 = world.CreateEntity();
@@ -559,7 +559,7 @@ namespace DefaultEcs.Test.Serialization
 
                 Entity entity1 = world.CreateEntity();
 
-                entity1.SetSameAs<uint>(entity0);
+                //entity1.SetSameAs<uint>(entity0);
 
                 Entity entity2 = world.CreateEntity();
 
@@ -568,16 +568,16 @@ namespace DefaultEcs.Test.Serialization
 
                 Entity entity3 = world.CreateEntity();
 
-                entity3.SetSameAs<uint>(entity0);
+                //entity3.SetSameAs<uint>(entity0);
                 entity3.Disable<uint>();
 
                 Entity entity4 = world.CreateEntity();
 
-                entity4.SetSameAsWorld<uint>();
+                //entity4.SetSameAsWorld<uint>();
 
                 Entity entity5 = world.CreateEntity();
 
-                entity5.SetSameAsWorld<uint>();
+                //entity5.SetSameAsWorld<uint>();
                 entity5.Disable<uint>();
 
                 using Stream stream = new MemoryStream();
@@ -591,7 +591,7 @@ namespace DefaultEcs.Test.Serialization
                 Check.That(copy.Get<string>()).IsEqualTo("42");
 
                 Entity[] entities = copy.ToArray();
-                Check.That(copy.GetMaxCapacity<string>()).IsEqualTo(10);
+                //Check.That(copy.GetMaxCapacity<string>()).IsEqualTo(10);
                 Check.That(entities.Length).IsEqualTo(6);
                 Check.That(entities[0].Get<double>()).IsEqualTo(entity0.Get<double>());
                 Check.That(entities[0].Has<int>()).IsFalse();

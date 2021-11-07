@@ -1,6 +1,8 @@
-﻿namespace DefaultEcs.Internal
+﻿using System;
+
+namespace DefaultEcs.Internal
 {
-    internal readonly struct ComponentFlag
+    internal readonly struct ComponentFlag : IEquatable<ComponentFlag>
     {
         #region Fields
 
@@ -42,6 +44,20 @@
                 return flag;
             }
         }
+
+        #endregion
+
+        #region IEquatable
+
+        public bool Equals(ComponentFlag other) => Index == other.Index && Bit == other.Bit;
+
+        #endregion
+
+        #region Object
+
+        public override bool Equals(object obj) => obj is ComponentFlag componentFlag && Equals(componentFlag);
+
+        public override int GetHashCode() => (int)Bit + Index;
 
         #endregion
     }

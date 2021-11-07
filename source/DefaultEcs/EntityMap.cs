@@ -157,7 +157,7 @@ namespace DefaultEcs
                 IEntityContainer @this = this;
                 foreach (Entity entity in _components.GetEntities())
                 {
-                    if (filter(entity.Components) && predicate(entity.EntityId))
+                    if (filter(entity.World.EntityInfos[entity.EntityId].Components) && predicate(entity.EntityId))
                     {
                         @this.Add(entity.EntityId);
                     }

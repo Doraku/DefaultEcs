@@ -99,65 +99,65 @@ namespace DefaultEcs.Test
             Check.ThatCode(() => world.CreateEntity()).Throws<InvalidOperationException>();
         }
 
-        [Fact]
-        public void SetMaxCapacity_Should_return_true_When_maxCapacity_is_setted()
-        {
-            using World world = new(0);
+        //[Fact]
+        //public void SetMaxCapacity_Should_return_true_When_maxCapacity_is_setted()
+        //{
+        //    using World world = new(0);
 
-            Check.That(world.SetMaxCapacity<bool>(0)).IsTrue();
-        }
+        //    Check.That(world.SetMaxCapacity<bool>(0)).IsTrue();
+        //}
 
-        [Fact]
-        public void SetMaxCapacity_Should_return_false_When_maxCapacity_is_already_setted()
-        {
-            using World world = new(42);
+        //[Fact]
+        //public void SetMaxCapacity_Should_return_false_When_maxCapacity_is_already_setted()
+        //{
+        //    using World world = new(42);
 
-            Check.That(world.SetMaxCapacity<bool>(0)).IsTrue();
-            Check.That(world.SetMaxCapacity<bool>(42)).IsFalse();
-        }
+        //    Check.That(world.SetMaxCapacity<bool>(0)).IsTrue();
+        //    Check.That(world.SetMaxCapacity<bool>(42)).IsFalse();
+        //}
 
-        [Fact]
-        public void GetMaxCapacity_Should_return_component_max_capacity()
-        {
-            using World world = new(100);
+        //[Fact]
+        //public void GetMaxCapacity_Should_return_component_max_capacity()
+        //{
+        //    using World world = new(100);
 
-            world.SetMaxCapacity<bool>(42);
-            Check.That(world.GetMaxCapacity<bool>()).IsEqualTo(42);
-        }
+        //    world.SetMaxCapacity<bool>(42);
+        //    Check.That(world.GetMaxCapacity<bool>()).IsEqualTo(42);
+        //}
 
-        [Fact]
-        public void GetMaxCapacity_Should_return_minus_one_when_not_handled()
-        {
-            using World world = new(100);
+        //[Fact]
+        //public void GetMaxCapacity_Should_return_minus_one_when_not_handled()
+        //{
+        //    using World world = new(100);
 
-            Check.That(world.GetMaxCapacity<bool>()).IsEqualTo(-1);
-        }
+        //    Check.That(world.GetMaxCapacity<bool>()).IsEqualTo(-1);
+        //}
 
-        [Fact]
-        public void GetMaxCapacity_Should_return_one_for_flag_type()
-        {
-            using World world = new(100);
+        //[Fact]
+        //public void GetMaxCapacity_Should_return_one_for_flag_type()
+        //{
+        //    using World world = new(100);
 
-            world.SetMaxCapacity<FlagType>(42);
-            Check.That(world.GetMaxCapacity<FlagType>()).IsEqualTo(1);
-        }
+        //    world.SetMaxCapacity<FlagType>(42);
+        //    Check.That(world.GetMaxCapacity<FlagType>()).IsEqualTo(1);
+        //}
 
-        [Fact]
-        public void SetMaxCapacity_Should_throw_When_maxCapacity_is_negative()
-        {
-            using World world = new(0);
+        //[Fact]
+        //public void SetMaxCapacity_Should_throw_When_maxCapacity_is_negative()
+        //{
+        //    using World world = new(0);
 
-            Check.ThatCode(() => world.SetMaxCapacity<bool>(-1)).Throws<ArgumentException>();
-        }
+        //    Check.ThatCode(() => world.SetMaxCapacity<bool>(-1)).Throws<ArgumentException>();
+        //}
 
-        [Fact]
-        public void SetMaxCapacity_Should_not_throw_When_already_added()
-        {
-            using World world = new(0);
+        //[Fact]
+        //public void SetMaxCapacity_Should_not_throw_When_already_added()
+        //{
+        //    using World world = new(0);
 
-            world.SetMaxCapacity<bool>(0);
-            Check.ThatCode(() => world.SetMaxCapacity<bool>(0)).DoesNotThrow();
-        }
+        //    world.SetMaxCapacity<bool>(0);
+        //    Check.ThatCode(() => world.SetMaxCapacity<bool>(0)).DoesNotThrow();
+        //}
 
         [Fact]
         public void GetAll_Should_not_throw_When_not_added()
@@ -172,7 +172,7 @@ namespace DefaultEcs.Test
         {
             using World world = new(2);
 
-            world.SetMaxCapacity<int>(2);
+            //world.SetMaxCapacity<int>(2);
             Entity entity = world.CreateEntity();
             Entity entity2 = world.CreateEntity();
 
@@ -261,7 +261,7 @@ namespace DefaultEcs.Test
             bool longIsOk = false;
             bool floatIsOk = true;
 
-            world.SetMaxCapacity<int>(1);
+            //world.SetMaxCapacity<int>(1);
             world.GetAll<long>();
 
             IComponentTypeReader reader = Substitute.For<IComponentTypeReader>();

@@ -6,6 +6,7 @@
 
         public short Version;
         public ComponentEnum Components;
+        public int ArchetypeId;
 
         public readonly bool IsAlive(short version) => Version == version && Components[World.IsAliveFlag];
 

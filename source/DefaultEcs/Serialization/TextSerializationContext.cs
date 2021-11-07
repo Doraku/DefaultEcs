@@ -31,15 +31,15 @@ namespace DefaultEcs.Serialization
 
             #region IOperation
 
-            public void SetMaxCapacity(World world, int maxCapacity) => world.SetMaxCapacity<TOut>(maxCapacity);
+            //public void SetMaxCapacity(World world, int maxCapacity) => world.SetMaxCapacity<TOut>(maxCapacity);
 
             public void Set(World world, StreamReaderWrapper reader) => world.Set(_converter(Converter<TIn>.Read(reader)));
 
             public void Set(in Entity entity, StreamReaderWrapper reader) => entity.Set(_converter(Converter<TIn>.Read(reader)));
 
-            public void SetSameAs(in Entity entity, in Entity reference) => entity.SetSameAs<TOut>(reference);
+            //public void SetSameAs(in Entity entity, in Entity reference) => entity.SetSameAs<TOut>(reference);
 
-            public void SetSameAsWorld(in Entity entity) => entity.SetSameAsWorld<TOut>();
+            //public void SetSameAsWorld(in Entity entity) => entity.SetSameAsWorld<TOut>();
 
             public void SetDisabled(in Entity entity, StreamReaderWrapper reader)
             {
@@ -47,17 +47,17 @@ namespace DefaultEcs.Serialization
                 entity.Disable<TOut>();
             }
 
-            public void SetDisabledSameAs(in Entity entity, in Entity reference)
-            {
-                SetSameAs(entity, reference);
-                entity.Disable<TOut>();
-            }
+            //public void SetDisabledSameAs(in Entity entity, in Entity reference)
+            //{
+            //    SetSameAs(entity, reference);
+            //    entity.Disable<TOut>();
+            //}
 
-            public void SetDisabledSameAsWorld(in Entity entity)
-            {
-                SetSameAsWorld(entity);
-                entity.Disable<TOut>();
-            }
+            //public void SetDisabledSameAsWorld(in Entity entity)
+            //{
+            //    SetSameAsWorld(entity);
+            //    entity.Disable<TOut>();
+            //}
 
             public TextSerializer.IComponentOperation ApplyContext(TextSerializationContext context) => this;
 

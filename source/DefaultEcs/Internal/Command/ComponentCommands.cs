@@ -86,9 +86,9 @@ namespace DefaultEcs.Internal.Command
 
             public int Set(in Entity entity, List<object> objects, byte* memory) => _entitySetAction(entity, objects, memory);
 
-            public void SetSameAs(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
+            //public void SetSameAs(in Entity entity, in Entity reference) => entity.SetSameAs<T>(reference);
 
-            public void SetSameAsWorld(in Entity entity) => entity.SetSameAsWorld<T>();
+            //public void SetSameAsWorld(in Entity entity) => entity.SetSameAsWorld<T>();
 
             public void Remove(in Entity entity) => entity.Remove<T>();
 

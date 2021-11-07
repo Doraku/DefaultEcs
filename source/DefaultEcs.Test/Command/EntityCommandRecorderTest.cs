@@ -413,58 +413,58 @@ namespace DefaultEcs.Test.Command
             Check.That(world.Count()).IsEqualTo(0);
         }
 
-        [Fact]
-        public void SetSameAs_Should_set_same_as_on_recorded_entity()
-        {
-            using EntityCommandRecorder recorder = new(1024);
-            using World world = new();
+        //[Fact]
+        //public void SetSameAs_Should_set_same_as_on_recorded_entity()
+        //{
+        //    using EntityCommandRecorder recorder = new(1024);
+        //    using World world = new();
 
-            Entity reference = world.CreateEntity();
-            reference.Set(true);
-            Entity entity = world.CreateEntity();
+        //    Entity reference = world.CreateEntity();
+        //    reference.Set(true);
+        //    Entity entity = world.CreateEntity();
 
-            EntityRecord record = recorder.Record(entity);
-            record.SetSameAs<bool>(recorder.Record(reference));
+        //    EntityRecord record = recorder.Record(entity);
+        //    record.SetSameAs<bool>(recorder.Record(reference));
 
-            recorder.Execute();
+        //    recorder.Execute();
 
-            Check.That(entity.Get<bool>()).IsTrue();
-        }
+        //    Check.That(entity.Get<bool>()).IsTrue();
+        //}
 
-        [Fact]
-        public void SetSameAs_Should_set_same_as_on_created_entity()
-        {
-            using EntityCommandRecorder recorder = new(1024);
-            using World world = new();
+        //[Fact]
+        //public void SetSameAs_Should_set_same_as_on_created_entity()
+        //{
+        //    using EntityCommandRecorder recorder = new(1024);
+        //    using World world = new();
 
-            Entity reference = world.CreateEntity();
-            reference.Set(true);
+        //    Entity reference = world.CreateEntity();
+        //    reference.Set(true);
 
-            EntityRecord record = recorder.Record(world).CreateEntity();
-            record.SetSameAs<bool>(recorder.Record(reference));
+        //    EntityRecord record = recorder.Record(world).CreateEntity();
+        //    record.SetSameAs<bool>(recorder.Record(reference));
 
-            recorder.Execute();
+        //    recorder.Execute();
 
-            reference.Dispose();
+        //    reference.Dispose();
 
-            Check.That(world.Single().Get<bool>()).IsTrue();
-        }
+        //    Check.That(world.Single().Get<bool>()).IsTrue();
+        //}
 
-        [Fact]
-        public void SetSameAsWorld_Should_set_same_as_on_created_entity()
-        {
-            using EntityCommandRecorder recorder = new(1024);
-            using World world = new();
+        //[Fact]
+        //public void SetSameAsWorld_Should_set_same_as_on_created_entity()
+        //{
+        //    using EntityCommandRecorder recorder = new(1024);
+        //    using World world = new();
 
-            world.Set(true);
+        //    world.Set(true);
 
-            EntityRecord record = recorder.Record(world).CreateEntity();
-            record.SetSameAsWorld<bool>();
+        //    EntityRecord record = recorder.Record(world).CreateEntity();
+        //    record.SetSameAsWorld<bool>();
 
-            recorder.Execute();
+        //    recorder.Execute();
 
-            Check.That(world.Single().Get<bool>()).IsTrue();
-        }
+        //    Check.That(world.Single().Get<bool>()).IsTrue();
+        //}
 
         [Fact]
         public void Should_work_in_multithread()
