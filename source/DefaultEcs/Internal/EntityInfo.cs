@@ -1,4 +1,6 @@
-﻿namespace DefaultEcs.Internal
+﻿using DefaultEcs.Internal.Component;
+
+namespace DefaultEcs.Internal
 {
     internal struct EntityInfo
     {
@@ -6,9 +8,9 @@
 
         public short Version;
         public ComponentEnum Components;
-        public int ArchetypeId;
+        public Archetype Archetype;
 
-        public readonly bool IsAlive(short version) => Version == version && Components[World.IsAliveFlag];
+        public readonly bool IsAlive(short version) => Version == version && Components[ComponentFlag.IsAlive];
 
         #endregion
     }

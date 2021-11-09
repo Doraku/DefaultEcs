@@ -1,14 +1,17 @@
 ﻿using System;
 
-namespace DefaultEcs.Internal
+namespace DefaultEcs.Internal.Component
 {
-    internal readonly struct ComponentFlag : IEquatable<ComponentFlag>
+    internal readonly struct ComponentFlag
     {
         #region Fields
 
         private static readonly object _lockObject;
 
         private static ComponentFlag _lastFlag;
+
+        public static readonly ComponentFlag IsAlive;
+        public static readonly ComponentFlag IsEnable;
 
         public readonly int Index;
         public readonly uint Bit;
@@ -22,6 +25,9 @@ namespace DefaultEcs.Internal
             _lockObject = new object();
 
             _lastFlag = new ComponentFlag(0, 1u);
+
+            IsAlive = GetNextFlag();
+            IsEnable = GetNextFlag();
         }
 
         private ComponentFlag(int index, uint bit)
@@ -44,20 +50,6 @@ namespace DefaultEcs.Internal
                 return flag;
             }
         }
-
-        #endregion
-
-        #region IEquatable
-
-        public bool Equals(ComponentFlag other) => Index == other.Index && Bit == other.Bit;
-
-        #endregion
-
-        #region Object
-
-        public override bool Equals(object obj) => obj is ComponentFlag componentFlag && Equals(componentFlag);
-
-        public override int GetHashCode() => (int)Bit + Index;
 
         #endregion
     }

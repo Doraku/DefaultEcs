@@ -28,12 +28,12 @@ namespace DefaultEcs.Internal.Command
                         case CommandType.WorldSet:
                             WorldCommand* worldCommand = (WorldCommand*)commands;
                             commandSize = sizeof(WorldCommand);
-                            commandSize += ComponentCommands.GetCommand(worldCommand->ComponentIndex).Set(World.Worlds[worldCommand->WorldId], objects, commands + sizeof(EntityOffsetComponentCommand));
+                            commandSize += ComponentCommands.GetCommand(worldCommand->ComponentIndex).Set(World.Instances[worldCommand->WorldId], objects, commands + sizeof(EntityOffsetComponentCommand));
                             break;
 
                         case CommandType.WorldRemove:
                             worldCommand = (WorldCommand*)commands;
-                            ComponentCommands.GetCommand(worldCommand->ComponentIndex).Remove(World.Worlds[worldCommand->WorldId]);
+                            ComponentCommands.GetCommand(worldCommand->ComponentIndex).Remove(World.Instances[worldCommand->WorldId]);
                             commandSize = sizeof(WorldCommand);
                             break;
 

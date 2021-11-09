@@ -1,4 +1,6 @@
-﻿namespace DefaultEcs.Internal.Message
+﻿using DefaultEcs.Internal.Component;
+
+namespace DefaultEcs.Internal.Message
 {
     internal readonly struct ComponentDisabledMessage<T>
     {

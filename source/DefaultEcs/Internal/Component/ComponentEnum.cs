@@ -3,11 +3,13 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Internal.Helper;
 
-namespace DefaultEcs.Internal
+namespace DefaultEcs.Internal.Component
 {
     internal struct ComponentEnum : IEquatable<ComponentEnum>
     {
         #region Fields
+
+        internal static readonly ComponentEnum Base;
 
         private uint[] _bitArray;
 
@@ -40,6 +42,16 @@ namespace DefaultEcs.Internal
                     _bitArray[flag.Index] &= ~flag.Bit;
                 }
             }
+        }
+
+        #endregion
+
+        #region Initialization
+
+        static ComponentEnum()
+        {
+            Base[ComponentFlag.IsAlive] = true;
+            Base[ComponentFlag.IsEnable] = true;
         }
 
         #endregion

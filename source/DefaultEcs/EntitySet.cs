@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using DefaultEcs.Internal;
+using DefaultEcs.Internal.Component;
 using DefaultEcs.Internal.Debug;
 using DefaultEcs.Internal.Helper;
 
@@ -67,9 +68,10 @@ namespace DefaultEcs
             if (!_needClearing)
             {
                 IEntityContainer @this = this;
-                for (int i = 1; i <= Math.Min(world.EntityInfos.Length, world.LastEntityId); ++i)
+                EntityInfo[] entityInfos = World.Instances[_worldId].EntityInfos;
+                for (int i = 1; i <= Math.Min(entityInfos.Length, world.LastEntityId); ++i)
                 {
-                    if (filter(world.EntityInfos[i].Components) && predicate(i))
+                    if (filter(entityInfos[i].Components) && predicate(i))
                     {
                         @this.Add(i);
                     }
@@ -100,7 +102,7 @@ namespace DefaultEcs
 
         /// <inheritdoc/>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public World World => World.Worlds[_worldId];
+        public World World => World.Instances[_worldId];
 
         /// <inheritdoc/>
         public event EntityAddedHandler EntityAdded;
@@ -217,7 +219,7 @@ namespace DefaultEcs
         public void Dispose()
         {
             _subscriptions.Dispose();
-            World.Worlds[_worldId]?.Remove(this);
+            World?.Remove(this);
         }
 
         #endregion

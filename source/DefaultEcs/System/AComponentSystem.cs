@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using DefaultEcs.Internal;
+using DefaultEcs.Internal.Component;
 using DefaultEcs.Threading;
 
 namespace DefaultEcs.System
@@ -45,7 +46,7 @@ namespace DefaultEcs.System
 
         private readonly IParallelRunner _runner;
         private readonly Runnable _runnable;
-        private readonly ComponentPool<TComponent> _components;
+        private readonly GenericComponentPool<TComponent> _components;
         private readonly int _minComponentCountByRunnerIndex;
 
         #endregion
@@ -73,7 +74,7 @@ namespace DefaultEcs.System
         {
             _runner = runner ?? DefaultParallelRunner.Default;
             _runnable = new Runnable(this);
-            _components = ComponentManager<TComponent>.GetOrCreate(world?.WorldId ?? throw new ArgumentNullException(nameof(world)));
+            _components = ComponentManager<TComponent>.GetOrCreateWorld(world?.WorldId ?? throw new ArgumentNullException(nameof(world)));
             _minComponentCountByRunnerIndex = minComponentCountByRunnerIndex;
 
             World = world;

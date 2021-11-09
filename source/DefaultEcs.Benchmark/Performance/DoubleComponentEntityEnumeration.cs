@@ -126,7 +126,7 @@ namespace DefaultEcs.Benchmark.Performance
             _defaultWorld.Dispose();
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void DefaultEcs_EntitySet()
         {
             foreach (ref readonly Entity entity in _defaultEntitySet.GetEntities())
@@ -142,8 +142,8 @@ namespace DefaultEcs.Benchmark.Performance
         [Benchmark]
         public void DefaultEcs_Archetype()
         {
-            Span<DefaultSpeed> speeds = _archetype.GetPool<DefaultSpeed>().Span;
-            Span<DefaultPosition> positions = _archetype.GetPool<DefaultPosition>().Span;
+            Span<DefaultSpeed> speeds = _archetype.Get<DefaultSpeed>().Span;
+            Span<DefaultPosition> positions = _archetype.Get<DefaultPosition>().Span;
 
             for (int i = 0; i < speeds.Length; ++i)
             {

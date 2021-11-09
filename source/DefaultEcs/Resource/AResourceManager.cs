@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DefaultEcs.Internal;
+using DefaultEcs.Internal.Component;
 using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs.Resource
@@ -283,7 +284,7 @@ namespace DefaultEcs.Resource
                 yield return w.SubscribeComponentRemoved<ManagedResource<TInfo[], TResource>>(OnRemoved);
             }
 
-            ComponentPool<ManagedResource<TInfo, TResource>> singleComponents = ComponentManager<ManagedResource<TInfo, TResource>>.Get(world.WorldId);
+            GenericComponentPool<ManagedResource<TInfo, TResource>> singleComponents = ComponentManager<ManagedResource<TInfo, TResource>>.GetWorld(world.WorldId);
             if (singleComponents != null)
             {
                 foreach (Entity entity in singleComponents.GetEntities())
@@ -292,7 +293,7 @@ namespace DefaultEcs.Resource
                 }
             }
 
-            ComponentPool<ManagedResource<TInfo[], TResource>> arrayComponents = ComponentManager<ManagedResource<TInfo[], TResource>>.Get(world.WorldId);
+            GenericComponentPool<ManagedResource<TInfo[], TResource>> arrayComponents = ComponentManager<ManagedResource<TInfo[], TResource>>.GetWorld(world.WorldId);
             if (arrayComponents != null)
             {
                 foreach (Entity entity in arrayComponents.GetEntities())

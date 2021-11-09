@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Internal;
+using DefaultEcs.Internal.Component;
 using DefaultEcs.Internal.Debug;
 using DefaultEcs.Internal.Helper;
 using DefaultEcs.Internal.Message;
@@ -63,7 +64,7 @@ namespace DefaultEcs
                 .Concat(subscriptions.Select(s => s(container, world)))
                 .Merge();
             comparer ??= Comparer<TComponent>.Default;
-            ComponentPool<TComponent> components = ComponentManager<TComponent>.GetOrCreate(_worldId);
+            GenericComponentPool<TComponent> components = ComponentManager<TComponent>.GetOrCreateWorld(_worldId);
             _comparer = Comparer<Entity>.Create((e1, e2) => comparer.Compare(components.Get(e1.EntityId), components.Get(e2.EntityId)));
 
             _mapping = EmptyArray<int>.Value;
@@ -73,9 +74,10 @@ namespace DefaultEcs
             if (!_needClearing)
             {
                 IEntityContainer @this = this;
-                for (int i = 1; i <= Math.Min(world.EntityInfos.Length, world.LastEntityId); ++i)
+                EntityInfo[] entityInfos = World.Instances[_worldId].EntityInfos;
+                for (int i = 1; i <= Math.Min(entityInfos.Length, world.LastEntityId); ++i)
                 {
-                    if (filter(world.EntityInfos[i].Components) && predicate(i))
+                    if (filter(entityInfos[i].Components) && predicate(i))
                     {
                         @this.Add(i);
                     }
@@ -116,7 +118,7 @@ namespace DefaultEcs
 
         /// <inheritdoc/>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public World World => World.Worlds[_worldId];
+        public World World => World.Instances[_worldId];
 
         /// <inheritdoc/>
         public event EntityAddedHandler EntityAdded;

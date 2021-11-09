@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using DefaultEcs.Internal;
+using DefaultEcs.Internal.Component;
 using DefaultEcs.Internal.Debug;
 using DefaultEcs.Internal.Helper;
 using DefaultEcs.Internal.Message;
@@ -103,8 +104,8 @@ namespace DefaultEcs
         private readonly short _worldId;
         private readonly int _worldMaxCapacity;
         private readonly IDisposable _subscriptions;
-        private readonly ComponentPool<TKey> _previousComponents;
-        private readonly ComponentPool<TKey> _components;
+        private readonly GenericComponentPool<TKey> _previousComponents;
+        private readonly GenericComponentPool<TKey> _components;
         private readonly Dictionary<TKey, Entity> _entities;
 
         private bool[] _entityIds;
@@ -147,7 +148,7 @@ namespace DefaultEcs
                 .Concat(subscriptions.Select(s => s(container, world)))
                 .Merge();
             _previousComponents = ComponentManager<TKey>.GetOrCreatePrevious(_worldId);
-            _components = ComponentManager<TKey>.GetOrCreate(_worldId);
+            _components = ComponentManager<TKey>.GetOrCreateWorld(_worldId);
             _entities = new Dictionary<TKey, Entity>(capacity, comparer);
 
             _entityIds = EmptyArray<bool>.Value;
@@ -155,9 +156,10 @@ namespace DefaultEcs
             if (!_needClearing)
             {
                 IEntityContainer @this = this;
+                EntityInfo[] entityInfos = World.Instances[_worldId].EntityInfos;
                 foreach (Entity entity in _components.GetEntities())
                 {
-                    if (filter(entity.World.EntityInfos[entity.EntityId].Components) && predicate(entity.EntityId))
+                    if (filter(entityInfos[entity.EntityId].Components) && predicate(entity.EntityId))
                     {
                         @this.Add(entity.EntityId);
                     }
@@ -202,7 +204,7 @@ namespace DefaultEcs
 
         /// <inheritdoc/>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public World World => World.Worlds[_worldId];
+        public World World => World.Instances[_worldId];
 
         /// <inheritdoc/>
         public event EntityAddedHandler EntityAdded;

@@ -1,6 +1,7 @@
 ﻿using System.Threading;
-using DefaultEcs.Serialization;
 using DefaultEcs.Internal;
+using DefaultEcs.Internal.Component;
+using DefaultEcs.Serialization;
 
 namespace DefaultEcs
 {
@@ -68,7 +69,7 @@ namespace DefaultEcs
         /// <param name="to">The target <see cref="Entity"/>.</param>
         public void Clone(in Entity from, in Entity to)
         {
-            _from = from.World.EntityInfos[from.EntityId].Components;
+            _from = World.Instances[from.WorldId].EntityInfos[from.EntityId].Components;
             _to = to;
 
             from.ReadAllComponents(_reader);

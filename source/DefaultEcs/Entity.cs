@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using DefaultEcs.Internal;
+using DefaultEcs.Internal.Component;
 using DefaultEcs.Internal.Debug;
 using DefaultEcs.Internal.Message;
 using DefaultEcs.Serialization;
@@ -43,7 +44,7 @@ namespace DefaultEcs
         {
             WorldId = worldId;
             EntityId = entityId;
-            Version = World.Worlds[WorldId].EntityInfos[EntityId].Version;
+            Version = World.Instances[WorldId].EntityInfos[EntityId].Version;
         }
 
         #endregion
@@ -54,7 +55,7 @@ namespace DefaultEcs
         /// Gets the <see cref="DefaultEcs.World"/> instance from which current <see cref="Entity"/> originate.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public World World => World.Worlds[WorldId];
+        public World World => World.Instances[WorldId];
 
         /// <summary>
         /// Gets whether the current <see cref="Entity"/> is alive or not.
@@ -75,7 +76,7 @@ namespace DefaultEcs
         /// </summary>
         /// <returns>true if the <see cref="Entity"/> is enabled; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsEnabled() => WorldId != 0 && World.EntityInfos[EntityId].Components[World.IsEnabledFlag];
+        public bool IsEnabled() => WorldId != 0 && World.EntityInfos[EntityId].Components[ComponentFlag.IsEnable];
 
         /// <summary>
         /// Enables the current <see cref="Entity"/> so it can appear in <see cref="EntitySet"/>.
@@ -86,10 +87,9 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            World world = World;
-            ref EntityInfo info = ref world.EntityInfos[EntityId];
+            ref EntityInfo info = ref World.EntityInfos[EntityId];
 
-            if (world.Archetypes[info.ArchetypeId].Enable(EntityId, ref info.Components))
+            if (info.Archetype.Enable(EntityId, ref info.Components))
             {
                 Publisher.Publish(WorldId, new EntityEnabledMessage(EntityId, info.Components));
             }
@@ -104,10 +104,9 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            World world = World;
-            ref EntityInfo info = ref world.EntityInfos[EntityId];
+            ref EntityInfo info = ref World.EntityInfos[EntityId];
 
-            if (world.Archetypes[info.ArchetypeId].Disable(EntityId, ref info.Components))
+            if (info.Archetype.Disable(EntityId, ref info.Components))
             {
                 Publisher.Publish(WorldId, new EntityDisabledMessage(EntityId, info.Components));
             }
@@ -132,10 +131,9 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            World world = World;
-            ref EntityInfo info = ref world.EntityInfos[EntityId];
+            ref EntityInfo info = ref World.EntityInfos[EntityId];
 
-            if (world.Archetypes[info.ArchetypeId].Enable<T>(EntityId, ref info.Components))
+            if (info.Archetype.Enable<T>(EntityId, ref info.Components))
             {
                 Publisher.Publish(WorldId, new ComponentEnabledMessage<T>(EntityId, info.Components));
             }
@@ -152,10 +150,9 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            World world = World;
-            ref EntityInfo info = ref world.EntityInfos[EntityId];
+            ref EntityInfo info = ref World.EntityInfos[EntityId];
 
-            if (world.Archetypes[info.ArchetypeId].Disable<T>(EntityId, ref info.Components))
+            if (info.Archetype.Disable<T>(EntityId, ref info.Components))
             {
                 Publisher.Publish(WorldId, new ComponentDisabledMessage<T>(EntityId, info.Components));
             }
@@ -173,10 +170,9 @@ namespace DefaultEcs
         {
             if (WorldId == 0) Throw("Entity was not created from a World");
 
-            World world = World;
-            ref EntityInfo info = ref world.EntityInfos[EntityId];
+            ref EntityInfo info = ref World.EntityInfos[EntityId];
 
-            if (world.Archetypes[info.ArchetypeId].Set(EntityId, ref info.Components, component))
+            if (info.Archetype.Set(EntityId, ref info.Components, component))
             {
                 Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, info.Components));
             }
@@ -237,10 +233,9 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         public void Remove<T>()
         {
-            World world = World;
-            ref EntityInfo info = ref world.EntityInfos[EntityId];
+            ref EntityInfo info = ref World.EntityInfos[EntityId];
 
-            if (world.Archetypes[info.ArchetypeId].Remove<T>(EntityId, ref info.Components))
+            if (info.Archetype.Remove<T>(EntityId, ref info.Components))
             {
                 Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, info.Components));
                 ComponentManager<T>.GetPrevious(WorldId)?.Remove(EntityId);
@@ -269,12 +264,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has<T>()
-        {
-            World world = World;
-
-            return world.Archetypes[world.EntityInfos[EntityId].ArchetypeId].Has<T>(EntityId);
-        }
+        public bool Has<T>() => World.EntityInfos[EntityId].Archetype.Has<T>(EntityId);
 
         /// <summary>
         /// Gets the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
@@ -283,12 +273,7 @@ namespace DefaultEcs
         /// <returns>A reference to the component.</returns>
         /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/> or does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get<T>()
-        {
-            World world = World;
-
-            return ref world.Archetypes[world.EntityInfos[EntityId].ArchetypeId].Get<T>(EntityId);
-        }
+        public ref T Get<T>() => ref World.EntityInfos[EntityId].Archetype.Get<T>(EntityId);
 
         /// <summary>
         /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="DefaultEcs.World"/> using the given <see cref="ComponentCloner"/>.

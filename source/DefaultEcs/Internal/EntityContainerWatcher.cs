@@ -1,4 +1,5 @@
 ﻿using System;
+using DefaultEcs.Internal.Component;
 using DefaultEcs.Internal.Message;
 
 namespace DefaultEcs.Internal

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DefaultEcs.Internal;
+using DefaultEcs.Internal.Component;
 using DefaultEcs.Internal.Helper;
 using DefaultEcs.Internal.Message;
 
@@ -299,16 +300,16 @@ namespace DefaultEcs
 
             _addCreated = withEnabledEntities;
             _subscriptions.Add((s, w) => w.Subscribe<EntityDisposingMessage>(s.Remove));
-            _withFilter[World.IsAliveFlag] = true;
+            _withFilter[ComponentFlag.IsAlive] = true;
             if (withEnabledEntities)
             {
-                _withFilter[World.IsEnabledFlag] = true;
+                _withFilter[ComponentFlag.IsEnable] = true;
                 _subscriptions.Add((s, w) => w.Subscribe<EntityDisabledMessage>(s.Remove));
                 _nonReactSubscriptions.Add((s, w) => w.Subscribe<EntityEnabledMessage>(s.CheckedAdd));
             }
             else
             {
-                _withoutFilter[World.IsEnabledFlag] = true;
+                _withoutFilter[ComponentFlag.IsEnable] = true;
                 _subscriptions.Add((s, w) => w.Subscribe<EntityEnabledMessage>(s.Remove));
                 _nonReactSubscriptions.Add((s, w) => w.Subscribe<EntityDisabledMessage>(s.CheckedAdd));
             }
@@ -320,9 +321,10 @@ namespace DefaultEcs
 
         private static IEnumerable<Entity> AsEnumerable(World world, Predicate<ComponentEnum> filter, Predicate<int> predicate)
         {
-            for (int i = 1; i <= Math.Min(world.EntityInfos.Length, world.LastEntityId); ++i)
+            EntityInfo[] entityInfos = World.Instances[world.WorldId].EntityInfos;
+            for (int i = 1; i <= Math.Min(entityInfos.Length, world.LastEntityId); ++i)
             {
-                if (filter(world.EntityInfos[i].Components) && predicate(i))
+                if (filter(entityInfos[i].Components) && predicate(i))
                 {
                     yield return new Entity(world.WorldId, i);
                 }
@@ -415,7 +417,7 @@ namespace DefaultEcs
                 }
             }
 
-            (_predicates ??= new List<Predicate<int>>()).Add(i => predicate(ComponentManager<T>.Pools[_world.WorldId][_world.EntityInfos[i].ArchetypeId].Get(i)));
+            (_predicates ??= new List<Predicate<int>>()).Add(i => predicate(World.Instances[_world.WorldId].EntityInfos[i].Archetype.Get<T>(i)));
 
             return With<T>();
         }
@@ -542,7 +544,7 @@ namespace DefaultEcs
             Predicate<ComponentEnum> filter = GetFilter();
             Predicate<int> predicate = GetPredicate();
 
-            return e => filter(e.World.EntityInfos[e.EntityId].Components) && predicate(e.EntityId);
+            return e => filter(World.Instances[e.WorldId].EntityInfos[e.EntityId].Components) && predicate(e.EntityId);
         }
 
         /// <summary>

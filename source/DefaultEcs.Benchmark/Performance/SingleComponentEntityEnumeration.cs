@@ -90,7 +90,6 @@ namespace DefaultEcs.Benchmark.Performance
         private DefaultParallelRunner _defaultRunner;
         private EntitySet _defaultEntitySet;
         private Archetype _archetype;
-        private DefaultComponent[] _components;
         private DefaultEcsSystem _defaultSystem;
         private DefaultEcsSystem _defaultMultiSystem;
         private DefaultEcsEntityComponentSystem _defaultEntityComponentSystem;
@@ -125,7 +124,6 @@ namespace DefaultEcs.Benchmark.Performance
             }
 
             _archetype = _defaultWorld.GetArchetype<DefaultComponent>();
-            _components = _archetype.GetArray<DefaultComponent>();
         }
 
         [GlobalCleanup]
@@ -135,26 +133,26 @@ namespace DefaultEcs.Benchmark.Performance
             _defaultWorld.Dispose();
         }
 
-        //[Benchmark]
-        //public void DefaultEcs_EntitySet()
-        //{
-        //    foreach (ref readonly Entity entity in _defaultEntitySet.GetEntities())
-        //    {
-        //        ++entity.Get<DefaultComponent>().Value;
-        //    }
-        //}
+        [Benchmark]
+        public void DefaultEcs_EntitySet()
+        {
+            foreach (ref readonly Entity entity in _defaultEntitySet.GetEntities())
+            {
+                ++entity.Get<DefaultComponent>().Value;
+            }
+        }
 
         [Benchmark]
         public void DefaultEcs_Archetype()
         {
-            foreach (ref DefaultComponent component in _archetype.GetPool<DefaultComponent>().Span)
+            foreach (ref DefaultComponent component in _archetype.Get<DefaultComponent>().Span)
             {
                 ++component.Value;
             }
         }
 
-        [Benchmark]
-        public void DefaultEcs_System() => _defaultSystem.Update(42);
+        //[Benchmark]
+        //public void DefaultEcs_System() => _defaultSystem.Update(42);
 
         //[Benchmark]
         //public void DefaultEcs_MultiSystem() => _defaultMultiSystem.Update(42);

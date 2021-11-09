@@ -1,20 +1,39 @@
 ﻿using System;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Internal.Helper;
 using DefaultEcs.Internal.Message;
 
-namespace DefaultEcs.Internal
+namespace DefaultEcs.Internal.Component
 {
-    internal sealed class ComponentPool<T>
+    internal sealed class GenericComponentPool<T>
     {
         #region Types
 
+        private struct ComponentLink
+        {
+            #region Fields
+
+            public int EntityId;
+            public int ReferenceCount;
+
+            #endregion
+
+            #region Initialisation
+
+            public ComponentLink(int entityId)
+            {
+                EntityId = entityId;
+                ReferenceCount = 1;
+            }
+
+            #endregion
+        }
+
         public readonly ref struct EntityEnumerable
         {
-            private readonly ComponentPool<T> _pool;
+            private readonly GenericComponentPool<T> _pool;
 
-            public EntityEnumerable(ComponentPool<T> pool)
+            public EntityEnumerable(GenericComponentPool<T> pool)
             {
                 _pool = pool;
             }
@@ -33,7 +52,7 @@ namespace DefaultEcs.Internal
 
             private int _index;
 
-            public EntityEnumerator(ComponentPool<T> pool)
+            public EntityEnumerator(GenericComponentPool<T> pool)
             {
                 _worldId = pool._worldId;
                 _mapping = pool._mapping;
@@ -65,8 +84,6 @@ namespace DefaultEcs.Internal
 
         #region Fields
 
-        private static readonly bool _isReferenceType;
-
         private readonly short _worldId;
 
         private int[] _mapping;
@@ -86,14 +103,7 @@ namespace DefaultEcs.Internal
 
         #region Initialisation
 
-        static ComponentPool()
-        {
-            TypeInfo typeInfo = typeof(T).GetTypeInfo();
-
-            _isReferenceType = !typeInfo.IsValueType;
-        }
-
-        public ComponentPool(short worldId, Archetype archetype)
+        public GenericComponentPool(short worldId, bool isPrevious)
         {
             _worldId = worldId;
 
@@ -102,25 +112,18 @@ namespace DefaultEcs.Internal
             _components = EmptyArray<T>.Value;
             _lastComponentIndex = -1;
 
-            if (archetype is null)
+            Publisher<TrimExcessMessage>.Subscribe(_worldId, On);
+            Publisher<EntityDisposedMessage>.Subscribe(_worldId, On);
+
+            if (!isPrevious)
             {
-                Publisher<TrimExcessMessage>.Subscribe(_worldId, On);
-                Publisher<EntityDisposedMessage>.Subscribe(_worldId, On);
-                //Publisher<ComponentTypeReadMessage>.Subscribe(_worldId, On);
                 Publisher<ComponentReadMessage>.Subscribe(_worldId, On);
-            }
-            else
-            {
-                archetype.CopyComponents += (index, newArchetypeId, newIndex) => ComponentManager<T>.GetOrCreate(_worldId, newArchetypeId).SetAt(newIndex, GetAt(index));
-                archetype.RemoveComponents += (index, lastIndex) => RemoveAt(index, lastIndex);
             }
         }
 
         #endregion
 
         #region Callbacks
-
-        //private void On(in ComponentTypeReadMessage message) => message.Reader.OnRead<T>(MaxCapacity);
 
         private void On(in EntityDisposedMessage message) => Remove(message.EntityId);
 
@@ -146,13 +149,6 @@ namespace DefaultEcs.Internal
         public bool Has(int entityId) => entityId < _mapping.Length && _mapping[entityId] != -1;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetAt(int index, in T component)
-        {
-            ArrayExtension.EnsureLength(ref _components, index);
-            _components[index] = component;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Set(int entityId, in T component)
         {
             ArrayExtension.EnsureLength(ref _mapping, entityId, int.MaxValue, -1);
@@ -172,7 +168,8 @@ namespace DefaultEcs.Internal
 
             componentIndex = ++_lastComponentIndex;
 
-            SetAt(_lastComponentIndex, component);
+            ArrayExtension.EnsureLength(ref _components, _lastComponentIndex);
+            _components[_lastComponentIndex] = component;
 
             ArrayExtension.EnsureLength(ref _links, _lastComponentIndex);
             _links[_lastComponentIndex] = new ComponentLink(entityId);
@@ -180,39 +177,25 @@ namespace DefaultEcs.Internal
             return true;
         }
 
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //public bool SetSameAs(int entityId, int referenceEntityId)
-        //{
-        //    ArrayExtension.EnsureLength(ref _mapping, entityId, _worldMaxCapacity, -1);
-
-        //    int referenceComponentIndex = _mapping[referenceEntityId];
-
-        //    bool isNew = true;
-        //    ref int componentIndex = ref _mapping[entityId];
-        //    if (componentIndex != -1)
-        //    {
-        //        Remove(entityId);
-        //        isNew = false;
-        //    }
-
-        //    ++_links[referenceComponentIndex].ReferenceCount;
-        //    componentIndex = referenceComponentIndex;
-
-        //    return isNew;
-        //}
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void RemoveAt(int index, int lastIndex)
+        public bool SetSameAs(int entityId, int referenceEntityId)
         {
-            if (index != lastIndex)
+            ArrayExtension.EnsureLength(ref _mapping, entityId, int.MaxValue, -1);
+
+            int referenceComponentIndex = _mapping[referenceEntityId];
+
+            bool isNew = true;
+            ref int componentIndex = ref _mapping[entityId];
+            if (componentIndex != -1)
             {
-                _components[index] = _components[lastIndex];
+                Remove(entityId);
+                isNew = false;
             }
 
-            if (_isReferenceType)
-            {
-                _components[lastIndex] = default;
-            }
+            ++_links[referenceComponentIndex].ReferenceCount;
+            componentIndex = referenceComponentIndex;
+
+            return isNew;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -253,7 +236,7 @@ namespace DefaultEcs.Internal
                     }
                 }
 
-                if (_isReferenceType)
+                if (ComponentManager<T>.IsReferenceType)
                 {
                     _components[_lastComponentIndex] = default;
                 }
@@ -278,19 +261,10 @@ namespace DefaultEcs.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T GetAt(int index) => ref _components[index];
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get(int entityId) => ref _components[_mapping[entityId]];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Memory<T> AsSpan(int count) => new(_components, 0, count);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> AsSpan() => new(_components, 0, _lastComponentIndex + 1);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] AsArray() => _components;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Components<T> AsComponents() => new(_mapping, _components);

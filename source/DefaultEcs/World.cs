@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using DefaultEcs.Internal;
+using DefaultEcs.Internal.Component;
 using DefaultEcs.Internal.Debug;
 using DefaultEcs.Internal.Helper;
 using DefaultEcs.Internal.Message;
@@ -111,7 +112,7 @@ namespace DefaultEcs
             {
                 while (++_index < _maxIndex)
                 {
-                    if (_entityInfos[_index].Components[IsAliveFlag])
+                    if (_entityInfos[_index].Components[ComponentFlag.IsAlive])
                     {
                         return true;
                     }
@@ -145,23 +146,18 @@ namespace DefaultEcs
         private static readonly object _lockObject;
         private static readonly IntDispenser _worldIdDispenser;
 
-        internal static readonly ComponentFlag IsAliveFlag;
-        internal static readonly ComponentFlag IsEnabledFlag;
-        internal static readonly ComponentEnum BaseArchetypeComponents;
+        internal static World[] Instances;
 
-        internal static World[] Worlds;
-
-        private readonly IntDispenser _archetypeIdDispenser;
         private readonly IntDispenser _entityIdDispenser;
         private readonly Optimizer _optimizer;
+        private readonly Archetype _baseArchetype;
 
         internal readonly short WorldId;
-
-        private volatile bool _isDisposed;
+        internal readonly Dictionary<ComponentEnum, Archetype> Archetypes;
 
         internal EntityInfo[] EntityInfos;
-        internal Dictionary<ComponentEnum, Archetype> ArchetypesByCompositions;
-        internal Archetype[] Archetypes;
+
+        private volatile bool _isDisposed;
 
         #endregion
 
@@ -183,12 +179,7 @@ namespace DefaultEcs
             _lockObject = new object();
             _worldIdDispenser = new IntDispenser(0);
 
-            Worlds = new World[2];
-
-            IsAliveFlag = ComponentFlag.GetNextFlag();
-            IsEnabledFlag = ComponentFlag.GetNextFlag();
-            BaseArchetypeComponents[IsAliveFlag] = true;
-            BaseArchetypeComponents[IsEnabledFlag] = true;
+            Instances = new World[2];
         }
 
         /// <summary>
@@ -203,28 +194,26 @@ namespace DefaultEcs
                 throw new ArgumentException("Argument cannot be negative", nameof(maxCapacity));
             }
 
-            _archetypeIdDispenser = new IntDispenser(0);
             _entityIdDispenser = new IntDispenser(0);
             _optimizer = new Optimizer();
+
             WorldId = (short)_worldIdDispenser.GetFreeInt();
+            Archetypes = new Dictionary<ComponentEnum, Archetype>();
 
             MaxCapacity = maxCapacity;
             EntityInfos = EmptyArray<EntityInfo>.Value;
-            ArchetypesByCompositions = new Dictionary<ComponentEnum, Archetype>();
-            Archetypes = EmptyArray<Archetype>.Value;
 
             lock (_lockObject)
             {
-                ArrayExtension.EnsureLength(ref Worlds, WorldId);
-
-                Worlds[WorldId] = this;
+                ArrayExtension.EnsureLength(ref Instances, WorldId);
+                Instances[WorldId] = this;
             }
+
+            _baseArchetype = new Archetype(WorldId, ComponentEnum.Base);
 
             Subscribe<EntityDisposedMessage>(On);
 
             _isDisposed = false;
-
-            CreateArchetype(BaseArchetypeComponents);
         }
 
         /// <summary>
@@ -240,7 +229,7 @@ namespace DefaultEcs
 
         private void On(in EntityDisposedMessage message)
         {
-            ref EntityInfo entityInfo = ref EntityInfos[message.EntityId];
+            ref EntityInfo entityInfo = ref Instances[WorldId].EntityInfos[message.EntityId];
 
             entityInfo.Components.Clear();
             _entityIdDispenser.ReleaseInt(message.EntityId);
@@ -254,21 +243,6 @@ namespace DefaultEcs
         internal void Add(ISortable optimizable) => _optimizer.Add(optimizable);
 
         internal void Remove(ISortable optimizable) => _optimizer.Remove(optimizable);
-
-        internal Archetype CreateArchetype(ComponentEnum components)
-        {
-            int archetypeId = _archetypeIdDispenser.GetFreeInt();
-
-            ArrayExtension.EnsureLength(ref Archetypes, archetypeId);
-
-            components = components.Copy();
-            Archetype archetype = new(this, archetypeId, components);
-
-            ArchetypesByCompositions.Add(components, archetype);
-            Archetypes[archetypeId] = archetype;
-
-            return archetype;
-        }
 
         /// <summary>
         /// Creates a new instance of the <see cref="Entity"/> struct.
@@ -287,10 +261,9 @@ namespace DefaultEcs
 
             ArrayExtension.EnsureLength(ref EntityInfos, entityId, MaxCapacity == int.MaxValue ? int.MaxValue : (MaxCapacity + 1));
 
-            EntityInfos[entityId].Components[IsAliveFlag] = true;
-            EntityInfos[entityId].Components[IsEnabledFlag] = true;
-            EntityInfos[entityId].ArchetypeId = 1;
-            Archetypes[1].Add(entityId);
+            EntityInfos[entityId].Components = ComponentEnum.Base.Copy();
+            EntityInfos[entityId].Archetype = _baseArchetype;
+            _baseArchetype.Add(entityId);
             Publish(new EntityCreatedMessage(entityId));
 
             return new Entity(WorldId, entityId);
@@ -328,7 +301,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of component.</typeparam>
         /// <returns>A <see cref="Span{T}"/> pointing directly to the component values to edit them.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> GetAll<T>() => ComponentManager<T>.GetOrCreate(WorldId).AsSpan();
+        public Span<T> GetAll<T>() => ComponentManager<T>.GetOrCreateWorld(WorldId).AsSpan();
 
         /// <summary>
         /// Gets an <see cref="Components{T}"/> to get a fast access to the component of type <typeparamref name="T"/> of this <see cref="World"/> instance <see cref="Entity"/>.
@@ -336,7 +309,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of component.</typeparam>
         /// <returns>A <see cref="Components{T}"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Components<T> GetComponents<T>() => ComponentManager<T>.GetOrCreate(WorldId).AsComponents();
+        public Components<T> GetComponents<T>() => ComponentManager<T>.GetOrCreateWorld(WorldId).AsComponents();
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="World"/>.
@@ -345,7 +318,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
-        public void Set<T>(in T component) => ComponentManager<T>.GetOrCreate(WorldId).Set(0, component);
+        public void Set<T>(in T component) => ComponentManager<T>.GetOrCreateWorld(WorldId).Set(0, component);
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> to its default value on the current <see cref="World"/>.
@@ -362,7 +335,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="World"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has<T>() => ComponentManager<T>.Get(WorldId)?.Has(0) ?? false;
+        public bool Has<T>() => ComponentManager<T>.GetWorld(WorldId)?.Has(0) ?? false;
 
         /// <summary>
         /// Gets the component of type <typeparamref name="T"/> on the current <see cref="World"/>.
@@ -371,14 +344,14 @@ namespace DefaultEcs
         /// <returns>A reference to the component.</returns>
         /// <exception cref="Exception"><see cref="World"/> does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId][0].Get(0);
+        public ref T Get<T>() => ref ComponentManager<T>.WorldPools[WorldId].Get(0);
 
         /// <summary>
         /// Removes the component of type <typeparamref name="T"/> on the current <see cref="World"/>.
         /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
-        public void Remove<T>() => ComponentManager<T>.Get(WorldId)?.Remove(0);
+        public void Remove<T>() => ComponentManager<T>.GetWorld(WorldId)?.Remove(0);
 
         /// <summary>
         /// Gets an <see cref="EntityQueryBuilder"/> to create a subset of <see cref="Entity"/> of the current <see cref="World"/>.
@@ -440,8 +413,13 @@ namespace DefaultEcs
         /// </summary>
         public void TrimExcess<T>()
         {
-            ComponentManager<T>.Get(WorldId)?.TrimExcess();
             ComponentManager<T>.GetPrevious(WorldId)?.TrimExcess();
+            ComponentManager<T>.GetWorld(WorldId)?.TrimExcess();
+
+            foreach (Archetype archetype in Archetypes.Values)
+            {
+                archetype.TrimExcess();
+            }
         }
 
         /// <summary>
@@ -450,7 +428,7 @@ namespace DefaultEcs
         /// </summary>
         public void TrimExcess()
         {
-            ArrayExtension.Trim(ref EntityInfos, Array.FindLastIndex(EntityInfos, i => i.Components[IsAliveFlag]) + 1);
+            ArrayExtension.Trim(ref EntityInfos, Array.FindLastIndex(EntityInfos, i => i.Components[ComponentFlag.IsAlive]) + 1);
 
             Publish(new TrimExcessMessage());
         }
@@ -545,7 +523,7 @@ namespace DefaultEcs
 
             return Subscribe((in ComponentAddedMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
-                ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
+                ComponentManager<T>.GetWorld(WorldId).Get(message.EntityId)));
         }
 
         /// <summary>
@@ -564,7 +542,7 @@ namespace DefaultEcs
             return Subscribe((in ComponentChangedMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
                 ComponentManager<T>.GetPrevious(WorldId).Get(message.EntityId),
-                ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
+                ComponentManager<T>.GetWorld(WorldId).Get(message.EntityId)));
         }
 
         /// <summary>
@@ -583,7 +561,7 @@ namespace DefaultEcs
                     ComponentManager<T>.GetPrevious(WorldId).Get(message.EntityId)));
                 yield return Subscribe((in EntityDisposingMessage message) =>
                 {
-                    ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
+                    GenericComponentPool<T> pool = ComponentManager<T>.GetWorld(WorldId);
                     if (pool?.Has(message.EntityId) is true)
                     {
                         a(new Entity(WorldId, message.EntityId), pool.Get(message.EntityId));
@@ -591,7 +569,7 @@ namespace DefaultEcs
                 });
                 yield return Subscribe((in WorldDisposedMessage _) =>
                 {
-                    ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
+                    GenericComponentPool<T> pool = ComponentManager<T>.GetWorld(WorldId);
                     if (pool != null)
                     {
                         foreach (Entity entity in pool.GetEntities())
@@ -622,7 +600,7 @@ namespace DefaultEcs
 
             return Subscribe((in ComponentEnabledMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
-                ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
+                ComponentManager<T>.GetWorld(WorldId).Get(message.EntityId)));
         }
 
         /// <summary>
@@ -638,34 +616,34 @@ namespace DefaultEcs
 
             return Subscribe((in ComponentDisabledMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
-                ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
+                ComponentManager<T>.GetWorld(WorldId).Get(message.EntityId)));
         }
 
         public Archetype GetArchetype<T>()
         {
-            ComponentEnum components = BaseArchetypeComponents.Copy();
+            ComponentEnum components = ComponentEnum.Base.Copy();
             components[ComponentManager<T>.Flag] = true;
 
-            return ArchetypesByCompositions[components];
+            return Instances[WorldId].Archetypes[components];
         }
 
         public Archetype GetArchetype<T1, T2>()
         {
-            ComponentEnum components = BaseArchetypeComponents.Copy();
+            ComponentEnum components = ComponentEnum.Base.Copy();
             components[ComponentManager<T1>.Flag] = true;
             components[ComponentManager<T2>.Flag] = true;
 
-            return ArchetypesByCompositions[components];
+            return Instances[WorldId].Archetypes[components];
         }
 
         public Archetype GetArchetype<T1, T2, T3>()
         {
-            ComponentEnum components = BaseArchetypeComponents.Copy();
+            ComponentEnum components = ComponentEnum.Base.Copy();
             components[ComponentManager<T1>.Flag] = true;
             components[ComponentManager<T2>.Flag] = true;
             components[ComponentManager<T3>.Flag] = true;
 
-            return ArchetypesByCompositions[components];
+            return Instances[WorldId].Archetypes[components];
         }
 
         #endregion
@@ -724,9 +702,10 @@ namespace DefaultEcs
 
                 lock (_lockObject)
                 {
-                    Worlds[WorldId] = null;
+                    Instances[WorldId] = null;
                 }
 
+                Archetype.Release(Archetypes.Values);
                 _worldIdDispenser.ReleaseInt(WorldId);
 
                 GC.SuppressFinalize(this);

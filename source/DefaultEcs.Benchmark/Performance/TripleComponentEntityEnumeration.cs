@@ -125,9 +125,9 @@ namespace DefaultEcs.Benchmark.Performance
         [Benchmark]
         public void DefaultEcs_Artifact()
         {
-            Span<DefaultX> Xs = _archetype.GetPool<DefaultX>().Span;
-            Span<DefaultA> As = _archetype.GetPool<DefaultA>().Span;
-            Span<DefaultB> Bs = _archetype.GetPool<DefaultB>().Span;
+            Span<DefaultX> Xs = _archetype.Get<DefaultX>().Span;
+            Span<DefaultA> As = _archetype.Get<DefaultA>().Span;
+            Span<DefaultB> Bs = _archetype.Get<DefaultB>().Span;
 
             for (int i = 0; i < Xs.Length; ++i)
             {
@@ -135,14 +135,14 @@ namespace DefaultEcs.Benchmark.Performance
             }
         }
 
-        //[Benchmark]
-        //public void DefaultEcs_EntitySet()
-        //{
-        //    foreach (ref readonly Entity entity in _defaultEntitySet.GetEntities())
-        //    {
-        //        entity.Get<DefaultX>().Value += (entity.Get<DefaultA>().Value + entity.Get<DefaultB>().Value) * Time;
-        //    }
-        //}
+        [Benchmark]
+        public void DefaultEcs_EntitySet()
+        {
+            foreach (ref readonly Entity entity in _defaultEntitySet.GetEntities())
+            {
+                entity.Get<DefaultX>().Value += (entity.Get<DefaultA>().Value + entity.Get<DefaultB>().Value) * Time;
+            }
+        }
 
         //[Benchmark]
         //public void DefaultEcs_System() => _defaultSystem.Update(Time);
