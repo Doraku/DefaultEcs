@@ -52,7 +52,7 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
 <a name='Requirement'></a>
 # Requirement
 DefaultEcs heavily uses features from C#7.0 and Span from the System.Memory package, compatible from .NETStandard 1.1.  
-For development, a C#9.0 compatible environment, net framework 4.8, netcore 3.1 and net5 are required to build and run all tests (it is possible to disable some target in the test project if needed).  
+For development, a C#9.0 compatible environment, net framework 4.8, net6.0 are required to build and run all tests (it is possible to disable some target in the test project if needed).  
 It is possible to use DefaultEcs in Unity (check [FAQ](./documentation/FAQ.md#unity)).
 
 <a name='Versioning'></a>

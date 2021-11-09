@@ -18,7 +18,7 @@ jobs:
     - name: Set up dotnet
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0.100'
+        dotnet-version: '6.0.x'
         source-url: https://nuget.pkg.github.com/Doraku/index.json
       env:
         NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
@@ -29,8 +29,8 @@ jobs:
     - name: Run tests net48
       run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net48 /p:TEST=true
 
-    - name: Run tests net5.0
-      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net5.0 /p:TEST=true
+    - name: Run tests net6.0
+      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net6.0 /p:TEST=true
       
     - name: Decrypte snk file
       env:

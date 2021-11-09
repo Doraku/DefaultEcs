@@ -19,13 +19,13 @@ jobs:
     - name: Set up dotnet
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0.100'
+        dotnet-version: '6.0.x'
 
-    - name: Collect coverage for net5.0
-      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net5.0 -p:CollectCoverage=true -p:CoverletOutputFormat=lcov -p:CoverletOutput=..\..\build\lcov.info -p:Exclude="[*]DefaultEcs.Internal.Debug*" /p:TEST=true
+    - name: Collect coverage for net6.0
+      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net6.0 -p:CollectCoverage=true -p:CoverletOutputFormat=lcov -p:CoverletOutput=..\..\build\lcov.info -p:Exclude="[*]DefaultEcs.Internal.Debug*" /p:TEST=true
 
     - name: Upload to coverall
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: 'build\lcov.net5.0.info'
+        path-to-lcov: 'build\lcov.net6.0.info'
