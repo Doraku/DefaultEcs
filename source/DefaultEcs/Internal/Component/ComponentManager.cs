@@ -7,6 +7,8 @@ namespace DefaultEcs.Internal.Component
 {
     internal static class ComponentManager<T>
     {
+        public delegate ref T Getter(int entityId);
+
         #region Fields
 
         private static readonly object _lockObject;
@@ -19,6 +21,7 @@ namespace DefaultEcs.Internal.Component
 
         public static IComponentPool<T>[] WorldPools;
         public static ArchetypePool<T>[] ArchetypePools;
+        public static Getter[] Getters;
 
         #endregion
 
@@ -36,6 +39,7 @@ namespace DefaultEcs.Internal.Component
 
             WorldPools = EmptyArray<IComponentPool<T>>.Value;
             ArchetypePools = EmptyArray<ArchetypePool<T>>.Value;
+            Getters = EmptyArray<Getter>.Value;
 
             Publisher<WorldDisposedMessage>.Subscribe(0, On);
         }
@@ -56,6 +60,7 @@ namespace DefaultEcs.Internal.Component
                 if (message.WorldId < WorldPools.Length)
                 {
                     WorldPools[message.WorldId] = null;
+                    Getters[message.WorldId] = null;
                 }
 
                 foreach (Archetype archetype in World.Instances[message.WorldId].Archetypes.Values)
@@ -99,23 +104,43 @@ namespace DefaultEcs.Internal.Component
             lock (_lockObject)
             {
                 ArrayExtension.EnsureLength(ref WorldPools, worldId);
+                ArrayExtension.EnsureLength(ref Getters, worldId);
 
-                return WorldPools[worldId] = mode switch
+                IComponentPool<T> pool;
+                switch (mode)
                 {
-                    ComponentMode.Shared => new SharedPool<T>(worldId),
-                    _ => new SinglePool<T>(worldId, mode)
-                };
+                    case ComponentMode.Single:
+                        SinglePool<T> singlePool = new(worldId, mode);
+                        pool = singlePool;
+                        Getters[worldId] = singlePool.Get;
+                        break;
+
+                    case ComponentMode.Shared:
+                        SharedPool<T> sharedPool = new(worldId);
+                        pool = sharedPool;
+                        Getters[worldId] = sharedPool.Get;
+                        break;
+
+                    default:
+                        pool = new SinglePool<T>(worldId, mode);
+                        Getters[worldId] = World.Instances[worldId].GetArchetypeComponent<T>;
+                        break;
+                }
+
+                return WorldPools[worldId] = pool;
             }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static ArchetypePool<T> AddArchetype(int archetypeId)
+        private static ArchetypePool<T> AddArchetype(Archetype archetype)
         {
+            GetOrCreateWorld(archetype.WorldId);
+
             lock (_lockObject)
             {
-                ArrayExtension.EnsureLength(ref ArchetypePools, archetypeId);
+                ArrayExtension.EnsureLength(ref ArchetypePools, archetype.ArchetypeId);
 
-                return ArchetypePools[archetypeId] = new ArchetypePool<T>(Archetype.Instances[archetypeId]);
+                return ArchetypePools[archetype.ArchetypeId] = new ArchetypePool<T>(Archetype.Instances[archetype.ArchetypeId]);
             }
         }
 
@@ -132,13 +157,13 @@ namespace DefaultEcs.Internal.Component
         public static IComponentPool<T> GetOrCreateWorld(short worldId, ComponentMode mode) => GetWorld(worldId) ?? AddWorld(worldId, mode);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IComponentPool<T> GetOrCreateWorld(short worldId) => GetOrCreateWorld(worldId, ComponentMode.Archetype);
+        public static IComponentPool<T> GetOrCreateWorld(short worldId) => GetOrCreateWorld(worldId, World.Instances[worldId].DefaultComponentMode);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ArchetypePool<T> GetArchetype(int archetypeId) => archetypeId < ArchetypePools.Length ? ArchetypePools[archetypeId] : null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ArchetypePool<T> GetOrCreateArchetype(int archetypeId) => GetArchetype(archetypeId) ?? AddArchetype(archetypeId);
+        public static ArchetypePool<T> GetOrCreateArchetype(Archetype archetype) => GetArchetype(archetype.ArchetypeId) ?? AddArchetype(archetype);
 
         #endregion
     }

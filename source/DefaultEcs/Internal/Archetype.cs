@@ -40,7 +40,6 @@ namespace DefaultEcs.Internal
 
         public static Archetype[] Instances;
 
-        private readonly short _worldId;
         private readonly ComponentEnum _components;
         private readonly Dictionary<ComponentEnum, Archetype> _archetypesByCompositions;
 
@@ -48,6 +47,7 @@ namespace DefaultEcs.Internal
         private int[] _mapping;
         private int _lastEntityIndex;
 
+        public readonly short WorldId;
         public readonly int ArchetypeId;
 
         internal event CopyComponentHandler OnCopyComponents;
@@ -64,15 +64,15 @@ namespace DefaultEcs.Internal
 
         internal Archetype(short worldId, ComponentEnum components)
         {
-            _worldId = worldId;
+            WorldId = worldId;
+            ArchetypeId = _archetypeIdDispenser.GetFreeInt();
             _components = components.Copy();
-            _archetypesByCompositions = World.Instances[_worldId].Archetypes;
+            _archetypesByCompositions = World.Instances[WorldId].Archetypes;
 
             _entities = EmptyArray<Entity>.Value;
             _mapping = EmptyArray<int>.Value;
             _lastEntityIndex = -1;
 
-            ArchetypeId = _archetypeIdDispenser.GetFreeInt();
 
             lock (_lockObject)
             {
@@ -100,14 +100,14 @@ namespace DefaultEcs.Internal
         {
             if (!_archetypesByCompositions.TryGetValue(components, out Archetype newArchetype))
             {
-                newArchetype = new Archetype(_worldId, components);
+                newArchetype = new Archetype(WorldId, components);
             }
 
             ref int index = ref _mapping[entityId];
-            OnCopyComponents?.Invoke(index, _worldId, newArchetype);
+            OnCopyComponents?.Invoke(index, WorldId, newArchetype);
 
             newArchetype.Add(entityId);
-            World.Instances[_worldId].EntityInfos[entityId].Archetype = newArchetype;
+            World.Instances[WorldId].EntityInfos[entityId].Archetype = newArchetype;
 
             OnRemoveComponents?.Invoke(index, _lastEntityIndex);
             if (index != _lastEntityIndex)
@@ -153,7 +153,7 @@ namespace DefaultEcs.Internal
                 return false;
             }
 
-            IComponentPool<T> pool = ComponentManager<T>.GetWorld(_worldId);
+            IComponentPool<T> pool = ComponentManager<T>.GetWorld(WorldId);
 
             if (!ComponentManager<T>.IsFlagType && pool?.Has(entityId) is not true)
             {
@@ -165,7 +165,7 @@ namespace DefaultEcs.Internal
 
             if (!ComponentManager<T>.IsFlagType && pool.Mode is ComponentMode.Archetype)
             {
-                ComponentManager<T>.GetOrCreateArchetype(newArchetype.ArchetypeId).SetAt(newArchetype._lastEntityIndex, pool.Get(entityId));
+                ComponentManager<T>.GetOrCreateArchetype(newArchetype).SetAt(newArchetype._lastEntityIndex, pool.Get(entityId));
                 pool.Remove(entityId);
             }
 
@@ -183,7 +183,7 @@ namespace DefaultEcs.Internal
 
             if (!ComponentManager<T>.IsFlagType)
             {
-                IComponentPool<T> pool = ComponentManager<T>.GetOrCreateWorld(_worldId);
+                IComponentPool<T> pool = ComponentManager<T>.GetOrCreateWorld(WorldId);
                 if (pool.Mode is ComponentMode.Archetype)
                 {
                     pool.Set(entityId, ComponentManager<T>.ArchetypePools[ArchetypeId].GetAt(_mapping[entityId]));
@@ -197,9 +197,9 @@ namespace DefaultEcs.Internal
 
         internal bool Set<T>(int entityId, ref ComponentEnum entityComponents, in T component)
         {
-            IComponentPool<T> pool = ComponentManager<T>.GetWorld(_worldId);
+            IComponentPool<T> pool = ComponentManager<T>.GetOrCreateWorld(WorldId);
 
-            if (_components[ComponentManager<T>.Flag] && pool?.Mode is null or ComponentMode.Archetype)
+            if (_components[ComponentManager<T>.Flag] && pool.Mode is ComponentMode.Archetype)
             {
                 if (!ComponentManager<T>.IsFlagType)
                 {
@@ -209,7 +209,7 @@ namespace DefaultEcs.Internal
                 return false;
             }
 
-            if (!ComponentManager<T>.IsFlagType && pool?.Mode is not null and not ComponentMode.Archetype && !pool.Set(entityId, component))
+            if (!ComponentManager<T>.IsFlagType && pool.Mode is not ComponentMode.Archetype && !pool.Set(entityId, component))
             {
                 return false;
             }
@@ -217,9 +217,9 @@ namespace DefaultEcs.Internal
             entityComponents[ComponentManager<T>.Flag] = true;
             Archetype newArchetype = ChangeArchetype(entityId, entityComponents);
 
-            if (!ComponentManager<T>.IsFlagType && pool?.Mode is null or ComponentMode.Archetype)
+            if (!ComponentManager<T>.IsFlagType && pool.Mode is ComponentMode.Archetype)
             {
-                ComponentManager<T>.GetOrCreateArchetype(newArchetype.ArchetypeId).SetAt(newArchetype._lastEntityIndex, component);
+                ComponentManager<T>.GetOrCreateArchetype(newArchetype).SetAt(newArchetype._lastEntityIndex, component);
             }
 
             return true;
@@ -227,7 +227,7 @@ namespace DefaultEcs.Internal
 
         internal bool Remove<T>(int entityId, ref ComponentEnum entityComponents)
         {
-            IComponentPool<T> pool = ComponentManager<T>.GetWorld(_worldId);
+            IComponentPool<T> pool = ComponentManager<T>.GetWorld(WorldId);
 
             if (!_components[ComponentManager<T>.Flag] && !ComponentManager<T>.IsFlagType)
             {
@@ -247,26 +247,16 @@ namespace DefaultEcs.Internal
 
         public bool Has<T>() => _components[ComponentManager<T>.Flag];
 
-        public ref T Get<T>(int entityId)
-        {
-            if (_components[ComponentManager<T>.Flag])
-            {
-                return ref ComponentManager<T>.ArchetypePools[ArchetypeId].GetAt(_mapping[entityId]);
-            }
-
-            return ref ComponentManager<T>.GetWorld(_worldId).Get(entityId);
-        }
+        public ref T Get<T>(int entityId) => ref ComponentManager<T>.ArchetypePools[ArchetypeId].GetAt(_mapping[entityId]);
 
         public void Add(int entityId)
         {
             ArrayExtension.EnsureLength(ref _entities, ++_lastEntityIndex);
-            _entities[_lastEntityIndex] = new Entity(_worldId, entityId);
+            _entities[_lastEntityIndex] = new Entity(WorldId, entityId);
 
             ArrayExtension.EnsureLength(ref _mapping, entityId);
             _mapping[entityId] = _lastEntityIndex;
         }
-
-
 
         public Memory<T> Get<T>() => ComponentManager<T>.GetArchetype(ArchetypeId).AsMemory(Count);
 

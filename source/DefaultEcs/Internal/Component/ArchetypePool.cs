@@ -22,7 +22,7 @@ namespace DefaultEcs.Internal.Component
             {
                 if (ComponentManager<T>.GetWorld(worldId)?.Mode is null or ComponentMode.Archetype && newArchetype.Has<T>())
                 {
-                    ComponentManager<T>.GetOrCreateArchetype(newArchetype.ArchetypeId).SetAt(newArchetype.Count, GetAt(index));
+                    ComponentManager<T>.GetOrCreateArchetype(newArchetype).SetAt(newArchetype.Count, GetAt(index));
                 }
             };
             archetype.OnRemoveComponents += (index, lastIndex) => RemoveAt(index, lastIndex);

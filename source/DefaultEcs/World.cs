@@ -154,6 +154,7 @@ namespace DefaultEcs
 
         internal readonly short WorldId;
         internal readonly Dictionary<ComponentEnum, Archetype> Archetypes;
+        internal readonly ComponentMode DefaultComponentMode;
 
         internal EntityInfo[] EntityInfos;
 
@@ -164,6 +165,7 @@ namespace DefaultEcs
         #region Properties
 
         internal int LastEntityId => _entityIdDispenser.LastInt;
+
 
         /// <summary>
         /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can handle.
@@ -186,8 +188,9 @@ namespace DefaultEcs
         /// Initializes a new instance of the <see cref="World"/> class.
         /// </summary>
         /// <param name="maxCapacity">The maximum number of <see cref="Entity"/> that can exist in this <see cref="World"/>.</param>
+        /// <param name="defaultComponentMode">The default <see cref="ComponentMode"/> to use when creating component pools.</param>
         /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
-        public World(int maxCapacity)
+        public World(int maxCapacity, ComponentMode defaultComponentMode)
         {
             if (maxCapacity < 0)
             {
@@ -199,6 +202,7 @@ namespace DefaultEcs
 
             WorldId = (short)_worldIdDispenser.GetFreeInt();
             Archetypes = new Dictionary<ComponentEnum, Archetype>();
+            DefaultComponentMode = defaultComponentMode;
 
             MaxCapacity = maxCapacity;
             EntityInfos = EmptyArray<EntityInfo>.Value;
@@ -219,8 +223,25 @@ namespace DefaultEcs
         /// <summary>
         /// Initializes a new instance of the <see cref="World"/> class.
         /// </summary>
+        /// <param name="defaultComponentMode">The default <see cref="ComponentMode"/> to use when creating component pools.</param>
+        public World(ComponentMode defaultComponentMode)
+            : this(int.MaxValue, defaultComponentMode)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="World"/> class.
+        /// </summary>
+        /// <param name="maxCapacity">The maximum number of <see cref="Entity"/> that can exist in this <see cref="World"/>.</param>
+        /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
+        public World(int maxCapacity)
+            : this(maxCapacity, ComponentMode.Archetype)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="World"/> class.
+        /// </summary>
         public World()
-            : this(int.MaxValue)
+            : this(int.MaxValue, ComponentMode.Archetype)
         { }
 
         #endregion
@@ -243,6 +264,10 @@ namespace DefaultEcs
         internal void Add(ISortable optimizable) => _optimizer.Add(optimizable);
 
         internal void Remove(ISortable optimizable) => _optimizer.Remove(optimizable);
+
+        internal ref T GetArchetypeComponent<T>(int entityId) => ref EntityInfos[entityId].Archetype.Get<T>(entityId);
+
+        public void ChangeComponentMode<T>(ComponentMode mode) => ComponentManager<T>.GetOrCreateWorld(WorldId, mode);
 
         /// <summary>
         /// Creates a new instance of the <see cref="Entity"/> struct.
