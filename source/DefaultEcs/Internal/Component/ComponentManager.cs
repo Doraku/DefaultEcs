@@ -11,14 +11,14 @@ namespace DefaultEcs.Internal.Component
 
         private static readonly object _lockObject;
 
-        private static GenericComponentPool<T>[] _previousPools;
+        private static SinglePool<T>[] _previousPools;
 
         public static readonly bool IsFlagType;
         public static readonly bool IsReferenceType;
         public static readonly ComponentFlag Flag;
 
-        public static GenericComponentPool<T>[] WorldPools;
-        public static ArchetypeComponentPool<T>[] ArchetypePools;
+        public static IComponentPool<T>[] WorldPools;
+        public static ArchetypePool<T>[] ArchetypePools;
 
         #endregion
 
@@ -28,14 +28,14 @@ namespace DefaultEcs.Internal.Component
         {
             _lockObject = new object();
 
-            _previousPools = EmptyArray<GenericComponentPool<T>>.Value;
+            _previousPools = EmptyArray<SinglePool<T>>.Value;
 
             IsFlagType = typeof(T).GetTypeInfo().IsFlagType();
             IsReferenceType = !typeof(T).GetTypeInfo().IsValueType;
             Flag = ComponentFlag.GetNextFlag();
 
-            WorldPools = EmptyArray<GenericComponentPool<T>>.Value;
-            ArchetypePools = EmptyArray<ArchetypeComponentPool<T>>.Value;
+            WorldPools = EmptyArray<IComponentPool<T>>.Value;
+            ArchetypePools = EmptyArray<ArchetypePool<T>>.Value;
 
             Publisher<WorldDisposedMessage>.Subscribe(0, On);
         }
@@ -73,13 +73,13 @@ namespace DefaultEcs.Internal.Component
         #region Methods
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static GenericComponentPool<T> AddPrevious(short worldId)
+        private static SinglePool<T> AddPrevious(short worldId)
         {
             lock (_lockObject)
             {
                 ArrayExtension.EnsureLength(ref _previousPools, worldId);
 
-                GenericComponentPool<T> previousPool = _previousPools[worldId] = new GenericComponentPool<T>(worldId, true);
+                SinglePool<T> previousPool = _previousPools[worldId] = new SinglePool<T>(worldId);
 
                 foreach (Entity entity in World.Instances[worldId])
                 {
@@ -94,44 +94,51 @@ namespace DefaultEcs.Internal.Component
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static GenericComponentPool<T> AddWorld(short worldId)
+        private static IComponentPool<T> AddWorld(short worldId, ComponentMode mode)
         {
             lock (_lockObject)
             {
                 ArrayExtension.EnsureLength(ref WorldPools, worldId);
 
-                return WorldPools[worldId] = new GenericComponentPool<T>(worldId, false);
+                return WorldPools[worldId] = mode switch
+                {
+                    ComponentMode.Shared => new SharedPool<T>(worldId),
+                    _ => new SinglePool<T>(worldId, mode)
+                };
             }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static ArchetypeComponentPool<T> AddArchetype(int archetypeId)
+        private static ArchetypePool<T> AddArchetype(int archetypeId)
         {
             lock (_lockObject)
             {
                 ArrayExtension.EnsureLength(ref ArchetypePools, archetypeId);
 
-                return ArchetypePools[archetypeId] = new ArchetypeComponentPool<T>(Archetype.Instances[archetypeId]);
+                return ArchetypePools[archetypeId] = new ArchetypePool<T>(Archetype.Instances[archetypeId]);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenericComponentPool<T> GetPrevious(short worldId) => worldId < _previousPools.Length ? _previousPools[worldId] : null;
+        public static SinglePool<T> GetPrevious(short worldId) => worldId < _previousPools.Length ? _previousPools[worldId] : null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenericComponentPool<T> GetOrCreatePrevious(short worldId) => GetPrevious(worldId) ?? AddPrevious(worldId);
+        public static SinglePool<T> GetOrCreatePrevious(short worldId) => GetPrevious(worldId) ?? AddPrevious(worldId);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenericComponentPool<T> GetWorld(short worldId) => worldId < WorldPools.Length ? WorldPools[worldId] : null;
+        public static IComponentPool<T> GetWorld(short worldId) => worldId < WorldPools.Length ? WorldPools[worldId] : null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenericComponentPool<T> GetOrCreateWorld(short worldId) => GetWorld(worldId) ?? AddWorld(worldId);
+        public static IComponentPool<T> GetOrCreateWorld(short worldId, ComponentMode mode) => GetWorld(worldId) ?? AddWorld(worldId, mode);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ArchetypeComponentPool<T> GetArchetype(int archetypeId) => archetypeId < ArchetypePools.Length ? ArchetypePools[archetypeId] : null;
+        public static IComponentPool<T> GetOrCreateWorld(short worldId) => GetOrCreateWorld(worldId, ComponentMode.Archetype);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ArchetypeComponentPool<T> GetOrCreateArchetype(int archetypeId) => GetArchetype(archetypeId) ?? AddArchetype(archetypeId);
+        public static ArchetypePool<T> GetArchetype(int archetypeId) => archetypeId < ArchetypePools.Length ? ArchetypePools[archetypeId] : null;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ArchetypePool<T> GetOrCreateArchetype(int archetypeId) => GetArchetype(archetypeId) ?? AddArchetype(archetypeId);
 
         #endregion
     }

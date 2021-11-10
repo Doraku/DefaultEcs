@@ -284,23 +284,23 @@ namespace DefaultEcs.Resource
                 yield return w.SubscribeComponentRemoved<ManagedResource<TInfo[], TResource>>(OnRemoved);
             }
 
-            GenericComponentPool<ManagedResource<TInfo, TResource>> singleComponents = ComponentManager<ManagedResource<TInfo, TResource>>.GetWorld(world.WorldId);
-            if (singleComponents != null)
-            {
-                foreach (Entity entity in singleComponents.GetEntities())
-                {
-                    OnAdded(entity, singleComponents.Get(entity.EntityId));
-                }
-            }
+            //IComponentPool<ManagedResource<TInfo, TResource>> singleComponents = ComponentManager<ManagedResource<TInfo, TResource>>.GetWorld(world.WorldId);
+            //if (singleComponents != null)
+            //{
+            //    foreach (Entity entity in singleComponents.GetEntities())
+            //    {
+            //        OnAdded(entity, singleComponents.Get(entity.EntityId));
+            //    }
+            //}
 
-            GenericComponentPool<ManagedResource<TInfo[], TResource>> arrayComponents = ComponentManager<ManagedResource<TInfo[], TResource>>.GetWorld(world.WorldId);
-            if (arrayComponents != null)
-            {
-                foreach (Entity entity in arrayComponents.GetEntities())
-                {
-                    OnAdded(entity, arrayComponents.Get(entity.EntityId));
-                }
-            }
+            //IComponentPool<ManagedResource<TInfo[], TResource>> arrayComponents = ComponentManager<ManagedResource<TInfo[], TResource>>.GetWorld(world.WorldId);
+            //if (arrayComponents != null)
+            //{
+            //    foreach (Entity entity in arrayComponents.GetEntities())
+            //    {
+            //        OnAdded(entity, arrayComponents.Get(entity.EntityId));
+            //    }
+            //}
 
             return GetSubscriptions(world).Merge();
         }

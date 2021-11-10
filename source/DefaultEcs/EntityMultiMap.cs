@@ -213,7 +213,7 @@ namespace DefaultEcs
         private readonly short _worldId;
         private readonly int _worldMaxCapacity;
         private readonly IDisposable _subscriptions;
-        private readonly GenericComponentPool<TKey> _components;
+        private readonly IComponentPool<TKey> _components;
         private readonly Dictionary<TKey, Entities> _entities;
 
         private Mapping[] _mapping;
@@ -264,13 +264,13 @@ namespace DefaultEcs
             {
                 IEntityContainer @this = this;
                 EntityInfo[] entityInfos = World.Instances[_worldId].EntityInfos;
-                foreach (Entity entity in _components.GetEntities())
-                {
-                    if (filter(entityInfos[entity.EntityId].Components) && predicate(entity.EntityId))
-                    {
-                        @this.Add(entity.EntityId);
-                    }
-                }
+                //foreach (Entity entity in _components.GetEntities())
+                //{
+                //    if (filter(entityInfos[entity.EntityId].Components) && predicate(entity.EntityId))
+                //    {
+                //        @this.Add(entity.EntityId);
+                //    }
+                //}
 
                 foreach (Entities entities in _entities.Values)
                 {

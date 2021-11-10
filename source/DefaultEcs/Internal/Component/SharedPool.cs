@@ -5,7 +5,7 @@ using DefaultEcs.Internal.Message;
 
 namespace DefaultEcs.Internal.Component
 {
-    internal sealed class GenericComponentPool<T>
+    internal sealed class SharedPool<T> : IComponentPool<T>
     {
         #region Types
 
@@ -31,9 +31,9 @@ namespace DefaultEcs.Internal.Component
 
         public readonly ref struct EntityEnumerable
         {
-            private readonly GenericComponentPool<T> _pool;
+            private readonly SharedPool<T> _pool;
 
-            public EntityEnumerable(GenericComponentPool<T> pool)
+            public EntityEnumerable(SharedPool<T> pool)
             {
                 _pool = pool;
             }
@@ -52,7 +52,7 @@ namespace DefaultEcs.Internal.Component
 
             private int _index;
 
-            public EntityEnumerator(GenericComponentPool<T> pool)
+            public EntityEnumerator(SharedPool<T> pool)
             {
                 _worldId = pool._worldId;
                 _mapping = pool._mapping;
@@ -103,7 +103,7 @@ namespace DefaultEcs.Internal.Component
 
         #region Initialisation
 
-        public GenericComponentPool(short worldId, bool isPrevious)
+        public SharedPool(short worldId)
         {
             _worldId = worldId;
 
@@ -114,11 +114,7 @@ namespace DefaultEcs.Internal.Component
 
             Publisher<TrimExcessMessage>.Subscribe(_worldId, On);
             Publisher<EntityDisposedMessage>.Subscribe(_worldId, On);
-
-            if (!isPrevious)
-            {
-                Publisher<ComponentReadMessage>.Subscribe(_worldId, On);
-            }
+            Publisher<ComponentReadMessage>.Subscribe(_worldId, On);
         }
 
         #endregion
@@ -142,8 +138,47 @@ namespace DefaultEcs.Internal.Component
 
         #region Methods
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ThrowMaxNumberOfComponentReached() => throw new InvalidOperationException($"Max number of component of type {nameof(T)} reached");
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool SetSameAs(int entityId, int referenceEntityId)
+        {
+            ArrayExtension.EnsureLength(ref _mapping, entityId, int.MaxValue, -1);
+
+            int referenceComponentIndex = _mapping[referenceEntityId];
+
+            bool isNew = true;
+            ref int componentIndex = ref _mapping[entityId];
+            if (componentIndex != -1)
+            {
+                Remove(entityId);
+                isNew = false;
+            }
+
+            ++_links[referenceComponentIndex].ReferenceCount;
+            componentIndex = referenceComponentIndex;
+
+            return isNew;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<T> AsSpan() => new(_components, 0, _lastComponentIndex + 1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Components<T> AsComponents() => new(_mapping, _components);
+
+        public EntityEnumerable GetEntities() => new(this);
+
+        public void TrimExcess()
+        {
+            ArrayExtension.Trim(ref _components, _lastComponentIndex + 1);
+            ArrayExtension.Trim(ref _links, _lastComponentIndex + 1);
+            ArrayExtension.Trim(ref _mapping, Array.FindLastIndex(_mapping, i => i != -1) + 1);
+        }
+
+        #endregion
+
+        #region IComponentPool
+
+        public ComponentMode Mode => ComponentMode.Shared;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has(int entityId) => entityId < _mapping.Length && _mapping[entityId] != -1;
@@ -175,27 +210,6 @@ namespace DefaultEcs.Internal.Component
             _links[_lastComponentIndex] = new ComponentLink(entityId);
 
             return true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool SetSameAs(int entityId, int referenceEntityId)
-        {
-            ArrayExtension.EnsureLength(ref _mapping, entityId, int.MaxValue, -1);
-
-            int referenceComponentIndex = _mapping[referenceEntityId];
-
-            bool isNew = true;
-            ref int componentIndex = ref _mapping[entityId];
-            if (componentIndex != -1)
-            {
-                Remove(entityId);
-                isNew = false;
-            }
-
-            ++_links[referenceComponentIndex].ReferenceCount;
-            componentIndex = referenceComponentIndex;
-
-            return isNew;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -262,21 +276,6 @@ namespace DefaultEcs.Internal.Component
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get(int entityId) => ref _components[_mapping[entityId]];
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> AsSpan() => new(_components, 0, _lastComponentIndex + 1);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Components<T> AsComponents() => new(_mapping, _components);
-
-        public EntityEnumerable GetEntities() => new(this);
-
-        public void TrimExcess()
-        {
-            ArrayExtension.Trim(ref _components, _lastComponentIndex + 1);
-            ArrayExtension.Trim(ref _links, _lastComponentIndex + 1);
-            ArrayExtension.Trim(ref _mapping, Array.FindLastIndex(_mapping, i => i != -1) + 1);
-        }
 
         #endregion
     }

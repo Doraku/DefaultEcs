@@ -301,7 +301,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of component.</typeparam>
         /// <returns>A <see cref="Span{T}"/> pointing directly to the component values to edit them.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> GetAll<T>() => ComponentManager<T>.GetOrCreateWorld(WorldId).AsSpan();
+        public Span<T> GetAll<T>() => Span<T>.Empty;// ComponentManager<T>.GetOrCreateWorld(WorldId).AsSpan();
 
         /// <summary>
         /// Gets an <see cref="Components{T}"/> to get a fast access to the component of type <typeparamref name="T"/> of this <see cref="World"/> instance <see cref="Entity"/>.
@@ -309,7 +309,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of component.</typeparam>
         /// <returns>A <see cref="Components{T}"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Components<T> GetComponents<T>() => ComponentManager<T>.GetOrCreateWorld(WorldId).AsComponents();
+        public Components<T> GetComponents<T>() => default;// ComponentManager<T>.GetOrCreateWorld(WorldId).AsComponents();
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="World"/>.
@@ -561,7 +561,7 @@ namespace DefaultEcs
                     ComponentManager<T>.GetPrevious(WorldId).Get(message.EntityId)));
                 yield return Subscribe((in EntityDisposingMessage message) =>
                 {
-                    GenericComponentPool<T> pool = ComponentManager<T>.GetWorld(WorldId);
+                    IComponentPool<T> pool = ComponentManager<T>.GetWorld(WorldId);
                     if (pool?.Has(message.EntityId) is true)
                     {
                         a(new Entity(WorldId, message.EntityId), pool.Get(message.EntityId));
@@ -569,13 +569,13 @@ namespace DefaultEcs
                 });
                 yield return Subscribe((in WorldDisposedMessage _) =>
                 {
-                    GenericComponentPool<T> pool = ComponentManager<T>.GetWorld(WorldId);
+                    IComponentPool<T> pool = ComponentManager<T>.GetWorld(WorldId);
                     if (pool != null)
                     {
-                        foreach (Entity entity in pool.GetEntities())
-                        {
-                            a(entity, pool.Get(entity.EntityId));
-                        }
+                        //foreach (Entity entity in pool.GetEntities())
+                        //{
+                        //    a(entity, pool.Get(entity.EntityId));
+                        //}
                     }
                 });
             }

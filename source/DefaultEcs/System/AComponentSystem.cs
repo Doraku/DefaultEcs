@@ -33,10 +33,10 @@ namespace DefaultEcs.System
 #endif
             public void Run(int index, int maxIndex)
             {
-                Span<TComponent> components = _system._components.AsSpan();
-                int start = index * ComponentsPerIndex;
+                //Span<TComponent> components = _system._components.AsSpan();
+                //int start = index * ComponentsPerIndex;
 
-                _system.Update(CurrentState, index == maxIndex ? components.Slice(start) : components.Slice(start, ComponentsPerIndex));
+                //_system.Update(CurrentState, index == maxIndex ? components.Slice(start) : components.Slice(start, ComponentsPerIndex));
             }
         }
 
@@ -46,7 +46,7 @@ namespace DefaultEcs.System
 
         private readonly IParallelRunner _runner;
         private readonly Runnable _runnable;
-        private readonly GenericComponentPool<TComponent> _components;
+        private readonly IComponentPool<TComponent> _components;
         private readonly int _minComponentCountByRunnerIndex;
 
         #endregion
@@ -160,7 +160,7 @@ namespace DefaultEcs.System
 
                 if (_runnable.ComponentsPerIndex < _minComponentCountByRunnerIndex)
                 {
-                    Update(state, _components.AsSpan());
+                    //Update(state, _components.AsSpan());
                 }
                 else
                 {

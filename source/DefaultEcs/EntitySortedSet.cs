@@ -64,7 +64,7 @@ namespace DefaultEcs
                 .Concat(subscriptions.Select(s => s(container, world)))
                 .Merge();
             comparer ??= Comparer<TComponent>.Default;
-            GenericComponentPool<TComponent> components = ComponentManager<TComponent>.GetOrCreateWorld(_worldId);
+            IComponentPool<TComponent> components = ComponentManager<TComponent>.GetOrCreateWorld(_worldId);
             _comparer = Comparer<Entity>.Create((e1, e2) => comparer.Compare(components.Get(e1.EntityId), components.Get(e2.EntityId)));
 
             _mapping = EmptyArray<int>.Value;
