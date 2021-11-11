@@ -99,7 +99,7 @@ namespace DefaultEcs.Benchmark.Performance
         [GlobalSetup]
         public void Setup()
         {
-            _defaultWorld = new World(EntityCount, ComponentMode.Single);
+            _defaultWorld = new World(EntityCount);
             _defaultEntitySet = _defaultWorld.GetEntities().With<DefaultSpeed>().With<DefaultPosition>().AsSet();
             _defaultRunner = new DefaultParallelRunner(Environment.ProcessorCount);
             _defaultSystem = new DefaultEcsSystem(_defaultWorld);

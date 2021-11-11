@@ -198,6 +198,7 @@ namespace DefaultEcs.Test
             entity.Set<bool>();
             entity.Disable<bool>();
 
+            Check.That(entity.Get<bool>()).IsFalse();
             Check.That(entity.IsEnabled<bool>()).IsFalse();
         }
 

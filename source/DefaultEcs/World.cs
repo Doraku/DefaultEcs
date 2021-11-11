@@ -265,8 +265,6 @@ namespace DefaultEcs
 
         internal void Remove(ISortable optimizable) => _optimizer.Remove(optimizable);
 
-        internal ref T GetArchetypeComponent<T>(int entityId) => ref EntityInfos[entityId].Archetype.Get<T>(entityId);
-
         public void ChangeComponentMode<T>(ComponentMode mode) => ComponentManager<T>.GetOrCreateWorld(WorldId, mode);
 
         /// <summary>

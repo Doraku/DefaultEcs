@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using DefaultEcs.Internal.Component;
 using DefaultEcs.Internal.Helper;
 
@@ -245,8 +246,10 @@ namespace DefaultEcs.Internal
             return true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has<T>() => _components[ComponentManager<T>.Flag];
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get<T>(int entityId) => ref ComponentManager<T>.ArchetypePools[ArchetypeId].GetAt(_mapping[entityId]);
 
         public void Add(int entityId)

@@ -22,6 +22,7 @@ namespace DefaultEcs.Internal.Component
         public static IComponentPool<T>[] WorldPools;
         public static ArchetypePool<T>[] ArchetypePools;
         public static Getter[] Getters;
+        public static Getter[] ArchetypeGetters;
 
         #endregion
 
@@ -40,6 +41,7 @@ namespace DefaultEcs.Internal.Component
             WorldPools = EmptyArray<IComponentPool<T>>.Value;
             ArchetypePools = EmptyArray<ArchetypePool<T>>.Value;
             Getters = EmptyArray<Getter>.Value;
+            ArchetypeGetters = EmptyArray<Getter>.Value;
 
             Publisher<WorldDisposedMessage>.Subscribe(0, On);
         }
@@ -68,6 +70,7 @@ namespace DefaultEcs.Internal.Component
                     if (archetype.ArchetypeId < ArchetypePools.Length)
                     {
                         ArchetypePools[archetype.ArchetypeId] = null;
+                        ArchetypeGetters[archetype.ArchetypeId] = null;
                     }
                 }
             }
@@ -123,7 +126,8 @@ namespace DefaultEcs.Internal.Component
 
                     default:
                         pool = new SinglePool<T>(worldId, mode);
-                        Getters[worldId] = World.Instances[worldId].GetArchetypeComponent<T>;
+                        World world = World.Instances[worldId];
+                        Getters[worldId] = entityId => ref ArchetypeGetters[world.EntityInfos[entityId].Archetype.ArchetypeId](entityId);
                         break;
                 }
 
@@ -134,12 +138,19 @@ namespace DefaultEcs.Internal.Component
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArchetypePool<T> AddArchetype(Archetype archetype)
         {
-            GetOrCreateWorld(archetype.WorldId);
+            IComponentPool<T> disabledPool = GetOrCreateWorld(archetype.WorldId);
 
             lock (_lockObject)
             {
-                ArrayExtension.EnsureLength(ref ArchetypePools, archetype.ArchetypeId);
+                ArrayExtension.EnsureLength(ref ArchetypeGetters, archetype.ArchetypeId);
+                ArchetypeGetters[archetype.ArchetypeId] = archetype.Has<T>() ? archetype.Get<T> : disabledPool switch
+                {
+                    SinglePool<T> pool => pool.Get,
+                    SharedPool<T> pool => pool.Get,
+                    _ => disabledPool.Get
+                };
 
+                ArrayExtension.EnsureLength(ref ArchetypePools, archetype.ArchetypeId);
                 return ArchetypePools[archetype.ArchetypeId] = new ArchetypePool<T>(Archetype.Instances[archetype.ArchetypeId]);
             }
         }
