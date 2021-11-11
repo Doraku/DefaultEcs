@@ -2,6 +2,7 @@
 ### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[Entity](Entity.md 'DefaultEcs.Entity')
 ## Entity.CopyTo(World) Method
 Creates a copy of current [Entity](Entity.md 'DefaultEcs.Entity') with all of its components in the given [World](World.md 'DefaultEcs.World').  
+This method is not thread safe.  
 ```csharp
 public DefaultEcs.Entity CopyTo(DefaultEcs.World world);
 ```

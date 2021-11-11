@@ -2,6 +2,7 @@
 ### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[Entity](Entity.md 'DefaultEcs.Entity')
 ## Entity.SetSameAsWorld&lt;T&gt;() Method
 Sets the value of the component of type [T](Entity_SetSameAsWorld_T_().md#DefaultEcs_Entity_SetSameAsWorld_T_()_T 'DefaultEcs.Entity.SetSameAsWorld&lt;T&gt;().T') on the current [Entity](Entity.md 'DefaultEcs.Entity') to the same instance of an other [Entity](Entity.md 'DefaultEcs.Entity').  
+This method is not thread safe.  
 ```csharp
 public void SetSameAsWorld<T>();
 ```

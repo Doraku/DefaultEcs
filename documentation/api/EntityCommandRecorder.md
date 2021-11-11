@@ -26,7 +26,7 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 | Methods | |
 | :--- | :--- |
 | [Clear()](EntityCommandRecorder_Clear().md 'DefaultEcs.Command.EntityCommandRecorder.Clear()') | Clears all recorded commands.<br/> |
-| [CreateEntity(World)](EntityCommandRecorder_CreateEntity(World).md 'DefaultEcs.Command.EntityCommandRecorder.CreateEntity(DefaultEcs.World)') | Records the creation of an [Entity](Entity.md 'DefaultEcs.Entity') on a [World](World.md 'DefaultEcs.World') and returns an [EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord') to record action on it.<br/>This command takes 9 bytes.<br/> |
 | [Dispose()](EntityCommandRecorder_Dispose().md 'DefaultEcs.Command.EntityCommandRecorder.Dispose()') | Releases inner unmanaged resources.<br/> |
 | [Execute()](EntityCommandRecorder_Execute().md 'DefaultEcs.Command.EntityCommandRecorder.Execute()') | Executes all recorded commands and clears those commands.<br/> |
 | [Record(Entity)](EntityCommandRecorder_Record(Entity).md 'DefaultEcs.Command.EntityCommandRecorder.Record(DefaultEcs.Entity)') | Gives an [EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord') to record action on the given [Entity](Entity.md 'DefaultEcs.Entity').<br/>This command takes 9 bytes.<br/> |
+| [Record(World)](EntityCommandRecorder_Record(World).md 'DefaultEcs.Command.EntityCommandRecorder.Record(DefaultEcs.World)') | Gives an [WorldRecord](WorldRecord.md 'DefaultEcs.Command.WorldRecord') to record action on the given [World](World.md 'DefaultEcs.World').<br/> |

@@ -9,7 +9,7 @@ public DefaultEcs.Command.EntityRecord Record(in DefaultEcs.Entity entity);
 #### Parameters
 <a name='DefaultEcs_Command_EntityCommandRecorder_Record(DefaultEcs_Entity)_entity'></a>
 `entity` [Entity](Entity.md 'DefaultEcs.Entity')  
-The [EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord') used to record action on the given [Entity](Entity.md 'DefaultEcs.Entity').
+The [Entity](Entity.md 'DefaultEcs.Entity') to record action for.
   
 #### Returns
 [EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord')  

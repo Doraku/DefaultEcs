@@ -2,6 +2,7 @@
 ### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs').[World](World.md 'DefaultEcs.World')
 ## World.CreateEntity() Method
 Creates a new instance of the [Entity](Entity.md 'DefaultEcs.Entity') struct.  
+This method is not thread safe.  
 ```csharp
 public DefaultEcs.Entity CreateEntity();
 ```

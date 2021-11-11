@@ -1,16 +1,11 @@
 #### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
-### [DefaultEcs.Command](DefaultEcs.md#DefaultEcs_Command 'DefaultEcs.Command').[EntityCommandRecorder](EntityCommandRecorder.md 'DefaultEcs.Command.EntityCommandRecorder')
-## EntityCommandRecorder.CreateEntity(World) Method
+### [DefaultEcs.Command](DefaultEcs.md#DefaultEcs_Command 'DefaultEcs.Command').[WorldRecord](WorldRecord.md 'DefaultEcs.Command.WorldRecord')
+## WorldRecord.CreateEntity() Method
 Records the creation of an [Entity](Entity.md 'DefaultEcs.Entity') on a [World](World.md 'DefaultEcs.World') and returns an [EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord') to record action on it.  
 This command takes 9 bytes.  
 ```csharp
-public DefaultEcs.Command.EntityRecord CreateEntity(DefaultEcs.World world);
+public DefaultEcs.Command.EntityRecord CreateEntity();
 ```
-#### Parameters
-<a name='DefaultEcs_Command_EntityCommandRecorder_CreateEntity(DefaultEcs_World)_world'></a>
-`world` [World](World.md 'DefaultEcs.World')  
-The [World](World.md 'DefaultEcs.World') on which the entity need to be created.
-  
 #### Returns
 [EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord')  
 The [EntityRecord](EntityRecord.md 'DefaultEcs.Command.EntityRecord') used to record actions on the later created [Entity](Entity.md 'DefaultEcs.Entity').
