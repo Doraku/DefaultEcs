@@ -166,7 +166,6 @@ namespace DefaultEcs
 
         internal int LastEntityId => _entityIdDispenser.LastInt;
 
-
         /// <summary>
         /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can handle.
         /// </summary>
@@ -332,7 +331,15 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of component.</typeparam>
         /// <returns>A <see cref="Components{T}"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Components<T> GetComponents<T>() => default;// ComponentManager<T>.GetOrCreateWorld(WorldId).AsComponents();
+        public Components<T> GetComponents<T>()
+        {
+            IComponentPool<T> pool = ComponentManager<T>.GetOrCreateWorld(WorldId);
+            if (pool.Mode != ComponentMode.Archetype)
+            {
+                return pool.AsComponents();
+            }
+            return default;
+        }
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> on the current <see cref="World"/>.
@@ -367,7 +374,7 @@ namespace DefaultEcs
         /// <returns>A reference to the component.</returns>
         /// <exception cref="Exception"><see cref="World"/> does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get<T>() => ref ComponentManager<T>.WorldPools[WorldId].Get(0);
+        public ref T Get<T>() => ref ComponentManager<T>.GetWorld(WorldId).Get(0);
 
         /// <summary>
         /// Removes the component of type <typeparamref name="T"/> on the current <see cref="World"/>.

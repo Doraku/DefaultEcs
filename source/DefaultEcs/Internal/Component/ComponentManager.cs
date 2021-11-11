@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Internal.Helper;
 using DefaultEcs.Internal.Message;
@@ -87,7 +89,7 @@ namespace DefaultEcs.Internal.Component
             {
                 ArrayExtension.EnsureLength(ref _previousPools, worldId);
 
-                SinglePool<T> previousPool = _previousPools[worldId] = new SinglePool<T>(worldId);
+                SinglePool<T> previousPool = _previousPools[worldId] = new SinglePool<T>(worldId, ComponentMode.Single);
 
                 foreach (Entity entity in World.Instances[worldId])
                 {
@@ -113,7 +115,7 @@ namespace DefaultEcs.Internal.Component
                 switch (mode)
                 {
                     case ComponentMode.Single:
-                        SinglePool<T> singlePool = new(worldId, mode);
+                        SinglePool<T> singlePool = new(worldId);
                         pool = singlePool;
                         Getters[worldId] = singlePool.Get;
                         break;
@@ -127,7 +129,11 @@ namespace DefaultEcs.Internal.Component
                     default:
                         pool = new SinglePool<T>(worldId, mode);
                         World world = World.Instances[worldId];
-                        Getters[worldId] = entityId => ref ArchetypeGetters[world.EntityInfos[entityId].Archetype.ArchetypeId](entityId);
+                        Getters[worldId] = entityId =>
+                        {
+                            int archetypeId = world.EntityInfos[entityId].Archetype.ArchetypeId;
+                            return ref ((archetypeId < ArchetypeGetters.Length ? ArchetypeGetters[archetypeId] : null) ?? pool.Get)(entityId);
+                        };
                         break;
                 }
 
@@ -169,6 +175,42 @@ namespace DefaultEcs.Internal.Component
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IComponentPool<T> GetOrCreateWorld(short worldId) => GetOrCreateWorld(worldId, World.Instances[worldId].DefaultComponentMode);
+
+        public static IComponentPool<T> GetOrChangeWorld(short worldId, ComponentMode mode)
+        {
+            IComponentPool<T> pool = GetOrCreateWorld(worldId);
+            if (pool.Mode != mode)
+            {
+                if (mode is ComponentMode.Archetype
+                    || pool.Mode is ComponentMode.Shared)
+                {
+                    throw new NotSupportedException($"Changing component mode from {pool.Mode} to {mode} is not supported.");
+                }
+
+                IComponentPool<T> newPool = AddWorld(worldId, mode);
+
+                pool.CopyTo(newPool);
+
+                if (pool.Mode is ComponentMode.Archetype)
+                {
+                    foreach (Archetype archetype in World.Instances[worldId].Archetypes.Values.Where(a => a.Has<T>()))
+                    {
+                        archetype.CopyTo(newPool);
+
+                        lock (_lockObject)
+                        {
+                            ArchetypePools[archetype.ArchetypeId] = null;
+                            ArchetypeGetters[archetype.ArchetypeId] = null;
+                        }
+                    }
+                }
+
+                pool.Dispose();
+                pool = newPool;
+            }
+
+            return pool;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ArchetypePool<T> GetArchetype(int archetypeId) => archetypeId < ArchetypePools.Length ? ArchetypePools[archetypeId] : null;

@@ -18,22 +18,23 @@ namespace DefaultEcs.Internal.Component
         {
             _components = EmptyArray<T>.Value;
 
-            archetype.OnCopyComponents += (index, worldId, newArchetype) =>
-            {
-                if (ComponentManager<T>.GetWorld(worldId)?.Mode is null or ComponentMode.Archetype && newArchetype.Has<T>())
-                {
-                    ComponentManager<T>.GetOrCreateArchetype(newArchetype).SetAt(newArchetype.Count, GetAt(index));
-                }
-            };
-            archetype.OnRemoveComponents += (index, lastIndex) => RemoveAt(index, lastIndex);
-            archetype.OnTrimExcess += lastIndex => ArrayExtension.Trim(ref _components, lastIndex);
+            archetype.OnCopyComponents += CopyComponent;
+            archetype.OnRemoveComponents += RemoveAt;
+            archetype.OnTrimExcess += TrimExcess;
         }
 
         #endregion
 
         #region Methods
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void CopyComponent(int index, short worldId, Archetype newArchetype)
+        {
+            if (ComponentManager<T>.GetWorld(worldId)?.Mode is null or ComponentMode.Archetype && newArchetype.Has<T>())
+            {
+                ComponentManager<T>.GetOrCreateArchetype(newArchetype).SetAt(newArchetype.Count, GetAt(index));
+            }
+        }
+
         private void RemoveAt(int index, int lastIndex)
         {
             if (index != lastIndex)
@@ -47,6 +48,8 @@ namespace DefaultEcs.Internal.Component
             }
         }
 
+        private void TrimExcess(int lastIndex) => ArrayExtension.Trim(ref _components, lastIndex);
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetAt(int index, in T component)
         {
@@ -59,6 +62,13 @@ namespace DefaultEcs.Internal.Component
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Memory<T> AsMemory(int count) => new(_components, 0, count);
+
+        public void Unsubscribe(Archetype archetype)
+        {
+            archetype.OnCopyComponents -= CopyComponent;
+            archetype.OnRemoveComponents -= RemoveAt;
+            archetype.OnTrimExcess -= TrimExcess;
+        }
 
         #endregion
     }

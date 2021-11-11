@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using DefaultEcs.Internal.Helper;
 using DefaultEcs.Internal.Message;
 
 namespace DefaultEcs.Internal.Component
 {
-    internal sealed class SinglePool<T> : IComponentPool<T>
+    internal sealed class SinglePool<T> : IComponentPool<T>, ISortable
     {
         #region Types
 
@@ -65,19 +66,13 @@ namespace DefaultEcs.Internal.Component
         #region Fields
 
         private readonly short _worldId;
+        private readonly IDisposable _subscriptions;
 
         private int[] _mapping;
         private int[] _reverseMapping;
         private T[] _components;
         private int _lastComponentIndex;
-
-        #endregion
-
-        #region Properties
-
-        public bool IsNotEmpty => _lastComponentIndex > -1;
-
-        public int Count => _lastComponentIndex + 1;
+        private int _sortedIndex;
 
         #endregion
 
@@ -91,17 +86,21 @@ namespace DefaultEcs.Internal.Component
             _reverseMapping = EmptyArray<int>.Value;
             _components = EmptyArray<T>.Value;
             _lastComponentIndex = -1;
+            _sortedIndex = 0;
 
-            Publisher<TrimExcessMessage>.Subscribe(_worldId, On);
-            Publisher<EntityDisposedMessage>.Subscribe(_worldId, On);
+            _subscriptions = IDisposableExtension.Merge(
+                Publisher<TrimExcessMessage>.Subscribe(_worldId, On),
+                Publisher<EntityDisposedMessage>.Subscribe(_worldId, On));
 
             Mode = mode;
+
+            World.Instances[_worldId].Add(this);
         }
 
         public SinglePool(short worldId)
             : this(worldId, ComponentMode.Single)
         {
-            Publisher<ComponentReadMessage>.Subscribe(_worldId, On);
+            _subscriptions = _subscriptions.Merge(Publisher<ComponentReadMessage>.Subscribe(_worldId, On));
         }
 
         #endregion
@@ -128,28 +127,20 @@ namespace DefaultEcs.Internal.Component
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> AsSpan() => new(_components, 0, Count);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Components<T> AsComponents() => new(_mapping, _components);
-
         public EntityEnumerable GetEntities() => new(this);
-
-        public void TrimExcess()
-        {
-            ArrayExtension.Trim(ref _components, Count);
-            ArrayExtension.Trim(ref _mapping, Array.FindLastIndex(_mapping, i => i != -1) + 1);
-            ArrayExtension.Trim(ref _reverseMapping, Count);
-        }
 
         #endregion
 
         #region IComponentPool
 
+        public bool IsNotEmpty => _lastComponentIndex > -1;
+
+        public int Count => _lastComponentIndex + 1;
+
         public ComponentMode Mode { get; }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has(int entityId) => entityId < _mapping.Length && _mapping[entityId] != -1;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Set(int entityId, in T component)
         {
             ArrayExtension.EnsureLength(ref _mapping, entityId, int.MaxValue, -1);
@@ -160,6 +151,11 @@ namespace DefaultEcs.Internal.Component
                 _components[componentIndex] = component;
 
                 return false;
+            }
+
+            if (_sortedIndex >= _lastComponentIndex || _reverseMapping[_sortedIndex] > entityId)
+            {
+                _sortedIndex = 0;
             }
 
             componentIndex = ++_lastComponentIndex;
@@ -173,7 +169,8 @@ namespace DefaultEcs.Internal.Component
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool SetSameAs(int entityId, int referenceEntityId) => throw new NotSupportedException($"{nameof(SetSameAs)} operations are only supported in {ComponentMode.Shared} mode");
+
         public bool Remove(int entityId)
         {
             if (entityId >= _mapping.Length)
@@ -193,6 +190,8 @@ namespace DefaultEcs.Internal.Component
                 _components[componentIndex] = _components[_lastComponentIndex];
             }
 
+            _sortedIndex = Math.Min(_sortedIndex, componentIndex);
+
             if (ComponentManager<T>.IsReferenceType)
             {
                 _components[_lastComponentIndex] = default;
@@ -204,8 +203,67 @@ namespace DefaultEcs.Internal.Component
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get(int entityId) => ref _components[_mapping[entityId]];
+
+        public void TrimExcess()
+        {
+            ArrayExtension.Trim(ref _mapping, Array.FindLastIndex(_mapping, i => i != -1) + 1);
+            ArrayExtension.Trim(ref _reverseMapping, Count);
+            ArrayExtension.Trim(ref _components, Count);
+        }
+
+        public Components<T> AsComponents() => new(_mapping, _components);
+
+        public void CopyTo(IComponentPool<T> newPool)
+        {
+            for (int i = 0; i <= _lastComponentIndex; ++i)
+            {
+                newPool.Set(_reverseMapping[i], _components[i]);
+            }
+        }
+
+        #endregion
+
+        #region ISortable
+
+        void ISortable.Sort(ref bool shouldContinue)
+        {
+            for (; _sortedIndex < _lastComponentIndex && Volatile.Read(ref shouldContinue); ++_sortedIndex)
+            {
+                int minIndex = _sortedIndex;
+                int minEntityId = _reverseMapping[_sortedIndex];
+                for (int i = _sortedIndex + 1; i <= _lastComponentIndex; ++i)
+                {
+                    if (_reverseMapping[i] < minEntityId)
+                    {
+                        minEntityId = _reverseMapping[i];
+                        minIndex = i;
+                    }
+                }
+
+                if (minIndex != _sortedIndex)
+                {
+                    T tempComponent = _components[_sortedIndex];
+
+                    _components[_sortedIndex] = _components[minIndex];
+                    _components[minIndex] = tempComponent;
+
+                    int tempEntityId = _reverseMapping[_sortedIndex];
+
+                    _reverseMapping[_sortedIndex] = _reverseMapping[minIndex];
+                    _reverseMapping[minIndex] = tempEntityId;
+
+                    _mapping[minEntityId] = _sortedIndex;
+                    _mapping[tempEntityId] = minIndex;
+                }
+            }
+        }
+
+        #endregion
+
+        #region IDisposable
+
+        public void Dispose() => _subscriptions.Dispose();
 
         #endregion
     }

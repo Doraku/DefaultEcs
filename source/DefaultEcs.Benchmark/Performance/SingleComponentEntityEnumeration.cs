@@ -179,7 +179,7 @@ namespace DefaultEcs.Benchmark.Performance
         //public void DefaultEcs_ComponentMultiSystem() => _defaultComponentMultiSystem.Update(42);
 
         //[Benchmark]
-        //public void DefaultEcs_GeneratorSystem() => _defaultGeneratorSystem.Update(42);
+        public void DefaultEcs_GeneratorSystem() => _defaultGeneratorSystem.Update(42);
 
         //[Benchmark]
         //public void DefaultEcs_GeneratorMultiSystem() => _defaultGeneratorMultiSystem.Update(42);

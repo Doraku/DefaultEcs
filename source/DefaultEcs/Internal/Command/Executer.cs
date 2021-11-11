@@ -65,19 +65,19 @@ namespace DefaultEcs.Internal.Command
                             commandSize += ComponentCommands.GetCommand(componentCommand->ComponentIndex).Set(*(Entity*)(memoryP + componentCommand->EntityOffset), objects, commands + sizeof(EntityOffsetComponentCommand));
                             break;
 
-                        //case CommandType.SetSameAs:
-                        //    EntityReferenceOffsetComponentCommand* entityReferenceComponentCommand = (EntityReferenceOffsetComponentCommand*)commands;
-                        //    ComponentCommands.GetCommand(entityReferenceComponentCommand->ComponentIndex).SetSameAs(
-                        //        *(Entity*)(memoryP + entityReferenceComponentCommand->EntityOffset),
-                        //        *(Entity*)(memoryP + entityReferenceComponentCommand->ReferenceOffset));
-                        //    commandSize = sizeof(EntityReferenceOffsetComponentCommand);
-                        //    break;
+                        case CommandType.SetSameAs:
+                            EntityReferenceOffsetComponentCommand* entityReferenceComponentCommand = (EntityReferenceOffsetComponentCommand*)commands;
+                            ComponentCommands.GetCommand(entityReferenceComponentCommand->ComponentIndex).SetSameAs(
+                                *(Entity*)(memoryP + entityReferenceComponentCommand->EntityOffset),
+                                *(Entity*)(memoryP + entityReferenceComponentCommand->ReferenceOffset));
+                            commandSize = sizeof(EntityReferenceOffsetComponentCommand);
+                            break;
 
-                        //case CommandType.SetSameAsWorld:
-                        //    componentCommand = (EntityOffsetComponentCommand*)commands;
-                        //    ComponentCommands.GetCommand(componentCommand->ComponentIndex).SetSameAsWorld(*(Entity*)(memoryP + componentCommand->EntityOffset));
-                        //    commandSize = sizeof(EntityOffsetComponentCommand);
-                        //    break;
+                        case CommandType.SetSameAsWorld:
+                            componentCommand = (EntityOffsetComponentCommand*)commands;
+                            ComponentCommands.GetCommand(componentCommand->ComponentIndex).SetSameAsWorld(*(Entity*)(memoryP + componentCommand->EntityOffset));
+                            commandSize = sizeof(EntityOffsetComponentCommand);
+                            break;
 
                         case CommandType.Remove:
                             componentCommand = (EntityOffsetComponentCommand*)commands;

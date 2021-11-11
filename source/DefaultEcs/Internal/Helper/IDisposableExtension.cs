@@ -68,6 +68,10 @@ namespace DefaultEcs.Internal.Helper
 
         public static IDisposable Merge(this IEnumerable<IDisposable> disposables) => new DisposableGroup(disposables);
 
+        public static IDisposable Merge(this IDisposable disposable, params IDisposable[] disposables) => Merge(Enumerable.Repeat(disposable, 1).Concat(disposables));
+
+        public static IDisposable Merge(params IDisposable[] disposables) => Merge(disposables.AsEnumerable());
+
         #endregion
     }
 }

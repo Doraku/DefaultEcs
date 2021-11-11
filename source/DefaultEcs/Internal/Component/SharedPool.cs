@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using DefaultEcs.Internal.Helper;
 using DefaultEcs.Internal.Message;
 
 namespace DefaultEcs.Internal.Component
 {
-    internal sealed class SharedPool<T> : IComponentPool<T>
+    internal sealed class SharedPool<T> : IComponentPool<T>, ISortable
     {
         #region Types
 
@@ -85,19 +86,13 @@ namespace DefaultEcs.Internal.Component
         #region Fields
 
         private readonly short _worldId;
+        private readonly IDisposable _subscriptions;
 
         private int[] _mapping;
         private ComponentLink[] _links;
         private T[] _components;
         private int _lastComponentIndex;
-
-        #endregion
-
-        #region Properties
-
-        public bool IsNotEmpty => _lastComponentIndex > -1;
-
-        public int Count => _lastComponentIndex + 1;
+        private int _sortedIndex;
 
         #endregion
 
@@ -111,10 +106,14 @@ namespace DefaultEcs.Internal.Component
             _links = EmptyArray<ComponentLink>.Value;
             _components = EmptyArray<T>.Value;
             _lastComponentIndex = -1;
+            _sortedIndex = 0;
 
-            Publisher<TrimExcessMessage>.Subscribe(_worldId, On);
-            Publisher<EntityDisposedMessage>.Subscribe(_worldId, On);
-            Publisher<ComponentReadMessage>.Subscribe(_worldId, On);
+            IDisposableExtension.Merge(
+                Publisher<TrimExcessMessage>.Subscribe(_worldId, On),
+                Publisher<EntityDisposedMessage>.Subscribe(_worldId, On),
+                Publisher<ComponentReadMessage>.Subscribe(_worldId, On));
+
+            World.Instances[_worldId].Add(this);
         }
 
         #endregion
@@ -139,51 +138,22 @@ namespace DefaultEcs.Internal.Component
         #region Methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool SetSameAs(int entityId, int referenceEntityId)
-        {
-            ArrayExtension.EnsureLength(ref _mapping, entityId, int.MaxValue, -1);
-
-            int referenceComponentIndex = _mapping[referenceEntityId];
-
-            bool isNew = true;
-            ref int componentIndex = ref _mapping[entityId];
-            if (componentIndex != -1)
-            {
-                Remove(entityId);
-                isNew = false;
-            }
-
-            ++_links[referenceComponentIndex].ReferenceCount;
-            componentIndex = referenceComponentIndex;
-
-            return isNew;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> AsSpan() => new(_components, 0, _lastComponentIndex + 1);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Components<T> AsComponents() => new(_mapping, _components);
-
         public EntityEnumerable GetEntities() => new(this);
-
-        public void TrimExcess()
-        {
-            ArrayExtension.Trim(ref _components, _lastComponentIndex + 1);
-            ArrayExtension.Trim(ref _links, _lastComponentIndex + 1);
-            ArrayExtension.Trim(ref _mapping, Array.FindLastIndex(_mapping, i => i != -1) + 1);
-        }
 
         #endregion
 
         #region IComponentPool
 
+        public bool IsNotEmpty => _lastComponentIndex > -1;
+
+        public int Count => _lastComponentIndex + 1;
+
         public ComponentMode Mode => ComponentMode.Shared;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has(int entityId) => entityId < _mapping.Length && _mapping[entityId] != -1;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Set(int entityId, in T component)
         {
             ArrayExtension.EnsureLength(ref _mapping, entityId, int.MaxValue, -1);
@@ -201,6 +171,11 @@ namespace DefaultEcs.Internal.Component
                 Remove(entityId);
             }
 
+            if (_sortedIndex >= _lastComponentIndex || _links[_sortedIndex].EntityId > entityId)
+            {
+                _sortedIndex = 0;
+            }
+
             componentIndex = ++_lastComponentIndex;
 
             ArrayExtension.EnsureLength(ref _components, _lastComponentIndex);
@@ -212,7 +187,31 @@ namespace DefaultEcs.Internal.Component
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool SetSameAs(int entityId, int referenceEntityId)
+        {
+            ArrayExtension.EnsureLength(ref _mapping, entityId, int.MaxValue, -1);
+
+            int referenceComponentIndex = _mapping[referenceEntityId];
+
+            if (referenceComponentIndex == -1)
+            {
+                throw new InvalidOperationException($"Reference entity does not have a component of type {typeof(T)}.");
+            }
+
+            bool isNew = true;
+            ref int componentIndex = ref _mapping[entityId];
+            if (componentIndex != -1)
+            {
+                Remove(entityId);
+                isNew = false;
+            }
+
+            ++_links[referenceComponentIndex].ReferenceCount;
+            componentIndex = referenceComponentIndex;
+
+            return isNew;
+        }
+
         public bool Remove(int entityId)
         {
             if (entityId >= _mapping.Length)
@@ -248,6 +247,8 @@ namespace DefaultEcs.Internal.Component
                             }
                         }
                     }
+
+                    _sortedIndex = Math.Min(_sortedIndex, componentIndex);
                 }
 
                 if (ComponentManager<T>.IsReferenceType)
@@ -264,6 +265,7 @@ namespace DefaultEcs.Internal.Component
                     if (_mapping[i] == linkIndex && i != entityId)
                     {
                         link.EntityId = i;
+                        _sortedIndex = Math.Min(_sortedIndex, linkIndex);
                         break;
                     }
                 }
@@ -274,8 +276,79 @@ namespace DefaultEcs.Internal.Component
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T Get(int entityId) => ref _components[_mapping[entityId]];
+
+        public void TrimExcess()
+        {
+            ArrayExtension.Trim(ref _mapping, Array.FindLastIndex(_mapping, i => i != -1) + 1);
+            ArrayExtension.Trim(ref _links, _lastComponentIndex + 1);
+            ArrayExtension.Trim(ref _components, _lastComponentIndex + 1);
+        }
+
+        public Components<T> AsComponents() => new(_mapping, _components);
+
+        public void CopyTo(IComponentPool<T> newPool) => throw new NotSupportedException($"Changing component mode from {Mode} to {newPool.Mode} is not supported.");
+
+        #endregion
+
+        #region ISortable
+
+        void ISortable.Sort(ref bool shouldContinue)
+        {
+            for (; _sortedIndex < _lastComponentIndex && Volatile.Read(ref shouldContinue); ++_sortedIndex)
+            {
+                int minIndex = _sortedIndex;
+                int minEntityId = _links[_sortedIndex].EntityId;
+                for (int i = _sortedIndex + 1; i <= _lastComponentIndex; ++i)
+                {
+                    if (_links[i].EntityId < minEntityId)
+                    {
+                        minEntityId = _links[i].EntityId;
+                        minIndex = i;
+                    }
+                }
+
+                if (minIndex != _sortedIndex)
+                {
+                    T tempComponent = _components[_sortedIndex];
+
+                    _components[_sortedIndex] = _components[minIndex];
+                    _components[minIndex] = tempComponent;
+
+                    ComponentLink tempLink = _links[_sortedIndex];
+
+                    _links[_sortedIndex] = _links[minIndex];
+                    _links[minIndex] = tempLink;
+
+                    if (_links[_sortedIndex].ReferenceCount > 1
+                        || tempLink.ReferenceCount > 1)
+                    {
+                        for (int i = 0; i < _mapping.Length; ++i)
+                        {
+                            if (_mapping[i] == minEntityId)
+                            {
+                                _mapping[i] = _sortedIndex;
+                            }
+                            else if (_mapping[i] == tempLink.EntityId)
+                            {
+                                _mapping[i] = minIndex;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _mapping[minEntityId] = _sortedIndex;
+                        _mapping[tempLink.EntityId] = minIndex;
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region IDisposable
+
+        public void Dispose() => _subscriptions.Dispose();
 
         #endregion
     }

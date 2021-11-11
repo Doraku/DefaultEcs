@@ -226,6 +226,26 @@ namespace DefaultEcs.Internal
             return true;
         }
 
+        internal bool SetSameAs<T>(int entityId, ref ComponentEnum entityComponents, int referenceEntityId)
+        {
+            if (!ComponentManager<T>.IsFlagType)
+            {
+                if (!ComponentManager<T>.GetOrChangeWorld(WorldId, ComponentMode.Shared).SetSameAs(entityId, referenceEntityId))
+                {
+                    return false;
+                }
+            }
+            else if (Has<T>())
+            {
+                return false;
+            }
+
+            entityComponents[ComponentManager<T>.Flag] = true;
+            ChangeArchetype(entityId, entityComponents);
+
+            return true;
+        }
+
         internal bool Remove<T>(int entityId, ref ComponentEnum entityComponents)
         {
             IComponentPool<T> pool = ComponentManager<T>.GetWorld(WorldId);
@@ -266,5 +286,18 @@ namespace DefaultEcs.Internal
         public int Count => _lastEntityIndex + 1;
 
         public void TrimExcess() => OnTrimExcess?.Invoke(Count);
+
+        internal void CopyTo<T>(IComponentPool<T> newPool)
+        {
+            ArchetypePool<T> pool = ComponentManager<T>.GetArchetype(ArchetypeId);
+            if (pool != null)
+            {
+                for (int i = 0; i <= _lastEntityIndex; ++i)
+                {
+                    newPool.Set(_entities[i].EntityId, pool.GetAt(i));
+                }
+                pool.Unsubscribe(this);
+            }
+        }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DefaultEcs.Internal.Component
 {
-    internal interface IComponentPool<T>
+    internal interface IComponentPool<T> : IDisposable
     {
         ComponentMode Mode { get; }
 
@@ -16,10 +14,16 @@ namespace DefaultEcs.Internal.Component
 
         bool Set(int entityId, in T component);
 
+        bool SetSameAs(int entityId, int referenceEntityId);
+
         bool Remove(int entityId);
 
         ref T Get(int entityId);
 
         void TrimExcess();
+
+        Components<T> AsComponents();
+
+        void CopyTo(IComponentPool<T> newPool);
     }
 }
