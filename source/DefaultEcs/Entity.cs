@@ -269,7 +269,7 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has<T>() => (ComponentManager<T>.GetWorld(WorldId)?.Has(EntityId) ?? false) || World.EntityInfos[EntityId].Archetype.Has<T>();
+        public bool Has<T>() => (ComponentManager<T>.GetWorld(WorldId)?.Has(EntityId) ?? false) || (World.EntityInfos[EntityId].Archetype?.Has<T>() ?? false);
 
         /// <summary>
         /// Gets the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.

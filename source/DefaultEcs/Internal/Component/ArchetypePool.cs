@@ -48,7 +48,7 @@ namespace DefaultEcs.Internal.Component
             }
         }
 
-        private void TrimExcess(int lastIndex) => ArrayExtension.Trim(ref _components, lastIndex);
+        public void TrimExcess(int lastIndex) => ArrayExtension.Trim(ref _components, lastIndex);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetAt(int index, in T component)

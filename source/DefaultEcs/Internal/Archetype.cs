@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Internal.Component;
 using DefaultEcs.Internal.Helper;
+using DefaultEcs.Internal.Message;
 
 namespace DefaultEcs.Internal
 {
@@ -36,6 +37,8 @@ namespace DefaultEcs.Internal
 
     public sealed class Archetype
     {
+        #region Fields
+
         private static readonly object _lockObject;
         private static readonly IntDispenser _archetypeIdDispenser;
 
@@ -51,9 +54,13 @@ namespace DefaultEcs.Internal
         public readonly short WorldId;
         public readonly int ArchetypeId;
 
+        #endregion
+
         internal event CopyComponentHandler OnCopyComponents;
         internal event RemoveComponentHandler OnRemoveComponents;
         internal event TrimExcessHandler OnTrimExcess;
+
+        #region Initialization
 
         static Archetype()
         {
@@ -82,7 +89,56 @@ namespace DefaultEcs.Internal
             }
 
             _archetypesByCompositions.Add(_components, this);
+
+            IDisposableExtension.Merge(
+                Publisher<TrimExcessMessage>.Subscribe(WorldId, On),
+                Publisher<EntityDisposedMessage>.Subscribe(WorldId, On),
+                Publisher<ComponentReadMessage>.Subscribe(WorldId, On));
         }
+
+        #endregion
+
+
+
+        #region Callbacks
+
+        private void On(in EntityDisposedMessage message)
+        {
+            if (message.EntityId >= _mapping.Length)
+            {
+                return;
+            }
+
+            ref int index = ref _mapping[message.EntityId];
+            if (index == -1)
+            {
+                return;
+            }
+
+
+            OnRemoveComponents?.Invoke(index, _lastEntityIndex);
+            if (index != _lastEntityIndex)
+            {
+                _entities[index] = _entities[_lastEntityIndex];
+            }
+
+            index = -1;
+            --_lastEntityIndex;
+        }
+
+        private void On(in ComponentReadMessage message)
+        {
+        }
+
+        private void On(in TrimExcessMessage message)
+        {
+            ArrayExtension.Trim(ref _mapping, Array.FindLastIndex(_mapping, i => i != -1) + 1);
+            ArrayExtension.Trim(ref _entities, Count);
+
+            OnTrimExcess?.Invoke(Count);
+        }
+
+        #endregion
 
         internal static void Release<T>(T archetypes)
             where T : IEnumerable<Archetype>
@@ -116,6 +172,7 @@ namespace DefaultEcs.Internal
                 _entities[index] = _entities[_lastEntityIndex];
             }
 
+            index = -1;
             --_lastEntityIndex;
 
             return newArchetype;
@@ -277,15 +334,13 @@ namespace DefaultEcs.Internal
             ArrayExtension.EnsureLength(ref _entities, ++_lastEntityIndex);
             _entities[_lastEntityIndex] = new Entity(WorldId, entityId);
 
-            ArrayExtension.EnsureLength(ref _mapping, entityId);
+            ArrayExtension.EnsureLength(ref _mapping, entityId, int.MaxValue, -1);
             _mapping[entityId] = _lastEntityIndex;
         }
 
         public Memory<T> Get<T>() => ComponentManager<T>.GetArchetype(ArchetypeId).AsMemory(Count);
 
         public int Count => _lastEntityIndex + 1;
-
-        public void TrimExcess() => OnTrimExcess?.Invoke(Count);
 
         internal void CopyTo<T>(IComponentPool<T> newPool)
         {
@@ -298,6 +353,11 @@ namespace DefaultEcs.Internal
                 }
                 pool.Unsubscribe(this);
             }
+        }
+
+        internal void TrimExcess<T>()
+        {
+            ComponentManager<T>.GetArchetype(ArchetypeId)?.TrimExcess(Count);
         }
     }
 }

@@ -252,6 +252,7 @@ namespace DefaultEcs
             ref EntityInfo entityInfo = ref Instances[WorldId].EntityInfos[message.EntityId];
 
             entityInfo.Components.Clear();
+            entityInfo.Archetype = null;
             _entityIdDispenser.ReleaseInt(message.EntityId);
             ++entityInfo.Version;
         }
@@ -448,7 +449,7 @@ namespace DefaultEcs
 
             foreach (Archetype archetype in Archetypes.Values)
             {
-                archetype.TrimExcess();
+                archetype.TrimExcess<T>();
             }
         }
 

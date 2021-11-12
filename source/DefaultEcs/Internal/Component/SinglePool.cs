@@ -100,7 +100,9 @@ namespace DefaultEcs.Internal.Component
         public SinglePool(short worldId)
             : this(worldId, ComponentMode.Single)
         {
-            _subscriptions = _subscriptions.Merge(Publisher<ComponentReadMessage>.Subscribe(_worldId, On));
+            _subscriptions = IDisposableExtension.Merge(
+                _subscriptions,
+                Publisher<ComponentReadMessage>.Subscribe(_worldId, On));
         }
 
         #endregion
