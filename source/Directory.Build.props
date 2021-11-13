@@ -1,6 +1,12 @@
 <Project>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+	  <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+	  <EnableNETAnalyzers>true</EnableNETAnalyzers>
+	  <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+	  <AnalysisLevel>latest</AnalysisLevel>
+	  <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+	  <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
   </PropertyGroup>
 
   <ItemGroup>

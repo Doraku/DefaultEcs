@@ -30,57 +30,6 @@ namespace DefaultEcs.Internal.Component
             #endregion
         }
 
-        public readonly ref struct EntityEnumerable
-        {
-            private readonly SharedPool<T> _pool;
-
-            public EntityEnumerable(SharedPool<T> pool)
-            {
-                _pool = pool;
-            }
-
-            #region IEnumerable
-
-            public EntityEnumerator GetEnumerator() => new(_pool);
-
-            #endregion
-        }
-
-        public ref struct EntityEnumerator
-        {
-            private readonly short _worldId;
-            private readonly int[] _mapping;
-
-            private int _index;
-
-            public EntityEnumerator(SharedPool<T> pool)
-            {
-                _worldId = pool._worldId;
-                _mapping = pool._mapping;
-
-                _index = 0;
-            }
-
-            #region IEnumerator
-
-            public Entity Current => new(_worldId, _index);
-
-            public bool MoveNext()
-            {
-                while (++_index < _mapping.Length)
-                {
-                    if (_mapping[_index] >= 0)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            #endregion
-        }
-
         #endregion
 
         #region Fields
@@ -108,7 +57,7 @@ namespace DefaultEcs.Internal.Component
             _lastComponentIndex = -1;
             _sortedIndex = 0;
 
-            IDisposableExtension.Merge(
+            _subscriptions = IDisposableExtension.Merge(
                 Publisher<TrimExcessMessage>.Subscribe(_worldId, On),
                 Publisher<EntityDisposedMessage>.Subscribe(_worldId, On),
                 Publisher<ComponentReadMessage>.Subscribe(_worldId, On));
@@ -139,8 +88,6 @@ namespace DefaultEcs.Internal.Component
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> AsSpan() => new(_components, 0, _lastComponentIndex + 1);
-
-        public EntityEnumerable GetEntities() => new(this);
 
         #endregion
 
@@ -288,6 +235,8 @@ namespace DefaultEcs.Internal.Component
         public Components<T> AsComponents() => new(_mapping, _components);
 
         public void CopyTo(IComponentPool<T> newPool) => throw new NotSupportedException($"Changing component mode from {Mode} to {newPool.Mode} is not supported.");
+
+        public PoolEntityEnumerable GetEntities() => new(_worldId, _mapping);
 
         #endregion
 

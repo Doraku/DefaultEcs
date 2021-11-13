@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using DefaultEcs.Internal;
@@ -35,6 +36,7 @@ namespace DefaultEcs
                 _items = new List<ISortable>();
             }
 
+            [SuppressMessage("Reliability", "CA2002:Do not lock on objects with weak identity", Justification = "private type")]
             public void Add(ISortable item)
             {
                 lock (this)
@@ -43,6 +45,7 @@ namespace DefaultEcs
                 }
             }
 
+            [SuppressMessage("Reliability", "CA2002:Do not lock on objects with weak identity", Justification = "private type")]
             public void Remove(ISortable item)
             {
                 lock (this)
@@ -412,8 +415,15 @@ namespace DefaultEcs
         /// <param name="mainAction">An <see cref="Action"/> to execute on the main thread while the optimization is in process.</param>
         public void Optimize(IParallelRunner runner, Action mainAction)
         {
-            if (runner is null) throw new ArgumentNullException(nameof(runner));
-            if (mainAction is null) throw new ArgumentNullException(nameof(mainAction));
+            if (runner is null)
+            {
+                throw new ArgumentNullException(nameof(runner));
+            }
+
+            if (mainAction is null)
+            {
+                throw new ArgumentNullException(nameof(mainAction));
+            }
 
             _optimizer.PrepareForRun(mainAction);
             runner.Run(_optimizer);
@@ -426,7 +436,10 @@ namespace DefaultEcs
         /// <param name="runner">The <see cref="IParallelRunner"/> to process this operation in parallel.</param>
         public void Optimize(IParallelRunner runner)
         {
-            if (runner is null) throw new ArgumentNullException(nameof(runner));
+            if (runner is null)
+            {
+                throw new ArgumentNullException(nameof(runner));
+            }
 
             _optimizer.PrepareForRun(null);
             runner.Run(_optimizer);
@@ -442,6 +455,7 @@ namespace DefaultEcs
         /// Resizes inner storage to exactly the number of <typeparamref name="T"/> components this <see cref="World"/> contains.
         /// This method is not thread safe.
         /// </summary>
+        /// <typeparam name="T">The type of component.</typeparam>
         public void TrimExcess<T>()
         {
             ComponentManager<T>.GetPrevious(WorldId)?.TrimExcess();
@@ -470,12 +484,10 @@ namespace DefaultEcs
         /// <param name="action">The <see cref="WorldDisposedHandler"/> to be called.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-        public IDisposable SubscribeWorldDisposed(WorldDisposedHandler action)
-        {
-            if (action is null) throw new ArgumentNullException(nameof(action));
-
-            return Subscribe((in WorldDisposedMessage _) => action(this));
-        }
+        public IDisposable SubscribeWorldDisposed(WorldDisposedHandler action) =>
+            action is null
+            ? throw new ArgumentNullException(nameof(action))
+            : Subscribe((in WorldDisposedMessage _) => action(this));
 
         /// <summary>
         /// Subscribes an <see cref="EntityCreatedHandler"/> on the current <see cref="World"/> to be called when an <see cref="Entity"/> is created.
@@ -483,12 +495,10 @@ namespace DefaultEcs
         /// <param name="action">The <see cref="EntityCreatedHandler"/> to be called.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-        public IDisposable SubscribeEntityCreated(EntityCreatedHandler action)
-        {
-            if (action is null) throw new ArgumentNullException(nameof(action));
-
-            return Subscribe((in EntityCreatedMessage message) => action(new Entity(WorldId, message.EntityId)));
-        }
+        public IDisposable SubscribeEntityCreated(EntityCreatedHandler action) =>
+            action is null
+            ? throw new ArgumentNullException(nameof(action))
+            : Subscribe((in EntityCreatedMessage message) => action(new Entity(WorldId, message.EntityId)));
 
         /// <summary>
         /// Subscribes an <see cref="EntityEnabledHandler"/> on the current <see cref="World"/> to be called when an <see cref="Entity"/> is enabled.
@@ -496,12 +506,10 @@ namespace DefaultEcs
         /// <param name="action">The <see cref="EntityEnabledHandler"/> to be called.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-        public IDisposable SubscribeEntityEnabled(EntityEnabledHandler action)
-        {
-            if (action is null) throw new ArgumentNullException(nameof(action));
-
-            return Subscribe((in EntityEnabledMessage message) => action(new Entity(WorldId, message.EntityId)));
-        }
+        public IDisposable SubscribeEntityEnabled(EntityEnabledHandler action) =>
+            action is null
+            ? throw new ArgumentNullException(nameof(action))
+            : Subscribe((in EntityEnabledMessage message) => action(new Entity(WorldId, message.EntityId)));
 
         /// <summary>
         /// Subscribes an <see cref="EntityDisabledHandler"/> on the current <see cref="World"/> to be called when an <see cref="Entity"/> is disabled.
@@ -509,12 +517,10 @@ namespace DefaultEcs
         /// <param name="action">The <see cref="EntityDisabledHandler"/> to be called.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-        public IDisposable SubscribeEntityDisabled(EntityDisabledHandler action)
-        {
-            if (action is null) throw new ArgumentNullException(nameof(action));
-
-            return Subscribe((in EntityDisabledMessage message) => action(new Entity(WorldId, message.EntityId)));
-        }
+        public IDisposable SubscribeEntityDisabled(EntityDisabledHandler action) =>
+            action is null
+            ? throw new ArgumentNullException(nameof(action))
+            : Subscribe((in EntityDisabledMessage message) => action(new Entity(WorldId, message.EntityId)));
 
         /// <summary>
         /// Subscribes an <see cref="EntityDisposedHandler"/> on the current <see cref="World"/> to be called when an <see cref="Entity"/> is disposed.
@@ -529,16 +535,19 @@ namespace DefaultEcs
                 yield return Subscribe((in EntityDisposingMessage message) => a(new Entity(WorldId, message.EntityId)));
                 yield return Subscribe((in WorldDisposedMessage _) =>
                 {
-                    foreach (Entity entity in this)
+                    foreach (Archetype archetype in Archetypes.Values)
                     {
-                        a(entity);
+                        foreach (ref readonly Entity entity in archetype.GetEntities())
+                        {
+                            a(entity);
+                        }
                     }
                 });
             }
 
-            if (action is null) throw new ArgumentNullException(nameof(action));
-
-            return GetSubscriptions(action).Merge();
+            return action is null
+                ? throw new ArgumentNullException(nameof(action))
+                : GetSubscriptions(action).Merge();
         }
 
         /// <summary>
@@ -548,14 +557,16 @@ namespace DefaultEcs
         /// <param name="action">The <see cref="ComponentAddedHandler{T}"/> to be called.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-        public IDisposable SubscribeComponentAdded<T>(ComponentAddedHandler<T> action)
-        {
-            if (action is null) throw new ArgumentNullException(nameof(action));
-
-            return Subscribe((in ComponentAddedMessage<T> message) => action(
-                new Entity(WorldId, message.EntityId),
-                ComponentManager<T>.GetWorld(WorldId).Get(message.EntityId)));
-        }
+        public IDisposable SubscribeComponentAdded<T>(ComponentAddedHandler<T> action) =>
+            action is null
+            ? throw new ArgumentNullException(nameof(action))
+            : ComponentManager<T>.IsFlagType
+                ? Subscribe((in ComponentAddedMessage<T> message) => action(
+                    new Entity(WorldId, message.EntityId),
+                    default))
+                : Subscribe((in ComponentAddedMessage<T> message) => action(
+                    new Entity(WorldId, message.EntityId),
+                    ComponentManager<T>.Getters[WorldId](message.EntityId)));
 
         /// <summary>
         /// Subscribes a <see cref="ComponentChangedHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is changed.
@@ -566,14 +577,25 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeComponentChanged<T>(ComponentChangedHandler<T> action)
         {
-            ComponentManager<T>.GetOrCreatePrevious(WorldId);
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
 
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            if (ComponentManager<T>.IsFlagType)
+            {
+                return Subscribe((in ComponentChangedMessage<T> message) => action(
+                    new Entity(WorldId, message.EntityId),
+                    default,
+                    default));
+            }
+
+            ComponentManager<T>.GetOrCreatePrevious(WorldId);
 
             return Subscribe((in ComponentChangedMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
                 ComponentManager<T>.GetPrevious(WorldId).Get(message.EntityId),
-                ComponentManager<T>.GetWorld(WorldId).Get(message.EntityId)));
+                ComponentManager<T>.Getters[WorldId](message.EntityId)));
         }
 
         /// <summary>
@@ -585,6 +607,31 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeComponentRemoved<T>(ComponentRemovedHandler<T> action)
         {
+            IEnumerable<IDisposable> GetFlagSubscriptions(ComponentRemovedHandler<T> a)
+            {
+                yield return Subscribe((in ComponentRemovedMessage<T> message) => a(new Entity(WorldId, message.EntityId), default));
+                yield return Subscribe((in EntityDisposingMessage message) =>
+                {
+                    if (EntityInfos[message.EntityId].Components[ComponentManager<T>.Flag])
+                    {
+                        a(new Entity(WorldId, message.EntityId), default);
+                    }
+                });
+                yield return Subscribe((in WorldDisposedMessage _) =>
+                {
+                    foreach (Archetype archetype in Archetypes.Values)
+                    {
+                        if (archetype.Has<T>())
+                        {
+                            foreach (ref readonly Entity entity in archetype.GetEntities())
+                            {
+                                a(entity, default);
+                            }
+                        }
+                    }
+                });
+            }
+
             IEnumerable<IDisposable> GetSubscriptions(ComponentRemovedHandler<T> a)
             {
                 yield return Subscribe((in ComponentRemovedMessage<T> message) => a(
@@ -592,26 +639,48 @@ namespace DefaultEcs
                     ComponentManager<T>.GetPrevious(WorldId).Get(message.EntityId)));
                 yield return Subscribe((in EntityDisposingMessage message) =>
                 {
-                    IComponentPool<T> pool = ComponentManager<T>.GetWorld(WorldId);
-                    if (pool?.Has(message.EntityId) is true)
+                    if ((ComponentManager<T>.GetWorld(WorldId)?.Has(message.EntityId) ?? false) || EntityInfos[message.EntityId].Archetype.Has<T>())
                     {
-                        a(new Entity(WorldId, message.EntityId), pool.Get(message.EntityId));
+                        a(new Entity(WorldId, message.EntityId), ComponentManager<T>.Getters[WorldId](message.EntityId));
                     }
                 });
                 yield return Subscribe((in WorldDisposedMessage _) =>
                 {
                     IComponentPool<T> pool = ComponentManager<T>.GetWorld(WorldId);
+
+                    if (pool?.Mode is ComponentMode.Archetype)
+                    {
+                        foreach (Archetype archetype in Archetypes.Values)
+                        {
+                            if (archetype.Has<T>())
+                            {
+                                foreach (ref readonly Entity entity in archetype.GetEntities())
+                                {
+                                    a(entity, archetype.Get<T>(entity.EntityId));
+                                }
+                            }
+                        }
+                    }
+
                     if (pool != null)
                     {
-                        //foreach (Entity entity in pool.GetEntities())
-                        //{
-                        //    a(entity, pool.Get(entity.EntityId));
-                        //}
+                        foreach (Entity entity in pool.GetEntities())
+                        {
+                            a(entity, pool.Get(entity.EntityId));
+                        }
                     }
                 });
             }
 
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            if (ComponentManager<T>.IsFlagType)
+            {
+                return GetFlagSubscriptions(action).Merge();
+            }
 
             ComponentManager<T>.GetOrCreatePrevious(WorldId);
 
@@ -625,14 +694,16 @@ namespace DefaultEcs
         /// <param name="action">The <see cref="ComponentEnabledHandler{T}"/> to be called.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-        public IDisposable SubscribeComponentEnabled<T>(ComponentEnabledHandler<T> action)
-        {
-            if (action is null) throw new ArgumentNullException(nameof(action));
-
-            return Subscribe((in ComponentEnabledMessage<T> message) => action(
-                new Entity(WorldId, message.EntityId),
-                ComponentManager<T>.GetWorld(WorldId).Get(message.EntityId)));
-        }
+        public IDisposable SubscribeComponentEnabled<T>(ComponentEnabledHandler<T> action) =>
+            action is null
+            ? throw new ArgumentNullException(nameof(action))
+            : ComponentManager<T>.IsFlagType
+                ? Subscribe((in ComponentEnabledMessage<T> message) => action(
+                    new Entity(WorldId, message.EntityId),
+                    default))
+                : Subscribe((in ComponentEnabledMessage<T> message) => action(
+                    new Entity(WorldId, message.EntityId),
+                    ComponentManager<T>.Getters[WorldId](message.EntityId)));
 
         /// <summary>
         /// Subscribes a <see cref="ComponentDisabledHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is disabled.
@@ -641,14 +712,16 @@ namespace DefaultEcs
         /// <param name="action">The <see cref="ComponentDisabledHandler{T}"/> to be called.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-        public IDisposable SubscribeComponentDisabled<T>(ComponentDisabledHandler<T> action)
-        {
-            if (action is null) throw new ArgumentNullException(nameof(action));
-
-            return Subscribe((in ComponentDisabledMessage<T> message) => action(
-                new Entity(WorldId, message.EntityId),
-                ComponentManager<T>.GetWorld(WorldId).Get(message.EntityId)));
-        }
+        public IDisposable SubscribeComponentDisabled<T>(ComponentDisabledHandler<T> action) =>
+            action is null
+            ? throw new ArgumentNullException(nameof(action))
+            : ComponentManager<T>.IsFlagType
+                ? Subscribe((in ComponentDisabledMessage<T> message) => action(
+                    new Entity(WorldId, message.EntityId),
+                    default))
+                : Subscribe((in ComponentDisabledMessage<T> message) => action(
+                    new Entity(WorldId, message.EntityId),
+                    ComponentManager<T>.GetWorld(WorldId).Get(message.EntityId)));
 
         public Archetype GetArchetype<T>()
         {

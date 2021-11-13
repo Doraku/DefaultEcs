@@ -130,7 +130,7 @@ namespace DefaultEcs
 
             internal EntityQueryBuilder Commit()
             {
-                if (_type == EitherType.Without || _type == EitherType.WhenRemoved)
+                if (_type is EitherType.Without or EitherType.WhenRemoved)
                 {
                     _builder.AddWithoutEitherFilter(_eitherFilter);
                 }
@@ -406,7 +406,10 @@ namespace DefaultEcs
         /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
         public EntityQueryBuilder With<T>(ComponentPredicate<T> predicate)
         {
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            if (predicate is null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
 
             if (!_predicateFilter[ComponentManager<T>.Flag])
             {
@@ -417,7 +420,7 @@ namespace DefaultEcs
                 }
             }
 
-            (_predicates ??= new List<Predicate<int>>()).Add(i => predicate(World.Instances[_world.WorldId].EntityInfos[i].Archetype.Get<T>(i)));
+            (_predicates ??= new List<Predicate<int>>()).Add(i => predicate(ComponentManager<T>.Getters[_world.WorldId](i)));
 
             return With<T>();
         }

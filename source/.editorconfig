@@ -1,0 +1,44 @@
+[*.cs]
+
+dotnet_analyzer_diagnostic.severity = warning
+
+# CA1024: Use properties where appropriate
+dotnet_diagnostic.CA1024.severity = none
+
+# CA1810: Initialize reference type static fields inline
+dotnet_diagnostic.CA1810.severity = none
+
+# CA2201: Do not raise reserved exception types
+dotnet_diagnostic.CA2201.severity = none
+
+# IDE0010: Add missing cases
+dotnet_diagnostic.IDE0010.severity = none
+
+# IDE0022: Use block body for methods
+dotnet_diagnostic.IDE0022.severity = none
+
+# IDE0024: Use block body for operators
+dotnet_diagnostic.IDE0024.severity = none
+
+# IDE0058: Expression value is never used
+dotnet_diagnostic.IDE0058.severity = none
+
+# IDE0061: Use block body for local functions
+dotnet_diagnostic.IDE0061.severity = none
+
+# IDE0072: Add missing cases
+dotnet_diagnostic.IDE0072.severity = none
+
+# RCS1161: Enum should declare explicit values.
+dotnet_diagnostic.RCS1161.severity = none
+
+# RCS1189: Add or remove region name.
+dotnet_diagnostic.RCS1189.severity = none
+
+# RCS1238: Avoid nested ?: operators.
+dotnet_diagnostic.RCS1238.severity = none
+
+[**{.Test}/**.cs]
+
+# CA1707: Identifiers should not contain underscores
+dotnet_diagnostic.CA1707.severity = none

@@ -85,7 +85,10 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Enable()
         {
-            if (WorldId == 0) Throw("Entity was not created from a World");
+            if (WorldId == 0)
+            {
+                Throw("Entity was not created from a World");
+            }
 
             ref EntityInfo info = ref World.EntityInfos[EntityId];
 
@@ -102,7 +105,10 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Disable()
         {
-            if (WorldId == 0) Throw("Entity was not created from a World");
+            if (WorldId == 0)
+            {
+                Throw("Entity was not created from a World");
+            }
 
             ref EntityInfo info = ref World.EntityInfos[EntityId];
 
@@ -129,7 +135,10 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Enable<T>()
         {
-            if (WorldId == 0) Throw("Entity was not created from a World");
+            if (WorldId == 0)
+            {
+                Throw("Entity was not created from a World");
+            }
 
             ref EntityInfo info = ref World.EntityInfos[EntityId];
 
@@ -148,7 +157,10 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Disable<T>()
         {
-            if (WorldId == 0) Throw("Entity was not created from a World");
+            if (WorldId == 0)
+            {
+                Throw("Entity was not created from a World");
+            }
 
             ref EntityInfo info = ref World.EntityInfos[EntityId];
 
@@ -168,7 +180,10 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
         public void Set<T>(in T component)
         {
-            if (WorldId == 0) Throw("Entity was not created from a World");
+            if (WorldId == 0)
+            {
+                Throw("Entity was not created from a World");
+            }
 
             ref EntityInfo info = ref World.EntityInfos[EntityId];
 
@@ -202,8 +217,15 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
         public void SetSameAs<T>(in Entity reference)
         {
-            if (WorldId == 0) Throw("Entity was not created from a World");
-            if (WorldId != reference.WorldId) Throw("Reference Entity comes from a different World");
+            if (WorldId == 0)
+            {
+                Throw("Entity was not created from a World");
+            }
+
+            if (WorldId != reference.WorldId)
+            {
+                Throw("Reference Entity comes from a different World");
+            }
 
             ref EntityInfo info = ref World.EntityInfos[EntityId];
 
@@ -226,7 +248,10 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="World"/> does not have a component of type <typeparamref name="T"/>.</exception>
         public void SetSameAsWorld<T>()
         {
-            if (WorldId == 0) Throw("Entity was not created from a World");
+            if (WorldId == 0)
+            {
+                Throw("Entity was not created from a World");
+            }
 
             SetSameAs<T>(new Entity(WorldId, 0));
         }
@@ -256,8 +281,15 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
         public void NotifyChanged<T>()
         {
-            if (WorldId == 0) Throw("Entity was not created from a World");
-            if (!Has<T>()) Throw($"Entity does not have a component of type {nameof(T)}");
+            if (WorldId == 0)
+            {
+                Throw("Entity was not created from a World");
+            }
+
+            if (!Has<T>())
+            {
+                Throw($"Entity does not have a component of type {nameof(T)}");
+            }
 
             Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, World.EntityInfos[EntityId].Components));
             ComponentManager<T>.GetPrevious(WorldId)?.Set(EntityId, Get<T>());
@@ -291,9 +323,20 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public Entity CopyTo(World world, ComponentCloner cloner)
         {
-            if (world is null) throw new ArgumentNullException(nameof(world));
-            if (cloner is null) throw new ArgumentNullException(nameof(cloner));
-            if (WorldId == 0) Throw("Entity was not created from a World");
+            if (world is null)
+            {
+                throw new ArgumentNullException(nameof(world));
+            }
+
+            if (cloner is null)
+            {
+                throw new ArgumentNullException(nameof(cloner));
+            }
+
+            if (WorldId == 0)
+            {
+                Throw("Entity was not created from a World");
+            }
 
             Entity copy = world.CreateEntity();
 
@@ -330,6 +373,7 @@ namespace DefaultEcs
         /// This method is primiraly used for serialization purpose and should not be called in game logic.
         /// </summary>
         /// <param name="reader">The <see cref="IComponentReader"/> instance to be used as callback with the current <see cref="Entity"/> components.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="reader"/> is null.</exception>
         public void ReadAllComponents(IComponentReader reader) => Publisher.Publish(WorldId, new ComponentReadMessage(EntityId, reader ?? throw new ArgumentNullException(nameof(reader))));
 
         #endregion

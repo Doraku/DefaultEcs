@@ -199,7 +199,10 @@ namespace DefaultEcs.Serialization
                     switch (reader.ReadFromLine())
                     {
                         case nameof(EntryType.WorldMaxCapacity):
-                            if (!isNewWorld || world != null) throw new ArgumentException($"Encoutered {nameof(EntryType.WorldMaxCapacity)} on line {reader.LineNumber}");
+                            if (!isNewWorld || world != null)
+                            {
+                                throw new ArgumentException($"Encoutered {nameof(EntryType.WorldMaxCapacity)} on line {reader.LineNumber}");
+                            }
 
                             world = new World(ReadInt(reader));
                             break;
@@ -258,7 +261,10 @@ namespace DefaultEcs.Serialization
                         case nameof(EntryType.Component):
                             if (currentEntity == default)
                             {
-                                if (!isNewWorld) throw new ArgumentException($"Encoutered {nameof(EntryType.ComponentMaxCapacity)} line");
+                                if (!isNewWorld)
+                                {
+                                    throw new ArgumentException($"Encoutered {nameof(EntryType.ComponentMaxCapacity)} line");
+                                }
 
                                 world ??= new World();
 
@@ -271,31 +277,46 @@ namespace DefaultEcs.Serialization
                             break;
 
                         case nameof(EntryType.ComponentSameAs):
-                            if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
+                            if (currentEntity.Equals(default))
+                            {
+                                throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
+                            }
 
                             ReadComponentOperation(reader, componentOperations).SetSameAs(currentEntity, ReadEntity(reader, entities));
                             break;
 
                         case nameof(EntryType.ComponentSameAsWorld):
-                            if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
+                            if (currentEntity.Equals(default))
+                            {
+                                throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
+                            }
 
                             ReadComponentOperation(reader, componentOperations).SetSameAsWorld(currentEntity);
                             break;
 
                         case nameof(EntryType.DisabledComponent):
-                            if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
+                            if (currentEntity.Equals(default))
+                            {
+                                throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
+                            }
 
                             ReadComponentOperation(reader, componentOperations).SetDisabled(currentEntity, reader);
                             break;
 
                         case nameof(EntryType.DisabledComponentSameAs):
-                            if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
+                            if (currentEntity.Equals(default))
+                            {
+                                throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
+                            }
 
                             ReadComponentOperation(reader, componentOperations).SetDisabledSameAs(currentEntity, ReadEntity(reader, entities));
                             break;
 
                         case nameof(EntryType.DisabledComponentSameAsWorld):
-                            if (currentEntity.Equals(default)) throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
+                            if (currentEntity.Equals(default))
+                            {
+                                throw new ArgumentException($"Encountered a component before creation of an Entity on line {reader.LineNumber}");
+                            }
 
                             ReadComponentOperation(reader, componentOperations).SetDisabledSameAsWorld(currentEntity);
                             break;
@@ -334,7 +355,10 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         public static void Write<T>(Stream stream, in T value, TextSerializationContext context)
         {
-            if (stream is null) throw new ArgumentNullException(nameof(stream));
+            if (stream is null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
 
             using StreamWriterWrapper writer = new(stream, context);
 
@@ -360,7 +384,10 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         public static T Read<T>(Stream stream, TextSerializationContext context)
         {
-            if (stream is null) throw new ArgumentNullException(nameof(stream));
+            if (stream is null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
 
             using StreamReaderWrapper reader = new(stream, context);
 
@@ -389,8 +416,15 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         public void Serialize(Stream stream, World world)
         {
-            if (stream is null) throw new ArgumentNullException(nameof(stream));
-            if (world is null) throw new ArgumentNullException(nameof(world));
+            if (stream is null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
+            if (world is null)
+            {
+                throw new ArgumentNullException(nameof(world));
+            }
 
             using StreamWriterWrapper writer = new(stream, _context);
 
@@ -416,7 +450,10 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         public World Deserialize(Stream stream)
         {
-            if (stream is null) throw new ArgumentNullException(nameof(stream));
+            if (stream is null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
 
             World world = null;
             Deserialize(stream, ref world);
@@ -431,8 +468,15 @@ namespace DefaultEcs.Serialization
         /// <param name="entities">The <see cref="Entity"/> instances to save.</param>
         public void Serialize(Stream stream, IEnumerable<Entity> entities)
         {
-            if (stream is null) throw new ArgumentNullException(nameof(stream));
-            if (entities is null) throw new ArgumentNullException(nameof(entities));
+            if (stream is null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
+            if (entities is null)
+            {
+                throw new ArgumentNullException(nameof(entities));
+            }
 
             using StreamWriterWrapper writer = new(stream, _context);
 
@@ -447,8 +491,15 @@ namespace DefaultEcs.Serialization
         /// <returns>The <see cref="Entity"/> instances loaded.</returns>
         public ICollection<Entity> Deserialize(Stream stream, World world)
         {
-            if (stream is null) throw new ArgumentNullException(nameof(stream));
-            if (world is null) throw new ArgumentNullException(nameof(world));
+            if (stream is null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
+            if (world is null)
+            {
+                throw new ArgumentNullException(nameof(world));
+            }
 
             return Deserialize(stream, ref world);
         }

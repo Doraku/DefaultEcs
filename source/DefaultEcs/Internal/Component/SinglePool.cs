@@ -8,61 +8,6 @@ namespace DefaultEcs.Internal.Component
 {
     internal sealed class SinglePool<T> : IComponentPool<T>, ISortable
     {
-        #region Types
-
-        public readonly ref struct EntityEnumerable
-        {
-            private readonly SinglePool<T> _pool;
-
-            public EntityEnumerable(SinglePool<T> pool)
-            {
-                _pool = pool;
-            }
-
-            #region IEnumerable
-
-            public EntityEnumerator GetEnumerator() => new(_pool);
-
-            #endregion
-        }
-
-        public ref struct EntityEnumerator
-        {
-            private readonly short _worldId;
-            private readonly int[] _mapping;
-
-            private int _index;
-
-            public EntityEnumerator(SinglePool<T> pool)
-            {
-                _worldId = pool._worldId;
-                _mapping = pool._mapping;
-
-                _index = 0;
-            }
-
-            #region IEnumerator
-
-            public Entity Current => new(_worldId, _index);
-
-            public bool MoveNext()
-            {
-                while (++_index < _mapping.Length)
-                {
-                    if (_mapping[_index] >= 0)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            #endregion
-        }
-
-        #endregion
-
         #region Fields
 
         private readonly short _worldId;
@@ -128,8 +73,6 @@ namespace DefaultEcs.Internal.Component
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> AsSpan() => new(_components, 0, Count);
-
-        public EntityEnumerable GetEntities() => new(this);
 
         #endregion
 
@@ -223,6 +166,8 @@ namespace DefaultEcs.Internal.Component
                 newPool.Set(_reverseMapping[i], _components[i]);
             }
         }
+
+        public PoolEntityEnumerable GetEntities() => new(_worldId, _mapping);
 
         #endregion
 

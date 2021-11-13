@@ -16,6 +16,7 @@ namespace DefaultEcs.Internal.Component
         private static readonly object _lockObject;
 
         private static SinglePool<T>[] _previousPools;
+        private static Getter[] _archetypeGetters;
 
         public static readonly bool IsFlagType;
         public static readonly bool IsReferenceType;
@@ -24,7 +25,6 @@ namespace DefaultEcs.Internal.Component
         public static IComponentPool<T>[] WorldPools;
         public static ArchetypePool<T>[] ArchetypePools;
         public static Getter[] Getters;
-        public static Getter[] ArchetypeGetters;
 
         #endregion
 
@@ -35,6 +35,7 @@ namespace DefaultEcs.Internal.Component
             _lockObject = new object();
 
             _previousPools = EmptyArray<SinglePool<T>>.Value;
+            _archetypeGetters = EmptyArray<Getter>.Value;
 
             IsFlagType = typeof(T).GetTypeInfo().IsFlagType();
             IsReferenceType = !typeof(T).GetTypeInfo().IsValueType;
@@ -43,7 +44,6 @@ namespace DefaultEcs.Internal.Component
             WorldPools = EmptyArray<IComponentPool<T>>.Value;
             ArchetypePools = EmptyArray<ArchetypePool<T>>.Value;
             Getters = EmptyArray<Getter>.Value;
-            ArchetypeGetters = EmptyArray<Getter>.Value;
 
             Publisher<WorldDisposedMessage>.Subscribe(0, On);
         }
@@ -72,7 +72,7 @@ namespace DefaultEcs.Internal.Component
                     if (archetype.ArchetypeId < ArchetypePools.Length)
                     {
                         ArchetypePools[archetype.ArchetypeId] = null;
-                        ArchetypeGetters[archetype.ArchetypeId] = null;
+                        _archetypeGetters[archetype.ArchetypeId] = null;
                     }
                 }
             }
@@ -132,7 +132,7 @@ namespace DefaultEcs.Internal.Component
                         Getters[worldId] = entityId =>
                         {
                             int archetypeId = world.EntityInfos[entityId].Archetype.ArchetypeId;
-                            return ref ((archetypeId < ArchetypeGetters.Length ? ArchetypeGetters[archetypeId] : null) ?? pool.Get)(entityId);
+                            return ref ((archetypeId < _archetypeGetters.Length ? _archetypeGetters[archetypeId] : null) ?? pool.Get)(entityId);
                         };
                         break;
                 }
@@ -148,8 +148,8 @@ namespace DefaultEcs.Internal.Component
 
             lock (_lockObject)
             {
-                ArrayExtension.EnsureLength(ref ArchetypeGetters, archetype.ArchetypeId);
-                ArchetypeGetters[archetype.ArchetypeId] = archetype.Has<T>() ? archetype.Get<T> : disabledPool switch
+                ArrayExtension.EnsureLength(ref _archetypeGetters, archetype.ArchetypeId);
+                _archetypeGetters[archetype.ArchetypeId] = archetype.Has<T>() ? archetype.Get<T> : disabledPool switch
                 {
                     SinglePool<T> pool => pool.Get,
                     SharedPool<T> pool => pool.Get,
@@ -200,7 +200,7 @@ namespace DefaultEcs.Internal.Component
                         lock (_lockObject)
                         {
                             ArchetypePools[archetype.ArchetypeId] = null;
-                            ArchetypeGetters[archetype.ArchetypeId] = null;
+                            _archetypeGetters[archetype.ArchetypeId] = null;
                         }
                     }
                 }

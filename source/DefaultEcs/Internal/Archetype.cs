@@ -81,7 +81,6 @@ namespace DefaultEcs.Internal
             _mapping = EmptyArray<int>.Value;
             _lastEntityIndex = -1;
 
-
             lock (_lockObject)
             {
                 ArrayExtension.EnsureLength(ref Instances, ArchetypeId);
@@ -98,8 +97,6 @@ namespace DefaultEcs.Internal
 
         #endregion
 
-
-
         #region Callbacks
 
         private void On(in EntityDisposedMessage message)
@@ -114,7 +111,6 @@ namespace DefaultEcs.Internal
             {
                 return;
             }
-
 
             OnRemoveComponents?.Invoke(index, _lastEntityIndex);
             if (index != _lastEntityIndex)
@@ -359,5 +355,7 @@ namespace DefaultEcs.Internal
         {
             ComponentManager<T>.GetArchetype(ArchetypeId)?.TrimExcess(Count);
         }
+
+        internal ReadOnlySpan<Entity> GetEntities() => new(_entities, 0, Count);
     }
 }

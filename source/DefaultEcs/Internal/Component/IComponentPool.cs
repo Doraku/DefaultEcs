@@ -25,5 +25,7 @@ namespace DefaultEcs.Internal.Component
         Components<T> AsComponents();
 
         void CopyTo(IComponentPool<T> newPool);
+
+        PoolEntityEnumerable GetEntities();
     }
 }
