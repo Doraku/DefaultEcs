@@ -473,7 +473,7 @@ public class DrawSystem : AComponentSystem<float, DrawInfo>
         _square = square;
     }
 
-    protected override void PreUpdate()
+    protected override void PreUpdate(float elaspedTime)
     {
         _batch.Begin();
     }
@@ -483,7 +483,7 @@ public class DrawSystem : AComponentSystem<float, DrawInfo>
         _batch.Draw(_square, component.Destination, component.Color);
     }
 
-    protected override void PostUpdate()
+    protected override void PostUpdate(float elaspedTime)
     {
         _batch.End();
     }
