@@ -343,16 +343,23 @@ namespace DefaultEcs.System
                             }
                             else
                             {
-                                _runnable.EntitiesPerIndex = _runnable.Entities.Count / _runner.DegreeOfParallelism;
-
-                                if (_runnable.EntitiesPerIndex < _minEntityCountByRunnerIndex)
+                                if (_runner.DegreeOfParallelism == 1)
                                 {
                                     Update(state, key, _runnable.Entities.GetEntities());
                                 }
                                 else
                                 {
-                                    _runnable.Key = key;
-                                    _runner.Run(_runnable);
+                                    _runnable.EntitiesPerIndex = _runnable.Entities.Count / _runner.DegreeOfParallelism;
+
+                                    if (_runnable.EntitiesPerIndex < _minEntityCountByRunnerIndex)
+                                    {
+                                        Update(state, key, _runnable.Entities.GetEntities());
+                                    }
+                                    else
+                                    {
+                                        _runnable.Key = key;
+                                        _runner.Run(_runnable);
+                                    }
                                 }
                             }
 
