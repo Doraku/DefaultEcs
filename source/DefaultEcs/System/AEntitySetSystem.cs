@@ -257,16 +257,23 @@ namespace DefaultEcs.System
                 }
                 else
                 {
-                    _runnable.CurrentState = state;
-                    _runnable.EntitiesPerIndex = Set.Count / _runner.DegreeOfParallelism;
-
-                    if (_runnable.EntitiesPerIndex < _minEntityCountByRunnerIndex)
+                    if (_runner.DegreeOfParallelism == 1)
                     {
                         Update(state, Set.GetEntities());
                     }
                     else
                     {
-                        _runner.Run(_runnable);
+                        _runnable.CurrentState = state;
+                        _runnable.EntitiesPerIndex = Set.Count / _runner.DegreeOfParallelism;
+
+                        if (_runnable.EntitiesPerIndex < _minEntityCountByRunnerIndex)
+                        {
+                            Update(state, Set.GetEntities());
+                        }
+                        else
+                        {
+                            _runner.Run(_runnable);
+                        }
                     }
                 }
 
