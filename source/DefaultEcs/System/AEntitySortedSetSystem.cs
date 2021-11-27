@@ -46,35 +46,14 @@ namespace DefaultEcs.System
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitySortedSetSystem{TState, TComponent}"/> class with the given <see cref="EntitySortedSet{TComponent}"/>.
         /// </summary>
-        /// <param name="sortedSet">The <see cref="EntitySortedSet{TComponent}"/> on which to process the update.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="sortedSet"/> is null.</exception>
-        protected AEntitySortedSetSystem(EntitySortedSet<TComponent> sortedSet)
-            : this(_ => sortedSet ?? throw new ArgumentNullException(nameof(sortedSet)))
-        { }
-
-        /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySortedSetSystem{TState, TComponent}"/> class with the given <see cref="EntitySortedSet{TComponent}"/>.
-        /// </summary>
         /// <param name="sortedSet">The <see cref="EntitySet"/> on which to process the update.</param>
         /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
         /// <exception cref="ArgumentNullException"><paramref name="sortedSet"/> is null.</exception>
-        protected AEntitySortedSetSystem(EntitySortedSet<TComponent> sortedSet, bool useBuffer)
-            : this(sortedSet)
+        protected AEntitySortedSetSystem(EntitySortedSet<TComponent> sortedSet, bool useBuffer = false)
+            : this(sortedSet is null ? throw new ArgumentNullException(nameof(sortedSet)) : _ => sortedSet)
         {
             _useBuffer = useBuffer;
         }
-
-        /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySortedSetSystem{TState, TComponent}"/> class with the given <see cref="DefaultEcs.World"/> and factory.
-        /// The current instance will be passed as the first parameter of the factory.
-        /// </summary>
-        /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
-        /// <param name="factory">The factory used to create the <see cref="EntitySortedSet{TComponent}"/>.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="factory"/> is null.</exception>
-        protected AEntitySortedSetSystem(World world, Func<object, World, EntitySortedSet<TComponent>> factory)
-            : this(o => (factory ?? throw new ArgumentNullException(nameof(factory)))(o, world ?? throw new ArgumentNullException(nameof(world))))
-        { }
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitySortedSetSystem{TState, TComponent}"/> class with the given <see cref="DefaultEcs.World"/> and factory.
@@ -86,7 +65,7 @@ namespace DefaultEcs.System
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="factory"/> is null.</exception>
         protected AEntitySortedSetSystem(World world, Func<object, World, EntitySortedSet<TComponent>> factory, bool useBuffer)
-            : this(world, factory)
+            : this(world is null ? throw new ArgumentNullException(nameof(world)) : factory is null ? throw new ArgumentNullException(nameof(factory)) : o => factory(o, world))
         {
             _useBuffer = useBuffer;
         }
@@ -98,18 +77,8 @@ namespace DefaultEcs.System
         /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AEntitySortedSetSystem(World world, bool useBuffer)
+        protected AEntitySortedSetSystem(World world, bool useBuffer = false)
             : this(world, static (o, w) => EntityRuleBuilderFactory.Create(o.GetType())(o, w).AsSortedSet(o as IComparer<TComponent>), useBuffer)
-        { }
-
-        /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySortedSetSystem{TState, TComponent}"/> class with the given <see cref="DefaultEcs.World"/> and factory.
-        /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
-        /// </summary>
-        /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AEntitySortedSetSystem(World world)
-            : this(world, false)
         { }
 
         #endregion

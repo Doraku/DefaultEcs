@@ -11,19 +11,11 @@ namespace DefaultEcs.Test.System
         [WithEither(typeof(double), typeof(uint))]
         private sealed class System : AEntitySortedSetSystem<int, int>
         {
-            public System(EntitySortedSet<int> sortedSet, bool useBuffer)
+            public System(EntitySortedSet<int> sortedSet, bool useBuffer = false)
                 : base(sortedSet, useBuffer)
             { }
 
-            public System(EntitySortedSet<int> sortedSet)
-                : base(sortedSet)
-            { }
-
-            public System(World world, Func<object, World, EntitySortedSet<int>> factory)
-                : base(world, factory)
-            { }
-
-            public System(World world, Func<object, World, EntitySortedSet<int>> factory, bool useBuffer)
+            public System(World world, Func<object, World, EntitySortedSet<int>> factory, bool useBuffer = false)
                 : base(world, factory, useBuffer)
             { }
 
@@ -50,7 +42,7 @@ namespace DefaultEcs.Test.System
         [Fact]
         public void AEntitySetSystem_Should_throw_ArgumentNullException_When_World_is_null()
         {
-            Check.ThatCode(() => new System(default(World))).Throws<ArgumentNullException>();
+            Check.ThatCode(() => new System(default)).Throws<ArgumentNullException>();
         }
 
         [Fact]

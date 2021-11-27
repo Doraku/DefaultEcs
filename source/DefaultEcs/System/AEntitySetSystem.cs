@@ -80,18 +80,8 @@ namespace DefaultEcs.System
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="minEntityCountByRunnerIndex">The minimum number of <see cref="Entity"/> per runner index to use the given <paramref name="runner"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
-        protected AEntitySetSystem(EntitySet set, IParallelRunner runner, int minEntityCountByRunnerIndex)
-            : this(_ => set ?? throw new ArgumentNullException(nameof(set)), runner, minEntityCountByRunnerIndex)
-        { }
-
-        /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySetSystem{T}"/> class with the given <see cref="EntitySet"/> and <see cref="IParallelRunner"/>.
-        /// </summary>
-        /// <param name="set">The <see cref="EntitySet"/> on which to process the update.</param>
-        /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
-        protected AEntitySetSystem(EntitySet set, IParallelRunner runner)
-            : this(set, runner, 0)
+        protected AEntitySetSystem(EntitySet set, IParallelRunner runner, int minEntityCountByRunnerIndex = 0)
+            : this(set is null ? throw new ArgumentNullException(nameof(set)) : _ => set, runner, minEntityCountByRunnerIndex)
         { }
 
         /// <summary>
@@ -100,20 +90,11 @@ namespace DefaultEcs.System
         /// <param name="set">The <see cref="EntitySet"/> on which to process the update.</param>
         /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
         /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
-        protected AEntitySetSystem(EntitySet set, bool useBuffer)
+        protected AEntitySetSystem(EntitySet set, bool useBuffer = false)
             : this(set, null)
         {
             _useBuffer = useBuffer;
         }
-
-        /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySetSystem{T}"/> class with the given <see cref="EntitySet"/>.
-        /// </summary>
-        /// <param name="set">The <see cref="EntitySet"/> on which to process the update.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
-        protected AEntitySetSystem(EntitySet set)
-            : this(set, false)
-        { }
 
         /// <summary>
         /// Initialise a new instance of the <see cref="AEntitySetSystem{T}"/> class with the given <see cref="DefaultEcs.World"/> and factory.
@@ -126,7 +107,7 @@ namespace DefaultEcs.System
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="factory"/> is null.</exception>
         protected AEntitySetSystem(World world, Func<object, World, EntitySet> factory, IParallelRunner runner, int minEntityCountByRunnerIndex)
-            : this(o => (factory ?? throw new ArgumentNullException(nameof(factory)))(o, world ?? throw new ArgumentNullException(nameof(world))), runner, minEntityCountByRunnerIndex)
+            : this(world is null ? throw new ArgumentNullException(nameof(world)) : factory is null ? throw new ArgumentNullException(nameof(factory)) : o => factory(o, world), runner, minEntityCountByRunnerIndex)
         { }
 
         /// <summary>
@@ -137,19 +118,8 @@ namespace DefaultEcs.System
         /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
         /// <param name="minEntityCountByRunnerIndex">The minimum number of <see cref="Entity"/> per runner index to use the given <paramref name="runner"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AEntitySetSystem(World world, IParallelRunner runner, int minEntityCountByRunnerIndex)
-            : this(world, static (o, w) => EntityRuleBuilderFactory.Create(o.GetType())(o, w).AsSet(), runner, minEntityCountByRunnerIndex)
-        { }
-
-        /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySetSystem{T}"/> class with the given <see cref="DefaultEcs.World"/>.
-        /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
-        /// </summary>
-        /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
-        /// <param name="runner">The <see cref="IParallelRunner"/> used to process the update in parallel if not null.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AEntitySetSystem(World world, IParallelRunner runner)
-            : this(world, runner, 0)
+        protected AEntitySetSystem(World world, IParallelRunner runner, int minEntityCountByRunnerIndex = 0)
+            : this(world, DefaultFactory, runner, minEntityCountByRunnerIndex)
         { }
 
         /// <summary>
@@ -174,25 +144,15 @@ namespace DefaultEcs.System
         /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AEntitySetSystem(World world, bool useBuffer)
-            : this(world, null)
-        {
-            _useBuffer = useBuffer;
-        }
-
-        /// <summary>
-        /// Initialise a new instance of the <see cref="AEntitySetSystem{T}"/> class with the given <see cref="DefaultEcs.World"/>.
-        /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
-        /// </summary>
-        /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AEntitySetSystem(World world)
-            : this(world, false)
+        protected AEntitySetSystem(World world, bool useBuffer = false)
+            : this(world, DefaultFactory, useBuffer)
         { }
 
         #endregion
 
         #region Methods
+
+        private static EntitySet DefaultFactory(object o, World w) => EntityRuleBuilderFactory.Create(o.GetType())(o, w).AsSet();
 
         /// <summary>
         /// Performs a pre-update treatment.
