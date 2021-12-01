@@ -97,7 +97,7 @@ namespace DefaultEcs.System
             _keyComparer = this as IComparer<TKey> ?? (IsIComparable() ? Comparer<TKey>.Default : null);
             _runner = runner ?? DefaultParallelRunner.Default;
             _runnable = new Runnable(this);
-            _minEntityCountByRunnerIndex = minEntityCountByRunnerIndex;
+            _minEntityCountByRunnerIndex = _runner.DegreeOfParallelism > 1 ? minEntityCountByRunnerIndex : int.MaxValue;
 
             _keys = EmptyArray<TKey>.Value;
             _keyCount = 0;
@@ -343,23 +343,16 @@ namespace DefaultEcs.System
                             }
                             else
                             {
-                                if (_runner.DegreeOfParallelism == 1)
+                                _runnable.EntitiesPerIndex = _runnable.Entities.Count / _runner.DegreeOfParallelism;
+
+                                if (_runnable.EntitiesPerIndex < _minEntityCountByRunnerIndex)
                                 {
                                     Update(state, key, _runnable.Entities.GetEntities());
                                 }
                                 else
                                 {
-                                    _runnable.EntitiesPerIndex = _runnable.Entities.Count / _runner.DegreeOfParallelism;
-
-                                    if (_runnable.EntitiesPerIndex < _minEntityCountByRunnerIndex)
-                                    {
-                                        Update(state, key, _runnable.Entities.GetEntities());
-                                    }
-                                    else
-                                    {
-                                        _runnable.Key = key;
-                                        _runner.Run(_runnable);
-                                    }
+                                    _runnable.Key = key;
+                                    _runner.Run(_runnable);
                                 }
                             }
 

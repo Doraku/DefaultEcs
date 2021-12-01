@@ -70,7 +70,7 @@ namespace DefaultEcs.System
 
             _runner = runner ?? DefaultParallelRunner.Default;
             _runnable = new Runnable(this);
-            _minEntityCountByRunnerIndex = minEntityCountByRunnerIndex;
+            _minEntityCountByRunnerIndex = _runner.DegreeOfParallelism > 1 ? minEntityCountByRunnerIndex : int.MaxValue;
         }
 
         /// <summary>
@@ -257,23 +257,16 @@ namespace DefaultEcs.System
                 }
                 else
                 {
-                    if (_runner.DegreeOfParallelism == 1)
+                    _runnable.EntitiesPerIndex = Set.Count / _runner.DegreeOfParallelism;
+
+                    if (_runnable.EntitiesPerIndex < _minEntityCountByRunnerIndex)
                     {
                         Update(state, Set.GetEntities());
                     }
                     else
                     {
                         _runnable.CurrentState = state;
-                        _runnable.EntitiesPerIndex = Set.Count / _runner.DegreeOfParallelism;
-
-                        if (_runnable.EntitiesPerIndex < _minEntityCountByRunnerIndex)
-                        {
-                            Update(state, Set.GetEntities());
-                        }
-                        else
-                        {
-                            _runner.Run(_runnable);
-                        }
+                        _runner.Run(_runnable);
                     }
                 }
 

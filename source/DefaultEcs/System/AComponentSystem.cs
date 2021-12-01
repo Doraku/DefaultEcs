@@ -74,7 +74,7 @@ namespace DefaultEcs.System
             _runner = runner ?? DefaultParallelRunner.Default;
             _runnable = new Runnable(this);
             _components = ComponentManager<TComponent>.GetOrCreate(world?.WorldId ?? throw new ArgumentNullException(nameof(world)));
-            _minComponentCountByRunnerIndex = minComponentCountByRunnerIndex;
+            _minComponentCountByRunnerIndex = _runner.DegreeOfParallelism > 1 ? minComponentCountByRunnerIndex : int.MaxValue;
 
             World = world;
         }
@@ -154,23 +154,16 @@ namespace DefaultEcs.System
             {
                 PreUpdate(state);
 
-                if (_runner.DegreeOfParallelism == 1)
+                _runnable.ComponentsPerIndex = _components.Count / _runner.DegreeOfParallelism;
+
+                if (_runnable.ComponentsPerIndex < _minComponentCountByRunnerIndex)
                 {
                     Update(state, _components.AsSpan());
                 }
                 else
                 {
-                    _runnable.ComponentsPerIndex = _components.Count / _runner.DegreeOfParallelism;
                     _runnable.CurrentState = state;
-
-                    if (_runnable.ComponentsPerIndex < _minComponentCountByRunnerIndex)
-                    {
-                        Update(state, _components.AsSpan());
-                    }
-                    else
-                    {
-                        _runner.Run(_runnable);
-                    }
+                    _runner.Run(_runnable);
                 }
 
                 PostUpdate(state);
