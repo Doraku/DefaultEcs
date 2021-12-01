@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DefaultEcs.Internal.Helper;
 using DefaultEcs.Internal.Threading;
 
 namespace DefaultEcs.Threading
@@ -18,7 +19,7 @@ namespace DefaultEcs.Threading
 
         private readonly CancellationTokenSource _disposeHandle;
         private readonly WorkerBarrier _barrier;
-        private readonly Task[] _tasks;
+        private readonly DefaultThread[] _threads;
 
         private IParallelRunnable _currentRunnable;
 
@@ -36,12 +37,12 @@ namespace DefaultEcs.Threading
             IEnumerable<int> indices = degreeOfParallelism >= 1 ? Enumerable.Range(0, degreeOfParallelism - 1) : throw new ArgumentException("Argument cannot be inferior to one", nameof(degreeOfParallelism));
 
             _disposeHandle = new CancellationTokenSource();
-            _tasks = indices.Select(index => new Task(Update, index, TaskCreationOptions.LongRunning)).ToArray();
-            _barrier = degreeOfParallelism > 1 ? new WorkerBarrier(_tasks.Length) : null;
+            _threads = indices.Select(index => new DefaultThread(Update, index)).ToArray();
+            _barrier = degreeOfParallelism > 1 ? new WorkerBarrier(_threads.Length) : null;
 
-            foreach (Task task in _tasks)
+            foreach (DefaultThread thread in _threads)
             {
-                task.Start(TaskScheduler.Default);
+                thread.Start();
             }
         }
 
@@ -53,14 +54,10 @@ namespace DefaultEcs.Threading
         {
             int index = (int)state;
 
-#if !NETSTANDARD1_1
-            Thread.CurrentThread.Name = $"{nameof(DefaultParallelRunner)} worker {index + 1}";
-#endif
-
             goto Start;
 
         Work:
-            Volatile.Read(ref _currentRunnable).Run(index, _tasks.Length);
+            Volatile.Read(ref _currentRunnable).Run(index, _threads.Length);
 
             _barrier.Signal();
 
@@ -80,7 +77,7 @@ namespace DefaultEcs.Threading
         /// <summary>
         /// Gets the degree of parallelism used to run an <see cref="IParallelRunnable"/>.
         /// </summary>
-        public int DegreeOfParallelism => _tasks.Length + 1;
+        public int DegreeOfParallelism => _threads.Length + 1;
 
         /// <summary>
         /// Runs the provided <see cref="IParallelRunnable"/>.
@@ -92,7 +89,7 @@ namespace DefaultEcs.Threading
 
             _barrier?.StartWorkers();
 
-            runnable.Run(_tasks.Length, _tasks.Length);
+            runnable.Run(_threads.Length, _threads.Length);
 
             _barrier?.WaitForWorkers();
         }
@@ -110,7 +107,10 @@ namespace DefaultEcs.Threading
 
             _barrier?.StartWorkers();
 
-            Task.WaitAll(_tasks);
+            foreach (DefaultThread thread in _threads)
+            {
+                thread.Wait();
+            }
 
             _barrier?.Dispose();
             _disposeHandle.Dispose();
