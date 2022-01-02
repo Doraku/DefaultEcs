@@ -50,6 +50,21 @@ namespace DefaultEcs.Test.Command
         }
 
         [Fact]
+        public void Set_Should_set_world_component()
+        {
+            using EntityCommandRecorder recorder = new(1024);
+            using World world = new();
+
+            WorldRecord record = recorder.Record(world);
+
+            record.Set(42);
+
+            recorder.Execute();
+
+            Check.That(world.Get<int>()).IsEqualTo(42);
+        }
+
+        [Fact]
         public void Set_Should_set_blittable_component_on_world()
         {
             using EntityCommandRecorder recorder = new(1024);

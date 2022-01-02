@@ -1,0 +1,3 @@
+## Fixes
+
+- fixed WorldRecord.Set (#148)

@@ -28,7 +28,7 @@ namespace DefaultEcs.Internal.Command
                         case CommandType.WorldSet:
                             WorldCommand* worldCommand = (WorldCommand*)commands;
                             commandSize = sizeof(WorldCommand);
-                            commandSize += ComponentCommands.GetCommand(worldCommand->ComponentIndex).Set(World.Worlds[worldCommand->WorldId], objects, commands + sizeof(EntityOffsetComponentCommand));
+                            commandSize += ComponentCommands.GetCommand(worldCommand->ComponentIndex).Set(World.Worlds[worldCommand->WorldId], objects, commands + sizeof(WorldCommand));
                             break;
 
                         case CommandType.WorldRemove:
