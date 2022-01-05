@@ -1,5 +1,6 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
+using DefaultEcs.EntityActionSystem;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
 
@@ -96,6 +97,8 @@ namespace DefaultEcs.Benchmark.Performance
         private DefaultEcsComponentSystem _defaultComponentMultiSystem;
         private DefaultEcsGeneratorSystem _defaultGeneratorSystem;
         private DefaultEcsGeneratorSystem _defaultGeneratorMultiSystem;
+        private ISystem<int> _defaultEntityActionSystem;
+        private ISystem<int> _defaultComponentActionSystem;
 
         [Params(100000)]
         public int EntityCount { get; set; }
@@ -114,6 +117,10 @@ namespace DefaultEcs.Benchmark.Performance
             _defaultComponentMultiSystem = new DefaultEcsComponentSystem(_defaultWorld, _defaultRunner);
             _defaultGeneratorSystem = new DefaultEcsGeneratorSystem(_defaultWorld);
             _defaultGeneratorMultiSystem = new DefaultEcsGeneratorSystem(_defaultWorld, _defaultRunner);
+            _defaultEntityActionSystem = _defaultWorld.GetEntities().AsSystem(
+                (int _, Entity entity) => ++entity.Get<DefaultComponent>().Value);
+            _defaultComponentActionSystem = _defaultWorld.GetEntities().AsSystem(
+                (int _, ref DefaultComponent component) => ++component.Value);
 
             for (int i = 0; i < EntityCount; ++i)
             {
@@ -170,5 +177,11 @@ namespace DefaultEcs.Benchmark.Performance
 
         [Benchmark]
         public void DefaultEcs_GeneratorMultiSystem() => _defaultGeneratorMultiSystem.Update(42);
+
+        [Benchmark]
+        public void DefaultEcs_EntityActionSystem() => _defaultEntityActionSystem.Update(42);
+
+        [Benchmark]
+        public void DefaultEcs_ComponentActionSystem() => _defaultComponentActionSystem.Update(42);
     }
 }
