@@ -2,3 +2,4 @@
 
 - fixed WorldRecord.Set (#148)
 - fixed previous component value retrieval when a component is removed during a added/changed callback (#146)
+- fixed World.Optimize breaking the component references when entities share a component (#156 thanks to @iHell)

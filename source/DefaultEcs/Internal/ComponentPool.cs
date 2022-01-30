@@ -336,11 +336,11 @@ namespace DefaultEcs.Internal
                     {
                         for (int i = 0; i < _mapping.Length; ++i)
                         {
-                            if (_mapping[i] == minEntityId)
+                            if (_mapping[i] == minIndex)
                             {
                                 _mapping[i] = _sortedIndex;
                             }
-                            else if (_mapping[i] == tempLink.EntityId)
+                            else if (_mapping[i] == _sortedIndex)
                             {
                                 _mapping[i] = minIndex;
                             }

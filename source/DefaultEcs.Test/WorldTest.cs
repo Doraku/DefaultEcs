@@ -352,6 +352,26 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void Optimize_Should_sort_entities_sharing_components()
+        {
+            using World world = new();
+
+            Entity entity1 = world.CreateEntity();
+            Entity entity2 = world.CreateEntity();
+            Entity entity3 = world.CreateEntity();
+
+            entity3.Set("kikoo");
+            entity2.Set("lol");
+            entity1.SetSameAs<string>(entity2);
+
+            world.Optimize();
+
+            Check.That(entity1.Get<string>()).IsEqualTo("lol");
+            Check.That(entity2.Get<string>()).IsEqualTo("lol");
+            Check.That(entity3.Get<string>()).IsEqualTo("kikoo");
+        }
+
+        [Fact]
         public void SubscribeWorldDisposed_Should_throw_When_action_is_null()
         {
             using World world = new();
