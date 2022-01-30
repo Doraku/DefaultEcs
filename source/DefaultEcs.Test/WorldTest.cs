@@ -526,6 +526,17 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void SubscribeComponentAdded_Should_not_thow_When_removing_component()
+        {
+            using World world = new();
+            Entity entity = world.CreateEntity();
+            using IDisposable subscription1 = world.SubscribeComponentChanged((in Entity _, in bool _, in bool _) => { });
+            using IDisposable subscription2 = world.SubscribeComponentAdded((in Entity e, in bool _) => e.Remove<bool>());
+
+            Check.ThatCode(() => entity.Set(true)).DoesNotThrow();
+        }
+
+        [Fact]
         public void SubscribeComponentEnabled_Should_call_handler_When_component_enabled()
         {
             using World world = new();

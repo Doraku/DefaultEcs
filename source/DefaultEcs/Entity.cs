@@ -2,10 +2,10 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using DefaultEcs.Serialization;
 using DefaultEcs.Internal;
 using DefaultEcs.Internal.Debug;
 using DefaultEcs.Internal.Message;
+using DefaultEcs.Serialization;
 
 namespace DefaultEcs
 {
@@ -76,6 +76,13 @@ namespace DefaultEcs
         private void InnerSet<T>(bool isNew)
         {
             ref ComponentEnum components = ref Components;
+            T component = default;
+            ComponentPool<T> previousPool = ComponentManager<T>.GetPrevious(WorldId);
+            if (previousPool != null)
+            {
+                component = Get<T>();
+            }
+
             if (isNew)
             {
                 components[ComponentManager<T>.Flag] = true;
@@ -86,7 +93,7 @@ namespace DefaultEcs
                 Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
             }
 
-            ComponentManager<T>.GetPrevious(WorldId)?.Set(EntityId, Get<T>());
+            previousPool?.Set(EntityId, component);
         }
 
         /// <summary>
