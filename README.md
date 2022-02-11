@@ -669,7 +669,7 @@ When needed, an expandable EntityCommandRecorder will double its capacity so it 
 
 ```csharp
 // Create a new Entity defered and give an EntityRecord to record commands on it
-EntityRecord newRecord = recorder.CreateEntity();
+EntityRecord newRecord = recorder.Record(world).CreateEntity();
 
 // Register an Entity and give an EntityRecord to record commands on it
 EntityRecord record = recorder.Record(entity);
@@ -678,7 +678,7 @@ EntityRecord record = recorder.Record(entity);
 newRecord.Set<bool>(true);
 
 // To execute all recorded commands
-recorder.Execute(world);
+recorder.Execute();
 ```
 
 <a name='Overview_Serialization'></a>
