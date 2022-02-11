@@ -4,7 +4,7 @@
 Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') class with the given [World](World.md 'DefaultEcs.World').  
 To create the inner [EntitySet](EntitySet.md 'DefaultEcs.EntitySet'), [WithAttribute](WithAttribute.md 'DefaultEcs.System.WithAttribute') and [WithoutAttribute](WithoutAttribute.md 'DefaultEcs.System.WithoutAttribute') attributes will be used.  
 ```csharp
-protected AEntitySetSystem(DefaultEcs.World world, bool useBuffer);
+protected AEntitySetSystem(DefaultEcs.World world, bool useBuffer=false);
 ```
 #### Parameters
 <a name='DefaultEcs_System_AEntitySetSystem_T__AEntitySetSystem(DefaultEcs_World_bool)_world'></a>

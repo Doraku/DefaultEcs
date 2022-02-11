@@ -2,6 +2,7 @@
 ### [DefaultEcs.System](DefaultEcs.md#DefaultEcs_System 'DefaultEcs.System').[ActionSystem&lt;T&gt;](ActionSystem_T_.md 'DefaultEcs.System.ActionSystem&lt;T&gt;')
 ## ActionSystem&lt;T&gt;.Update(T) Method
 Updates the system once.  
+Does nothing if [IsEnabled](ISystem_T__IsEnabled.md 'DefaultEcs.System.ISystem&lt;T&gt;.IsEnabled') is false.  
 ```csharp
 public void Update(T state);
 ```

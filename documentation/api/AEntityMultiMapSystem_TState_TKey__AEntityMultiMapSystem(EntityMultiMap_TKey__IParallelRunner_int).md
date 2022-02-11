@@ -3,7 +3,7 @@
 ## AEntityMultiMapSystem&lt;TState,TKey&gt;.AEntityMultiMapSystem(EntityMultiMap&lt;TKey&gt;, IParallelRunner, int) Constructor
 Initialise a new instance of the [AEntityMultiMapSystem&lt;TState,TKey&gt;](AEntityMultiMapSystem_TState_TKey_.md 'DefaultEcs.System.AEntityMultiMapSystem&lt;TState,TKey&gt;') class with the given [EntityMultiMap&lt;TKey&gt;](EntityMultiMap_TKey_.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;') and [IParallelRunner](IParallelRunner.md 'DefaultEcs.Threading.IParallelRunner').  
 ```csharp
-protected AEntityMultiMapSystem(DefaultEcs.EntityMultiMap<TKey> map, DefaultEcs.Threading.IParallelRunner runner, int minEntityCountByRunnerIndex);
+protected AEntityMultiMapSystem(DefaultEcs.EntityMultiMap<TKey> map, DefaultEcs.Threading.IParallelRunner runner, int minEntityCountByRunnerIndex=0);
 ```
 #### Parameters
 <a name='DefaultEcs_System_AEntityMultiMapSystem_TState_TKey__AEntityMultiMapSystem(DefaultEcs_EntityMultiMap_TKey__DefaultEcs_Threading_IParallelRunner_int)_map'></a>

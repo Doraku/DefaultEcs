@@ -3,7 +3,7 @@
 ## AEntitySortedSetSystem&lt;TState,TComponent&gt;.AEntitySortedSetSystem(EntitySortedSet&lt;TComponent&gt;, bool) Constructor
 Initialise a new instance of the [AEntitySortedSetSystem&lt;TState,TComponent&gt;](AEntitySortedSetSystem_TState_TComponent_.md 'DefaultEcs.System.AEntitySortedSetSystem&lt;TState,TComponent&gt;') class with the given [EntitySortedSet&lt;TComponent&gt;](EntitySortedSet_TComponent_.md 'DefaultEcs.EntitySortedSet&lt;TComponent&gt;').  
 ```csharp
-protected AEntitySortedSetSystem(DefaultEcs.EntitySortedSet<TComponent> sortedSet, bool useBuffer);
+protected AEntitySortedSetSystem(DefaultEcs.EntitySortedSet<TComponent> sortedSet, bool useBuffer=false);
 ```
 #### Parameters
 <a name='DefaultEcs_System_AEntitySortedSetSystem_TState_TComponent__AEntitySortedSetSystem(DefaultEcs_EntitySortedSet_TComponent__bool)_sortedSet'></a>

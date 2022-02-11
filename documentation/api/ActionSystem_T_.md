@@ -23,9 +23,9 @@ Implements [DefaultEcs.System.ISystem&lt;](ISystem_T_.md 'DefaultEcs.System.ISys
 
 | Properties | |
 | :--- | :--- |
-| [IsEnabled](ActionSystem_T__IsEnabled.md 'DefaultEcs.System.ActionSystem&lt;T&gt;.IsEnabled') | Gets or sets whether the current [ActionSystem&lt;T&gt;](ActionSystem_T_.md 'DefaultEcs.System.ActionSystem&lt;T&gt;') instance should update or not.<br/> |
+| [IsEnabled](ActionSystem_T__IsEnabled.md 'DefaultEcs.System.ActionSystem&lt;T&gt;.IsEnabled') | Gets or sets whether the current [ISystem&lt;T&gt;](ISystem_T_.md 'DefaultEcs.System.ISystem&lt;T&gt;') instance should update or not.<br/> |
 
 | Methods | |
 | :--- | :--- |
 | [Dispose()](ActionSystem_T__Dispose().md 'DefaultEcs.System.ActionSystem&lt;T&gt;.Dispose()') | Does nothing.<br/> |
-| [Update(T)](ActionSystem_T__Update(T).md 'DefaultEcs.System.ActionSystem&lt;T&gt;.Update(T)') | Updates the system once.<br/> |
+| [Update(T)](ActionSystem_T__Update(T).md 'DefaultEcs.System.ActionSystem&lt;T&gt;.Update(T)') | Updates the system once.<br/>Does nothing if [IsEnabled](ISystem_T__IsEnabled.md 'DefaultEcs.System.ISystem&lt;T&gt;.IsEnabled') is false.<br/> |

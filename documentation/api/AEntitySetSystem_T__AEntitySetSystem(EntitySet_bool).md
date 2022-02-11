@@ -3,7 +3,7 @@
 ## AEntitySetSystem&lt;T&gt;.AEntitySetSystem(EntitySet, bool) Constructor
 Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') class with the given [EntitySet](EntitySet.md 'DefaultEcs.EntitySet').  
 ```csharp
-protected AEntitySetSystem(DefaultEcs.EntitySet set, bool useBuffer);
+protected AEntitySetSystem(DefaultEcs.EntitySet set, bool useBuffer=false);
 ```
 #### Parameters
 <a name='DefaultEcs_System_AEntitySetSystem_T__AEntitySetSystem(DefaultEcs_EntitySet_bool)_set'></a>

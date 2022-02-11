@@ -3,7 +3,7 @@
 ## AEntityMultiMapSystem&lt;TState,TKey&gt;.AEntityMultiMapSystem(EntityMultiMap&lt;TKey&gt;, bool) Constructor
 Initialise a new instance of the [AEntityMultiMapSystem&lt;TState,TKey&gt;](AEntityMultiMapSystem_TState_TKey_.md 'DefaultEcs.System.AEntityMultiMapSystem&lt;TState,TKey&gt;') class with the given [EntityMultiMap&lt;TKey&gt;](EntityMultiMap_TKey_.md 'DefaultEcs.EntityMultiMap&lt;TKey&gt;').  
 ```csharp
-protected AEntityMultiMapSystem(DefaultEcs.EntityMultiMap<TKey> map, bool useBuffer);
+protected AEntityMultiMapSystem(DefaultEcs.EntityMultiMap<TKey> map, bool useBuffer=false);
 ```
 #### Parameters
 <a name='DefaultEcs_System_AEntityMultiMapSystem_TState_TKey__AEntityMultiMapSystem(DefaultEcs_EntityMultiMap_TKey__bool)_map'></a>
