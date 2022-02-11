@@ -4,6 +4,7 @@ namespace DefaultEcs
 {
     /// <summary>
     /// Provides a fast access to the components of type <typeparamref name="T"/>.
+    /// Note that all entity modification operations are not safe (anything different than a simple <see cref="Entity.Get{T}"/>) and may invalidate the <see cref="Components{T}"/>.
     /// </summary>
     /// <typeparam name="T">The type of the component.</typeparam>
     public readonly ref struct Components<T>
