@@ -668,8 +668,11 @@ Note that a fixed capacity EntityCommandRecorder (or one which has expanded to i
 When needed, an expandable EntityCommandRecorder will double its capacity so it is preferred to use a power of 2 as default capacity.
 
 ```csharp
+// Get a WorldRecord to record entity creation
+WorldRecord worldRecord = recorder.Record(world);
+
 // Create a new Entity defered and give an EntityRecord to record commands on it
-EntityRecord newRecord = recorder.Record(world).CreateEntity();
+EntityRecord newRecord = worldRecord.CreateEntity();
 
 // Register an Entity and give an EntityRecord to record commands on it
 EntityRecord record = recorder.Record(entity);
