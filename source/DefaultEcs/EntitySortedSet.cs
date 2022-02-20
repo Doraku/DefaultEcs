@@ -176,7 +176,7 @@ namespace DefaultEcs
                 ref int index = ref _mapping[entityId];
                 if (index != -1)
                 {
-                    int length = Count-- - index;
+                    int length = --Count - index;
 
                     if (length > 0)
                     {
