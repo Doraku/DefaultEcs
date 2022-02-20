@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 namespace DefaultBoids.System
 {
     [With(typeof(Velocity), typeof(DrawInfo))]
-    public sealed class SetBehaviorSystem : AEntityMultiMapSystem<float, GridId>
+    internal sealed class SetBehaviorSystem : AEntityMultiMapSystem<float, GridId>
     {
         private readonly EntityMap<GridId> _map;
         private readonly (Vector2 center, Vector2 direction, int count)[] _temp;

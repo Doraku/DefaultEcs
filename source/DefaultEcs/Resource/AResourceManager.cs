@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using DefaultEcs.Internal;
-using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs.Resource
 {
@@ -283,6 +282,8 @@ namespace DefaultEcs.Resource
                 yield return w.SubscribeComponentRemoved<ManagedResource<TInfo[], TResource>>(OnRemoved);
             }
 
+            world.CheckArgumentNullException(nameof(world));
+
             ComponentPool<ManagedResource<TInfo, TResource>> singleComponents = ComponentManager<ManagedResource<TInfo, TResource>>.Get(world.WorldId);
             if (singleComponents != null)
             {
@@ -315,7 +316,7 @@ namespace DefaultEcs.Resource
         {
             GC.SuppressFinalize(this);
 
-            foreach (var pair in _resources)
+            foreach (KeyValuePair<TInfo, Resource> pair in _resources)
             {
                 Unload(pair.Key, pair.Value.Value);
             }

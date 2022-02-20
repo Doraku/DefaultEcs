@@ -11,10 +11,10 @@ namespace DefaultEcs.Internal.Serialization.TextSerializer.ConverterAction
             where T : struct
         {
             return Enum.TryParse(
-#if NETSTANDARD1_1 || NETSTANDARD2_0
-                reader.Read(),
-#else
+#if NETSTANDARD2_1_OR_GREATER
                 new string(reader.Read()),
+#else
+                reader.Read(),
 #endif
                 out T value) ? value : throw StreamReaderWrapper.GetException<T>();
         }

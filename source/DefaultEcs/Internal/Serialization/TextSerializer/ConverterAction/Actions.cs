@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if NETSTANDARD2_1_OR_GREATER
+using System;
+#endif
 
 namespace DefaultEcs.Internal.Serialization.TextSerializer.ConverterAction
 {
@@ -6,9 +8,9 @@ namespace DefaultEcs.Internal.Serialization.TextSerializer.ConverterAction
 
     internal delegate T ReadAction<out T>(StreamReaderWrapper reader);
 
-#if NETSTANDARD1_1 || NETSTANDARD2_0
-    internal delegate T Parse<T>(string value);
-#else
+#if NETSTANDARD2_1_OR_GREATER
     internal delegate T Parse<T>(ReadOnlySpan<char> input);
+#else
+    internal delegate T Parse<T>(string value);
 #endif
 }

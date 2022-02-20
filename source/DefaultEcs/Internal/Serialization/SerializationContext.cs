@@ -1,5 +1,4 @@
 ﻿using System;
-using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs.Internal.Serialization
 {

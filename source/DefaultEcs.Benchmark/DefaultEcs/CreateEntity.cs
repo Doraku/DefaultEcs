@@ -1,11 +1,12 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System;
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
     [MemoryDiagnoser]
     [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 1, targetCount: 10, invocationCount: 1000000)]
-    public class CreateEntity
+    public sealed class CreateEntity : IDisposable
     {
         private World _world;
 
@@ -16,7 +17,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [IterationCleanup]
-        public void Cleanup()
+        public void Dispose()
         {
             _world.Dispose();
         }

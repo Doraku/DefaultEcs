@@ -1,18 +1,20 @@
 ﻿using System;
+#if !NETSTANDARD2_1_OR_GREATER
 using System.Buffers;
-using System.Diagnostics.CodeAnalysis;
+#endif
 using System.IO;
 using System.Runtime.CompilerServices;
+#if !NETSTANDARD2_1_OR_GREATER
 using System.Runtime.InteropServices;
+#endif
 using DefaultEcs.Serialization;
-using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs.Internal.Serialization.BinarySerializer
 {
-    internal unsafe readonly struct StreamWriterWrapper : IDisposable
+    internal readonly unsafe struct StreamWriterWrapper : IDisposable
     {
         private readonly Stream _stream;
-#if NETSTANDARD1_1 || NETSTANDARD2_0
+#if !NETSTANDARD2_1_OR_GREATER
         private readonly byte[] _buffer;
 #endif
 
@@ -21,14 +23,14 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
         public StreamWriterWrapper(Stream stream, BinarySerializationContext context)
         {
             _stream = stream;
-#if NETSTANDARD1_1 || NETSTANDARD2_0
+#if !NETSTANDARD2_1_OR_GREATER
             _buffer = ArrayPool<byte>.Shared.Rent(4096);
 #endif
 
             Context = context;
         }
 
-#if NETSTANDARD1_1 || NETSTANDARD2_0
+#if !NETSTANDARD2_1_OR_GREATER
         private void Write(ReadOnlySpan<byte> bytes)
         {
             int byteToWrite = bytes.Length;
@@ -52,10 +54,10 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
             {
                 fixed (char* valueP = value)
                 {
-#if NETSTANDARD1_1 || NETSTANDARD2_0
-                    Write(new ReadOnlySpan<byte>(valueP, value.Length * sizeof(char)));
-#else
+#if NETSTANDARD2_1_OR_GREATER
                     _stream.Write(new ReadOnlySpan<byte>(valueP, value.Length * sizeof(char)));
+#else
+                    Write(new ReadOnlySpan<byte>(valueP, value.Length * sizeof(char)));
 #endif
                 }
             }
@@ -66,10 +68,10 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
         {
             fixed (T* valueP = &value)
             {
-#if NETSTANDARD1_1 || NETSTANDARD2_0
-                Write(new ReadOnlySpan<byte>(valueP, sizeof(T)));
-#else
+#if NETSTANDARD2_1_OR_GREATER
                 _stream.Write(new ReadOnlySpan<byte>(valueP, sizeof(T)));
+#else
+                Write(new ReadOnlySpan<byte>(valueP, sizeof(T)));
 #endif
             }
         }
@@ -82,10 +84,10 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
             {
                 fixed (T* valueP = value)
                 {
-#if NETSTANDARD1_1 || NETSTANDARD2_0
-                    Write(new ReadOnlySpan<byte>(valueP, value.Length * sizeof(T)));
-#else
+#if NETSTANDARD2_1_OR_GREATER
                     _stream.Write(new ReadOnlySpan<byte>(valueP, value.Length * sizeof(T)));
+#else
+                    Write(new ReadOnlySpan<byte>(valueP, value.Length * sizeof(T)));
 #endif
                 }
             }
@@ -134,7 +136,7 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
 
         public void Dispose()
         {
-#if NETSTANDARD1_1 || NETSTANDARD2_0
+#if !NETSTANDARD2_1_OR_GREATER
             ArrayPool<byte>.Shared.Return(_buffer);
 #endif
         }
@@ -142,21 +144,23 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
         #endregion
     }
 
-    internal unsafe readonly ref struct StreamReaderWrapper
+    internal readonly unsafe ref struct StreamReaderWrapper
     {
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed")]
         private readonly Stream _stream;
-#if NETSTANDARD1_1 || NETSTANDARD2_0
+#if !NETSTANDARD2_1_OR_GREATER
         private readonly byte[] _buffer;
         private readonly GCHandle _handle;
         private readonly byte* _bufferP;
 #endif
 
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed")]
         public readonly BinarySerializationContext Context;
 
         public StreamReaderWrapper(Stream stream, BinarySerializationContext context)
         {
             _stream = stream;
-#if NETSTANDARD1_1 || NETSTANDARD2_0
+#if !NETSTANDARD2_1_OR_GREATER
             _buffer = ArrayPool<byte>.Shared.Rent(4096);
             _handle = GCHandle.Alloc(_buffer, GCHandleType.Pinned);
             _bufferP = (byte*)_handle.AddrOfPinnedObject().ToPointer();
@@ -180,7 +184,18 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
             int stringLength = Read<int>();
             if (stringLength > 0)
             {
-#if NETSTANDARD1_1 || NETSTANDARD2_0
+#if NETSTANDARD2_1_OR_GREATER
+                value = string.Create(stringLength, _stream, (buffer, stream) =>
+                {
+                    fixed (char* bufferP = buffer)
+                    {
+                        if (stream.Read(new Span<byte>(bufferP, buffer.Length * sizeof(char))) != buffer.Length * sizeof(char))
+                        {
+                            Throw<string>();
+                        }
+                    }
+                });
+#else
                 int byteToRead = stringLength * sizeof(char);
                 if (byteToRead <= _buffer.Length)
                 {
@@ -204,17 +219,6 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
                         value = new string((char*)valueP, 0, stringLength);
                     }
                 }
-#else
-                value = string.Create(stringLength, _stream, (buffer, stream) =>
-                {
-                    fixed (char* bufferP = buffer)
-                    {
-                        if (stream.Read(new Span<byte>(bufferP, buffer.Length * sizeof(char))) != buffer.Length * sizeof(char))
-                        {
-                            Throw<string>();
-                        }
-                    }
-                });
 #endif
             }
 
@@ -224,7 +228,15 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
         public T Read<T>()
             where T : unmanaged
         {
-#if NETSTANDARD1_1 || NETSTANDARD2_0
+#if NETSTANDARD2_1_OR_GREATER
+            T value = default;
+            if (_stream.Read(new Span<byte>(&value, sizeof(T))) != sizeof(T))
+            {
+                Throw<T>();
+            }
+
+            return value;
+#else
             if (sizeof(T) <= _buffer.Length)
             {
                 if (_stream.Read(_buffer, 0, sizeof(T)) != sizeof(T))
@@ -245,14 +257,6 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
             {
                 return *(T*)valueP;
             }
-#else
-            T value = default;
-            if (_stream.Read(new Span<byte>(&value, sizeof(T))) != sizeof(T))
-            {
-                Throw<T>();
-            }
-
-            return value;
 #endif
         }
 
@@ -266,12 +270,7 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
             }
 
             T[] values = new T[length];
-#if NETSTANDARD1_1 || NETSTANDARD2_0
-            for (int i = 0; i < values.Length; ++i)
-            {
-                values[i] = Read<T>();
-            }
-#else
+#if NETSTANDARD2_1_OR_GREATER
             length *= sizeof(T);
             fixed (T* valueP = values)
             {
@@ -279,6 +278,11 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
                 {
                     Throw<T[]>();
                 }
+            }
+#else
+            for (int i = 0; i < values.Length; ++i)
+            {
+                values[i] = Read<T>();
             }
 #endif
 
@@ -295,12 +299,12 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
 
         #region IDisposable
 
-#if NETSTANDARD2_1
-        [SuppressMessage("Performance", "CA1822")]
+#if NETSTANDARD2_1_OR_GREATER
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822")]
 #endif
         public void Dispose()
         {
-#if NETSTANDARD1_1 || NETSTANDARD2_0
+#if !NETSTANDARD2_1_OR_GREATER
             if (_handle.IsAllocated)
             {
                 _handle.Free();

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBoids.Component
 {
-    public readonly struct GridId : IEquatable<GridId>
+    internal readonly struct GridId : IEquatable<GridId>
     {
         public readonly int X;
         public readonly int Y;
@@ -30,7 +30,7 @@ namespace DefaultBoids.Component
         public static bool operator !=(GridId left, GridId right) => !(left == right);
     }
 
-    public static class GridIdExtension
+    internal static class GridIdExtension
     {
         private const int _width = (int)(DefaultGame.ResolutionWidth / DefaultGame.NeighborRange * 3);
         private const int _height = (int)(DefaultGame.ResolutionHeight / DefaultGame.NeighborRange * 3);

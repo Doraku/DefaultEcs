@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DefaultEcs.Internal.Debug
+namespace DefaultEcs.Internal.Diagnostics
 {
     internal interface IComponent
     {

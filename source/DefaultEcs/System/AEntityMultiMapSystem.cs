@@ -2,7 +2,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Reflection;
-using DefaultEcs.Internal.Helper;
+using DefaultEcs.Internal;
 using DefaultEcs.Internal.System;
 using DefaultEcs.Threading;
 
@@ -338,9 +338,9 @@ namespace DefaultEcs.System
         /// </summary>
         public virtual void Dispose()
         {
-            GC.SuppressFinalize(this);
-
             MultiMap.Dispose();
+
+            GC.SuppressFinalize(this);
         }
 
         #endregion

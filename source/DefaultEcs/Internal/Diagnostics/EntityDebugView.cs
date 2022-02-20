@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using DefaultEcs.Serialization;
 
-namespace DefaultEcs.Internal.Debug
+namespace DefaultEcs.Internal.Diagnostics
 {
     internal sealed class EntityDebugView
     {
@@ -52,7 +52,7 @@ namespace DefaultEcs.Internal.Debug
 
             entity.ReadAllComponents(new DebugComponentReader(_entity, _components));
 
-            _components.Sort((o1, o2) => string.Compare(o1.Type.FullName, o2.Type.FullName));
+            _components.Sort((o1, o2) => string.CompareOrdinal(o1.Type.FullName, o2.Type.FullName));
         }
     }
 }

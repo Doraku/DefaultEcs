@@ -100,7 +100,7 @@ namespace DefaultEcs.Test
 
             entity.Set(42);
 
-            using IEnumerator<int> enumerator = (map.Keys as IEnumerable<int>)?.GetEnumerator();
+            using IEnumerator<int> enumerator = ((IEnumerable<int>)map.Keys).GetEnumerator();
 
             Check.That(enumerator.MoveNext()).IsTrue();
             Check.That(enumerator.Current).IsEqualTo(42);

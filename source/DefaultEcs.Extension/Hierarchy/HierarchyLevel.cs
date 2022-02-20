@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace DefaultEcs.Hierarchy
 {
-    [SuppressMessage("Usage", "CA2231:Overload operator equals on overriding value type Equals")]
+    [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2231:Overload operator equals on overriding value type Equals")]
+    [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1036:Override methods on comparable types")]
+    [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1066:Implement IEquatable when overriding Object.Equals")]
+    [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1241:Implement non-generic counterpart.")]
     public readonly struct HierarchyLevel : IComparable<HierarchyLevel>
     {
         public readonly int Value;

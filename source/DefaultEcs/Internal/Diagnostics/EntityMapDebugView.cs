@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 
-namespace DefaultEcs.Internal.Debug
+namespace DefaultEcs.Internal.Diagnostics
 {
     internal sealed class EntityMapDebugView<TKey>
     {

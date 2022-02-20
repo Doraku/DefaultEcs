@@ -6,7 +6,7 @@ using DefaultEcs.Threading;
 
 namespace DefaultBoids.System
 {
-    public sealed class ResetBehaviorSystem : AComponentSystem<float, Behavior>
+    internal sealed class ResetBehaviorSystem : AComponentSystem<float, Behavior>
     {
         public ResetBehaviorSystem(World world)
             : base(world, world.Get<IParallelRunner>())

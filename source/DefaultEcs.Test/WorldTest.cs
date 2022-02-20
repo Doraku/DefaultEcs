@@ -215,7 +215,7 @@ namespace DefaultEcs.Test
 
             Check.That(world as IEnumerable).ContainsExactly(entities);
 
-            using IEnumerator<Entity> enumerator = (world as IEnumerable<Entity>)?.GetEnumerator();
+            using IEnumerator<Entity> enumerator = ((IEnumerable<Entity>)world).GetEnumerator();
 
             Check.That(enumerator.MoveNext()).IsTrue();
             Check.That(enumerator.Current).IsEqualTo(entities[0]);

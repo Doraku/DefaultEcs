@@ -6,7 +6,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 {
     [MemoryDiagnoser]
     [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 1, targetCount: 10, invocationCount: 1000)]
-    public class EntitySetEnumeration
+    public sealed class EntitySetEnumeration : IDisposable
     {
         private World _world;
         private EntitySet _set;
@@ -28,7 +28,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [IterationCleanup]
-        public void Cleanup()
+        public void Dispose()
         {
             _set.Dispose();
             _world.Dispose();

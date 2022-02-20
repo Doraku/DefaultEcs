@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 
@@ -6,7 +7,7 @@ namespace DefaultEcs.Benchmark.Message
 {
     [MemoryDiagnoser]
     [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 1, targetCount: 10, invocationCount: 100000000)]
-    public class Publish
+    public sealed class Publish : IDisposable
     {
         private int _temp;
         private World _world;
@@ -26,7 +27,7 @@ namespace DefaultEcs.Benchmark.Message
         }
 
         [IterationCleanup]
-        public void Cleanup()
+        public void Dispose()
         {
             _world.Dispose();
         }

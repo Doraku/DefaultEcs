@@ -4,9 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DefaultEcs.Internal;
-using DefaultEcs.Internal.Debug;
-using DefaultEcs.Internal.Helper;
-using DefaultEcs.Internal.Message;
+using DefaultEcs.Internal.Diagnostics;
+using DefaultEcs.Internal.Messages;
 
 namespace DefaultEcs
 {

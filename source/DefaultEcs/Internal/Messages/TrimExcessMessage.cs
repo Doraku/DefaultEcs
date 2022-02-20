@@ -1,4 +1,4 @@
-﻿namespace DefaultEcs.Internal.Message
+﻿namespace DefaultEcs.Internal.Messages
 {
     internal readonly struct TrimExcessMessage
     { }

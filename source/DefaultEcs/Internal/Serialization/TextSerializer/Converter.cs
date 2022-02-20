@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Reflection;
-using DefaultEcs.Serialization;
-using DefaultEcs.Internal.Helper;
 using DefaultEcs.Internal.Serialization.TextSerializer.ConverterAction;
+using DefaultEcs.Serialization;
 
 namespace DefaultEcs.Internal.Serialization.TextSerializer
 {
@@ -114,6 +114,7 @@ namespace DefaultEcs.Internal.Serialization.TextSerializer
 
         #region Initialisation
 
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "CA1508:Avoid dead conditional code", Justification = "false positif")]
         static Converter()
         {
             IsSealed = typeof(T).GetTypeInfo().IsSealed || typeof(T) == typeof(Type);
@@ -128,17 +129,17 @@ namespace DefaultEcs.Internal.Serialization.TextSerializer
                 Type type when type.IsEnum() => EnumConverter.GetActions<T>(),
                 Type type when type == typeof(char) => GetActions((StreamWriterWrapper w, in char v) => w.Stream.WriteLine(v), s => s[0]),
                 Type type when type == typeof(bool) => GetActions((StreamWriterWrapper w, in bool v) => w.Stream.WriteLine(v), bool.Parse),
-                Type type when type == typeof(sbyte) => GetActions((StreamWriterWrapper w, in sbyte v) => w.Stream.WriteLine(v), i => sbyte.Parse(i)),
-                Type type when type == typeof(byte) => GetActions((StreamWriterWrapper w, in byte v) => w.Stream.WriteLine(v), i => byte.Parse(i)),
-                Type type when type == typeof(short) => GetActions((StreamWriterWrapper w, in short v) => w.Stream.WriteLine(v), i => short.Parse(i)),
-                Type type when type == typeof(ushort) => GetActions((StreamWriterWrapper w, in ushort v) => w.Stream.WriteLine(v), i => ushort.Parse(i)),
-                Type type when type == typeof(int) => GetActions((StreamWriterWrapper w, in int v) => w.Stream.WriteLine(v), i => int.Parse(i)),
-                Type type when type == typeof(uint) => GetActions((StreamWriterWrapper w, in uint v) => w.Stream.WriteLine(v), i => uint.Parse(i)),
-                Type type when type == typeof(long) => GetActions((StreamWriterWrapper w, in long v) => w.Stream.WriteLine(v), i => long.Parse(i)),
-                Type type when type == typeof(ulong) => GetActions((StreamWriterWrapper w, in ulong v) => w.Stream.WriteLine(v), i => ulong.Parse(i)),
-                Type type when type == typeof(decimal) => GetActions((StreamWriterWrapper w, in decimal v) => w.Stream.WriteLine(v), i => decimal.Parse(i)),
-                Type type when type == typeof(double) => GetActions((StreamWriterWrapper w, in double v) => w.Stream.WriteLine(v), i => double.Parse(i)),
-                Type type when type == typeof(float) => GetActions((StreamWriterWrapper w, in float v) => w.Stream.WriteLine(v), i => float.Parse(i)),
+                Type type when type == typeof(sbyte) => GetActions((StreamWriterWrapper w, in sbyte v) => w.Stream.WriteLine(v), i => sbyte.Parse(i, provider: CultureInfo.InvariantCulture)),
+                Type type when type == typeof(byte) => GetActions((StreamWriterWrapper w, in byte v) => w.Stream.WriteLine(v), i => byte.Parse(i, provider: CultureInfo.InvariantCulture)),
+                Type type when type == typeof(short) => GetActions((StreamWriterWrapper w, in short v) => w.Stream.WriteLine(v), i => short.Parse(i, provider: CultureInfo.InvariantCulture)),
+                Type type when type == typeof(ushort) => GetActions((StreamWriterWrapper w, in ushort v) => w.Stream.WriteLine(v), i => ushort.Parse(i, provider: CultureInfo.InvariantCulture)),
+                Type type when type == typeof(int) => GetActions((StreamWriterWrapper w, in int v) => w.Stream.WriteLine(v), i => int.Parse(i, provider: CultureInfo.InvariantCulture)),
+                Type type when type == typeof(uint) => GetActions((StreamWriterWrapper w, in uint v) => w.Stream.WriteLine(v), i => uint.Parse(i, provider: CultureInfo.InvariantCulture)),
+                Type type when type == typeof(long) => GetActions((StreamWriterWrapper w, in long v) => w.Stream.WriteLine(v), i => long.Parse(i, provider: CultureInfo.InvariantCulture)),
+                Type type when type == typeof(ulong) => GetActions((StreamWriterWrapper w, in ulong v) => w.Stream.WriteLine(v), i => ulong.Parse(i, provider: CultureInfo.InvariantCulture)),
+                Type type when type == typeof(decimal) => GetActions((StreamWriterWrapper w, in decimal v) => w.Stream.WriteLine(v), i => decimal.Parse(i, provider: CultureInfo.InvariantCulture)),
+                Type type when type == typeof(double) => GetActions((StreamWriterWrapper w, in double v) => w.Stream.WriteLine(v), i => double.Parse(i, provider: CultureInfo.InvariantCulture)),
+                Type type when type == typeof(float) => GetActions((StreamWriterWrapper w, in float v) => w.Stream.WriteLine(v), i => float.Parse(i, provider: CultureInfo.InvariantCulture)),
                 Type type when type == typeof(string) => StringConverter.GetActions<T>(),
                 Type type when type == typeof(Guid) => GuidConverter.GetActions<T>(),
                 _ => ObjectConverter<T>.GetActions()

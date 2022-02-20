@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using DefaultEcs.Serialization;
-using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs.Internal.Serialization.TextSerializer
 {

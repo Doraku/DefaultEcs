@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using DefaultEcs.Internal.Helper;
-using DefaultEcs.Internal.Message;
+using DefaultEcs.Internal.Messages;
 
 namespace DefaultEcs.Internal
 {

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace DefaultEcs.Internal.Debug
+namespace DefaultEcs.Internal.Diagnostics
 {
     internal sealed class EntitySortedSetDebugView<TComponent>
     {

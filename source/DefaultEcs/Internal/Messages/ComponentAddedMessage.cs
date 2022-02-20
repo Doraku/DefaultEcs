@@ -1,11 +1,11 @@
-﻿namespace DefaultEcs.Internal.Message
+﻿namespace DefaultEcs.Internal.Messages
 {
-    internal readonly struct ComponentDisabledMessage<T>
+    internal readonly struct ComponentAddedMessage<T>
     {
         public readonly int EntityId;
         public readonly ComponentEnum Components;
 
-        public ComponentDisabledMessage(int entityId, ComponentEnum components)
+        public ComponentAddedMessage(int entityId, ComponentEnum components)
         {
             EntityId = entityId;
             Components = components;

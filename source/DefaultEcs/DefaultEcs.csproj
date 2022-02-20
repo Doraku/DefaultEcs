@@ -1,69 +1,69 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup Label="Compilation">
-    <TargetFrameworks>
-      netstandard1.1;
-      netstandard2.0;
-      netstandard2.1;
-    </TargetFrameworks>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
-    <DefaultDocumentationAssemblyPageName>DefaultEcs</DefaultDocumentationAssemblyPageName>
-    <DefaultDocumentationFileNameMode>Name</DefaultDocumentationFileNameMode>
-    <DefaultDocumentationGeneratedPages>Assembly, Types, Members</DefaultDocumentationGeneratedPages>
-  </PropertyGroup>
+	<PropertyGroup Label="Compilation">
+		<TargetFrameworks>
+			netstandard1.1;
+			netstandard2.0;
+			netstandard2.1;
+		</TargetFrameworks>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<DefaultDocumentationFolder>..\..\documentation\api</DefaultDocumentationFolder>
+		<DefaultDocumentationAssemblyPageName>DefaultEcs</DefaultDocumentationAssemblyPageName>
+		<DefaultDocumentationFileNameMode>Name</DefaultDocumentationFileNameMode>
+		<DefaultDocumentationGeneratedPages>Assembly, Types, Members</DefaultDocumentationGeneratedPages>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\image\logo.png" Pack="true" PackagePath="\" Visible="false" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\image\logo.png" Pack="true" PackagePath="\" Visible="false" />
+	</ItemGroup>
 
-  <ItemGroup Label="Reference" Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-  </ItemGroup>
-  <ItemGroup Label="Reference" Condition="'$(TargetFramework)'=='netstandard1.1' Or '$(TargetFramework)'=='netstandard2.0'">
-    <PackageReference Include="System.Memory" Version="4.5.4" />
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="DefaultDocumentation" Version="0.7.9" PrivateAssets="all" Condition="'$(GITHUB_ACTIONS)' == 'true' AND '$(TEST)' != 'true' AND '$(CI_VERSION)' != 'true'" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.0" PrivateAssets="All" />
-  </ItemGroup>
+	<ItemGroup Label="Reference" Condition="'$(TargetFramework)'=='netstandard1.1'">
+		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
+	</ItemGroup>
+	<ItemGroup Label="Reference" Condition="'$(TargetFramework)'=='netstandard1.1' Or '$(TargetFramework)'=='netstandard2.0'">
+		<PackageReference Include="System.Memory" Version="4.5.4" />
+		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="DefaultDocumentation" Version="0.7.9" PrivateAssets="all" Condition="'$(GITHUB_ACTIONS)' == 'true' AND '$(TEST)' != 'true' AND '$(CI_VERSION)' != 'true'" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+	</ItemGroup>
 
-  <PropertyGroup Label="Package">
-    <Authors>Paillat Laszlo</Authors>
-    <AssemblyName>DefaultEcs</AssemblyName>
-    <AssemblyTitle>DefaultEcs</AssemblyTitle>
-    <PackageId>DefaultEcs</PackageId>
-    <Description>Entity Component System framework aiming for syntax and usage simplicity with maximum performance for game development.</Description>
-    <PackageIcon>logo.png</PackageIcon>
-    <PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
-    <PackageLicenseExpression>MIT-0</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/Doraku/DefaultEcs.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
-  </PropertyGroup>
+	<PropertyGroup Label="Package">
+		<Authors>Paillat Laszlo</Authors>
+		<AssemblyName>DefaultEcs</AssemblyName>
+		<AssemblyTitle>DefaultEcs</AssemblyTitle>
+		<PackageId>DefaultEcs</PackageId>
+		<Description>Entity Component System framework aiming for syntax and usage simplicity with maximum performance for game development.</Description>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageProjectUrl>https://github.com/Doraku/DefaultEcs</PackageProjectUrl>
+		<PackageLicenseExpression>MIT-0</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/Doraku/DefaultEcs.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>gamedev game-development game-engine ecs entity-component-system</PackageTags>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(LOCAL_VERSION)' == 'true'">
-    <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
-    <Version>0-local$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Version>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(LOCAL_VERSION)' == 'true'">
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\..\ds.snk</AssemblyOriginatorKeyFile>
+		<Version>0-local$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Version>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' AND '$(TEST)' != 'true'">
-    <SignAssembly>True</SignAssembly>
-    <IncludeSymbols Condition="'$(CI_VERSION)' != 'true'">true</IncludeSymbols>
-    <SymbolPackageFormat Condition="'$(CI_VERSION)' != 'true'">snupkg</SymbolPackageFormat>
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    <AssemblyOriginatorKeyFile>..\..\ds.snk</AssemblyOriginatorKeyFile>
-    <Version Condition="'$(CI_VERSION)' == 'true'">0-ci$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Version>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' AND '$(TEST)' != 'true'">
+		<SignAssembly>True</SignAssembly>
+		<IncludeSymbols Condition="'$(CI_VERSION)' != 'true'">true</IncludeSymbols>
+		<SymbolPackageFormat Condition="'$(CI_VERSION)' != 'true'">snupkg</SymbolPackageFormat>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<AssemblyOriginatorKeyFile>..\..\ds.snk</AssemblyOriginatorKeyFile>
+		<Version Condition="'$(CI_VERSION)' == 'true'">0-ci$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Version>
+	</PropertyGroup>
 
-  <Target Name="PreparePackageReleaseNotesFromFile" BeforeTargets="GenerateNuspec">
-    <ReadLinesFromFile File="../../documentation/NEXT_RELEASENOTES.txt">
-      <Output TaskParameter="Lines" ItemName="ReleaseNotesLines" />
-    </ReadLinesFromFile>
-    <PropertyGroup>
-      <PackageReleaseNotes>@(ReleaseNotesLines, '%0a')</PackageReleaseNotes>
-    </PropertyGroup>
-  </Target>
+	<Target Name="PreparePackageReleaseNotesFromFile" BeforeTargets="GenerateNuspec">
+		<ReadLinesFromFile File="../../documentation/NEXT_RELEASENOTES.txt">
+			<Output TaskParameter="Lines" ItemName="ReleaseNotesLines" />
+		</ReadLinesFromFile>
+		<PropertyGroup>
+			<PackageReleaseNotes>@(ReleaseNotesLines, '%0a')</PackageReleaseNotes>
+		</PropertyGroup>
+	</Target>
 </Project>

@@ -1,10 +1,11 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System;
+using BenchmarkDotNet.Attributes;
 using DefaultEcs.Command;
 
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
     [MemoryDiagnoser]
-    public class Recorder
+    public sealed class Recorder : IDisposable
     {
         private World _world;
         private Entity _entity;
@@ -21,8 +22,9 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [GlobalCleanup]
-        public void Cleanup()
+        public void Dispose()
         {
+            _recorder.Dispose();
             _set.Dispose();
             _world.Dispose();
         }

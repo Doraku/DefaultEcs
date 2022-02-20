@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using DefaultEcs.System;
 using NFluent;
 using Xunit;
@@ -25,12 +24,12 @@ namespace DefaultEcs.Test.System
             { }
 
             [WithPredicate]
-            [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
             private static bool BoolPredicate(in bool _) => true;
 
             [WithPredicate]
-            [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
-            [SuppressMessage("Performance", "CA1822")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822")]
             private bool IntPredicate(in int value) => value == 42;
 
             protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
@@ -43,8 +42,8 @@ namespace DefaultEcs.Test.System
             { }
 
             [WithPredicate]
-            [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
-            [SuppressMessage("Runtime Error", "DEA0002:WithPredicateAttribute used on an invalid method")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Runtime Error", "DEA0002:WithPredicateAttribute used on an invalid method")]
             private static void Predicate(in bool _)
             { }
 

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using DefaultEcs.Serialization;
@@ -18,18 +18,18 @@ namespace DefaultEcs.Test.Serialization
 
         private struct Test
         {
-            [SuppressMessage("Style", "IDE0044:Add readonly modifier")]
-            [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
-            [SuppressMessage("Design", "RCS1169:Make field read-only.")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "RCS1169:Make field read-only.")]
             private int _privateField;
-            [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
             private readonly int _privateReadOnlyField;
 
-            [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
-            [SuppressMessage("Design", "RCS1170:Use read-only auto-implemented property.")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "RCS1170:Use read-only auto-implemented property.")]
             private int PrivateProperty { get; set; }
 
-            [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
             private int PrivateReadOnlyProperty { get; }
 
             public int PublicField;
@@ -83,7 +83,7 @@ namespace DefaultEcs.Test.Serialization
             public override int GetHashCode() => Id;
         }
 
-        private struct InnerTest2
+        private struct InnerTest2 : IEquatable<InnerTest2>
         {
             public InnerClass C;
 
@@ -92,11 +92,9 @@ namespace DefaultEcs.Test.Serialization
                 C = c;
             }
 
-            public override bool Equals(object obj)
-            {
-                return obj is InnerTest2 t
-                    && C?.I == t.C?.I;
-            }
+            public bool Equals(InnerTest2 other) => C?.I == other.C?.I;
+
+            public override bool Equals(object obj) => obj is InnerTest2 t && Equals(t);
 
             public override int GetHashCode() => C?.I ?? 0;
         }
@@ -123,10 +121,10 @@ namespace DefaultEcs.Test.Serialization
             {
                 BinarySerializationContext binaryContext = new BinarySerializationContext()
                     .Marshal<uint, int>(v => (int)v)
-                    .Unmarshal<int, string>(v => v.ToString());
+                    .Unmarshal<int, string>(v => v.ToString(CultureInfo.InvariantCulture));
                 TextSerializationContext textContext = new TextSerializationContext()
                     .Marshal<uint, int>(v => (int)v)
-                    .Unmarshal<int, string>(v => v.ToString());
+                    .Unmarshal<int, string>(v => v.ToString(CultureInfo.InvariantCulture));
 
                 yield return new object[] { new BinarySerializer(binaryContext), binaryContext };
                 yield return new object[] { new TextSerializer(textContext), textContext };
@@ -222,20 +220,20 @@ namespace DefaultEcs.Test.Serialization
                 world.CreateEntity()
             };
             entities[0].Set<Int32>();
-            entities[0].Set<bool>(true);
+            entities[0].Set(true);
             entities[0].Set<sbyte>(13);
             entities[0].Set<byte>(7);
             entities[0].Set<short>(13);
             entities[0].Set<ushort>(7);
-            entities[0].Set<int>(13);
+            entities[0].Set(13);
             entities[0].Set<uint>(7);
             entities[0].Set<long>(13);
             entities[0].Set<ulong>(7);
-            entities[0].Set<char>('c');
-            entities[0].Set<decimal>(3.14m);
+            entities[0].Set('c');
+            entities[0].Set(3.14m);
             entities[0].Set<double>(1337);
             entities[0].Set<float>(-1);
-            entities[0].Set<string>("kikoo");
+            entities[0].Set("kikoo");
             entities[0].Set(new Test(666));
             entities[0].Set(new ClassTest { Id = 12345, Inner = new Test(66), Test = new InnerTest2() });
             entities[2].Set(new InnerTest { Lol = 313 });
@@ -340,20 +338,20 @@ namespace DefaultEcs.Test.Serialization
                 world.CreateEntity()
             };
             entities[0].Set<Int32>();
-            entities[0].Set<bool>(true);
+            entities[0].Set(true);
             entities[0].Set<sbyte>(13);
             entities[0].Set<byte>(7);
             entities[0].Set<short>(13);
             entities[0].Set<ushort>(7);
-            entities[0].Set<int>(13);
+            entities[0].Set(13);
             entities[0].Set<uint>(7);
             entities[0].Set<long>(13);
             entities[0].Set<ulong>(7);
-            entities[0].Set<char>('c');
-            entities[0].Set<decimal>(3.14m);
+            entities[0].Set('c');
+            entities[0].Set(3.14m);
             entities[0].Set<double>(1337);
             entities[0].Set<float>(-1);
-            entities[0].Set<string>("kikoo");
+            entities[0].Set("kikoo");
             entities[0].Set(new Test(666));
             entities[0].Set(new ClassTest { Id = 12345, Inner = new Test(66), Test = new InnerTest2() });
             entities[2].Set(new InnerTest { Lol = 313 });

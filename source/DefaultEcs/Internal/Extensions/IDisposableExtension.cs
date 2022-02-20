@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace DefaultEcs.Internal.Helper
+namespace System
 {
     internal static class IDisposableExtension
     {

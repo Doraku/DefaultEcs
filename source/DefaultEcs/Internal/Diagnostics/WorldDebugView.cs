@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using DefaultEcs.Serialization;
 
-namespace DefaultEcs.Internal.Debug
+namespace DefaultEcs.Internal.Diagnostics
 {
     internal sealed class WorldDebugView
     {
@@ -61,7 +61,7 @@ namespace DefaultEcs.Internal.Debug
 
             _world.ReadAllComponentTypes(new ComponentTypeReader(_world, _components));
 
-            _components.Sort((o1, o2) => string.Compare(o1.Type.FullName, o2.Type.FullName));
+            _components.Sort((o1, o2) => string.CompareOrdinal(o1.Type.FullName, o2.Type.FullName));
         }
     }
 }

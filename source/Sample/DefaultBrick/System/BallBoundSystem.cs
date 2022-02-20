@@ -5,7 +5,7 @@ using DefaultEcs.System;
 
 namespace DefaultBrick.System
 {
-    public sealed class BallBoundSystem : AEntitySetSystem<float>
+    internal sealed class BallBoundSystem : AEntitySetSystem<float>
     {
         public BallBoundSystem(World world)
             : base(world.GetEntities().With<Ball>().With<Position>().With<Velocity>().AsSet(), true)

@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using DefaultEcs.Serialization;
 using DefaultEcs.Internal;
-using DefaultEcs.Internal.Debug;
-using DefaultEcs.Internal.Helper;
-using DefaultEcs.Internal.Message;
+using DefaultEcs.Internal.Diagnostics;
+using DefaultEcs.Internal.Messages;
+using DefaultEcs.Serialization;
 using DefaultEcs.Threading;
 
 namespace DefaultEcs
@@ -23,6 +22,7 @@ namespace DefaultEcs
 
         private class Optimizer : IParallelRunnable
         {
+            private readonly object _locker;
             private readonly List<ISortable> _items;
 
             private Action _mainAction;
@@ -31,12 +31,13 @@ namespace DefaultEcs
 
             public Optimizer()
             {
+                _locker = new object();
                 _items = new List<ISortable>();
             }
 
             public void Add(ISortable item)
             {
-                lock (this)
+                lock (_locker)
                 {
                     _items.Add(item);
                 }
@@ -44,7 +45,7 @@ namespace DefaultEcs
 
             public void Remove(ISortable item)
             {
-                lock (this)
+                lock (_locker)
                 {
                     _items.Remove(item);
                 }
@@ -168,6 +169,7 @@ namespace DefaultEcs
         /// <summary>
         /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can handle.
         /// </summary>
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1721:Property names should not match get methods")]
         public int MaxCapacity { get; }
 
         #endregion
@@ -277,15 +279,10 @@ namespace DefaultEcs
         /// <param name="maxCapacity">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
         /// <returns>Whether the maximum count has been setted or not.</returns>
         /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
-        public bool SetMaxCapacity<T>(int maxCapacity)
-        {
-            if (maxCapacity < 0)
-            {
-                throw new ArgumentException("Argument cannot be negative", nameof(maxCapacity));
-            }
-
-            return ComponentManager<T>.GetOrCreate(WorldId, maxCapacity).MaxCapacity == maxCapacity;
-        }
+        public bool SetMaxCapacity<T>(int maxCapacity) =>
+            maxCapacity < 0
+                ? throw new ArgumentException("Argument cannot be negative", nameof(maxCapacity))
+                : ComponentManager<T>.GetOrCreate(WorldId, maxCapacity).MaxCapacity == maxCapacity;
 
         /// <summary>
         /// Gets the maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create.
@@ -369,7 +366,7 @@ namespace DefaultEcs
         /// This method is primiraly used for serialization purpose and should not be called in game logic.
         /// </summary>
         /// <param name="reader">The <see cref="IComponentTypeReader"/> instance to be used as callback with the current <see cref="World"/> maximum number of component.</param>
-        public void ReadAllComponentTypes(IComponentTypeReader reader) => Publish(new ComponentTypeReadMessage(reader ?? throw new ArgumentNullException(nameof(reader))));
+        public void ReadAllComponentTypes(IComponentTypeReader reader) => Publish(new ComponentTypeReadMessage(reader.CheckArgumentNullException(nameof(reader))));
 
         /// <summary>
         /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntityMultiMap{TKey}"/> always move forward in memory.
@@ -380,8 +377,8 @@ namespace DefaultEcs
         /// <param name="mainAction">An <see cref="Action"/> to execute on the main thread while the optimization is in process.</param>
         public void Optimize(IParallelRunner runner, Action mainAction)
         {
-            if (runner is null) throw new ArgumentNullException(nameof(runner));
-            if (mainAction is null) throw new ArgumentNullException(nameof(mainAction));
+            runner.CheckArgumentNullException(nameof(runner));
+            mainAction.CheckArgumentNullException(nameof(mainAction));
 
             _optimizer.PrepareForRun(mainAction);
             runner.Run(_optimizer);
@@ -394,7 +391,7 @@ namespace DefaultEcs
         /// <param name="runner">The <see cref="IParallelRunner"/> to process this operation in parallel.</param>
         public void Optimize(IParallelRunner runner)
         {
-            if (runner is null) throw new ArgumentNullException(nameof(runner));
+            runner.CheckArgumentNullException(nameof(runner));
 
             _optimizer.PrepareForRun(null);
             runner.Run(_optimizer);
@@ -410,6 +407,7 @@ namespace DefaultEcs
         /// Resizes inner storage to exactly the number of <typeparamref name="T"/> components this <see cref="World"/> contains.
         /// This method is not thread safe.
         /// </summary>
+        /// <typeparam name="T">The type of the component storage to trim.</typeparam>
         public void TrimExcess<T>()
         {
             ComponentManager<T>.Get(WorldId)?.TrimExcess();
@@ -435,7 +433,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeWorldDisposed(WorldDisposedHandler action)
         {
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            action.CheckArgumentNullException(nameof(action));
 
             return Subscribe((in WorldDisposedMessage _) => action(this));
         }
@@ -448,7 +446,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeEntityCreated(EntityCreatedHandler action)
         {
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            action.CheckArgumentNullException(nameof(action));
 
             return Subscribe((in EntityCreatedMessage message) => action(new Entity(WorldId, message.EntityId)));
         }
@@ -461,7 +459,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeEntityEnabled(EntityEnabledHandler action)
         {
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            action.CheckArgumentNullException(nameof(action));
 
             return Subscribe((in EntityEnabledMessage message) => action(new Entity(WorldId, message.EntityId)));
         }
@@ -474,7 +472,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeEntityDisabled(EntityDisabledHandler action)
         {
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            action.CheckArgumentNullException(nameof(action));
 
             return Subscribe((in EntityDisabledMessage message) => action(new Entity(WorldId, message.EntityId)));
         }
@@ -499,7 +497,7 @@ namespace DefaultEcs
                 });
             }
 
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            action.CheckArgumentNullException(nameof(action));
 
             return GetSubscriptions(action).Merge();
         }
@@ -513,7 +511,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeComponentAdded<T>(ComponentAddedHandler<T> action)
         {
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            action.CheckArgumentNullException(nameof(action));
 
             return Subscribe((in ComponentAddedMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
@@ -531,7 +529,7 @@ namespace DefaultEcs
         {
             ComponentManager<T>.GetOrCreatePrevious(WorldId);
 
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            action.CheckArgumentNullException(nameof(action));
 
             return Subscribe((in ComponentChangedMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
@@ -574,7 +572,7 @@ namespace DefaultEcs
                 });
             }
 
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            action.CheckArgumentNullException(nameof(action));
 
             ComponentManager<T>.GetOrCreatePrevious(WorldId);
 
@@ -590,7 +588,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeComponentEnabled<T>(ComponentEnabledHandler<T> action)
         {
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            action.CheckArgumentNullException(nameof(action));
 
             return Subscribe((in ComponentEnabledMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
@@ -606,7 +604,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeComponentDisabled<T>(ComponentDisabledHandler<T> action)
         {
-            if (action is null) throw new ArgumentNullException(nameof(action));
+            action.CheckArgumentNullException(nameof(action));
 
             return Subscribe((in ComponentDisabledMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),

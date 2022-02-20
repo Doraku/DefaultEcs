@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DefaultEcs.Internal;
-using DefaultEcs.Internal.Helper;
-using DefaultEcs.Internal.Message;
+using DefaultEcs.Internal.Messages;
 
 namespace DefaultEcs
 {
@@ -129,7 +128,7 @@ namespace DefaultEcs
 
             internal EntityQueryBuilder Commit()
             {
-                if (_type == EitherType.Without || _type == EitherType.WhenRemoved)
+                if (_type is EitherType.Without or EitherType.WhenRemoved)
                 {
                     _builder.AddWithoutEitherFilter(_eitherFilter);
                 }
@@ -404,7 +403,7 @@ namespace DefaultEcs
         /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
         public EntityQueryBuilder With<T>(ComponentPredicate<T> predicate)
         {
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            predicate.CheckArgumentNullException(nameof(predicate));
 
             if (!_predicateFilter[ComponentManager<T>.Flag])
             {
