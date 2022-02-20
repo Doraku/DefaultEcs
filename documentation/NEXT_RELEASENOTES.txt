@@ -1,3 +1,0 @@
-## Bug fixes
-
-- fixed a specific case when an Entity is removed from a EntitySortedSet (thanks to @Helco)
