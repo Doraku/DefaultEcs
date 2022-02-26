@@ -215,7 +215,7 @@ namespace DefaultEcs.Test
 
             Check.That(world as IEnumerable).ContainsExactly(entities);
 
-            using IEnumerator<Entity> enumerator = (world as IEnumerable<Entity>)?.GetEnumerator();
+            using IEnumerator<Entity> enumerator = ((IEnumerable<Entity>)world).GetEnumerator();
 
             Check.That(enumerator.MoveNext()).IsTrue();
             Check.That(enumerator.Current).IsEqualTo(entities[0]);
@@ -349,6 +349,26 @@ namespace DefaultEcs.Test
 
             Check.That(set.GetEntities().ToArray().Select((e, i) => (i, e)).Any(t => entities[t.i] != t.e)).IsTrue();
             Check.That(world.GetAll<int>().ToArray().Select((v, i) => (i, v)).Any(t => t.i != t.v)).IsTrue();
+        }
+
+        [Fact]
+        public void Optimize_Should_sort_entities_sharing_components()
+        {
+            using World world = new();
+
+            Entity entity1 = world.CreateEntity();
+            Entity entity2 = world.CreateEntity();
+            Entity entity3 = world.CreateEntity();
+
+            entity3.Set("kikoo");
+            entity2.Set("lol");
+            entity1.SetSameAs<string>(entity2);
+
+            world.Optimize();
+
+            Check.That(entity1.Get<string>()).IsEqualTo("lol");
+            Check.That(entity2.Get<string>()).IsEqualTo("lol");
+            Check.That(entity3.Get<string>()).IsEqualTo("kikoo");
         }
 
         [Fact]
@@ -523,6 +543,17 @@ namespace DefaultEcs.Test
 
             entity.Set(true);
             Check.That(called).IsTrue();
+        }
+
+        [Fact]
+        public void SubscribeComponentAdded_Should_not_thow_When_removing_component()
+        {
+            using World world = new();
+            Entity entity = world.CreateEntity();
+            using IDisposable subscription1 = world.SubscribeComponentChanged((in Entity _, in bool _, in bool _) => { });
+            using IDisposable subscription2 = world.SubscribeComponentAdded((in Entity e, in bool _) => e.Remove<bool>());
+
+            Check.ThatCode(() => entity.Set(true)).DoesNotThrow();
         }
 
         [Fact]

@@ -2,6 +2,7 @@
 ### [DefaultEcs](DefaultEcs.md#DefaultEcs 'DefaultEcs')
 ## Components&lt;T&gt; Struct
 Provides a fast access to the components of type [T](Components_T_.md#DefaultEcs_Components_T__T 'DefaultEcs.Components&lt;T&gt;.T').  
+Note that all entity modification operations are not safe (anything different than a simple [Get&lt;T&gt;()](Entity_Get_T_().md 'DefaultEcs.Entity.Get&lt;T&gt;()')) and may invalidate the [Components&lt;T&gt;](Components_T_.md 'DefaultEcs.Components&lt;T&gt;').  
 ```csharp
 public readonly ref struct Components<T>
 ```

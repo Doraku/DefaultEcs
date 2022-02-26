@@ -6,7 +6,7 @@ using DefaultEcs.Serialization;
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
     [MemoryDiagnoser]
-    public class Serialization
+    public sealed class Serialization : IDisposable
     {
         private struct BigStruct
         {
@@ -65,8 +65,10 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [GlobalCleanup]
-        public void Cleanup()
+        public void Dispose()
         {
+            _worldSCopy?.Dispose();
+            _worldCCopy?.Dispose();
             _worldS.Dispose();
             _worldC.Dispose();
             Console.WriteLine($"struct file size {new FileInfo(_filePathS).Length / 1024f / 1024f} mo");

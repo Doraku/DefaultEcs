@@ -25,7 +25,7 @@ namespace DefaultEcs.System
         /// <exception cref="ArgumentNullException"><paramref name="systems"/> is null.</exception>
         public SequentialSystem(IEnumerable<ISystem<T>> systems)
         {
-            _systems = (systems ?? throw new ArgumentNullException(nameof(systems))).Where(s => s != null).ToArray();
+            _systems = systems.CheckArgumentNullException(nameof(systems)).Where(s => s != null).ToArray();
             IsEnabled = true;
         }
 

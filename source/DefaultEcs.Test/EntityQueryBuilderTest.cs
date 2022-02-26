@@ -51,11 +51,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
@@ -73,11 +73,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.GetEntities().ToArray()).IsEmpty();
 
@@ -112,11 +112,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.GetEntities().ToArray()).IsEmpty();
 
@@ -147,11 +147,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.GetEntities().ToArray()).IsEmpty();
 
@@ -189,11 +189,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.GetEntities().ToArray()).IsEmpty();
 
@@ -231,11 +231,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.GetEntities().ToArray()).IsEmpty();
 
@@ -277,11 +277,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
@@ -314,11 +314,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.GetEntities().ToArray()).ContainsExactly(entities);
 
@@ -366,11 +366,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.Count).IsZero();
 
@@ -415,11 +415,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.Count).IsZero();
 
@@ -455,11 +455,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.Count).IsZero();
 
@@ -490,11 +490,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.Count).IsZero();
 
@@ -531,11 +531,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.Count).IsZero();
 
@@ -576,11 +576,11 @@ namespace DefaultEcs.Test
 
             List<Entity> entities = new()
             {
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity(),
-                    world.CreateEntity()
-                };
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
 
             Check.That(set.Count).IsZero();
 

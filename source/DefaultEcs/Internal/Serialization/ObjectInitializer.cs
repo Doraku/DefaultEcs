@@ -1,15 +1,16 @@
-﻿using System;
+﻿#if NETSTANDARD2_0_OR_GREATER
+using System.Runtime.Serialization;
+#else
+using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-#if !NETSTANDARD1_1
-using System.Runtime.Serialization;
 #endif
 
 namespace DefaultEcs.Internal.Serialization
 {
     internal static class ObjectInitializer<T>
     {
-#if NETSTANDARD1_1
+#if !NETSTANDARD2_0_OR_GREATER
         private static readonly Func<Type, object> _initializer;
 
         static ObjectInitializer()
@@ -22,10 +23,10 @@ namespace DefaultEcs.Internal.Serialization
 
         public static T Create()
         {
-#if NETSTANDARD1_1
-            return (T)_initializer(typeof(T));
-#else
+#if NETSTANDARD2_0_OR_GREATER
             return (T)FormatterServices.GetUninitializedObject(typeof(T));
+#else
+            return (T)_initializer(typeof(T));
 #endif
         }
     }

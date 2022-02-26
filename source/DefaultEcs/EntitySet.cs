@@ -5,8 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using DefaultEcs.Internal;
-using DefaultEcs.Internal.Debug;
-using DefaultEcs.Internal.Helper;
+using DefaultEcs.Internal.Diagnostics;
 
 namespace DefaultEcs
 {
@@ -196,13 +195,12 @@ namespace DefaultEcs
 
                 if (minIndex != _sortedIndex)
                 {
-                    Entity tempEntity = _entities[_sortedIndex];
+                    int sortedEntityId = _entities[_sortedIndex].EntityId;
 
-                    _entities[_sortedIndex] = _entities[minIndex];
-                    _entities[minIndex] = tempEntity;
+                    (_entities[minIndex], _entities[_sortedIndex]) = (_entities[_sortedIndex], _entities[minIndex]);
 
                     _mapping[minEntityId] = _sortedIndex;
-                    _mapping[tempEntity.EntityId] = minIndex;
+                    _mapping[sortedEntityId] = minIndex;
                 }
             }
         }

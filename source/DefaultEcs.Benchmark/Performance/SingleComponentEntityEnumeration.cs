@@ -7,7 +7,7 @@ using DefaultEcs.Threading;
 namespace DefaultEcs.Benchmark.Performance
 {
     [MemoryDiagnoser]
-    public partial class SingleComponentEntityEnumeration
+    public sealed partial class SingleComponentEntityEnumeration : IDisposable
     {
         private struct DefaultComponent
         {
@@ -130,8 +130,17 @@ namespace DefaultEcs.Benchmark.Performance
         }
 
         [GlobalCleanup]
-        public void Cleanup()
+        public void Dispose()
         {
+            _defaultEntitySet.Dispose();
+            _defaultSystem.Dispose();
+            _defaultMultiSystem.Dispose();
+            _defaultEntityComponentSystem.Dispose();
+            _defaultMultiEntityComponentSystem.Dispose();
+            _defaultComponentSystem.Dispose();
+            _defaultComponentMultiSystem.Dispose();
+            _defaultGeneratorSystem.Dispose();
+            _defaultGeneratorMultiSystem.Dispose();
             _defaultRunner.Dispose();
             _defaultWorld.Dispose();
         }

@@ -41,8 +41,7 @@ namespace DefaultEcs.Internal.Serialization
             {
                 if (writeNameSpace)
                 {
-                    builder.Append(type.Namespace);
-                    builder.Append('.');
+                    builder.Append(type.Namespace).Append('.');
                 }
                 if (type.DeclaringType != null)
                 {
@@ -58,8 +57,7 @@ namespace DefaultEcs.Internal.Serialization
                     {
                         builder.Append('[');
                         WriteName(builder, generic, true, true);
-                        builder.Append(']');
-                        builder.Append(',');
+                        builder.Append(']').Append(',');
                     }
                     --builder.Length;
                     builder.Append(']');
@@ -68,9 +66,7 @@ namespace DefaultEcs.Internal.Serialization
 
             if (writeAssembly)
             {
-                builder.Append(',');
-                builder.Append(' ');
-                builder.Append(type.GetTypeInfo().Assembly.GetName().Name);
+                builder.Append(',').Append(' ').Append(type.GetTypeInfo().Assembly.GetName().Name);
             }
         }
 

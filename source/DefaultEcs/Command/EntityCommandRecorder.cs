@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using DefaultEcs.Internal.Command;
-using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs.Command
 {
@@ -180,7 +179,8 @@ namespace DefaultEcs.Command
         /// </summary>
         /// <param name="world">The <see cref="World"/> to record action for.</param>
         /// <returns>The <see cref="WorldRecord"/> used to record actions on the given <see cref="World"/>.</returns>
-        public WorldRecord Record(World world) => new(this, world ?? throw new ArgumentNullException(nameof(world)));
+        /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
+        public WorldRecord Record(World world) => new(this, world.CheckArgumentNullException(nameof(world)));
 
         /// <summary>
         /// Gives an <see cref="EntityRecord"/> to record action on the given <see cref="Entity"/>.

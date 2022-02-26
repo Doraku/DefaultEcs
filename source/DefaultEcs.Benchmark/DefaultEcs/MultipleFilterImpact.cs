@@ -7,7 +7,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
 {
     [MemoryDiagnoser]
     [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 1, targetCount: 10, invocationCount: 100)]
-    public class MultipleFilterImpact
+    public sealed class MultipleFilterImpact : IDisposable
     {
         public struct ComponentA { public int value; }
         public struct ComponentB { public int value; }
@@ -131,7 +131,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [IterationCleanup]
-        public void Cleanup()
+        public void Dispose()
         {
             _system2.Dispose();
             _system.Dispose();

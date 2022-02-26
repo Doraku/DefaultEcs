@@ -7,7 +7,7 @@ using DefaultEcs.Threading;
 namespace DefaultEcs.Benchmark.Performance
 {
     [MemoryDiagnoser]
-    public partial class TripleComponentEntityEnumeration
+    public sealed partial class TripleComponentEntityEnumeration : IDisposable
     {
         private const float Time = 1f / 60f;
 
@@ -36,7 +36,7 @@ namespace DefaultEcs.Benchmark.Performance
                 : this(world, null)
             { }
 
-            protected unsafe override void Update(float state, ReadOnlySpan<Entity> entities)
+            protected override unsafe void Update(float state, ReadOnlySpan<Entity> entities)
             {
                 foreach (ref readonly Entity entity in entities)
                 {
@@ -55,7 +55,7 @@ namespace DefaultEcs.Benchmark.Performance
                 _world = world;
             }
 
-            protected unsafe override void Update(float state, ReadOnlySpan<Entity> entities)
+            protected override unsafe void Update(float state, ReadOnlySpan<Entity> entities)
             {
                 Components<DefaultA> @as = _world.GetComponents<DefaultA>();
                 Components<DefaultB> bs = _world.GetComponents<DefaultB>();
@@ -119,8 +119,15 @@ namespace DefaultEcs.Benchmark.Performance
         }
 
         [GlobalCleanup]
-        public void Cleanup()
+        public void Dispose()
         {
+            _defaultEntitySet.Dispose();
+            _defaultSystem.Dispose();
+            _defaultMultiSystem.Dispose();
+            _defaultComponentSystem.Dispose();
+            _defaultMultiComponentSystem.Dispose();
+            _defaultGeneratorSystem.Dispose();
+            _defaultMultiGeneratorSystem.Dispose();
             _defaultRunner.Dispose();
             _defaultWorld.Dispose();
         }

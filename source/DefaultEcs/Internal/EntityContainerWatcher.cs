@@ -1,5 +1,5 @@
 ﻿using System;
-using DefaultEcs.Internal.Message;
+using DefaultEcs.Internal.Messages;
 
 namespace DefaultEcs.Internal
 {

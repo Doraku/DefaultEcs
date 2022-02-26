@@ -2,7 +2,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Reflection;
-using DefaultEcs.Internal.Helper;
+using DefaultEcs.Internal;
 using DefaultEcs.Internal.System;
 using DefaultEcs.Threading;
 
@@ -10,6 +10,8 @@ namespace DefaultEcs.System
 {
     /// <summary>
     /// Represents a base class to process updates on a given <see cref="EntityMultiMap{TKey}"/> instance.
+    /// Only <see cref="Entity.Get{T}()"/> operations on already present component type are safe.
+    /// Any other operation maybe change the inner <see cref="EntityMultiMap{TKey}"/> and should be done either by setting "useBuffer" of the available constructors to true or using an <see cref="Command.EntityCommandRecorder"/>.
     /// </summary>
     /// <typeparam name="TState">The type of the object used as state to update the system.</typeparam>
     /// <typeparam name="TKey">The type of the component used as key.</typeparam>
@@ -336,9 +338,9 @@ namespace DefaultEcs.System
         /// </summary>
         public virtual void Dispose()
         {
-            GC.SuppressFinalize(this);
-
             MultiMap.Dispose();
+
+            GC.SuppressFinalize(this);
         }
 
         #endregion

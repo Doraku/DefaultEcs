@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DefaultBrick
 {
-    public class DefaultGame : Game
+    internal class DefaultGame : Game
     {
         #region Fields
 

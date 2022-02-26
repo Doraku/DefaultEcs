@@ -1,12 +1,19 @@
 <Project>
-  <PropertyGroup>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+		<AnalysisLevel>latest</AnalysisLevel>
+		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Condition="'$(MSBuildProjectName)' != 'DefaultEcs'" Include="DefaultEcs.Analyzer" Version="0.17.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0" PrivateAssets="all" />
-    <PackageReference Include="Roslynator.Analyzers" Version="3.2.2" PrivateAssets="all" />
-    <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="1.1.1" PrivateAssets="all" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Condition="'$(MSBuildProjectName)' != 'DefaultEcs'" Include="DefaultEcs.Analyzer" Version="0.17.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0" PrivateAssets="all" />
+		<PackageReference Include="Roslynator.Analyzers" Version="4.0.2" PrivateAssets="all" />
+		<PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="4.0.2" PrivateAssets="all" />
+		<PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.0.2" PrivateAssets="all" />
+	</ItemGroup>
 </Project>

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBoids.System
 {
-    public sealed partial class MoveSystem : AEntitySetSystem<float>
+    internal sealed partial class MoveSystem : AEntitySetSystem<float>
     {
         private readonly SafeBuffer<Entity> _buffer = new(DefaultGame.BoidsCount);
 

@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
-using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs.Internal.Command
 {
@@ -23,9 +22,7 @@ namespace DefaultEcs.Internal.Command
             private static readonly WorldSetComponent _worldSetAction;
             private static readonly EntitySetComponent _entitySetAction;
 
-            [SuppressMessage("Design", "RCS1158:Static member in generic type should use a type parameter.")]
             public static readonly int Index;
-            [SuppressMessage("Design", "RCS1158:Static member in generic type should use a type parameter.")]
             public static readonly int SizeOfT;
 
             #endregion

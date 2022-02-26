@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs
 {
@@ -81,8 +80,8 @@ namespace DefaultEcs
         public static IDisposable Subscribe(this IPublisher publisher, Type type)
         {
             return Subscribe(
-                publisher ?? throw new ArgumentNullException(nameof(publisher)),
-                type ?? throw new ArgumentNullException(nameof(type)),
+                publisher.CheckArgumentNullException(nameof(publisher)),
+                type.CheckArgumentNullException(nameof(type)),
                 null);
         }
 
@@ -109,8 +108,8 @@ namespace DefaultEcs
             where T : class
         {
             return Subscribe(
-                publisher ?? throw new ArgumentNullException(nameof(publisher)),
-                (target ?? throw new ArgumentNullException(nameof(target))).GetType(),
+                publisher.CheckArgumentNullException(nameof(publisher)),
+                target.CheckArgumentNullException(nameof(target)).GetType(),
                 target);
         }
 

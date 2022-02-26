@@ -145,7 +145,7 @@ if (!entity.IsAlive)
 #endif
 ```
 
-You can also make an entity act as if it was disposed so it is removed from world queries while keeping all its components, this is usefull when you need to activate/diactivate entity from your game logic
+You can also make an entity act as if it was disposed so it is removed from world queries while keeping all its components, this is useful when you need to activate/diactivate entity from your game logic
 ```csharp
 entity.Disable();
 
@@ -213,7 +213,7 @@ entity.Set<IExample>(new CExample());
 entity.Has<CExample>();
 ```
 
-It is possible to share the same component value between entities or even the world value. This is usefull if you want to update a component value on multiple entities with a single call.
+It is possible to share the same component value between entities or even the world value. This is useful if you want to update a component value on multiple entities with a single call.
 ```csharp
 referenceEntity.Set<int>(42);
 entity.SetSameAs<int>(referenceEntity);
@@ -230,7 +230,7 @@ entity.Get<string>();
 ```
 If the component is removed from the entity used as reference or the world, it will not remove the component from the other entities using the same component.
 
-Component on entities can also be disabled and reenabled. This is usefull if you want to quickly make an entity act as if its component composition has changed so it is picked up by world queries without paying the price to actually remove a component.
+Component on entities can also be disabled and reenabled. This is useful if you want to quickly make an entity act as if its component composition has changed so it is picked up by world queries without paying the price to actually remove a component.
 ```csharp
 entity.Disable<int>();
 
@@ -348,7 +348,7 @@ world
     .AsPredicate();
 ```
 Get a `Predicate<Entity>` that check for your declared rules. `When...` rules are ignored.  
-This is usefull if you need to check for some entity component composition.
+This is useful if you need to check for some entity component composition.
 
 <a name='Overview_Query_AsEnumerable'></a>
 ### AsEnumerable
@@ -359,7 +359,7 @@ world
     .AsEnumerable();
 ```
 Get a `IEnumerable<Entity>` that when enumerated returns all the entities respecting your declared rules. `When...` rules are ignored.  
-This is usefull if you need to do an initialisation on specific entities, this should not be used in a hot path.
+This is useful if you need to do an initialisation on specific entities, this should not be used in a hot path.
 
 <a name='Overview_Query_AsSet'></a>
 ### AsSet
@@ -383,7 +383,7 @@ world
 ```
 Get a `EntityMap<TKey>` which map a single entity with a component type `TKey` value. Its content is cached for fast access and is automatically updated as you change your entities composition.
 If `When...` rules are present, you should call its `Complete()` method once you are done processing its entities to clear it.
-This is usefull if you need o(1) access to an entity based on a key.
+This is useful if you need o(1) access to an entity based on a key.
 
 <a name='Overview_Query_AsMultiMap'></a>
 ### AsMultiMap
@@ -395,7 +395,7 @@ world
 ```
 Get a `EntityMultiMap<TKey>` which map multiple entities with a component type `TKey` value. Its content is cached for fast access and is automatically updated as you change your entities composition.
 If `When...` rules are present, you should call its `Complete()` method once you are done processing its entities to clear it.
-This is usefull if you need o(1) access to entities based on a key.
+This is useful if you need o(1) access to entities based on a key.
 
 <a name='Overview_System'></a>
 ## System
@@ -668,8 +668,11 @@ Note that a fixed capacity EntityCommandRecorder (or one which has expanded to i
 When needed, an expandable EntityCommandRecorder will double its capacity so it is preferred to use a power of 2 as default capacity.
 
 ```csharp
+// Get a WorldRecord to record entity creation
+WorldRecord worldRecord = recorder.Record(world);
+
 // Create a new Entity defered and give an EntityRecord to record commands on it
-EntityRecord newRecord = recorder.CreateEntity();
+EntityRecord newRecord = worldRecord.CreateEntity();
 
 // Register an Entity and give an EntityRecord to record commands on it
 EntityRecord record = recorder.Record(entity);
@@ -678,7 +681,7 @@ EntityRecord record = recorder.Record(entity);
 newRecord.Set<bool>(true);
 
 // To execute all recorded commands
-recorder.Execute(world);
+recorder.Execute();
 ```
 
 <a name='Overview_Serialization'></a>

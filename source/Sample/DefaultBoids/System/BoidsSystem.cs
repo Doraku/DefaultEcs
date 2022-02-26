@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBoids.System
 {
-    public sealed partial class BoidsSystem : AEntitySetSystem<float>
+    internal sealed partial class BoidsSystem : AEntitySetSystem<float>
     {
         [WorldComponent]
         private readonly EntityMap<GridId> _grid;

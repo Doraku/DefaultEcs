@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using NFluent;
 using Xunit;
 
@@ -33,22 +32,22 @@ namespace DefaultEcs.Test
         private sealed class InvalidNumberOfParameter
         {
             [Subscribe]
-            [SuppressMessage("Style", "IDE0060:Remove unused parameter")]
-            [SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
             public static void Method(object _, object __) { }
         }
 
         private sealed class InvalidReturnType
         {
             [Subscribe]
-            [SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
             public static object Method(in object _) { return null; }
         }
 
         private sealed class InvalidByRefParameterType
         {
             [Subscribe]
-            [SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
             public static void Method(object _) { }
         }
 
@@ -67,7 +66,7 @@ namespace DefaultEcs.Test
         private class InstanceMethod
         {
             [Subscribe]
-            [SuppressMessage("Performance", "CA1822")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822")]
             public void Method(in object _) { }
         }
 
@@ -86,7 +85,7 @@ namespace DefaultEcs.Test
             { }
 
             [Subscribe]
-            [SuppressMessage("Performance", "CA1822")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822")]
             public void NewMethod(in int _)
             { }
         }
@@ -111,7 +110,7 @@ namespace DefaultEcs.Test
             public void Valid(in object arg) => Arg = arg;
 
             [Subscribe]
-            [SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Runtime Error", "DEA0001:SubscribeAttribute used on an invalid method")]
             public object Invalid(in object arg) => Arg = arg;
         }
 

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBrick.Level
 {
-    public static class Level1
+    internal static class Level1
     {
         private static void CreateBrick(World world, int x, int y)
         {

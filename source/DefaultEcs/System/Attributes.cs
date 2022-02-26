@@ -83,12 +83,12 @@ namespace DefaultEcs.System
         /// <summary>
         /// The types of the component.
         /// </summary>
-        public readonly Type[] ComponentTypes;
+        public Type[] ComponentTypes { get; }
 
         /// <summary>
         /// Whether the component type should be included or excluded.
         /// </summary>
-        public readonly ComponentFilterType FilterType;
+        public ComponentFilterType FilterType { get; }
 
         /// <summary>
         /// Initialize a new instance of the <see cref="ComponentAttribute"/> type.
@@ -97,7 +97,7 @@ namespace DefaultEcs.System
         /// <param name="componentTypes">The types of the component.</param>
         public ComponentAttribute(ComponentFilterType filterType, params Type[] componentTypes)
         {
-            ComponentTypes = componentTypes ?? throw new ArgumentNullException(nameof(componentTypes));
+            ComponentTypes = componentTypes.CheckArgumentNullException(nameof(componentTypes));
             FilterType = filterType;
         }
     }

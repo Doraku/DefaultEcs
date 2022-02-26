@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs.Internal.Serialization.BinarySerializer.ConverterAction
 {

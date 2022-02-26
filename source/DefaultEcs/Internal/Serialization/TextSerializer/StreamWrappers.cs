@@ -4,7 +4,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using DefaultEcs.Serialization;
-using DefaultEcs.Internal.Helper;
 
 namespace DefaultEcs.Internal.Serialization.TextSerializer
 {
@@ -246,7 +245,9 @@ namespace DefaultEcs.Internal.Serialization.TextSerializer
             return new ReadOnlySpan<char>(_buffer, 0, length);
         }
 
-#if NETSTANDARD1_1 || NETSTANDARD2_0
+#if NETSTANDARD2_1_OR_GREATER
+        public ReadOnlySpan<char> Read() => ReadAsSpan();
+#else
         public string Read()
         {
             InnerPeek(false);
@@ -257,8 +258,6 @@ namespace DefaultEcs.Internal.Serialization.TextSerializer
 
             return length > 0 ? new string(_buffer, 0, length) : string.Empty;
         }
-#else
-        public ReadOnlySpan<char> Read() => ReadAsSpan();
 #endif
 
         public ReadOnlySpan<char> ReadFromLineAsSpan()

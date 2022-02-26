@@ -275,6 +275,19 @@ namespace DefaultEcs.Test
             Check.That(entity).IsEqualTo(removedEntity);
         }
 
+        [Fact]
+        public void Remove_While_Full_Should_Not_Crash()
+        {
+            using World world = new();
+
+            for (int i = 0; i < 8; i++) // choose count such that _entities is completly used
+                world.CreateEntity().Set(i);
+
+            using EntitySortedSet<int> set = world.GetEntities().AsSortedSet<int>();
+
+            set.GetEntities()[0].Remove<int>();
+        }
+
         #endregion
     }
 }

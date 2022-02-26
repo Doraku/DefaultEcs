@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Reflection;
-using DefaultEcs.Serialization;
-using DefaultEcs.Internal.Helper;
 using DefaultEcs.Internal.Serialization.BinarySerializer.ConverterAction;
+using DefaultEcs.Serialization;
 
 namespace DefaultEcs.Internal.Serialization.BinarySerializer
 {
@@ -114,6 +113,7 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
 
         #region Initialisation
 
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "CA1508:Avoid dead conditional code", Justification = "false positif")]
         static Converter()
         {
             IsSealed = typeof(T).GetTypeInfo().IsSealed || typeof(T) == typeof(Type);

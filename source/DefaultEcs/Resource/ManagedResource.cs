@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DefaultEcs.Resource
+﻿namespace DefaultEcs.Resource
 {
     /// <summary>
     /// Provides static methods for creating <see cref="ManagedResource{TInfo, TResource}"/> object.

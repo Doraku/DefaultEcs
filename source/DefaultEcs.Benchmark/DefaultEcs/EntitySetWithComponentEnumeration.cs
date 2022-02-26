@@ -1,19 +1,19 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnosers;
 
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
     [MemoryDiagnoser]
-    public class EntitySetWithComponentEnumeration
+    public sealed class EntitySetWithComponentEnumeration : IDisposable
     {
         private World _world;
         private EntitySet _set;
-        [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
         private int _count;
-        [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
         private uint _uCount;
-        [SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0052:Remove unread private members")]
         private long _lCount;
 
         [Params(100, 1000, 10000, 100000)]
@@ -35,7 +35,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [IterationCleanup]
-        public void Cleanup()
+        public void Dispose()
         {
             _set.Dispose();
             _world.Dispose();

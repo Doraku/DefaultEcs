@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBoids.Component
 {
-    public sealed class Grid
+    internal sealed class Grid
     {
         public struct Enumerable : IEnumerable<List<Entity>>
         {
@@ -101,7 +101,7 @@ namespace DefaultBoids.Component
             {
                 for (int j = 0; j < _cells.GetLength(1); ++j)
                 {
-                    _cells[i, j] = new List<Entity>(DefaultGame.BoidsCount /10);
+                    _cells[i, j] = new List<Entity>(DefaultGame.BoidsCount / 10);
                 }
             }
         }

@@ -115,10 +115,10 @@ namespace DefaultEcs.Internal.Serialization.TextSerializer.ConverterAction
             while (!reader.EndOfStream && !reader.TryPeek(_objectEnd))
             {
                 if (_readFieldActions.TryGetValue(
-#if NETSTANDARD1_1 || NETSTANDARD2_0
-                    reader.Read(),
-#else
+#if NETSTANDARD2_1_OR_GREATER
                     reader.Read().ToString(),
+#else
+                    reader.Read(),
 #endif
                     out ReadFieldAction action))
                 {

@@ -3,7 +3,7 @@
 ## AEntitySetSystem&lt;T&gt;.AEntitySetSystem(EntitySet, IParallelRunner, int) Constructor
 Initialise a new instance of the [AEntitySetSystem&lt;T&gt;](AEntitySetSystem_T_.md 'DefaultEcs.System.AEntitySetSystem&lt;T&gt;') class with the given [EntitySet](EntitySet.md 'DefaultEcs.EntitySet') and [IParallelRunner](IParallelRunner.md 'DefaultEcs.Threading.IParallelRunner').  
 ```csharp
-protected AEntitySetSystem(DefaultEcs.EntitySet set, DefaultEcs.Threading.IParallelRunner runner, int minEntityCountByRunnerIndex);
+protected AEntitySetSystem(DefaultEcs.EntitySet set, DefaultEcs.Threading.IParallelRunner runner, int minEntityCountByRunnerIndex=0);
 ```
 #### Parameters
 <a name='DefaultEcs_System_AEntitySetSystem_T__AEntitySetSystem(DefaultEcs_EntitySet_DefaultEcs_Threading_IParallelRunner_int)_set'></a>

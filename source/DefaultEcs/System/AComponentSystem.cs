@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using DefaultEcs.Internal;
 using DefaultEcs.Threading;
 
@@ -27,8 +26,8 @@ namespace DefaultEcs.System
                 _system = system;
             }
 
-#if NETSTANDARD2_1
-            [SuppressMessage("Style", "IDE0057:Use range operator")]
+#if NETSTANDARD2_1_OR_GREATER
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0057:Use range operator")]
 #endif
             public void Run(int index, int maxIndex)
             {
@@ -73,7 +72,7 @@ namespace DefaultEcs.System
         {
             _runner = runner ?? DefaultParallelRunner.Default;
             _runnable = new Runnable(this);
-            _components = ComponentManager<TComponent>.GetOrCreate(world?.WorldId ?? throw new ArgumentNullException(nameof(world)));
+            _components = ComponentManager<TComponent>.GetOrCreate(world.CheckArgumentNullException(nameof(world)).WorldId);
             _minComponentCountByRunnerIndex = _runner.DegreeOfParallelism > 1 ? minComponentCountByRunnerIndex : int.MaxValue;
 
             World = world;

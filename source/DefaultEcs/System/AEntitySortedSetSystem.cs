@@ -8,7 +8,8 @@ namespace DefaultEcs.System
 {
     /// <summary>
     /// Represents a base class to process updates on a given <see cref="EntitySortedSet{TComponent}"/> instance.
-    /// Only <see cref="Entity.Get{T}()"/>, <see cref="Entity.Set{T}(in T)"/> and <see cref="Entity.SetSameAs{T}(in Entity)"/> operation on already present component type are safe.
+    /// Only <see cref="Entity.Get{T}()"/> operations on already present component type are safe.
+    /// Any other operation maybe change the inner <see cref="EntitySortedSet{TComponent}"/> and should be done either by using setting "useBuffer" of the available constructors to true or using an <see cref="Command.EntityCommandRecorder"/>.
     /// </summary>
     /// <typeparam name="TState">The type of the object used as state to update the system.</typeparam>
     /// <typeparam name="TComponent">The type of the component to sort <see cref="Entity"/> by.</typeparam>

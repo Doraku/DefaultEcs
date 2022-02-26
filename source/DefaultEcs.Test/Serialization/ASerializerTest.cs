@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using NFluent;
@@ -28,8 +27,8 @@ namespace DefaultEcs.Test.Serialization
 
         private class SimpleClass
         {
-            [SuppressMessage("Design", "RCS1169:Make field read-only.")]
-            [SuppressMessage("Style", "IDE0044:Add readonly modifier")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "RCS1169:Make field read-only.")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier")]
             private int _1;
             private readonly int _2;
             private int P3 { get; }
@@ -227,7 +226,7 @@ namespace DefaultEcs.Test.Serialization
 
         [Fact]
 #if !NET452
-        [SuppressMessage("Performance", "CA1825")]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1825")]
 #endif
         public void Should_handle_empty_array() => TestArray(new object[0]);
 
@@ -263,7 +262,7 @@ namespace DefaultEcs.Test.Serialization
 
         [Fact]
 #if !NET452
-        [SuppressMessage("Performance", "CA1825")]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1825")]
 #endif
         public void Should_handle_complex_generic_type_as_object() => Test<object>(new Dictionary<string, DerivedClass[,,]>[0]);
 

@@ -44,6 +44,7 @@ namespace DefaultEcs.System
 
         #region Fields
 
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed")]
         private readonly IParallelRunner _runner;
         private readonly Runnable _runnable;
         private readonly ISystem<T> _mainSystem;
@@ -55,7 +56,7 @@ namespace DefaultEcs.System
 
         private ParallelSystem(IParallelRunner runner)
         {
-            _runner = runner ?? throw new ArgumentNullException(nameof(runner));
+            _runner = runner.CheckArgumentNullException(nameof(runner));
             _runnable = new Runnable(this);
         }
 
@@ -71,7 +72,7 @@ namespace DefaultEcs.System
             : this(runner)
         {
             _mainSystem = mainSystem;
-            _systems = (systems ?? throw new ArgumentNullException(nameof(systems))).Where(s => s != null).ToArray();
+            _systems = systems.CheckArgumentNullException(nameof(systems)).Where(s => s != null).ToArray();
         }
 
         /// <summary>

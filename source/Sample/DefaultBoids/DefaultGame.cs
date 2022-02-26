@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using DefaultBoids.Component;
 using DefaultBoids.System;
@@ -11,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DefaultBoids
 {
-    public class DefaultGame : Game
+    internal class DefaultGame : Game
     {
         #region Fields
 
@@ -132,7 +133,7 @@ namespace DefaultBoids
             ++_frameCount;
             if (_watch.Elapsed.TotalSeconds > .5)
             {
-                _fps = (_frameCount / _watch.Elapsed.TotalSeconds).ToString();
+                _fps = (_frameCount / _watch.Elapsed.TotalSeconds).ToString(CultureInfo.InvariantCulture);
                 _frameCount = 0;
                 _watch.Restart();
             }
@@ -147,6 +148,7 @@ namespace DefaultBoids
             _runner.Dispose();
             _world.Dispose();
             _system.Dispose();
+            _drawSystem.Dispose();
             _square.Dispose();
             _batch.Dispose();
             _deviceManager.Dispose();

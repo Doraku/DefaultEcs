@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DefaultBoids.System
 {
-    public sealed class DrawSystem : AComponentSystem<SpriteBatch, DrawInfo>
+    internal sealed class DrawSystem : AComponentSystem<SpriteBatch, DrawInfo>
     {
         private readonly Texture2D _square;
         private readonly World _world;

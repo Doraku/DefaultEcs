@@ -2,8 +2,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using DefaultEcs.Internal.Helper;
-using DefaultEcs.Internal.Message;
+using DefaultEcs.Internal.Messages;
 
 namespace DefaultEcs.Internal
 {
@@ -321,26 +320,22 @@ namespace DefaultEcs.Internal
 
                 if (minIndex != _sortedIndex)
                 {
-                    T tempComponent = _components[_sortedIndex];
+                    (_components[minIndex], _components[_sortedIndex]) = (_components[_sortedIndex], _components[minIndex]);
 
-                    _components[_sortedIndex] = _components[minIndex];
-                    _components[minIndex] = tempComponent;
+                    int sortedEntityId = _links[_sortedIndex].EntityId;
 
-                    ComponentLink tempLink = _links[_sortedIndex];
-
-                    _links[_sortedIndex] = _links[minIndex];
-                    _links[minIndex] = tempLink;
+                    (_links[minIndex], _links[_sortedIndex]) = (_links[_sortedIndex], _links[minIndex]);
 
                     if (_links[_sortedIndex].ReferenceCount > 1
-                        || tempLink.ReferenceCount > 1)
+                        || _links[minIndex].ReferenceCount > 1)
                     {
                         for (int i = 0; i < _mapping.Length; ++i)
                         {
-                            if (_mapping[i] == minEntityId)
+                            if (_mapping[i] == minIndex)
                             {
                                 _mapping[i] = _sortedIndex;
                             }
-                            else if (_mapping[i] == tempLink.EntityId)
+                            else if (_mapping[i] == _sortedIndex)
                             {
                                 _mapping[i] = minIndex;
                             }
@@ -349,7 +344,7 @@ namespace DefaultEcs.Internal
                     else
                     {
                         _mapping[minEntityId] = _sortedIndex;
-                        _mapping[tempLink.EntityId] = minIndex;
+                        _mapping[sortedEntityId] = minIndex;
                     }
                 }
             }

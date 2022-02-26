@@ -7,7 +7,7 @@ using DefaultEcs.Threading;
 
 namespace DefaultEcs.Benchmark.DefaultEcs
 {
-    public static class EntitySetExtension
+    internal static class EntitySetExtension
     {
         public delegate void EntitySetProcess(ReadOnlySpan<Entity> entities);
 
@@ -16,12 +16,12 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             int entitiesPerCpu = set.Count / Environment.ProcessorCount;
 
             Enumerable.Range(0, Environment.ProcessorCount).AsParallel().ForAll(
-                i => action(i + 1 == Environment.ProcessorCount ? set.GetEntities().Slice(i * entitiesPerCpu) : set.GetEntities().Slice(i * entitiesPerCpu, entitiesPerCpu)));
+                i => action(i + 1 == Environment.ProcessorCount ? set.GetEntities()[(i * entitiesPerCpu)..] : set.GetEntities().Slice(i * entitiesPerCpu, entitiesPerCpu)));
         }
     }
 
     [MemoryDiagnoser]
-    public partial class System
+    public sealed partial class System : IDisposable
     {
         private struct Position
         {
@@ -178,7 +178,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
         }
 
         [IterationCleanup]
-        public void Cleanup()
+        public void Dispose()
         {
             _runner.Dispose();
             _world.Dispose();
@@ -186,6 +186,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             _system.Dispose();
             _componentSystem.Dispose();
             _bufferedSystem.Dispose();
+            _generatorSystem.Dispose();
             _systemTPL.Dispose();
         }
 

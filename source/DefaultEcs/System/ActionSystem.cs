@@ -23,7 +23,7 @@ namespace DefaultEcs.System
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public ActionSystem(Action<T> action)
         {
-            _action = action ?? throw new ArgumentNullException(nameof(action));
+            _action = action.CheckArgumentNullException(nameof(action));
             IsEnabled = true;
         }
 
@@ -31,15 +31,10 @@ namespace DefaultEcs.System
 
         #region ISystem
 
-        /// <summary>
-        /// Gets or sets whether the current <see cref="ActionSystem{T}"/> instance should update or not.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsEnabled { get; set; }
 
-        /// <summary>
-        /// Updates the system once.
-        /// </summary>
-        /// <param name="state">The state to use.</param>
+        /// <inheritdoc/>
         public void Update(T state)
         {
             if (IsEnabled)
