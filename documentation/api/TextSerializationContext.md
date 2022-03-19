@@ -1,22 +1,25 @@
 #### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
-### [DefaultEcs.Serialization](DefaultEcs.md#DefaultEcs_Serialization 'DefaultEcs.Serialization')
+### [DefaultEcs.Serialization](DefaultEcs.md#DefaultEcs.Serialization 'DefaultEcs.Serialization')
+
 ## TextSerializationContext Class
-Represents a context used by the [TextSerializer](TextSerializer.md 'DefaultEcs.Serialization.TextSerializer') to convert types during serialization and deserialization operations.  
+
+Represents a context used by the [TextSerializer](TextSerializer.md 'DefaultEcs.Serialization.TextSerializer') to convert types during serialization and deserialization operations.
+
 ```csharp
 public sealed class TextSerializationContext :
 System.IDisposable
 ```
 
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; TextSerializationContext  
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; TextSerializationContext
 
-Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
+Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')
 
 | Constructors | |
 | :--- | :--- |
-| [TextSerializationContext()](TextSerializationContext_TextSerializationContext().md 'DefaultEcs.Serialization.TextSerializationContext.TextSerializationContext()') | Initializes a new instance of the [TextSerializationContext](TextSerializationContext.md 'DefaultEcs.Serialization.TextSerializationContext') class.<br/> |
+| [TextSerializationContext()](TextSerializationContext.TextSerializationContext().md 'DefaultEcs.Serialization.TextSerializationContext.TextSerializationContext()') | Initializes a new instance of the [TextSerializationContext](TextSerializationContext.md 'DefaultEcs.Serialization.TextSerializationContext') class. |
 
 | Methods | |
 | :--- | :--- |
-| [Dispose()](TextSerializationContext_Dispose().md 'DefaultEcs.Serialization.TextSerializationContext.Dispose()') | Releases inner resources.<br/> |
-| [Marshal&lt;TIn,TOut&gt;(Func&lt;TIn,TOut&gt;)](TextSerializationContext_Marshal_TIn_TOut_(Func_TIn_TOut_).md 'DefaultEcs.Serialization.TextSerializationContext.Marshal&lt;TIn,TOut&gt;(System.Func&lt;TIn,TOut&gt;)') | Adds a convertion between the type [TIn](TextSerializationContext_Marshal_TIn_TOut_(Func_TIn_TOut_).md#DefaultEcs_Serialization_TextSerializationContext_Marshal_TIn_TOut_(System_Func_TIn_TOut_)_TIn 'DefaultEcs.Serialization.TextSerializationContext.Marshal&lt;TIn,TOut&gt;(System.Func&lt;TIn,TOut&gt;).TIn') and the type [TOut](TextSerializationContext_Marshal_TIn_TOut_(Func_TIn_TOut_).md#DefaultEcs_Serialization_TextSerializationContext_Marshal_TIn_TOut_(System_Func_TIn_TOut_)_TOut 'DefaultEcs.Serialization.TextSerializationContext.Marshal&lt;TIn,TOut&gt;(System.Func&lt;TIn,TOut&gt;).TOut') during a serialization operation.<br/> |
-| [Unmarshal&lt;TIn,TOut&gt;(Func&lt;TIn,TOut&gt;)](TextSerializationContext_Unmarshal_TIn_TOut_(Func_TIn_TOut_).md 'DefaultEcs.Serialization.TextSerializationContext.Unmarshal&lt;TIn,TOut&gt;(System.Func&lt;TIn,TOut&gt;)') | Adds a convertion between the type [TIn](TextSerializationContext_Unmarshal_TIn_TOut_(Func_TIn_TOut_).md#DefaultEcs_Serialization_TextSerializationContext_Unmarshal_TIn_TOut_(System_Func_TIn_TOut_)_TIn 'DefaultEcs.Serialization.TextSerializationContext.Unmarshal&lt;TIn,TOut&gt;(System.Func&lt;TIn,TOut&gt;).TIn') and the type [TOut](TextSerializationContext_Unmarshal_TIn_TOut_(Func_TIn_TOut_).md#DefaultEcs_Serialization_TextSerializationContext_Unmarshal_TIn_TOut_(System_Func_TIn_TOut_)_TOut 'DefaultEcs.Serialization.TextSerializationContext.Unmarshal&lt;TIn,TOut&gt;(System.Func&lt;TIn,TOut&gt;).TOut') during a deserialization operation.<br/> |
+| [Dispose()](TextSerializationContext.Dispose().md 'DefaultEcs.Serialization.TextSerializationContext.Dispose()') | Releases inner resources. |
+| [Marshal&lt;TIn,TOut&gt;(Func&lt;TIn,TOut&gt;)](TextSerializationContext.Marshal_TIn,TOut_(Func_TIn,TOut_).md 'DefaultEcs.Serialization.TextSerializationContext.Marshal<TIn,TOut>(System.Func<TIn,TOut>)') | Adds a convertion between the type [TIn](TextSerializationContext.Marshal_TIn,TOut_(Func_TIn,TOut_).md#DefaultEcs.Serialization.TextSerializationContext.Marshal_TIn,TOut_(System.Func_TIn,TOut_).TIn 'DefaultEcs.Serialization.TextSerializationContext.Marshal<TIn,TOut>(System.Func<TIn,TOut>).TIn') and the type [TOut](TextSerializationContext.Marshal_TIn,TOut_(Func_TIn,TOut_).md#DefaultEcs.Serialization.TextSerializationContext.Marshal_TIn,TOut_(System.Func_TIn,TOut_).TOut 'DefaultEcs.Serialization.TextSerializationContext.Marshal<TIn,TOut>(System.Func<TIn,TOut>).TOut') during a serialization operation. |
+| [Unmarshal&lt;TIn,TOut&gt;(Func&lt;TIn,TOut&gt;)](TextSerializationContext.Unmarshal_TIn,TOut_(Func_TIn,TOut_).md 'DefaultEcs.Serialization.TextSerializationContext.Unmarshal<TIn,TOut>(System.Func<TIn,TOut>)') | Adds a convertion between the type [TIn](TextSerializationContext.Unmarshal_TIn,TOut_(Func_TIn,TOut_).md#DefaultEcs.Serialization.TextSerializationContext.Unmarshal_TIn,TOut_(System.Func_TIn,TOut_).TIn 'DefaultEcs.Serialization.TextSerializationContext.Unmarshal<TIn,TOut>(System.Func<TIn,TOut>).TIn') and the type [TOut](TextSerializationContext.Unmarshal_TIn,TOut_(Func_TIn,TOut_).md#DefaultEcs.Serialization.TextSerializationContext.Unmarshal_TIn,TOut_(System.Func_TIn,TOut_).TOut 'DefaultEcs.Serialization.TextSerializationContext.Unmarshal<TIn,TOut>(System.Func<TIn,TOut>).TOut') during a deserialization operation. |

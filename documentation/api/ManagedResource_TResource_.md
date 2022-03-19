@@ -1,19 +1,24 @@
 #### [DefaultEcs](DefaultEcs.md 'DefaultEcs')
-### [DefaultEcs.Resource](DefaultEcs.md#DefaultEcs_Resource 'DefaultEcs.Resource')
-## ManagedResource&lt;TResource&gt; Class
-Provides static methods for creating [ManagedResource&lt;TInfo,TResource&gt;](ManagedResource_TInfo_TResource_.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') object.  
+### [DefaultEcs.Resource](DefaultEcs.md#DefaultEcs.Resource 'DefaultEcs.Resource')
+
+## ManagedResource<TResource> Class
+
+Provides static methods for creating [ManagedResource&lt;TInfo,TResource&gt;](ManagedResource_TInfo,TResource_.md 'DefaultEcs.Resource.ManagedResource<TInfo,TResource>') object.
+
 ```csharp
 public static class ManagedResource<TResource>
 ```
 #### Type parameters
-<a name='DefaultEcs_Resource_ManagedResource_TResource__TResource'></a>
-`TResource`  
-The type of the resource.
-  
 
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; ManagedResource&lt;TResource&gt;  
+<a name='DefaultEcs.Resource.ManagedResource_TResource_.TResource'></a>
+
+`TResource`
+
+The type of the resource.
+
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; ManagedResource<TResource>
 
 | Methods | |
 | :--- | :--- |
-| [Create&lt;TInfo&gt;(TInfo)](ManagedResource_TResource__Create_TInfo_(TInfo).md 'DefaultEcs.Resource.ManagedResource&lt;TResource&gt;.Create&lt;TInfo&gt;(TInfo)') | Create a [ManagedResource&lt;TInfo,TResource&gt;](ManagedResource_TInfo_TResource_.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') object<br/> |
-| [Create&lt;TInfo&gt;(TInfo[])](ManagedResource_TResource__Create_TInfo_(TInfo__).md 'DefaultEcs.Resource.ManagedResource&lt;TResource&gt;.Create&lt;TInfo&gt;(TInfo[])') | Create a [ManagedResource&lt;TInfo,TResource&gt;](ManagedResource_TInfo_TResource_.md 'DefaultEcs.Resource.ManagedResource&lt;TInfo,TResource&gt;') object with multiple infos.<br/> |
+| [Create&lt;TInfo&gt;(TInfo)](ManagedResource_TResource_.Create_TInfo_(TInfo).md 'DefaultEcs.Resource.ManagedResource<TResource>.Create<TInfo>(TInfo)') | Create a [ManagedResource&lt;TInfo,TResource&gt;](ManagedResource_TInfo,TResource_.md 'DefaultEcs.Resource.ManagedResource<TInfo,TResource>') object |
+| [Create&lt;TInfo&gt;(TInfo[])](ManagedResource_TResource_.Create_TInfo_(TInfo[]).md 'DefaultEcs.Resource.ManagedResource<TResource>.Create<TInfo>(TInfo[])') | Create a [ManagedResource&lt;TInfo,TResource&gt;](ManagedResource_TInfo,TResource_.md 'DefaultEcs.Resource.ManagedResource<TInfo,TResource>') object with multiple infos. |

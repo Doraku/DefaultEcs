@@ -1,0 +1,17 @@
+﻿{
+	"OutputDirectoryPath": "..\\..\\documentation\\api",
+	"GeneratedAccessModifiers": "Public,Protected,ProtectedInternal",
+	"GeneratedPages": "Assembly,Types,Members",
+	"AssemblyPageName": "DefaultEcs",
+	"FileNameFactory": "Name",
+	"LinksOutputFilePath": "..\\..\\documentation\\DefaultEcs.txt",
+	"LinksBaseUrl": "https://github.com/Doraku/DefaultEcs/blob/master/documentation/api/",
+	"NamespaceDocItem": {
+		"Sections": [
+			"Title",
+			"summary",
+			"TableOfContents"
+		],
+		"Markdown.TableOfContentsModes": "IncludeKind,IncludeSummary"
+	}
+}

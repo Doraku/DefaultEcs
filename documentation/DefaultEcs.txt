@@ -1,0 +1,472 @@
+https://github.com/Doraku/DefaultEcs/blob/master/documentation/api/
+M:DefaultEcs.AoTHelper.RegisterMessage``1|AoTHelper.RegisterMessage_T_().md|RegisterMessage<T>()
+M:DefaultEcs.AoTHelper.RegisterComponent``1|AoTHelper.RegisterComponent_T_().md|RegisterComponent<T>()
+M:DefaultEcs.AoTHelper.RegisterUnmanagedComponent``1|AoTHelper.RegisterUnmanagedComponent_T_().md|RegisterUnmanagedComponent<T>()
+N:DefaultEcs|DefaultEcs.md#DefaultEcs|DefaultEcs
+T:DefaultEcs.AoTHelper|AoTHelper.md|AoTHelper
+M:DefaultEcs.ComponentCloner.#ctor|ComponentCloner.ComponentCloner().md|ComponentCloner()
+M:DefaultEcs.ComponentCloner.Set``1(``0@,System.Boolean)|ComponentCloner.Set_T_(T,bool).md|Set<T>(T, bool)
+M:DefaultEcs.ComponentCloner.OnComponent``1(``0@,System.Boolean)|ComponentCloner.OnComponent_T_(T,bool).md|OnComponent<T>(T, bool)
+M:DefaultEcs.ComponentCloner.Clone(DefaultEcs.Entity@,DefaultEcs.Entity@)|ComponentCloner.Clone(Entity,Entity).md|Clone(Entity, Entity)
+T:DefaultEcs.ComponentCloner|ComponentCloner.md|ComponentCloner
+P:DefaultEcs.Components`1.Item(DefaultEcs.Entity)|Components_T_.this[Entity].md|this[Entity]
+T:DefaultEcs.Components`1|Components_T_.md|Components<T>
+T:DefaultEcs.MessageHandler`1|MessageHandler_T_(T).md|MessageHandler<T>(T)
+T:DefaultEcs.WorldDisposedHandler|WorldDisposedHandler(World).md|WorldDisposedHandler(World)
+T:DefaultEcs.EntityCreatedHandler|EntityCreatedHandler(Entity).md|EntityCreatedHandler(Entity)
+T:DefaultEcs.EntityEnabledHandler|EntityEnabledHandler(Entity).md|EntityEnabledHandler(Entity)
+T:DefaultEcs.EntityDisabledHandler|EntityDisabledHandler(Entity).md|EntityDisabledHandler(Entity)
+T:DefaultEcs.EntityDisposedHandler|EntityDisposedHandler(Entity).md|EntityDisposedHandler(Entity)
+T:DefaultEcs.ComponentAddedHandler`1|ComponentAddedHandler_T_(Entity,T).md|ComponentAddedHandler<T>(Entity, T)
+T:DefaultEcs.ComponentChangedHandler`1|ComponentChangedHandler_T_(Entity,T,T).md|ComponentChangedHandler<T>(Entity, T, T)
+T:DefaultEcs.ComponentRemovedHandler`1|ComponentRemovedHandler_T_(Entity,T).md|ComponentRemovedHandler<T>(Entity, T)
+T:DefaultEcs.ComponentEnabledHandler`1|ComponentEnabledHandler_T_(Entity,T).md|ComponentEnabledHandler<T>(Entity, T)
+T:DefaultEcs.ComponentDisabledHandler`1|ComponentDisabledHandler_T_(Entity,T).md|ComponentDisabledHandler<T>(Entity, T)
+T:DefaultEcs.ComponentPredicate`1|ComponentPredicate_T_(T).md|ComponentPredicate<T>(T)
+T:DefaultEcs.EntityAddedHandler|EntityAddedHandler(Entity).md|EntityAddedHandler(Entity)
+T:DefaultEcs.EntityRemovedHandler|EntityRemovedHandler(Entity).md|EntityRemovedHandler(Entity)
+P:DefaultEcs.Entity.World|Entity.World.md|World
+P:DefaultEcs.Entity.IsAlive|Entity.IsAlive.md|IsAlive
+M:DefaultEcs.Entity.IsEnabled|Entity.IsEnabled().md|IsEnabled()
+M:DefaultEcs.Entity.Enable|Entity.Enable().md|Enable()
+M:DefaultEcs.Entity.Disable|Entity.Disable().md|Disable()
+M:DefaultEcs.Entity.IsEnabled``1|Entity.IsEnabled_T_().md|IsEnabled<T>()
+M:DefaultEcs.Entity.Enable``1|Entity.Enable_T_().md|Enable<T>()
+M:DefaultEcs.Entity.Disable``1|Entity.Disable_T_().md|Disable<T>()
+M:DefaultEcs.Entity.Set``1(``0@)|Entity.Set_T_(T).md|Set<T>(T)
+M:DefaultEcs.Entity.Set``1|Entity.Set_T_().md|Set<T>()
+M:DefaultEcs.Entity.SetSameAs``1(DefaultEcs.Entity@)|Entity.SetSameAs_T_(Entity).md|SetSameAs<T>(Entity)
+M:DefaultEcs.Entity.SetSameAsWorld``1|Entity.SetSameAsWorld_T_().md|SetSameAsWorld<T>()
+M:DefaultEcs.Entity.Remove``1|Entity.Remove_T_().md|Remove<T>()
+M:DefaultEcs.Entity.NotifyChanged``1|Entity.NotifyChanged_T_().md|NotifyChanged<T>()
+M:DefaultEcs.Entity.Has``1|Entity.Has_T_().md|Has<T>()
+M:DefaultEcs.Entity.Get``1|Entity.Get_T_().md|Get<T>()
+M:DefaultEcs.Entity.CopyTo(DefaultEcs.World,DefaultEcs.ComponentCloner)|Entity.CopyTo(World,ComponentCloner).md|CopyTo(World, ComponentCloner)
+M:DefaultEcs.Entity.CopyTo(DefaultEcs.World)|Entity.CopyTo(World).md|CopyTo(World)
+M:DefaultEcs.Entity.ReadAllComponents(DefaultEcs.Serialization.IComponentReader)|Entity.ReadAllComponents(IComponentReader).md|ReadAllComponents(IComponentReader)
+M:DefaultEcs.Entity.Dispose|Entity.Dispose().md|Dispose()
+M:DefaultEcs.Entity.Equals(DefaultEcs.Entity)|Entity.Equals(Entity).md|Equals(Entity)
+M:DefaultEcs.Entity.op_Equality(DefaultEcs.Entity,DefaultEcs.Entity)|Entity.operator(Entity,Entity).md|operator ==(Entity, Entity)
+M:DefaultEcs.Entity.op_Inequality(DefaultEcs.Entity,DefaultEcs.Entity)|Entity.operator!(Entity,Entity).md|operator !=(Entity, Entity)
+M:DefaultEcs.Entity.Equals(System.Object)|Entity.Equals(object).md|Equals(object)
+M:DefaultEcs.Entity.GetHashCode|Entity.GetHashCode().md|GetHashCode()
+M:DefaultEcs.Entity.ToString|Entity.ToString().md|ToString()
+T:DefaultEcs.Entity|Entity.md|Entity
+P:DefaultEcs.EntityMap`1.Keys|EntityMap_TKey_.Keys.md|Keys
+P:DefaultEcs.EntityMap`1.Item(`0)|EntityMap_TKey_.this[TKey].md|this[TKey]
+P:DefaultEcs.EntityMap`1.World|EntityMap_TKey_.World.md|World
+M:DefaultEcs.EntityMap`1.ContainsKey(`0)|EntityMap_TKey_.ContainsKey(TKey).md|ContainsKey(TKey)
+M:DefaultEcs.EntityMap`1.TryGetEntity(`0,DefaultEcs.Entity@)|EntityMap_TKey_.TryGetEntity(TKey,Entity).md|TryGetEntity(TKey, Entity)
+M:DefaultEcs.EntityMap`1.Contains(DefaultEcs.Entity@)|EntityMap_TKey_.Contains(Entity).md|Contains(Entity)
+M:DefaultEcs.EntityMap`1.Complete|EntityMap_TKey_.Complete().md|Complete()
+M:DefaultEcs.EntityMap`1.TrimExcess|EntityMap_TKey_.TrimExcess().md|TrimExcess()
+M:DefaultEcs.EntityMap`1.Dispose|EntityMap_TKey_.Dispose().md|Dispose()
+E:DefaultEcs.EntityMap`1.EntityAdded|EntityMap_TKey_.EntityAdded.md|EntityAdded
+E:DefaultEcs.EntityMap`1.EntityRemoved|EntityMap_TKey_.EntityRemoved.md|EntityRemoved
+T:DefaultEcs.EntityMap`1|EntityMap_TKey_.md|EntityMap<TKey>
+P:DefaultEcs.EntityMultiMap`1.Keys|EntityMultiMap_TKey_.Keys.md|Keys
+P:DefaultEcs.EntityMultiMap`1.Item(`0)|EntityMultiMap_TKey_.this[TKey].md|this[TKey]
+P:DefaultEcs.EntityMultiMap`1.World|EntityMultiMap_TKey_.World.md|World
+M:DefaultEcs.EntityMultiMap`1.Count(`0)|EntityMultiMap_TKey_.Count(TKey).md|Count(TKey)
+M:DefaultEcs.EntityMultiMap`1.ContainsKey(`0)|EntityMultiMap_TKey_.ContainsKey(TKey).md|ContainsKey(TKey)
+M:DefaultEcs.EntityMultiMap`1.TryGetEntities(`0,System.ReadOnlySpan{DefaultEcs.Entity}@)|EntityMultiMap_TKey_.TryGetEntities(TKey,ReadOnlySpan_Entity_).md|TryGetEntities(TKey, ReadOnlySpan<Entity>)
+M:DefaultEcs.EntityMultiMap`1.Contains(DefaultEcs.Entity@)|EntityMultiMap_TKey_.Contains(Entity).md|Contains(Entity)
+M:DefaultEcs.EntityMultiMap`1.Complete|EntityMultiMap_TKey_.Complete().md|Complete()
+M:DefaultEcs.EntityMultiMap`1.TrimExcess|EntityMultiMap_TKey_.TrimExcess().md|TrimExcess()
+M:DefaultEcs.EntityMultiMap`1.Dispose|EntityMultiMap_TKey_.Dispose().md|Dispose()
+E:DefaultEcs.EntityMultiMap`1.EntityAdded|EntityMultiMap_TKey_.EntityAdded.md|EntityAdded
+E:DefaultEcs.EntityMultiMap`1.EntityRemoved|EntityMultiMap_TKey_.EntityRemoved.md|EntityRemoved
+T:DefaultEcs.EntityMultiMap`1|EntityMultiMap_TKey_.md|EntityMultiMap<TKey>
+M:DefaultEcs.EntityQueryBuilder.With``1|EntityQueryBuilder.With_T_().md|With<T>()
+M:DefaultEcs.EntityQueryBuilder.With``1(DefaultEcs.ComponentPredicate{``0})|EntityQueryBuilder.With_T_(ComponentPredicate_T_).md|With<T>(ComponentPredicate<T>)
+M:DefaultEcs.EntityQueryBuilder.Without``1|EntityQueryBuilder.Without_T_().md|Without<T>()
+M:DefaultEcs.EntityQueryBuilder.WhenAdded``1|EntityQueryBuilder.WhenAdded_T_().md|WhenAdded<T>()
+M:DefaultEcs.EntityQueryBuilder.WhenChanged``1|EntityQueryBuilder.WhenChanged_T_().md|WhenChanged<T>()
+M:DefaultEcs.EntityQueryBuilder.WhenRemoved``1|EntityQueryBuilder.WhenRemoved_T_().md|WhenRemoved<T>()
+M:DefaultEcs.EntityQueryBuilder.WithEither``1|EntityQueryBuilder.WithEither_T_().md|WithEither<T>()
+M:DefaultEcs.EntityQueryBuilder.WithoutEither``1|EntityQueryBuilder.WithoutEither_T_().md|WithoutEither<T>()
+M:DefaultEcs.EntityQueryBuilder.WhenAddedEither``1|EntityQueryBuilder.WhenAddedEither_T_().md|WhenAddedEither<T>()
+M:DefaultEcs.EntityQueryBuilder.WhenChangedEither``1|EntityQueryBuilder.WhenChangedEither_T_().md|WhenChangedEither<T>()
+M:DefaultEcs.EntityQueryBuilder.WhenRemovedEither``1|EntityQueryBuilder.WhenRemovedEither_T_().md|WhenRemovedEither<T>()
+M:DefaultEcs.EntityQueryBuilder.Copy|EntityQueryBuilder.Copy().md|Copy()
+M:DefaultEcs.EntityQueryBuilder.AsPredicate|EntityQueryBuilder.AsPredicate().md|AsPredicate()
+M:DefaultEcs.EntityQueryBuilder.AsEnumerable|EntityQueryBuilder.AsEnumerable().md|AsEnumerable()
+M:DefaultEcs.EntityQueryBuilder.AsSet|EntityQueryBuilder.AsSet().md|AsSet()
+M:DefaultEcs.EntityQueryBuilder.AsSortedSet``1(System.Collections.Generic.IComparer{``0})|EntityQueryBuilder.AsSortedSet_TComponent_(IComparer_TComponent_).md|AsSortedSet<TComponent>(IComparer<TComponent>)
+M:DefaultEcs.EntityQueryBuilder.AsSortedSet``1|EntityQueryBuilder.AsSortedSet_TComponent_().md|AsSortedSet<TComponent>()
+M:DefaultEcs.EntityQueryBuilder.AsMap``1(System.Int32,System.Collections.Generic.IEqualityComparer{``0})|EntityQueryBuilder.AsMap_TKey_(int,IEqualityComparer_TKey_).md|AsMap<TKey>(int, IEqualityComparer<TKey>)
+M:DefaultEcs.EntityQueryBuilder.AsMap``1(System.Collections.Generic.IEqualityComparer{``0})|EntityQueryBuilder.AsMap_TKey_(IEqualityComparer_TKey_).md|AsMap<TKey>(IEqualityComparer<TKey>)
+M:DefaultEcs.EntityQueryBuilder.AsMap``1(System.Int32)|EntityQueryBuilder.AsMap_TKey_(int).md|AsMap<TKey>(int)
+M:DefaultEcs.EntityQueryBuilder.AsMap``1|EntityQueryBuilder.AsMap_TKey_().md|AsMap<TKey>()
+M:DefaultEcs.EntityQueryBuilder.AsMultiMap``1(System.Int32,System.Collections.Generic.IEqualityComparer{``0})|EntityQueryBuilder.AsMultiMap_TKey_(int,IEqualityComparer_TKey_).md|AsMultiMap<TKey>(int, IEqualityComparer<TKey>)
+M:DefaultEcs.EntityQueryBuilder.AsMultiMap``1(System.Collections.Generic.IEqualityComparer{``0})|EntityQueryBuilder.AsMultiMap_TKey_(IEqualityComparer_TKey_).md|AsMultiMap<TKey>(IEqualityComparer<TKey>)
+M:DefaultEcs.EntityQueryBuilder.AsMultiMap``1(System.Int32)|EntityQueryBuilder.AsMultiMap_TKey_(int).md|AsMultiMap<TKey>(int)
+M:DefaultEcs.EntityQueryBuilder.AsMultiMap``1|EntityQueryBuilder.AsMultiMap_TKey_().md|AsMultiMap<TKey>()
+T:DefaultEcs.EntityQueryBuilder|EntityQueryBuilder.md|EntityQueryBuilder
+M:DefaultEcs.EntityQueryBuilderExtension.With(DefaultEcs.EntityQueryBuilder,System.Type[])|EntityQueryBuilderExtension.With(thisEntityQueryBuilder,Type[]).md|With(this EntityQueryBuilder, Type[])
+M:DefaultEcs.EntityQueryBuilderExtension.Without(DefaultEcs.EntityQueryBuilder,System.Type[])|EntityQueryBuilderExtension.Without(thisEntityQueryBuilder,Type[]).md|Without(this EntityQueryBuilder, Type[])
+M:DefaultEcs.EntityQueryBuilderExtension.WhenAdded(DefaultEcs.EntityQueryBuilder,System.Type[])|EntityQueryBuilderExtension.WhenAdded(thisEntityQueryBuilder,Type[]).md|WhenAdded(this EntityQueryBuilder, Type[])
+M:DefaultEcs.EntityQueryBuilderExtension.WhenChanged(DefaultEcs.EntityQueryBuilder,System.Type[])|EntityQueryBuilderExtension.WhenChanged(thisEntityQueryBuilder,Type[]).md|WhenChanged(this EntityQueryBuilder, Type[])
+M:DefaultEcs.EntityQueryBuilderExtension.WhenRemoved(DefaultEcs.EntityQueryBuilder,System.Type[])|EntityQueryBuilderExtension.WhenRemoved(thisEntityQueryBuilder,Type[]).md|WhenRemoved(this EntityQueryBuilder, Type[])
+M:DefaultEcs.EntityQueryBuilderExtension.WithEither(DefaultEcs.EntityQueryBuilder,System.Type[])|EntityQueryBuilderExtension.WithEither(thisEntityQueryBuilder,Type[]).md|WithEither(this EntityQueryBuilder, Type[])
+M:DefaultEcs.EntityQueryBuilderExtension.WithoutEither(DefaultEcs.EntityQueryBuilder,System.Type[])|EntityQueryBuilderExtension.WithoutEither(thisEntityQueryBuilder,Type[]).md|WithoutEither(this EntityQueryBuilder, Type[])
+M:DefaultEcs.EntityQueryBuilderExtension.WhenAddedEither(DefaultEcs.EntityQueryBuilder,System.Type[])|EntityQueryBuilderExtension.WhenAddedEither(thisEntityQueryBuilder,Type[]).md|WhenAddedEither(this EntityQueryBuilder, Type[])
+M:DefaultEcs.EntityQueryBuilderExtension.WhenChangedEither(DefaultEcs.EntityQueryBuilder,System.Type[])|EntityQueryBuilderExtension.WhenChangedEither(thisEntityQueryBuilder,Type[]).md|WhenChangedEither(this EntityQueryBuilder, Type[])
+M:DefaultEcs.EntityQueryBuilderExtension.WhenRemovedEither(DefaultEcs.EntityQueryBuilder,System.Type[])|EntityQueryBuilderExtension.WhenRemovedEither(thisEntityQueryBuilder,Type[]).md|WhenRemovedEither(this EntityQueryBuilder, Type[])
+T:DefaultEcs.EntityQueryBuilderExtension|EntityQueryBuilderExtension.md|EntityQueryBuilderExtension
+P:DefaultEcs.EntitySet.Count|EntitySet.Count.md|Count
+P:DefaultEcs.EntitySet.World|EntitySet.World.md|World
+M:DefaultEcs.EntitySet.GetEntities|EntitySet.GetEntities().md|GetEntities()
+M:DefaultEcs.EntitySet.Contains(DefaultEcs.Entity@)|EntitySet.Contains(Entity).md|Contains(Entity)
+M:DefaultEcs.EntitySet.Complete|EntitySet.Complete().md|Complete()
+M:DefaultEcs.EntitySet.TrimExcess|EntitySet.TrimExcess().md|TrimExcess()
+M:DefaultEcs.EntitySet.Dispose|EntitySet.Dispose().md|Dispose()
+E:DefaultEcs.EntitySet.EntityAdded|EntitySet.EntityAdded.md|EntityAdded
+E:DefaultEcs.EntitySet.EntityRemoved|EntitySet.EntityRemoved.md|EntityRemoved
+T:DefaultEcs.EntitySet|EntitySet.md|EntitySet
+P:DefaultEcs.EntitySortedSet`1.Count|EntitySortedSet_TComponent_.Count.md|Count
+P:DefaultEcs.EntitySortedSet`1.World|EntitySortedSet_TComponent_.World.md|World
+M:DefaultEcs.EntitySortedSet`1.GetEntities|EntitySortedSet_TComponent_.GetEntities().md|GetEntities()
+M:DefaultEcs.EntitySortedSet`1.Contains(DefaultEcs.Entity@)|EntitySortedSet_TComponent_.Contains(Entity).md|Contains(Entity)
+M:DefaultEcs.EntitySortedSet`1.Complete|EntitySortedSet_TComponent_.Complete().md|Complete()
+M:DefaultEcs.EntitySortedSet`1.TrimExcess|EntitySortedSet_TComponent_.TrimExcess().md|TrimExcess()
+M:DefaultEcs.EntitySortedSet`1.Dispose|EntitySortedSet_TComponent_.Dispose().md|Dispose()
+E:DefaultEcs.EntitySortedSet`1.EntityAdded|EntitySortedSet_TComponent_.EntityAdded.md|EntityAdded
+E:DefaultEcs.EntitySortedSet`1.EntityRemoved|EntitySortedSet_TComponent_.EntityRemoved.md|EntityRemoved
+T:DefaultEcs.EntitySortedSet`1|EntitySortedSet_TComponent_.md|EntitySortedSet<TComponent>
+M:DefaultEcs.IPublisher.Subscribe``1(DefaultEcs.MessageHandler{``0})|IPublisher.Subscribe_T_(MessageHandler_T_).md|Subscribe<T>(MessageHandler<T>)
+M:DefaultEcs.IPublisher.Publish``1(``0@)|IPublisher.Publish_T_(T).md|Publish<T>(T)
+T:DefaultEcs.IPublisher|IPublisher.md|IPublisher
+T:DefaultEcs.SubscribeAttribute|SubscribeAttribute.md|SubscribeAttribute
+M:DefaultEcs.IPublisherExtension.Subscribe(DefaultEcs.IPublisher,System.Type)|IPublisherExtension.Subscribe(thisIPublisher,Type).md|Subscribe(this IPublisher, Type)
+M:DefaultEcs.IPublisherExtension.Subscribe``1(DefaultEcs.IPublisher)|IPublisherExtension.Subscribe_T_(thisIPublisher).md|Subscribe<T>(this IPublisher)
+M:DefaultEcs.IPublisherExtension.Subscribe``1(DefaultEcs.IPublisher,``0)|IPublisherExtension.Subscribe_T_(thisIPublisher,T).md|Subscribe<T>(this IPublisher, T)
+T:DefaultEcs.IPublisherExtension|IPublisherExtension.md|IPublisherExtension
+P:DefaultEcs.World.MaxCapacity|World.MaxCapacity.md|MaxCapacity
+M:DefaultEcs.World.#ctor(System.Int32)|World.World(int).md|World(int)
+M:DefaultEcs.World.#ctor|World.World().md|World()
+M:DefaultEcs.World.CreateEntity|World.CreateEntity().md|CreateEntity()
+M:DefaultEcs.World.SetMaxCapacity``1(System.Int32)|World.SetMaxCapacity_T_(int).md|SetMaxCapacity<T>(int)
+M:DefaultEcs.World.GetMaxCapacity``1|World.GetMaxCapacity_T_().md|GetMaxCapacity<T>()
+M:DefaultEcs.World.GetAll``1|World.GetAll_T_().md|GetAll<T>()
+M:DefaultEcs.World.GetComponents``1|World.GetComponents_T_().md|GetComponents<T>()
+M:DefaultEcs.World.Set``1(``0@)|World.Set_T_(T).md|Set<T>(T)
+M:DefaultEcs.World.Set``1|World.Set_T_().md|Set<T>()
+M:DefaultEcs.World.Has``1|World.Has_T_().md|Has<T>()
+M:DefaultEcs.World.Get``1|World.Get_T_().md|Get<T>()
+M:DefaultEcs.World.Remove``1|World.Remove_T_().md|Remove<T>()
+M:DefaultEcs.World.GetEntities|World.GetEntities().md|GetEntities()
+M:DefaultEcs.World.GetDisabledEntities|World.GetDisabledEntities().md|GetDisabledEntities()
+M:DefaultEcs.World.ReadAllComponentTypes(DefaultEcs.Serialization.IComponentTypeReader)|World.ReadAllComponentTypes(IComponentTypeReader).md|ReadAllComponentTypes(IComponentTypeReader)
+M:DefaultEcs.World.Optimize(DefaultEcs.Threading.IParallelRunner,System.Action)|World.Optimize(IParallelRunner,Action).md|Optimize(IParallelRunner, Action)
+M:DefaultEcs.World.Optimize(DefaultEcs.Threading.IParallelRunner)|World.Optimize(IParallelRunner).md|Optimize(IParallelRunner)
+M:DefaultEcs.World.Optimize|World.Optimize().md|Optimize()
+M:DefaultEcs.World.TrimExcess``1|World.TrimExcess_T_().md|TrimExcess<T>()
+M:DefaultEcs.World.TrimExcess|World.TrimExcess().md|TrimExcess()
+M:DefaultEcs.World.SubscribeWorldDisposed(DefaultEcs.WorldDisposedHandler)|World.SubscribeWorldDisposed(WorldDisposedHandler).md|SubscribeWorldDisposed(WorldDisposedHandler)
+M:DefaultEcs.World.SubscribeEntityCreated(DefaultEcs.EntityCreatedHandler)|World.SubscribeEntityCreated(EntityCreatedHandler).md|SubscribeEntityCreated(EntityCreatedHandler)
+M:DefaultEcs.World.SubscribeEntityEnabled(DefaultEcs.EntityEnabledHandler)|World.SubscribeEntityEnabled(EntityEnabledHandler).md|SubscribeEntityEnabled(EntityEnabledHandler)
+M:DefaultEcs.World.SubscribeEntityDisabled(DefaultEcs.EntityDisabledHandler)|World.SubscribeEntityDisabled(EntityDisabledHandler).md|SubscribeEntityDisabled(EntityDisabledHandler)
+M:DefaultEcs.World.SubscribeEntityDisposed(DefaultEcs.EntityDisposedHandler)|World.SubscribeEntityDisposed(EntityDisposedHandler).md|SubscribeEntityDisposed(EntityDisposedHandler)
+M:DefaultEcs.World.SubscribeComponentAdded``1(DefaultEcs.ComponentAddedHandler{``0})|World.SubscribeComponentAdded_T_(ComponentAddedHandler_T_).md|SubscribeComponentAdded<T>(ComponentAddedHandler<T>)
+M:DefaultEcs.World.SubscribeComponentChanged``1(DefaultEcs.ComponentChangedHandler{``0})|World.SubscribeComponentChanged_T_(ComponentChangedHandler_T_).md|SubscribeComponentChanged<T>(ComponentChangedHandler<T>)
+M:DefaultEcs.World.SubscribeComponentRemoved``1(DefaultEcs.ComponentRemovedHandler{``0})|World.SubscribeComponentRemoved_T_(ComponentRemovedHandler_T_).md|SubscribeComponentRemoved<T>(ComponentRemovedHandler<T>)
+M:DefaultEcs.World.SubscribeComponentEnabled``1(DefaultEcs.ComponentEnabledHandler{``0})|World.SubscribeComponentEnabled_T_(ComponentEnabledHandler_T_).md|SubscribeComponentEnabled<T>(ComponentEnabledHandler<T>)
+M:DefaultEcs.World.SubscribeComponentDisabled``1(DefaultEcs.ComponentDisabledHandler{``0})|World.SubscribeComponentDisabled_T_(ComponentDisabledHandler_T_).md|SubscribeComponentDisabled<T>(ComponentDisabledHandler<T>)
+M:DefaultEcs.World.GetEnumerator|World.GetEnumerator().md|GetEnumerator()
+M:DefaultEcs.World.System#Collections#Generic#IEnumerable{DefaultEcs#Entity}#GetEnumerator|World.System.Collections.Generic.IEnumerable_DefaultEcs.Entity_.GetEnumerator().md|System.Collections.Generic.IEnumerable<DefaultEcs.Entity>.GetEnumerator()
+M:DefaultEcs.World.System#Collections#IEnumerable#GetEnumerator|World.System.Collections.IEnumerable.GetEnumerator().md|System.Collections.IEnumerable.GetEnumerator()
+M:DefaultEcs.World.Subscribe``1(DefaultEcs.MessageHandler{``0})|World.Subscribe_T_(MessageHandler_T_).md|Subscribe<T>(MessageHandler<T>)
+M:DefaultEcs.World.Publish``1(``0@)|World.Publish_T_(T).md|Publish<T>(T)
+M:DefaultEcs.World.Dispose|World.Dispose().md|Dispose()
+M:DefaultEcs.World.ToString|World.ToString().md|ToString()
+T:DefaultEcs.World|World.md|World
+P:DefaultEcs.Threading.DefaultParallelRunner.DegreeOfParallelism|DefaultParallelRunner.DegreeOfParallelism.md|DegreeOfParallelism
+M:DefaultEcs.Threading.DefaultParallelRunner.#ctor(System.Int32)|DefaultParallelRunner.DefaultParallelRunner(int).md|DefaultParallelRunner(int)
+M:DefaultEcs.Threading.DefaultParallelRunner.Run(DefaultEcs.Threading.IParallelRunnable)|DefaultParallelRunner.Run(IParallelRunnable).md|Run(IParallelRunnable)
+M:DefaultEcs.Threading.DefaultParallelRunner.Dispose|DefaultParallelRunner.Dispose().md|Dispose()
+N:DefaultEcs.Threading|DefaultEcs.md#DefaultEcs.Threading|DefaultEcs.Threading
+T:DefaultEcs.Threading.DefaultParallelRunner|DefaultParallelRunner.md|DefaultParallelRunner
+M:DefaultEcs.Threading.IParallelRunnable.Run(System.Int32,System.Int32)|IParallelRunnable.Run(int,int).md|Run(int, int)
+T:DefaultEcs.Threading.IParallelRunnable|IParallelRunnable.md|IParallelRunnable
+P:DefaultEcs.Threading.IParallelRunner.DegreeOfParallelism|IParallelRunner.DegreeOfParallelism.md|DegreeOfParallelism
+M:DefaultEcs.Threading.IParallelRunner.Run(DefaultEcs.Threading.IParallelRunnable)|IParallelRunner.Run(IParallelRunnable).md|Run(IParallelRunnable)
+T:DefaultEcs.Threading.IParallelRunner|IParallelRunner.md|IParallelRunner
+P:DefaultEcs.System.AComponentSystem`2.World|AComponentSystem_TState,TComponent_.World.md|World
+P:DefaultEcs.System.AComponentSystem`2.IsEnabled|AComponentSystem_TState,TComponent_.IsEnabled.md|IsEnabled
+M:DefaultEcs.System.AComponentSystem`2.#ctor(DefaultEcs.World,DefaultEcs.Threading.IParallelRunner,System.Int32)|AComponentSystem_TState,TComponent_.AComponentSystem(World,IParallelRunner,int).md|AComponentSystem(World, IParallelRunner, int)
+M:DefaultEcs.System.AComponentSystem`2.#ctor(DefaultEcs.World,DefaultEcs.Threading.IParallelRunner)|AComponentSystem_TState,TComponent_.AComponentSystem(World,IParallelRunner).md|AComponentSystem(World, IParallelRunner)
+M:DefaultEcs.System.AComponentSystem`2.#ctor(DefaultEcs.World)|AComponentSystem_TState,TComponent_.AComponentSystem(World).md|AComponentSystem(World)
+M:DefaultEcs.System.AComponentSystem`2.PreUpdate(`0)|AComponentSystem_TState,TComponent_.PreUpdate(TState).md|PreUpdate(TState)
+M:DefaultEcs.System.AComponentSystem`2.PostUpdate(`0)|AComponentSystem_TState,TComponent_.PostUpdate(TState).md|PostUpdate(TState)
+M:DefaultEcs.System.AComponentSystem`2.Update(`0,`1@)|AComponentSystem_TState,TComponent_.Update(TState,TComponent).md|Update(TState, TComponent)
+M:DefaultEcs.System.AComponentSystem`2.Update(`0,System.Span{`1})|AComponentSystem_TState,TComponent_.Update(TState,Span_TComponent_).md|Update(TState, Span<TComponent>)
+M:DefaultEcs.System.AComponentSystem`2.Update(`0)|AComponentSystem_TState,TComponent_.Update(TState).md|Update(TState)
+M:DefaultEcs.System.AComponentSystem`2.Dispose|AComponentSystem_TState,TComponent_.Dispose().md|Dispose()
+N:DefaultEcs.System|DefaultEcs.md#DefaultEcs.System|DefaultEcs.System
+T:DefaultEcs.System.AComponentSystem`2|AComponentSystem_TState,TComponent_.md|AComponentSystem<TState,TComponent>
+P:DefaultEcs.System.ActionSystem`1.IsEnabled|ActionSystem_T_.IsEnabled.md|IsEnabled
+M:DefaultEcs.System.ActionSystem`1.#ctor(System.Action{`0})|ActionSystem_T_.ActionSystem(Action_T_).md|ActionSystem(Action<T>)
+M:DefaultEcs.System.ActionSystem`1.Update(`0)|ActionSystem_T_.Update(T).md|Update(T)
+M:DefaultEcs.System.ActionSystem`1.Dispose|ActionSystem_T_.Dispose().md|Dispose()
+T:DefaultEcs.System.ActionSystem`1|ActionSystem_T_.md|ActionSystem<T>
+P:DefaultEcs.System.AEntityMultiMapSystem`2.MultiMap|AEntityMultiMapSystem_TState,TKey_.MultiMap.md|MultiMap
+P:DefaultEcs.System.AEntityMultiMapSystem`2.World|AEntityMultiMapSystem_TState,TKey_.World.md|World
+P:DefaultEcs.System.AEntityMultiMapSystem`2.IsEnabled|AEntityMultiMapSystem_TState,TKey_.IsEnabled.md|IsEnabled
+M:DefaultEcs.System.AEntityMultiMapSystem`2.#ctor(DefaultEcs.EntityMultiMap{`1},DefaultEcs.Threading.IParallelRunner,System.Int32)|AEntityMultiMapSystem_TState,TKey_.AEntityMultiMapSystem(EntityMultiMap_TKey_,IParallelRunner,int).md|AEntityMultiMapSystem(EntityMultiMap<TKey>, IParallelRunner, int)
+M:DefaultEcs.System.AEntityMultiMapSystem`2.#ctor(DefaultEcs.EntityMultiMap{`1},System.Boolean)|AEntityMultiMapSystem_TState,TKey_.AEntityMultiMapSystem(EntityMultiMap_TKey_,bool).md|AEntityMultiMapSystem(EntityMultiMap<TKey>, bool)
+M:DefaultEcs.System.AEntityMultiMapSystem`2.#ctor(DefaultEcs.World,System.Func{System.Object,DefaultEcs.World,DefaultEcs.EntityMultiMap{`1}},DefaultEcs.Threading.IParallelRunner,System.Int32)|AEntityMultiMapSystem_TState,TKey_.AEntityMultiMapSystem(World,Func_object,World,EntityMultiMap_TKey__,IParallelRunner,int).md|AEntityMultiMapSystem(World, Func<object,World,EntityMultiMap<TKey>>, IParallelRunner, int)
+M:DefaultEcs.System.AEntityMultiMapSystem`2.#ctor(DefaultEcs.World,DefaultEcs.Threading.IParallelRunner,System.Int32)|AEntityMultiMapSystem_TState,TKey_.AEntityMultiMapSystem(World,IParallelRunner,int).md|AEntityMultiMapSystem(World, IParallelRunner, int)
+M:DefaultEcs.System.AEntityMultiMapSystem`2.#ctor(DefaultEcs.World,System.Func{System.Object,DefaultEcs.World,DefaultEcs.EntityMultiMap{`1}},System.Boolean)|AEntityMultiMapSystem_TState,TKey_.AEntityMultiMapSystem(World,Func_object,World,EntityMultiMap_TKey__,bool).md|AEntityMultiMapSystem(World, Func<object,World,EntityMultiMap<TKey>>, bool)
+M:DefaultEcs.System.AEntityMultiMapSystem`2.#ctor(DefaultEcs.World,System.Boolean)|AEntityMultiMapSystem_TState,TKey_.AEntityMultiMapSystem(World,bool).md|AEntityMultiMapSystem(World, bool)
+M:DefaultEcs.System.AEntityMultiMapSystem`2.PreUpdate(`0)|AEntityMultiMapSystem_TState,TKey_.PreUpdate(TState).md|PreUpdate(TState)
+M:DefaultEcs.System.AEntityMultiMapSystem`2.PreUpdate(`0,`1)|AEntityMultiMapSystem_TState,TKey_.PreUpdate(TState,TKey).md|PreUpdate(TState, TKey)
+M:DefaultEcs.System.AEntityMultiMapSystem`2.PostUpdate(`0,`1)|AEntityMultiMapSystem_TState,TKey_.PostUpdate(TState,TKey).md|PostUpdate(TState, TKey)
+M:DefaultEcs.System.AEntityMultiMapSystem`2.PostUpdate(`0)|AEntityMultiMapSystem_TState,TKey_.PostUpdate(TState).md|PostUpdate(TState)
+M:DefaultEcs.System.AEntityMultiMapSystem`2.GetKeys|AEntityMultiMapSystem_TState,TKey_.GetKeys().md|GetKeys()
+M:DefaultEcs.System.AEntityMultiMapSystem`2.Update(`0,`1@,DefaultEcs.Entity@)|AEntityMultiMapSystem_TState,TKey_.Update(TState,TKey,Entity).md|Update(TState, TKey, Entity)
+M:DefaultEcs.System.AEntityMultiMapSystem`2.Update(`0,`1@,System.ReadOnlySpan{DefaultEcs.Entity})|AEntityMultiMapSystem_TState,TKey_.Update(TState,TKey,ReadOnlySpan_Entity_).md|Update(TState, TKey, ReadOnlySpan<Entity>)
+M:DefaultEcs.System.AEntityMultiMapSystem`2.Update(`0)|AEntityMultiMapSystem_TState,TKey_.Update(TState).md|Update(TState)
+M:DefaultEcs.System.AEntityMultiMapSystem`2.Dispose|AEntityMultiMapSystem_TState,TKey_.Dispose().md|Dispose()
+T:DefaultEcs.System.AEntityMultiMapSystem`2|AEntityMultiMapSystem_TState,TKey_.md|AEntityMultiMapSystem<TState,TKey>
+P:DefaultEcs.System.AEntitySetSystem`1.Set|AEntitySetSystem_T_.Set.md|Set
+P:DefaultEcs.System.AEntitySetSystem`1.World|AEntitySetSystem_T_.World.md|World
+P:DefaultEcs.System.AEntitySetSystem`1.IsEnabled|AEntitySetSystem_T_.IsEnabled.md|IsEnabled
+M:DefaultEcs.System.AEntitySetSystem`1.#ctor(DefaultEcs.EntitySet,DefaultEcs.Threading.IParallelRunner,System.Int32)|AEntitySetSystem_T_.AEntitySetSystem(EntitySet,IParallelRunner,int).md|AEntitySetSystem(EntitySet, IParallelRunner, int)
+M:DefaultEcs.System.AEntitySetSystem`1.#ctor(DefaultEcs.EntitySet,System.Boolean)|AEntitySetSystem_T_.AEntitySetSystem(EntitySet,bool).md|AEntitySetSystem(EntitySet, bool)
+M:DefaultEcs.System.AEntitySetSystem`1.#ctor(DefaultEcs.World,System.Func{System.Object,DefaultEcs.World,DefaultEcs.EntitySet},DefaultEcs.Threading.IParallelRunner,System.Int32)|AEntitySetSystem_T_.AEntitySetSystem(World,Func_object,World,EntitySet_,IParallelRunner,int).md|AEntitySetSystem(World, Func<object,World,EntitySet>, IParallelRunner, int)
+M:DefaultEcs.System.AEntitySetSystem`1.#ctor(DefaultEcs.World,DefaultEcs.Threading.IParallelRunner,System.Int32)|AEntitySetSystem_T_.AEntitySetSystem(World,IParallelRunner,int).md|AEntitySetSystem(World, IParallelRunner, int)
+M:DefaultEcs.System.AEntitySetSystem`1.#ctor(DefaultEcs.World,System.Func{System.Object,DefaultEcs.World,DefaultEcs.EntitySet},System.Boolean)|AEntitySetSystem_T_.AEntitySetSystem(World,Func_object,World,EntitySet_,bool).md|AEntitySetSystem(World, Func<object,World,EntitySet>, bool)
+M:DefaultEcs.System.AEntitySetSystem`1.#ctor(DefaultEcs.World,System.Boolean)|AEntitySetSystem_T_.AEntitySetSystem(World,bool).md|AEntitySetSystem(World, bool)
+M:DefaultEcs.System.AEntitySetSystem`1.PreUpdate(`0)|AEntitySetSystem_T_.PreUpdate(T).md|PreUpdate(T)
+M:DefaultEcs.System.AEntitySetSystem`1.PostUpdate(`0)|AEntitySetSystem_T_.PostUpdate(T).md|PostUpdate(T)
+M:DefaultEcs.System.AEntitySetSystem`1.Update(`0,DefaultEcs.Entity@)|AEntitySetSystem_T_.Update(T,Entity).md|Update(T, Entity)
+M:DefaultEcs.System.AEntitySetSystem`1.Update(`0,System.ReadOnlySpan{DefaultEcs.Entity})|AEntitySetSystem_T_.Update(T,ReadOnlySpan_Entity_).md|Update(T, ReadOnlySpan<Entity>)
+M:DefaultEcs.System.AEntitySetSystem`1.Update(`0)|AEntitySetSystem_T_.Update(T).md|Update(T)
+M:DefaultEcs.System.AEntitySetSystem`1.Dispose|AEntitySetSystem_T_.Dispose().md|Dispose()
+T:DefaultEcs.System.AEntitySetSystem`1|AEntitySetSystem_T_.md|AEntitySetSystem<T>
+P:DefaultEcs.System.AEntitySortedSetSystem`2.SortedSet|AEntitySortedSetSystem_TState,TComponent_.SortedSet.md|SortedSet
+P:DefaultEcs.System.AEntitySortedSetSystem`2.World|AEntitySortedSetSystem_TState,TComponent_.World.md|World
+P:DefaultEcs.System.AEntitySortedSetSystem`2.IsEnabled|AEntitySortedSetSystem_TState,TComponent_.IsEnabled.md|IsEnabled
+M:DefaultEcs.System.AEntitySortedSetSystem`2.#ctor(DefaultEcs.EntitySortedSet{`1},System.Boolean)|AEntitySortedSetSystem_TState,TComponent_.AEntitySortedSetSystem(EntitySortedSet_TComponent_,bool).md|AEntitySortedSetSystem(EntitySortedSet<TComponent>, bool)
+M:DefaultEcs.System.AEntitySortedSetSystem`2.#ctor(DefaultEcs.World,System.Func{System.Object,DefaultEcs.World,DefaultEcs.EntitySortedSet{`1}},System.Boolean)|AEntitySortedSetSystem_TState,TComponent_.AEntitySortedSetSystem(World,Func_object,World,EntitySortedSet_TComponent__,bool).md|AEntitySortedSetSystem(World, Func<object,World,EntitySortedSet<TComponent>>, bool)
+M:DefaultEcs.System.AEntitySortedSetSystem`2.#ctor(DefaultEcs.World,System.Boolean)|AEntitySortedSetSystem_TState,TComponent_.AEntitySortedSetSystem(World,bool).md|AEntitySortedSetSystem(World, bool)
+M:DefaultEcs.System.AEntitySortedSetSystem`2.PreUpdate(`0)|AEntitySortedSetSystem_TState,TComponent_.PreUpdate(TState).md|PreUpdate(TState)
+M:DefaultEcs.System.AEntitySortedSetSystem`2.PostUpdate(`0)|AEntitySortedSetSystem_TState,TComponent_.PostUpdate(TState).md|PostUpdate(TState)
+M:DefaultEcs.System.AEntitySortedSetSystem`2.Update(`0,DefaultEcs.Entity@)|AEntitySortedSetSystem_TState,TComponent_.Update(TState,Entity).md|Update(TState, Entity)
+M:DefaultEcs.System.AEntitySortedSetSystem`2.Update(`0,System.ReadOnlySpan{DefaultEcs.Entity})|AEntitySortedSetSystem_TState,TComponent_.Update(TState,ReadOnlySpan_Entity_).md|Update(TState, ReadOnlySpan<Entity>)
+M:DefaultEcs.System.AEntitySortedSetSystem`2.Update(`0)|AEntitySortedSetSystem_TState,TComponent_.Update(TState).md|Update(TState)
+M:DefaultEcs.System.AEntitySortedSetSystem`2.Dispose|AEntitySortedSetSystem_TState,TComponent_.Dispose().md|Dispose()
+T:DefaultEcs.System.AEntitySortedSetSystem`2|AEntitySortedSetSystem_TState,TComponent_.md|AEntitySortedSetSystem<TState,TComponent>
+T:DefaultEcs.System.DisabledAttribute|DisabledAttribute.md|DisabledAttribute
+T:DefaultEcs.System.WithPredicateAttribute|WithPredicateAttribute.md|WithPredicateAttribute
+F:DefaultEcs.System.ComponentFilterType.With|ComponentFilterType.md#DefaultEcs.System.ComponentFilterType.With|With
+F:DefaultEcs.System.ComponentFilterType.WithEither|ComponentFilterType.md#DefaultEcs.System.ComponentFilterType.WithEither|WithEither
+F:DefaultEcs.System.ComponentFilterType.Without|ComponentFilterType.md#DefaultEcs.System.ComponentFilterType.Without|Without
+F:DefaultEcs.System.ComponentFilterType.WithoutEither|ComponentFilterType.md#DefaultEcs.System.ComponentFilterType.WithoutEither|WithoutEither
+F:DefaultEcs.System.ComponentFilterType.WhenAdded|ComponentFilterType.md#DefaultEcs.System.ComponentFilterType.WhenAdded|WhenAdded
+F:DefaultEcs.System.ComponentFilterType.WhenAddedEither|ComponentFilterType.md#DefaultEcs.System.ComponentFilterType.WhenAddedEither|WhenAddedEither
+F:DefaultEcs.System.ComponentFilterType.WhenChanged|ComponentFilterType.md#DefaultEcs.System.ComponentFilterType.WhenChanged|WhenChanged
+F:DefaultEcs.System.ComponentFilterType.WhenChangedEither|ComponentFilterType.md#DefaultEcs.System.ComponentFilterType.WhenChangedEither|WhenChangedEither
+F:DefaultEcs.System.ComponentFilterType.WhenRemoved|ComponentFilterType.md#DefaultEcs.System.ComponentFilterType.WhenRemoved|WhenRemoved
+F:DefaultEcs.System.ComponentFilterType.WhenRemovedEither|ComponentFilterType.md#DefaultEcs.System.ComponentFilterType.WhenRemovedEither|WhenRemovedEither
+T:DefaultEcs.System.ComponentFilterType|ComponentFilterType.md|ComponentFilterType
+P:DefaultEcs.System.ComponentAttribute.ComponentTypes|ComponentAttribute.ComponentTypes.md|ComponentTypes
+P:DefaultEcs.System.ComponentAttribute.FilterType|ComponentAttribute.FilterType.md|FilterType
+M:DefaultEcs.System.ComponentAttribute.#ctor(DefaultEcs.System.ComponentFilterType,System.Type[])|ComponentAttribute.ComponentAttribute(ComponentFilterType,Type[]).md|ComponentAttribute(ComponentFilterType, Type[])
+T:DefaultEcs.System.ComponentAttribute|ComponentAttribute.md|ComponentAttribute
+M:DefaultEcs.System.WithAttribute.#ctor(System.Type[])|WithAttribute.WithAttribute(Type[]).md|WithAttribute(Type[])
+T:DefaultEcs.System.WithAttribute|WithAttribute.md|WithAttribute
+M:DefaultEcs.System.WithEitherAttribute.#ctor(System.Type[])|WithEitherAttribute.WithEitherAttribute(Type[]).md|WithEitherAttribute(Type[])
+T:DefaultEcs.System.WithEitherAttribute|WithEitherAttribute.md|WithEitherAttribute
+M:DefaultEcs.System.WithoutAttribute.#ctor(System.Type[])|WithoutAttribute.WithoutAttribute(Type[]).md|WithoutAttribute(Type[])
+T:DefaultEcs.System.WithoutAttribute|WithoutAttribute.md|WithoutAttribute
+M:DefaultEcs.System.WithoutEitherAttribute.#ctor(System.Type[])|WithoutEitherAttribute.WithoutEitherAttribute(Type[]).md|WithoutEitherAttribute(Type[])
+T:DefaultEcs.System.WithoutEitherAttribute|WithoutEitherAttribute.md|WithoutEitherAttribute
+M:DefaultEcs.System.WhenAddedAttribute.#ctor(System.Type[])|WhenAddedAttribute.WhenAddedAttribute(Type[]).md|WhenAddedAttribute(Type[])
+T:DefaultEcs.System.WhenAddedAttribute|WhenAddedAttribute.md|WhenAddedAttribute
+M:DefaultEcs.System.WhenAddedEitherAttribute.#ctor(System.Type[])|WhenAddedEitherAttribute.WhenAddedEitherAttribute(Type[]).md|WhenAddedEitherAttribute(Type[])
+T:DefaultEcs.System.WhenAddedEitherAttribute|WhenAddedEitherAttribute.md|WhenAddedEitherAttribute
+M:DefaultEcs.System.WhenChangedAttribute.#ctor(System.Type[])|WhenChangedAttribute.WhenChangedAttribute(Type[]).md|WhenChangedAttribute(Type[])
+T:DefaultEcs.System.WhenChangedAttribute|WhenChangedAttribute.md|WhenChangedAttribute
+M:DefaultEcs.System.WhenChangedEitherAttribute.#ctor(System.Type[])|WhenChangedEitherAttribute.WhenChangedEitherAttribute(Type[]).md|WhenChangedEitherAttribute(Type[])
+T:DefaultEcs.System.WhenChangedEitherAttribute|WhenChangedEitherAttribute.md|WhenChangedEitherAttribute
+M:DefaultEcs.System.WhenRemovedAttribute.#ctor(System.Type[])|WhenRemovedAttribute.WhenRemovedAttribute(Type[]).md|WhenRemovedAttribute(Type[])
+T:DefaultEcs.System.WhenRemovedAttribute|WhenRemovedAttribute.md|WhenRemovedAttribute
+M:DefaultEcs.System.WhenRemovedEitherAttribute.#ctor(System.Type[])|WhenRemovedEitherAttribute.WhenRemovedEitherAttribute(Type[]).md|WhenRemovedEitherAttribute(Type[])
+T:DefaultEcs.System.WhenRemovedEitherAttribute|WhenRemovedEitherAttribute.md|WhenRemovedEitherAttribute
+P:DefaultEcs.System.ISystem`1.IsEnabled|ISystem_T_.IsEnabled.md|IsEnabled
+M:DefaultEcs.System.ISystem`1.Update(`0)|ISystem_T_.Update(T).md|Update(T)
+T:DefaultEcs.System.ISystem`1|ISystem_T_.md|ISystem<T>
+P:DefaultEcs.System.ParallelSystem`1.IsEnabled|ParallelSystem_T_.IsEnabled.md|IsEnabled
+M:DefaultEcs.System.ParallelSystem`1.#ctor(DefaultEcs.System.ISystem{`0},DefaultEcs.Threading.IParallelRunner,System.Collections.Generic.IEnumerable{DefaultEcs.System.ISystem{`0}})|ParallelSystem_T_.ParallelSystem(ISystem_T_,IParallelRunner,IEnumerable_ISystem_T__).md|ParallelSystem(ISystem<T>, IParallelRunner, IEnumerable<ISystem<T>>)
+M:DefaultEcs.System.ParallelSystem`1.#ctor(DefaultEcs.System.ISystem{`0},DefaultEcs.Threading.IParallelRunner,DefaultEcs.System.ISystem{`0}[])|ParallelSystem_T_.ParallelSystem(ISystem_T_,IParallelRunner,ISystem_T_[]).md|ParallelSystem(ISystem<T>, IParallelRunner, ISystem<T>[])
+M:DefaultEcs.System.ParallelSystem`1.#ctor(DefaultEcs.Threading.IParallelRunner,System.Collections.Generic.IEnumerable{DefaultEcs.System.ISystem{`0}})|ParallelSystem_T_.ParallelSystem(IParallelRunner,IEnumerable_ISystem_T__).md|ParallelSystem(IParallelRunner, IEnumerable<ISystem<T>>)
+M:DefaultEcs.System.ParallelSystem`1.#ctor(DefaultEcs.Threading.IParallelRunner,DefaultEcs.System.ISystem{`0}[])|ParallelSystem_T_.ParallelSystem(IParallelRunner,ISystem_T_[]).md|ParallelSystem(IParallelRunner, ISystem<T>[])
+M:DefaultEcs.System.ParallelSystem`1.Update(`0)|ParallelSystem_T_.Update(T).md|Update(T)
+M:DefaultEcs.System.ParallelSystem`1.Dispose|ParallelSystem_T_.Dispose().md|Dispose()
+T:DefaultEcs.System.ParallelSystem`1|ParallelSystem_T_.md|ParallelSystem<T>
+P:DefaultEcs.System.SequentialSystem`1.IsEnabled|SequentialSystem_T_.IsEnabled.md|IsEnabled
+M:DefaultEcs.System.SequentialSystem`1.#ctor(System.Collections.Generic.IEnumerable{DefaultEcs.System.ISystem{`0}})|SequentialSystem_T_.SequentialSystem(IEnumerable_ISystem_T__).md|SequentialSystem(IEnumerable<ISystem<T>>)
+M:DefaultEcs.System.SequentialSystem`1.#ctor(DefaultEcs.System.ISystem{`0}[])|SequentialSystem_T_.SequentialSystem(ISystem_T_[]).md|SequentialSystem(ISystem<T>[])
+M:DefaultEcs.System.SequentialSystem`1.Update(`0)|SequentialSystem_T_.Update(T).md|Update(T)
+M:DefaultEcs.System.SequentialSystem`1.Dispose|SequentialSystem_T_.Dispose().md|Dispose()
+T:DefaultEcs.System.SequentialSystem`1|SequentialSystem_T_.md|SequentialSystem<T>
+M:DefaultEcs.Serialization.BinarySerializationContext.#ctor|BinarySerializationContext.BinarySerializationContext().md|BinarySerializationContext()
+M:DefaultEcs.Serialization.BinarySerializationContext.Marshal``2(System.Func{``0,``1})|BinarySerializationContext.Marshal_TIn,TOut_(Func_TIn,TOut_).md|Marshal<TIn,TOut>(Func<TIn,TOut>)
+M:DefaultEcs.Serialization.BinarySerializationContext.Unmarshal``2(System.Func{``0,``1})|BinarySerializationContext.Unmarshal_TIn,TOut_(Func_TIn,TOut_).md|Unmarshal<TIn,TOut>(Func<TIn,TOut>)
+M:DefaultEcs.Serialization.BinarySerializationContext.Dispose|BinarySerializationContext.Dispose().md|Dispose()
+N:DefaultEcs.Serialization|DefaultEcs.md#DefaultEcs.Serialization|DefaultEcs.Serialization
+T:DefaultEcs.Serialization.BinarySerializationContext|BinarySerializationContext.md|BinarySerializationContext
+M:DefaultEcs.Serialization.BinarySerializer.#ctor(System.Predicate{System.Type},DefaultEcs.Serialization.BinarySerializationContext)|BinarySerializer.BinarySerializer(Predicate_Type_,BinarySerializationContext).md|BinarySerializer(Predicate<Type>, BinarySerializationContext)
+M:DefaultEcs.Serialization.BinarySerializer.#ctor(DefaultEcs.Serialization.BinarySerializationContext)|BinarySerializer.BinarySerializer(BinarySerializationContext).md|BinarySerializer(BinarySerializationContext)
+M:DefaultEcs.Serialization.BinarySerializer.#ctor(System.Predicate{System.Type})|BinarySerializer.BinarySerializer(Predicate_Type_).md|BinarySerializer(Predicate<Type>)
+M:DefaultEcs.Serialization.BinarySerializer.#ctor|BinarySerializer.BinarySerializer().md|BinarySerializer()
+M:DefaultEcs.Serialization.BinarySerializer.Write``1(System.IO.Stream,``0@,DefaultEcs.Serialization.BinarySerializationContext)|BinarySerializer.Write_T_(Stream,T,BinarySerializationContext).md|Write<T>(Stream, T, BinarySerializationContext)
+M:DefaultEcs.Serialization.BinarySerializer.Write``1(System.IO.Stream,``0@)|BinarySerializer.Write_T_(Stream,T).md|Write<T>(Stream, T)
+M:DefaultEcs.Serialization.BinarySerializer.Read``1(System.IO.Stream,DefaultEcs.Serialization.BinarySerializationContext)|BinarySerializer.Read_T_(Stream,BinarySerializationContext).md|Read<T>(Stream, BinarySerializationContext)
+M:DefaultEcs.Serialization.BinarySerializer.Read``1(System.IO.Stream)|BinarySerializer.Read_T_(Stream).md|Read<T>(Stream)
+M:DefaultEcs.Serialization.BinarySerializer.Serialize(System.IO.Stream,DefaultEcs.World)|BinarySerializer.Serialize(Stream,World).md|Serialize(Stream, World)
+M:DefaultEcs.Serialization.BinarySerializer.Deserialize(System.IO.Stream)|BinarySerializer.Deserialize(Stream).md|Deserialize(Stream)
+M:DefaultEcs.Serialization.BinarySerializer.Serialize(System.IO.Stream,System.Collections.Generic.IEnumerable{DefaultEcs.Entity})|BinarySerializer.Serialize(Stream,IEnumerable_Entity_).md|Serialize(Stream, IEnumerable<Entity>)
+M:DefaultEcs.Serialization.BinarySerializer.Deserialize(System.IO.Stream,DefaultEcs.World)|BinarySerializer.Deserialize(Stream,World).md|Deserialize(Stream, World)
+T:DefaultEcs.Serialization.BinarySerializer|BinarySerializer.md|BinarySerializer
+M:DefaultEcs.Serialization.IComponentReader.OnRead``1(``0@,DefaultEcs.Entity@)|IComponentReader.OnRead_T_(T,Entity).md|OnRead<T>(T, Entity)
+T:DefaultEcs.Serialization.IComponentReader|IComponentReader.md|IComponentReader
+M:DefaultEcs.Serialization.IComponentTypeReader.OnRead``1(System.Int32)|IComponentTypeReader.OnRead_T_(int).md|OnRead<T>(int)
+T:DefaultEcs.Serialization.IComponentTypeReader|IComponentTypeReader.md|IComponentTypeReader
+M:DefaultEcs.Serialization.ISerializerExtension.Serialize(DefaultEcs.Serialization.ISerializer,System.IO.Stream,DefaultEcs.Entity[])|ISerializerExtension.Serialize(thisISerializer,Stream,Entity[]).md|Serialize(this ISerializer, Stream, Entity[])
+T:DefaultEcs.Serialization.ISerializerExtension|ISerializerExtension.md|ISerializerExtension
+M:DefaultEcs.Serialization.ISerializer.Serialize(System.IO.Stream,DefaultEcs.World)|ISerializer.Serialize(Stream,World).md|Serialize(Stream, World)
+M:DefaultEcs.Serialization.ISerializer.Deserialize(System.IO.Stream)|ISerializer.Deserialize(Stream).md|Deserialize(Stream)
+M:DefaultEcs.Serialization.ISerializer.Serialize(System.IO.Stream,System.Collections.Generic.IEnumerable{DefaultEcs.Entity})|ISerializer.Serialize(Stream,IEnumerable_Entity_).md|Serialize(Stream, IEnumerable<Entity>)
+M:DefaultEcs.Serialization.ISerializer.Deserialize(System.IO.Stream,DefaultEcs.World)|ISerializer.Deserialize(Stream,World).md|Deserialize(Stream, World)
+T:DefaultEcs.Serialization.ISerializer|ISerializer.md|ISerializer
+M:DefaultEcs.Serialization.TextSerializationContext.#ctor|TextSerializationContext.TextSerializationContext().md|TextSerializationContext()
+M:DefaultEcs.Serialization.TextSerializationContext.Marshal``2(System.Func{``0,``1})|TextSerializationContext.Marshal_TIn,TOut_(Func_TIn,TOut_).md|Marshal<TIn,TOut>(Func<TIn,TOut>)
+M:DefaultEcs.Serialization.TextSerializationContext.Unmarshal``2(System.Func{``0,``1})|TextSerializationContext.Unmarshal_TIn,TOut_(Func_TIn,TOut_).md|Unmarshal<TIn,TOut>(Func<TIn,TOut>)
+M:DefaultEcs.Serialization.TextSerializationContext.Dispose|TextSerializationContext.Dispose().md|Dispose()
+T:DefaultEcs.Serialization.TextSerializationContext|TextSerializationContext.md|TextSerializationContext
+M:DefaultEcs.Serialization.TextSerializer.#ctor(System.Predicate{System.Type},DefaultEcs.Serialization.TextSerializationContext)|TextSerializer.TextSerializer(Predicate_Type_,TextSerializationContext).md|TextSerializer(Predicate<Type>, TextSerializationContext)
+M:DefaultEcs.Serialization.TextSerializer.#ctor(DefaultEcs.Serialization.TextSerializationContext)|TextSerializer.TextSerializer(TextSerializationContext).md|TextSerializer(TextSerializationContext)
+M:DefaultEcs.Serialization.TextSerializer.#ctor(System.Predicate{System.Type})|TextSerializer.TextSerializer(Predicate_Type_).md|TextSerializer(Predicate<Type>)
+M:DefaultEcs.Serialization.TextSerializer.#ctor|TextSerializer.TextSerializer().md|TextSerializer()
+M:DefaultEcs.Serialization.TextSerializer.Write``1(System.IO.Stream,``0@,DefaultEcs.Serialization.TextSerializationContext)|TextSerializer.Write_T_(Stream,T,TextSerializationContext).md|Write<T>(Stream, T, TextSerializationContext)
+M:DefaultEcs.Serialization.TextSerializer.Write``1(System.IO.Stream,``0@)|TextSerializer.Write_T_(Stream,T).md|Write<T>(Stream, T)
+M:DefaultEcs.Serialization.TextSerializer.Read``1(System.IO.Stream,DefaultEcs.Serialization.TextSerializationContext)|TextSerializer.Read_T_(Stream,TextSerializationContext).md|Read<T>(Stream, TextSerializationContext)
+M:DefaultEcs.Serialization.TextSerializer.Read``1(System.IO.Stream)|TextSerializer.Read_T_(Stream).md|Read<T>(Stream)
+M:DefaultEcs.Serialization.TextSerializer.Serialize(System.IO.Stream,DefaultEcs.World)|TextSerializer.Serialize(Stream,World).md|Serialize(Stream, World)
+M:DefaultEcs.Serialization.TextSerializer.Deserialize(System.IO.Stream)|TextSerializer.Deserialize(Stream).md|Deserialize(Stream)
+M:DefaultEcs.Serialization.TextSerializer.Serialize(System.IO.Stream,System.Collections.Generic.IEnumerable{DefaultEcs.Entity})|TextSerializer.Serialize(Stream,IEnumerable_Entity_).md|Serialize(Stream, IEnumerable<Entity>)
+M:DefaultEcs.Serialization.TextSerializer.Deserialize(System.IO.Stream,DefaultEcs.World)|TextSerializer.Deserialize(Stream,World).md|Deserialize(Stream, World)
+T:DefaultEcs.Serialization.TextSerializer|TextSerializer.md|TextSerializer
+P:DefaultEcs.Resource.AResourceManager`2.Resources|AResourceManager_TInfo,TResource_.Resources.md|Resources
+M:DefaultEcs.Resource.AResourceManager`2.#ctor|AResourceManager_TInfo,TResource_.AResourceManager().md|AResourceManager()
+M:DefaultEcs.Resource.AResourceManager`2.Load(`0)|AResourceManager_TInfo,TResource_.Load(TInfo).md|Load(TInfo)
+M:DefaultEcs.Resource.AResourceManager`2.OnResourceLoaded(DefaultEcs.Entity@,`0,`1)|AResourceManager_TInfo,TResource_.OnResourceLoaded(Entity,TInfo,TResource).md|OnResourceLoaded(Entity, TInfo, TResource)
+M:DefaultEcs.Resource.AResourceManager`2.Unload(`0,`1)|AResourceManager_TInfo,TResource_.Unload(TInfo,TResource).md|Unload(TInfo, TResource)
+M:DefaultEcs.Resource.AResourceManager`2.Manage(DefaultEcs.World)|AResourceManager_TInfo,TResource_.Manage(World).md|Manage(World)
+M:DefaultEcs.Resource.AResourceManager`2.Dispose|AResourceManager_TInfo,TResource_.Dispose().md|Dispose()
+N:DefaultEcs.Resource|DefaultEcs.md#DefaultEcs.Resource|DefaultEcs.Resource
+T:DefaultEcs.Resource.AResourceManager`2|AResourceManager_TInfo,TResource_.md|AResourceManager<TInfo,TResource>
+M:DefaultEcs.Resource.ManagedResource`1.Create``1(``0)|ManagedResource_TResource_.Create_TInfo_(TInfo).md|Create<TInfo>(TInfo)
+M:DefaultEcs.Resource.ManagedResource`1.Create``1(``0[])|ManagedResource_TResource_.Create_TInfo_(TInfo[]).md|Create<TInfo>(TInfo[])
+T:DefaultEcs.Resource.ManagedResource`1|ManagedResource_TResource_.md|ManagedResource<TResource>
+F:DefaultEcs.Resource.ManagedResource`2.Info|ManagedResource_TInfo,TResource_.Info.md|Info
+M:DefaultEcs.Resource.ManagedResource`2.#ctor(`0)|ManagedResource_TInfo,TResource_.ManagedResource(TInfo).md|ManagedResource(TInfo)
+T:DefaultEcs.Resource.ManagedResource`2|ManagedResource_TInfo,TResource_.md|ManagedResource<TInfo,TResource>
+P:DefaultEcs.Command.EntityCommandRecorder.MaxCapacity|EntityCommandRecorder.MaxCapacity.md|MaxCapacity
+P:DefaultEcs.Command.EntityCommandRecorder.Capacity|EntityCommandRecorder.Capacity.md|Capacity
+P:DefaultEcs.Command.EntityCommandRecorder.Size|EntityCommandRecorder.Size.md|Size
+M:DefaultEcs.Command.EntityCommandRecorder.#ctor(System.Int32,System.Int32)|EntityCommandRecorder.EntityCommandRecorder(int,int).md|EntityCommandRecorder(int, int)
+M:DefaultEcs.Command.EntityCommandRecorder.#ctor(System.Int32)|EntityCommandRecorder.EntityCommandRecorder(int).md|EntityCommandRecorder(int)
+M:DefaultEcs.Command.EntityCommandRecorder.#ctor|EntityCommandRecorder.EntityCommandRecorder().md|EntityCommandRecorder()
+M:DefaultEcs.Command.EntityCommandRecorder.Record(DefaultEcs.World)|EntityCommandRecorder.Record(World).md|Record(World)
+M:DefaultEcs.Command.EntityCommandRecorder.Record(DefaultEcs.Entity@)|EntityCommandRecorder.Record(Entity).md|Record(Entity)
+M:DefaultEcs.Command.EntityCommandRecorder.Execute|EntityCommandRecorder.Execute().md|Execute()
+M:DefaultEcs.Command.EntityCommandRecorder.Clear|EntityCommandRecorder.Clear().md|Clear()
+M:DefaultEcs.Command.EntityCommandRecorder.Dispose|EntityCommandRecorder.Dispose().md|Dispose()
+N:DefaultEcs.Command|DefaultEcs.md#DefaultEcs.Command|DefaultEcs.Command
+T:DefaultEcs.Command.EntityCommandRecorder|EntityCommandRecorder.md|EntityCommandRecorder
+M:DefaultEcs.Command.EntityRecord.Enable|EntityRecord.Enable().md|Enable()
+M:DefaultEcs.Command.EntityRecord.Disable|EntityRecord.Disable().md|Disable()
+M:DefaultEcs.Command.EntityRecord.Enable``1|EntityRecord.Enable_T_().md|Enable<T>()
+M:DefaultEcs.Command.EntityRecord.Disable``1|EntityRecord.Disable_T_().md|Disable<T>()
+M:DefaultEcs.Command.EntityRecord.Set``1(``0@)|EntityRecord.Set_T_(T).md|Set<T>(T)
+M:DefaultEcs.Command.EntityRecord.Set``1|EntityRecord.Set_T_().md|Set<T>()
+M:DefaultEcs.Command.EntityRecord.SetSameAs``1(DefaultEcs.Command.EntityRecord@)|EntityRecord.SetSameAs_T_(EntityRecord).md|SetSameAs<T>(EntityRecord)
+M:DefaultEcs.Command.EntityRecord.SetSameAsWorld``1|EntityRecord.SetSameAsWorld_T_().md|SetSameAsWorld<T>()
+M:DefaultEcs.Command.EntityRecord.Remove``1|EntityRecord.Remove_T_().md|Remove<T>()
+M:DefaultEcs.Command.EntityRecord.NotifyChanged``1|EntityRecord.NotifyChanged_T_().md|NotifyChanged<T>()
+M:DefaultEcs.Command.EntityRecord.CopyTo(DefaultEcs.World,DefaultEcs.ComponentCloner)|EntityRecord.CopyTo(World,ComponentCloner).md|CopyTo(World, ComponentCloner)
+M:DefaultEcs.Command.EntityRecord.CopyTo(DefaultEcs.World)|EntityRecord.CopyTo(World).md|CopyTo(World)
+M:DefaultEcs.Command.EntityRecord.Dispose|EntityRecord.Dispose().md|Dispose()
+T:DefaultEcs.Command.EntityRecord|EntityRecord.md|EntityRecord
+M:DefaultEcs.Command.WorldRecord.CreateEntity|WorldRecord.CreateEntity().md|CreateEntity()
+M:DefaultEcs.Command.WorldRecord.Set``1(``0@)|WorldRecord.Set_T_(T).md|Set<T>(T)
+M:DefaultEcs.Command.WorldRecord.Set``1|WorldRecord.Set_T_().md|Set<T>()
+M:DefaultEcs.Command.WorldRecord.Remove``1|WorldRecord.Remove_T_().md|Remove<T>()
+T:DefaultEcs.Command.WorldRecord|WorldRecord.md|WorldRecord
+M:DefaultEcs.EntityMap`1.KeyEnumerable.GetEnumerator|EntityMap_TKey_.KeyEnumerable.GetEnumerator().md|GetEnumerator()
+M:DefaultEcs.EntityMap`1.KeyEnumerable.System#Collections#Generic#IEnumerable{TKey}#GetEnumerator|EntityMap_TKey_.KeyEnumerable.System.Collections.Generic.IEnumerable_TKey_.GetEnumerator().md|System.Collections.Generic.IEnumerable<TKey>.GetEnumerator()
+M:DefaultEcs.EntityMap`1.KeyEnumerable.System#Collections#IEnumerable#GetEnumerator|EntityMap_TKey_.KeyEnumerable.System.Collections.IEnumerable.GetEnumerator().md|System.Collections.IEnumerable.GetEnumerator()
+T:DefaultEcs.EntityMap`1.KeyEnumerable|EntityMap_TKey_.KeyEnumerable.md|KeyEnumerable
+P:DefaultEcs.EntityMap`1.KeyEnumerator.Current|EntityMap_TKey_.KeyEnumerator.Current.md|Current
+P:DefaultEcs.EntityMap`1.KeyEnumerator.System#Collections#IEnumerator#Current|EntityMap_TKey_.KeyEnumerator.System.Collections.IEnumerator.Current.md|System.Collections.IEnumerator.Current
+M:DefaultEcs.EntityMap`1.KeyEnumerator.MoveNext|EntityMap_TKey_.KeyEnumerator.MoveNext().md|MoveNext()
+M:DefaultEcs.EntityMap`1.KeyEnumerator.System#Collections#IEnumerator#Reset|EntityMap_TKey_.KeyEnumerator.System.Collections.IEnumerator.Reset().md|System.Collections.IEnumerator.Reset()
+M:DefaultEcs.EntityMap`1.KeyEnumerator.Dispose|EntityMap_TKey_.KeyEnumerator.Dispose().md|Dispose()
+T:DefaultEcs.EntityMap`1.KeyEnumerator|EntityMap_TKey_.KeyEnumerator.md|KeyEnumerator
+M:DefaultEcs.EntityMultiMap`1.KeyEnumerable.GetEnumerator|EntityMultiMap_TKey_.KeyEnumerable.GetEnumerator().md|GetEnumerator()
+M:DefaultEcs.EntityMultiMap`1.KeyEnumerable.System#Collections#Generic#IEnumerable{TKey}#GetEnumerator|EntityMultiMap_TKey_.KeyEnumerable.System.Collections.Generic.IEnumerable_TKey_.GetEnumerator().md|System.Collections.Generic.IEnumerable<TKey>.GetEnumerator()
+M:DefaultEcs.EntityMultiMap`1.KeyEnumerable.System#Collections#IEnumerable#GetEnumerator|EntityMultiMap_TKey_.KeyEnumerable.System.Collections.IEnumerable.GetEnumerator().md|System.Collections.IEnumerable.GetEnumerator()
+T:DefaultEcs.EntityMultiMap`1.KeyEnumerable|EntityMultiMap_TKey_.KeyEnumerable.md|KeyEnumerable
+P:DefaultEcs.EntityMultiMap`1.KeyEnumerator.Current|EntityMultiMap_TKey_.KeyEnumerator.Current.md|Current
+P:DefaultEcs.EntityMultiMap`1.KeyEnumerator.System#Collections#IEnumerator#Current|EntityMultiMap_TKey_.KeyEnumerator.System.Collections.IEnumerator.Current.md|System.Collections.IEnumerator.Current
+M:DefaultEcs.EntityMultiMap`1.KeyEnumerator.MoveNext|EntityMultiMap_TKey_.KeyEnumerator.MoveNext().md|MoveNext()
+M:DefaultEcs.EntityMultiMap`1.KeyEnumerator.System#Collections#IEnumerator#Reset|EntityMultiMap_TKey_.KeyEnumerator.System.Collections.IEnumerator.Reset().md|System.Collections.IEnumerator.Reset()
+M:DefaultEcs.EntityMultiMap`1.KeyEnumerator.Dispose|EntityMultiMap_TKey_.KeyEnumerator.Dispose().md|Dispose()
+T:DefaultEcs.EntityMultiMap`1.KeyEnumerator|EntityMultiMap_TKey_.KeyEnumerator.md|KeyEnumerator
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.Or``1|EntityQueryBuilder.EitherBuilder.Or_T_().md|Or<T>()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.With``1|EntityQueryBuilder.EitherBuilder.With_T_().md|With<T>()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.With``1(DefaultEcs.ComponentPredicate{``0})|EntityQueryBuilder.EitherBuilder.With_T_(ComponentPredicate_T_).md|With<T>(ComponentPredicate<T>)
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.Without``1|EntityQueryBuilder.EitherBuilder.Without_T_().md|Without<T>()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.WhenAdded``1|EntityQueryBuilder.EitherBuilder.WhenAdded_T_().md|WhenAdded<T>()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.WhenChanged``1|EntityQueryBuilder.EitherBuilder.WhenChanged_T_().md|WhenChanged<T>()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.WhenRemoved``1|EntityQueryBuilder.EitherBuilder.WhenRemoved_T_().md|WhenRemoved<T>()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.WithEither``1|EntityQueryBuilder.EitherBuilder.WithEither_T_().md|WithEither<T>()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.WithoutEither``1|EntityQueryBuilder.EitherBuilder.WithoutEither_T_().md|WithoutEither<T>()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.WhenAddedEither``1|EntityQueryBuilder.EitherBuilder.WhenAddedEither_T_().md|WhenAddedEither<T>()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.WhenChangedEither``1|EntityQueryBuilder.EitherBuilder.WhenChangedEither_T_().md|WhenChangedEither<T>()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.WhenRemovedEither``1|EntityQueryBuilder.EitherBuilder.WhenRemovedEither_T_().md|WhenRemovedEither<T>()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.Copy|EntityQueryBuilder.EitherBuilder.Copy().md|Copy()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.AsPredicate|EntityQueryBuilder.EitherBuilder.AsPredicate().md|AsPredicate()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.AsEnumerable|EntityQueryBuilder.EitherBuilder.AsEnumerable().md|AsEnumerable()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.AsSet|EntityQueryBuilder.EitherBuilder.AsSet().md|AsSet()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.AsSortedSet``1(System.Collections.Generic.IComparer{``0})|EntityQueryBuilder.EitherBuilder.AsSortedSet_TComponent_(IComparer_TComponent_).md|AsSortedSet<TComponent>(IComparer<TComponent>)
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.AsSortedSet``1|EntityQueryBuilder.EitherBuilder.AsSortedSet_TComponent_().md|AsSortedSet<TComponent>()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.AsMap``1(System.Int32,System.Collections.Generic.IEqualityComparer{``0})|EntityQueryBuilder.EitherBuilder.AsMap_TKey_(int,IEqualityComparer_TKey_).md|AsMap<TKey>(int, IEqualityComparer<TKey>)
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.AsMap``1(System.Collections.Generic.IEqualityComparer{``0})|EntityQueryBuilder.EitherBuilder.AsMap_TKey_(IEqualityComparer_TKey_).md|AsMap<TKey>(IEqualityComparer<TKey>)
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.AsMap``1(System.Int32)|EntityQueryBuilder.EitherBuilder.AsMap_TKey_(int).md|AsMap<TKey>(int)
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.AsMap``1|EntityQueryBuilder.EitherBuilder.AsMap_TKey_().md|AsMap<TKey>()
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.AsMultiMap``1(System.Int32,System.Collections.Generic.IEqualityComparer{``0})|EntityQueryBuilder.EitherBuilder.AsMultiMap_TKey_(int,IEqualityComparer_TKey_).md|AsMultiMap<TKey>(int, IEqualityComparer<TKey>)
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.AsMultiMap``1(System.Collections.Generic.IEqualityComparer{``0})|EntityQueryBuilder.EitherBuilder.AsMultiMap_TKey_(IEqualityComparer_TKey_).md|AsMultiMap<TKey>(IEqualityComparer<TKey>)
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.AsMultiMap``1(System.Int32)|EntityQueryBuilder.EitherBuilder.AsMultiMap_TKey_(int).md|AsMultiMap<TKey>(int)
+M:DefaultEcs.EntityQueryBuilder.EitherBuilder.AsMultiMap``1|EntityQueryBuilder.EitherBuilder.AsMultiMap_TKey_().md|AsMultiMap<TKey>()
+T:DefaultEcs.EntityQueryBuilder.EitherBuilder|EntityQueryBuilder.EitherBuilder.md|EitherBuilder
+P:DefaultEcs.World.Enumerator.Current|World.Enumerator.Current.md|Current
+P:DefaultEcs.World.Enumerator.System#Collections#IEnumerator#Current|World.Enumerator.System.Collections.IEnumerator.Current.md|System.Collections.IEnumerator.Current
+M:DefaultEcs.World.Enumerator.MoveNext|World.Enumerator.MoveNext().md|MoveNext()
+M:DefaultEcs.World.Enumerator.Reset|World.Enumerator.Reset().md|Reset()
+M:DefaultEcs.World.Enumerator.Dispose|World.Enumerator.Dispose().md|Dispose()
+T:DefaultEcs.World.Enumerator|World.Enumerator.md|Enumerator
+M:DefaultEcs.Resource.AResourceManager`2.ResourceEnumerable.GetEnumerator|AResourceManager_TInfo,TResource_.ResourceEnumerable.GetEnumerator().md|GetEnumerator()
+M:DefaultEcs.Resource.AResourceManager`2.ResourceEnumerable.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{TInfo,TResource}}#GetEnumerator|AResourceManager_TInfo,TResource_.ResourceEnumerable.System.Collections.Generic.IEnumerable_System.Collections.Generic.KeyValuePair_TInfo,TResource__.GetEnumerator().md|System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TInfo,TResource>>.GetEnumerator()
+M:DefaultEcs.Resource.AResourceManager`2.ResourceEnumerable.System#Collections#IEnumerable#GetEnumerator|AResourceManager_TInfo,TResource_.ResourceEnumerable.System.Collections.IEnumerable.GetEnumerator().md|System.Collections.IEnumerable.GetEnumerator()
+T:DefaultEcs.Resource.AResourceManager`2.ResourceEnumerable|AResourceManager_TInfo,TResource_.ResourceEnumerable.md|ResourceEnumerable
+P:DefaultEcs.Resource.AResourceManager`2.ResourceEnumerator.Current|AResourceManager_TInfo,TResource_.ResourceEnumerator.Current.md|Current
+P:DefaultEcs.Resource.AResourceManager`2.ResourceEnumerator.System#Collections#IEnumerator#Current|AResourceManager_TInfo,TResource_.ResourceEnumerator.System.Collections.IEnumerator.Current.md|System.Collections.IEnumerator.Current
+M:DefaultEcs.Resource.AResourceManager`2.ResourceEnumerator.MoveNext|AResourceManager_TInfo,TResource_.ResourceEnumerator.MoveNext().md|MoveNext()
+M:DefaultEcs.Resource.AResourceManager`2.ResourceEnumerator.System#Collections#IEnumerator#Reset|AResourceManager_TInfo,TResource_.ResourceEnumerator.System.Collections.IEnumerator.Reset().md|System.Collections.IEnumerator.Reset()
+M:DefaultEcs.Resource.AResourceManager`2.ResourceEnumerator.Dispose|AResourceManager_TInfo,TResource_.ResourceEnumerator.Dispose().md|Dispose()
+T:DefaultEcs.Resource.AResourceManager`2.ResourceEnumerator|AResourceManager_TInfo,TResource_.ResourceEnumerator.md|ResourceEnumerator
