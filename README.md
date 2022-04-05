@@ -7,7 +7,7 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
 [![preview package](https://img.shields.io/badge/preview-package-blue?style=flat&logo=github)](https://github.com/Doraku/DefaultEcs/packages/26448)
 [![Join the chat at https://gitter.im/Doraku/DefaultEcs](https://badges.gitter.im/Doraku/DefaultEcs.svg)](https://gitter.im/Doraku/DefaultEcs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-- [Api documentation](./documentation/api/DefaultEcs.md 'Api documentation')
+- [API documentation](./documentation/api/DefaultEcs.md 'API documentation')
 - [FAQ](./documentation/FAQ.md 'Frequently Asked Questions')
 - [Benchmarks](https://github.com/Doraku/Ecs.CSharp.Benchmark)
 
@@ -55,7 +55,7 @@ It is possible to use DefaultEcs in Unity (check [FAQ](./documentation/FAQ.md#un
 
 # Versioning
 This is the current strategy used to version DefaultEcs: v0.major.minor
-- 0: DefaultEcs is still in heavy development and although a lot of care is given not to break the current api, it can still happen
+- 0: DefaultEcs is still in heavy development and although a lot of care is given not to break the current API, it can still happen
 - major: incremented when there is a breaking change (reset minor number)
 - minor: incremented when there is a new feature or a bug fix
 
@@ -312,7 +312,7 @@ textureResourceManager.Manage(_world);
 This feature only cares for entity components, not the world components.
 
 ## Query
-To perform operations, systems should query entities from the world. This is performed by requesting entities through the world and using the fluent api to create rules
+To perform operations, systems should query entities from the world. This is performed by requesting entities through the world and using the fluent API to create rules
 ```csharp
 world
     .GetEntities() // this is the starting point of a query, you can also query disabled entities with GetDisabledEntities()
