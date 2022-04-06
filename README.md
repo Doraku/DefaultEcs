@@ -10,6 +10,7 @@ DefaultEcs is an [Entity Component System](https://en.wikipedia.org/wiki/Entity_
 - [API documentation](./documentation/api/DefaultEcs.md 'API documentation')
 - [FAQ](./documentation/FAQ.md 'Frequently Asked Questions')
 - [Benchmarks](https://github.com/Doraku/Ecs.CSharp.Benchmark)
+<a/>
 
 - [Requirements](#requirements)
 - [Versioning](#versioning)
