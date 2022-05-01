@@ -108,21 +108,30 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SetMaxCapacity_Should_return_false_When_maxCapacity_is_already_setted()
+        public void SetMaxCapacity_Should_return_false_When_maxCapacity_cannot_be_changed()
         {
-            using World world = new(42);
+            using World world = new();
 
-            Check.That(world.SetMaxCapacity<bool>(0)).IsTrue();
-            Check.That(world.SetMaxCapacity<bool>(42)).IsFalse();
+            Check.That(world.SetMaxCapacity<bool>(42)).IsTrue();
+
+            world.Set(true);
+
+            Check.That(world.SetMaxCapacity<bool>(0)).IsFalse();
         }
 
         [Fact]
         public void GetMaxCapacity_Should_return_component_max_capacity()
         {
-            using World world = new(100);
+            using World world = new();
 
             world.SetMaxCapacity<bool>(42);
             Check.That(world.GetMaxCapacity<bool>()).IsEqualTo(42);
+
+            world.SetMaxCapacity<bool>(1337);
+            Check.That(world.GetMaxCapacity<bool>()).IsEqualTo(1337);
+
+            world.SetMaxCapacity<bool>(0);
+            Check.That(world.GetMaxCapacity<bool>()).IsEqualTo(0);
         }
 
         [Fact]

@@ -1,0 +1,3 @@
+## New features
+
+- World.SetMaxCapacity can now be called multiple times for the same component type (#149)

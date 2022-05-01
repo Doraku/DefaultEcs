@@ -71,6 +71,7 @@ namespace DefaultEcs.Internal
         private readonly short _worldId;
         private readonly int _worldMaxCapacity;
 
+        private int _maxCapacity;
         private int[] _mapping;
         private ComponentLink[] _links;
         private T[] _components;
@@ -81,7 +82,19 @@ namespace DefaultEcs.Internal
 
         #region Properties
 
-        public int MaxCapacity { get; }
+        public int MaxCapacity
+        {
+            get => _maxCapacity;
+            set
+            {
+                value = Math.Min(_isFlagType ? 1 : _worldMaxCapacity, value);
+
+                if (_lastComponentIndex < value)
+                {
+                    _maxCapacity = value;
+                }
+            }
+        }
 
         public bool IsNotEmpty => _lastComponentIndex > -1;
 
@@ -103,13 +116,14 @@ namespace DefaultEcs.Internal
         {
             _worldId = worldId;
             _worldMaxCapacity = worldMaxCapacity == int.MaxValue ? int.MaxValue : (worldMaxCapacity + 1);
-            MaxCapacity = _isFlagType ? 1 : Math.Min(_worldMaxCapacity, maxCapacity);
 
             _mapping = EmptyArray<int>.Value;
             _links = EmptyArray<ComponentLink>.Value;
             _components = EmptyArray<T>.Value;
             _lastComponentIndex = -1;
             _sortedIndex = 0;
+
+            MaxCapacity = maxCapacity;
 
             Publisher<TrimExcessMessage>.Subscribe(_worldId, On);
             Publisher<EntityDisposedMessage>.Subscribe(_worldId, On);

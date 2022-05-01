@@ -97,9 +97,6 @@ namespace DefaultEcs.Internal
         public static ComponentPool<T> Get(short worldId) => worldId < Pools.Length ? Pools[worldId] : null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComponentPool<T> GetOrCreate(short worldId, int maxCapacity) => Get(worldId) ?? Add(worldId, World.Worlds[worldId].MaxCapacity, maxCapacity);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComponentPool<T> GetOrCreate(short worldId) => Get(worldId) ?? Add(worldId, World.Worlds[worldId].MaxCapacity, World.Worlds[worldId].MaxCapacity);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

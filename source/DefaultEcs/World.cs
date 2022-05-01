@@ -279,10 +279,16 @@ namespace DefaultEcs
         /// <param name="maxCapacity">The maximum number of component of type <typeparamref name="T"/> that can exist in this <see cref="World"/>.</param>
         /// <returns>Whether the maximum count has been setted or not.</returns>
         /// <exception cref="ArgumentException"><paramref name="maxCapacity"/> cannot be negative.</exception>
-        public bool SetMaxCapacity<T>(int maxCapacity) =>
-            maxCapacity < 0
+        public bool SetMaxCapacity<T>(int maxCapacity)
+        {
+            ComponentPool<T> pool = maxCapacity < 0
                 ? throw new ArgumentException("Argument cannot be negative", nameof(maxCapacity))
-                : ComponentManager<T>.GetOrCreate(WorldId, maxCapacity).MaxCapacity == maxCapacity;
+                : ComponentManager<T>.GetOrCreate(WorldId);
+
+            pool.MaxCapacity = maxCapacity;
+
+            return pool.MaxCapacity == maxCapacity;
+        }
 
         /// <summary>
         /// Gets the maximum number of <typeparamref name="T"/> components this <see cref="World"/> can create.
