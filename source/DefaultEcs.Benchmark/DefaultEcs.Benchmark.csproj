@@ -5,11 +5,12 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
-		<PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.1" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\DefaultEcs\DefaultEcs.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DefaultEcs.Extension\DefaultEcs.Extension.csproj" />
+    <ProjectReference Include="..\DefaultEcs\DefaultEcs.csproj" />
+  </ItemGroup>
 </Project>
