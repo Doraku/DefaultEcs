@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NFluent;
 using Xunit;
 
@@ -610,6 +611,42 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void AsSet_Where_Predicate_Should_return_entity_which_validates_predicate()
+        {
+            using World world = new(4);
+
+            List<Entity> entities = new()
+            {
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
+
+            List<int> listOfIds = new() { entities[1].Id, entities[2].Id };
+
+            EntitySet set = world.GetEntities().Where(i => listOfIds.Contains(i)).AsSet();
+
+            Check.That(set.Contains(entities[1])).IsTrue();
+            Check.That(set.Contains(entities[2])).IsTrue();
+
+            set = world.GetEntities().Where(i => i % 2 != 0).AsSet();
+
+            Check.That(set.Contains(entities[0])).IsTrue();
+            Check.That(set.Contains(entities[2])).IsTrue();
+
+            entities[0].Set("Zero");
+            //entities[1].Set("One");
+            entities[2].Set("Two");
+            //entities[3].Set("Three");
+
+            set = world.GetEntities().With<string>().Where(i => i > 1).AsSet();
+
+            Check.That(set.Contains(entities[2])).IsTrue();
+            Check.That(set.Contains(entities[3])).IsFalse();
+        }
+
+        [Fact]
         public void AsPredicate_With_T_Should_return_true_When_entity_has_component_T()
         {
             using World world = new(4);
@@ -723,6 +760,42 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void AsPredicate_Where_Predicate_Should_return_entity_which_validates_predicate()
+        {
+            using World world = new(4);
+
+            List<Entity> entities = new()
+            {
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
+
+            List<int> listOfIds = new() { entities[1].Id, entities[2].Id };
+
+            Predicate<Entity> predicate = world.GetEntities().Where(i => listOfIds.Contains(i)).AsPredicate();
+
+            Check.That(predicate(entities[1])).IsTrue();
+            Check.That(predicate(entities[2])).IsTrue();
+
+            predicate = world.GetEntities().Where(i => i % 2 != 0).AsPredicate();
+
+            Check.That(predicate(entities[0])).IsTrue();
+            Check.That(predicate(entities[2])).IsTrue();
+
+            entities[0].Set("Zero");
+            //entities[1].Set("One");
+            entities[2].Set("Two");
+            //entities[3].Set("Three");
+
+            predicate = world.GetEntities().With<string>().Where(i => i > 1).AsPredicate();
+
+            Check.That(predicate(entities[2])).IsTrue();
+            Check.That(predicate(entities[3])).IsFalse();
+        }
+
+        [Fact]
         public void AsEnumerable_With_T_Should_return_entity_with_component_T()
         {
             using World world = new(4);
@@ -833,6 +906,39 @@ namespace DefaultEcs.Test
             entity.Set(42);
 
             Check.That(enumerable).ContainsExactly(entity);
+        }
+
+        [Fact]
+        public void AsEnumerable_Where_Predicate_Should_return_entity_which_validates_predicate()
+        {
+            using World world = new(4);
+
+            List<Entity> entities = new()
+            {
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity(),
+                world.CreateEntity()
+            };
+
+            List<int> listOfIds = new() { entities[1].Id, entities[2].Id };
+
+            IEnumerable<Entity> enumerable = world.GetEntities().Where(i => listOfIds.Contains(i)).AsEnumerable();
+
+            Check.That(enumerable).ContainsExactly(entities.Where(e => listOfIds.Contains(e.Id)));
+
+            enumerable = world.GetEntities().Where(i => i % 2 != 0).AsEnumerable();
+
+            Check.That(enumerable).ContainsExactly(entities.Where(e => e.Id % 2 != 0));
+
+            entities[0].Set("Zero");
+            //entities[1].Set("One");
+            entities[2].Set("Two");
+            //entities[3].Set("Three");
+
+            enumerable = world.GetEntities().With<string>().Where(i => i > 1).AsEnumerable();
+
+            Check.That(enumerable).ContainsExactly(entities[2]);
         }
 
         #endregion

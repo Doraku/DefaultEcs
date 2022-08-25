@@ -66,6 +66,12 @@ namespace DefaultEcs
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public bool IsAlive => WorldId != 0 && World.EntityInfos[EntityId].IsAlive(Version);
 
+        /// <summary>
+        /// Gets the id for the current <see cref="Entity"/>.
+        /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public int Id => EntityId;
+
         #endregion
 
         #region Methods

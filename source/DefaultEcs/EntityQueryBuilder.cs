@@ -439,6 +439,20 @@ namespace DefaultEcs
         }
 
         /// <summary>
+        /// Makes a rule to observe <see cref="Entity"/> that match <paramref name="predicate"/>.
+        /// </summary>
+        /// <param name="predicate">Predicate to filter entities.</param>
+        /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
+        public EntityQueryBuilder Where(Predicate<int> predicate)
+        {
+            predicate.CheckArgumentNullException(nameof(predicate));
+
+            (_predicates ??= new List<Predicate<int>>()).Add(predicate);
+
+            return this;
+        }
+
+        /// <summary>
         /// Makes a rule to observe <see cref="Entity"/> when a component of type <typeparamref name="T"/> is added.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
