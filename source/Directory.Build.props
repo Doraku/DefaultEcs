@@ -12,8 +12,8 @@
 	<ItemGroup>
 		<PackageReference Condition="'$(MSBuildProjectName)' != 'DefaultEcs'" Include="DefaultEcs.Analyzer" Version="0.17.0" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0" PrivateAssets="all" />
-		<PackageReference Include="Roslynator.Analyzers" Version="4.0.2" PrivateAssets="all" />
-		<PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="4.0.2" PrivateAssets="all" />
-		<PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.0.2" PrivateAssets="all" />
+		<PackageReference Include="Roslynator.Analyzers" Version="4.1.1" PrivateAssets="all" />
+		<PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="4.1.1" PrivateAssets="all" />
+		<PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.1.1" PrivateAssets="all" />
 	</ItemGroup>
 </Project>

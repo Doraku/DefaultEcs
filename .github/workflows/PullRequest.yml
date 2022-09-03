@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Run tests net452
-      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net452 /p:TEST=true
+    - name: Run tests net462
+      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net462 /p:TEST=true
 
     - name: Run tests net48
       run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net48 /p:TEST=true

@@ -23,8 +23,8 @@ jobs:
       env:
         NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-    - name: Run tests net452
-      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net452 /p:TEST=true
+    - name: Run tests net462
+      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net462 /p:TEST=true
 
     - name: Run tests net48
       run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net48 /p:TEST=true

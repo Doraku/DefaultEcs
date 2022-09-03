@@ -71,6 +71,9 @@ dotnet_diagnostic.IDE0061.severity = none
 # IDE0072: Add missing cases
 dotnet_diagnostic.IDE0072.severity = none
 
+# IDE0210: Convert to top-level statements
+dotnet_diagnostic.IDE0210.severity = none
+
 # RCS1158: Static member in generic type should use a type parameter.
 dotnet_diagnostic.RCS1158.severity = none
 

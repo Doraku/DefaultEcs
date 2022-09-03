@@ -17,12 +17,12 @@
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
 	</ItemGroup>
 	<ItemGroup Label="Reference" Condition="'$(TargetFramework)'=='netstandard1.1' Or '$(TargetFramework)'=='netstandard2.0'">
-		<PackageReference Include="System.Memory" Version="4.5.4" />
+		<PackageReference Include="System.Memory" Version="4.5.5" />
 		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="DefaultDocumentation" Version="0.8.0" PrivateAssets="all" Condition="'$(GITHUB_ACTIONS)' == 'true' AND '$(TEST)' != 'true' AND '$(CI_VERSION)' != 'true'" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="DefaultDocumentation" Version="0.8.2" PrivateAssets="all" Condition="'$(GITHUB_ACTIONS)' == 'true' AND '$(TEST)' != 'true' AND '$(CI_VERSION)' != 'true'" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
 
 	<PropertyGroup Label="Package">
