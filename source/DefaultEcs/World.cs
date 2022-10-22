@@ -272,7 +272,7 @@ namespace DefaultEcs
 
         /// <summary>
         /// Sets up the current <see cref="World"/> to handle component of type <typeparamref name="T"/> with a different maximum count than <see cref="MaxCapacity"/>.
-        /// If the type of component is already handled by the current <see cref="World"/>, does nothing.
+        /// If the actual number of component is already superior to the passed value, does nothing.
         /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of component.</typeparam>
