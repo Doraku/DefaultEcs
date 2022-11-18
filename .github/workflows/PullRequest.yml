@@ -19,10 +19,16 @@ jobs:
         dotnet-version: '7.0.x'
 
     - name: Run tests net462
-      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net462 /p:TEST=true
+      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net462
+      env:
+        TEST: true
 
     - name: Run tests net48
-      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net48 /p:TEST=true
+      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net48
+      env:
+        TEST: true
 
     - name: Run tests net7.0
-      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net6.0 /p:TEST=true
+      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net6.0
+      env:
+        TEST: true

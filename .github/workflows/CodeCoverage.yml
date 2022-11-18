@@ -22,7 +22,13 @@ jobs:
         dotnet-version: '7.0.x'
 
     - name: Collect coverage for net7.0
-      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net7.0 -p:CollectCoverage=true -p:CoverletOutputFormat=lcov -p:CoverletOutput=..\..\build\lcov.info -p:Exclude="[*]DefaultEcs.Internal.Diagnostics*" /p:TEST=true
+      run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net7.0
+      env:
+        CollectCoverage: true
+        CoverletOutputFormat: lcov
+        CoverletOutput: ..\..\build\lcov.info
+        Exclude: "[*]DefaultEcs.Internal.Diagnostics*"
+        TEST: true
 
     - name: Upload to coverall
       uses: coverallsapp/github-action@master
