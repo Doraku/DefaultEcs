@@ -21,7 +21,7 @@ namespace DefaultEcs
     {
         #region Types
 
-        internal class Entities
+        internal sealed class Entities
         {
             private Entity[] _entities;
             private int _sortedIndex;

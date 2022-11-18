@@ -16,7 +16,7 @@ namespace DefaultEcs.System
     {
         #region Types
 
-        private class Runnable : IParallelRunnable
+        private sealed class Runnable : IParallelRunnable
         {
             private readonly AEntitySetSystem<T> _system;
 

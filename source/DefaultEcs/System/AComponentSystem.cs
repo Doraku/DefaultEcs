@@ -14,7 +14,7 @@ namespace DefaultEcs.System
     {
         #region Types
 
-        private class Runnable : IParallelRunnable
+        private sealed class Runnable : IParallelRunnable
         {
             private readonly AComponentSystem<TState, TComponent> _system;
 

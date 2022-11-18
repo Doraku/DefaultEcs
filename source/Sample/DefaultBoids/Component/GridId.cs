@@ -37,7 +37,7 @@ namespace DefaultBoids.Component
         private const int _cellWidth = DefaultGame.ResolutionWidth / _width;
         private const int _cellHeight = DefaultGame.ResolutionHeight / _height;
 
-        public struct Enumerable : IEnumerable<GridId>
+        public readonly struct Enumerable : IEnumerable<GridId>
         {
             private readonly GridId _id;
 

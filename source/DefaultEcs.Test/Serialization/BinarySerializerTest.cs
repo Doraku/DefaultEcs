@@ -8,7 +8,7 @@ namespace DefaultEcs.Test.Serialization
 {
     public sealed class BinarySerializerTest : ASerializerTest
     {
-        private class Point : IEquatable<Point>
+        private sealed class Point : IEquatable<Point>
         {
             public readonly int X;
             public readonly int Y;

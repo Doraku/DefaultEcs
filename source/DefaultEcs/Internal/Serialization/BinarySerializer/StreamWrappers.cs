@@ -146,7 +146,6 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
 
     internal readonly unsafe ref struct StreamReaderWrapper
     {
-        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed")]
         private readonly Stream _stream;
 #if !NETSTANDARD2_1_OR_GREATER
         private readonly byte[] _buffer;
@@ -154,7 +153,6 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
         private readonly byte* _bufferP;
 #endif
 
-        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed")]
         public readonly BinarySerializationContext Context;
 
         public StreamReaderWrapper(Stream stream, BinarySerializationContext context)

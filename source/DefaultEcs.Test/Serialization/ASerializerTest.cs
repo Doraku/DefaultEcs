@@ -61,7 +61,7 @@ namespace DefaultEcs.Test.Serialization
             public string _3;
         }
 
-        private class DerivedClass : SimpleClass
+        private sealed class DerivedClass : SimpleClass
         {
             public int _4;
 
@@ -100,7 +100,7 @@ namespace DefaultEcs.Test.Serialization
             }
         }
 
-        private class NoConstructorClass
+        private sealed class NoConstructorClass
         {
             public int _1;
 

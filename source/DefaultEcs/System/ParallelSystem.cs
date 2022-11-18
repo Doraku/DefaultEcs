@@ -14,7 +14,7 @@ namespace DefaultEcs.System
     {
         #region Types
 
-        private class Runnable : IParallelRunnable
+        private sealed class Runnable : IParallelRunnable
         {
             private readonly ParallelSystem<T> _system;
 
@@ -44,7 +44,6 @@ namespace DefaultEcs.System
 
         #region Fields
 
-        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed")]
         private readonly IParallelRunner _runner;
         private readonly Runnable _runnable;
         private readonly ISystem<T> _mainSystem;

@@ -11,7 +11,7 @@ namespace DefaultEcs.Test.Resource
 {
     public sealed class AResourceManagerTest
     {
-        private class ResourceManagerTest : AResourceManager<string, IDisposable>
+        private sealed class ResourceManagerTest : AResourceManager<string, IDisposable>
         {
             private readonly IDisposable _value;
 

@@ -113,7 +113,6 @@ namespace DefaultEcs.Internal.Serialization.BinarySerializer
 
         #region Initialisation
 
-        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "CA1508:Avoid dead conditional code", Justification = "false positif")]
         static Converter()
         {
             IsSealed = typeof(T).GetTypeInfo().IsSealed || typeof(T) == typeof(Type);

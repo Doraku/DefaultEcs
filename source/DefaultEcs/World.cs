@@ -20,7 +20,7 @@ namespace DefaultEcs
     {
         #region Types
 
-        private class Optimizer : IParallelRunnable
+        private sealed class Optimizer : IParallelRunnable
         {
             private readonly object _locker;
             private readonly List<ISortable> _items;
@@ -169,7 +169,6 @@ namespace DefaultEcs
         /// <summary>
         /// Gets the maximum number of <see cref="Entity"/> this <see cref="World"/> can handle.
         /// </summary>
-        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1721:Property names should not match get methods")]
         public int MaxCapacity { get; }
 
         #endregion

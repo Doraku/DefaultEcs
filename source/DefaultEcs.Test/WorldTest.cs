@@ -80,7 +80,7 @@ namespace DefaultEcs.Test
         {
             using World world = new(1);
 
-            Check.ThatCode(() => world.CreateEntity()).DoesNotThrow();
+            Check.ThatCode(world.CreateEntity).DoesNotThrow();
         }
 
         [Fact]
@@ -96,7 +96,7 @@ namespace DefaultEcs.Test
         {
             using World world = new(0);
 
-            Check.ThatCode(() => world.CreateEntity()).Throws<InvalidOperationException>();
+            Check.ThatCode(world.CreateEntity).Throws<InvalidOperationException>();
         }
 
         [Fact]

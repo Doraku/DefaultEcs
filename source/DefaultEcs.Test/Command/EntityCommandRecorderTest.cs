@@ -8,7 +8,7 @@ namespace DefaultEcs.Test.Command
 {
     public sealed class EntityCommandRecorderTest
     {
-        private struct NonBlittable
+        private readonly struct NonBlittable
         {
             public readonly int Id;
             public readonly object Item;

@@ -16,7 +16,7 @@ namespace DefaultEcs.Benchmark.DefaultEcs
             public float Z;
         }
 
-        private class BigClass
+        private sealed class BigClass
         {
             public float W;
             public float X;

@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DefaultSlap
 {
-    internal class DefaultGame : Game
+    internal sealed class DefaultGame : Game
     {
         #region Fields
 

@@ -12,6 +12,6 @@ namespace DefaultBoids.System
             : base(world, world.Get<IParallelRunner>())
         { }
 
-        protected override void Update(float state, Span<Behavior> components) => components.Fill(default);
+        protected override void Update(float state, Span<Behavior> components) => components.Clear();
     }
 }

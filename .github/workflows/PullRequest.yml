@@ -16,7 +16,7 @@ jobs:
     - name: Set up dotnet
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
 
     - name: Run tests net462
       run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net462 /p:TEST=true
@@ -24,5 +24,5 @@ jobs:
     - name: Run tests net48
       run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net48 /p:TEST=true
 
-    - name: Run tests net6.0
+    - name: Run tests net7.0
       run: dotnet test source\DefaultEcs.Test\DefaultEcs.Test.csproj -c Release -f net6.0 /p:TEST=true

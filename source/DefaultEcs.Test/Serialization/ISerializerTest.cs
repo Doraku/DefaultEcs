@@ -66,7 +66,7 @@ namespace DefaultEcs.Test.Serialization
             Lol
         }
 
-        private class ClassTest
+        private sealed class ClassTest
         {
             public int Id;
             public Test Inner;
@@ -99,7 +99,7 @@ namespace DefaultEcs.Test.Serialization
             public override int GetHashCode() => C?.I ?? 0;
         }
 
-        private class InnerClass
+        private sealed class InnerClass
         {
             public int I = 42;
         }

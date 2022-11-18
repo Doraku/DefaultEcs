@@ -10,7 +10,7 @@ namespace DefaultEcs.Test
     {
         #region Types
 
-        private class ComponentReader : IComponentReader
+        private sealed class ComponentReader : IComponentReader
         {
             public int ComponentCount;
             public int? IntValue;
@@ -129,7 +129,7 @@ namespace DefaultEcs.Test
         public void Disable_Should_throw_When_default()
         {
             Entity entity = default;
-            Check.ThatCode(() => entity.Disable()).Throws<InvalidOperationException>();
+            Check.ThatCode(entity.Disable).Throws<InvalidOperationException>();
         }
 
         [Fact]
@@ -147,7 +147,7 @@ namespace DefaultEcs.Test
         public void Enable_Should_throw_When_default()
         {
             Entity entity = default;
-            Check.ThatCode(() => entity.Enable()).Throws<InvalidOperationException>();
+            Check.ThatCode(entity.Enable).Throws<InvalidOperationException>();
         }
 
         [Fact]
@@ -186,7 +186,7 @@ namespace DefaultEcs.Test
         public void Disable_T_Should_throw_When_default()
         {
             Entity entity = default;
-            Check.ThatCode(() => entity.Disable<bool>()).Throws<InvalidOperationException>();
+            Check.ThatCode(entity.Disable<bool>).Throws<InvalidOperationException>();
         }
 
         [Fact]
@@ -205,7 +205,7 @@ namespace DefaultEcs.Test
         public void Enable_T_Should_throw_When_default()
         {
             Entity entity = default;
-            Check.ThatCode(() => entity.Enable<bool>()).Throws<InvalidOperationException>();
+            Check.ThatCode(entity.Enable<bool>).Throws<InvalidOperationException>();
         }
 
         [Fact]
@@ -465,7 +465,7 @@ namespace DefaultEcs.Test
         {
             Entity entity = default;
 
-            Check.ThatCode(() => entity.SetSameAsWorld<bool>()).Throws<InvalidOperationException>();
+            Check.ThatCode(entity.SetSameAsWorld<bool>).Throws<InvalidOperationException>();
         }
 
         [Fact]
@@ -475,7 +475,7 @@ namespace DefaultEcs.Test
 
             Entity entity = world.CreateEntity();
 
-            Check.ThatCode(() => entity.SetSameAsWorld<bool>()).Throws<InvalidOperationException>();
+            Check.ThatCode(entity.SetSameAsWorld<bool>).Throws<InvalidOperationException>();
         }
 
         [Fact]

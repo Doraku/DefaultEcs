@@ -124,7 +124,7 @@ namespace DefaultEcs.Test
             IPublisher publisher = null;
 
             Check
-                .ThatCode(() => publisher.Subscribe<object>())
+                .ThatCode(publisher.Subscribe<object>)
                 .Throws<ArgumentNullException>();
         }
 
@@ -144,7 +144,7 @@ namespace DefaultEcs.Test
             using IPublisher publisher = new Publisher();
 
             Check
-                .ThatCode(() => publisher.Subscribe<InvalidNumberOfParameter>())
+                .ThatCode(publisher.Subscribe<InvalidNumberOfParameter>)
                 .Throws<NotSupportedException>();
         }
 
@@ -154,7 +154,7 @@ namespace DefaultEcs.Test
             using IPublisher publisher = new Publisher();
 
             Check
-                .ThatCode(() => publisher.Subscribe<InvalidByRefParameterType>())
+                .ThatCode(publisher.Subscribe<InvalidByRefParameterType>)
                 .Throws<NotSupportedException>();
         }
 
@@ -164,7 +164,7 @@ namespace DefaultEcs.Test
             using IPublisher publisher = new Publisher();
 
             Check
-                .ThatCode(() => publisher.Subscribe<InvalidReturnType>())
+                .ThatCode(publisher.Subscribe<InvalidReturnType>)
                 .Throws<NotSupportedException>();
         }
 

@@ -14,7 +14,7 @@ namespace DefaultEcs.Internal.Command
 
         public unsafe delegate int EntitySetComponent(in Entity entity, List<object> objects, byte* memory);
 
-        public unsafe class ComponentCommand<T> : IComponentCommand
+        public sealed unsafe class ComponentCommand<T> : IComponentCommand
         {
             #region Fields
 

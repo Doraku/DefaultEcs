@@ -8,7 +8,7 @@ namespace DefaultBoids.Component
 {
     internal sealed class Grid
     {
-        public struct Enumerable : IEnumerable<List<Entity>>
+        public readonly struct Enumerable : IEnumerable<List<Entity>>
         {
             private readonly Grid _grid;
             private readonly Vector2 _position;
