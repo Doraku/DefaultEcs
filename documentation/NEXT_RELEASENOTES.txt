@@ -1,3 +1,7 @@
 ## New features
 
 - World.SetMaxCapacity can now be called multiple times for the same component type (#149)
+
+## Bug fixes
+
+- fixed TextSerializer not using invariant cultur during serialization (#170 thanks to @Helco)

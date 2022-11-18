@@ -11,14 +11,15 @@ namespace DefaultEcs.Internal.Serialization.TextSerializer
     {
         private int _indentation;
 
-        public StreamWriter Stream { get; }
+        public InvariantCultureStreamWriter Stream { get; }
+
         public TextSerializationContext Context { get; }
 
         public StreamWriterWrapper(Stream stream, TextSerializationContext context)
         {
             _indentation = 0;
 
-            Stream = new StreamWriter(stream, new UTF8Encoding(false, true), 1024, true);
+            Stream = new InvariantCultureStreamWriter(stream, new UTF8Encoding(false, true), 1024, true);
             Context = context;
         }
 
