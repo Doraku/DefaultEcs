@@ -94,9 +94,14 @@ namespace DefaultEcs
                 components[ComponentManager<T>.Flag] = true;
                 Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
             }
-            else
+            else if (components[ComponentManager<T>.Flag])
             {
                 Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
+            }
+            else
+            {
+                components[ComponentManager<T>.Flag] = true;
+                Publisher.Publish(WorldId, new ComponentEnabledMessage<T>(EntityId, components));
             }
 
             previousPool?.Set(EntityId, component);

@@ -873,6 +873,21 @@ namespace DefaultEcs.Test
             Check.That(Regex.IsMatch(entity.ToString(), "^Entity \\d*:\\d*.\\d*$")).IsTrue();
         }
 
+        [Fact]
+        public void Set_Should_reenable_disabled_component()
+        {
+            using World world = new();
+
+            Entity entity = world.CreateEntity();
+
+            entity.Set(true);
+            entity.Disable<bool>();
+
+            entity.Set(true);
+
+            Check.That(entity.IsEnabled<bool>()).IsTrue();
+        }
+
         #endregion
     }
 }

@@ -170,6 +170,7 @@ namespace DefaultEcs.Internal
         {
             ArrayExtension.EnsureLength(ref _mapping, entityId, _worldMaxCapacity, -1);
 
+            bool isNew = true;
             ref int componentIndex = ref _mapping[entityId];
             if (componentIndex != -1)
             {
@@ -181,13 +182,14 @@ namespace DefaultEcs.Internal
                 }
 
                 Remove(entityId);
+                isNew = false;
             }
 
             if (_lastComponentIndex == MaxCapacity - 1)
             {
                 if (_isFlagType)
                 {
-                    return SetSameAs(entityId, _links[0].EntityId);
+                    return SetSameAs(entityId, _links[0].EntityId) && isNew;
                 }
 
                 ThrowMaxNumberOfComponentReached();
@@ -206,7 +208,7 @@ namespace DefaultEcs.Internal
             _components[_lastComponentIndex] = component;
             _links[_lastComponentIndex] = new ComponentLink(entityId);
 
-            return true;
+            return isNew;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
