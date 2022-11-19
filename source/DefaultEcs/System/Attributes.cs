@@ -105,7 +105,7 @@ namespace DefaultEcs.System
     /// <summary>
     /// Represents a component type to include when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
-    public sealed class WithAttribute : ComponentAttribute
+    public class WithAttribute : ComponentAttribute
     {
         /// <summary>
         /// Initialize a new instance of the <see cref="WithAttribute"/> type.
@@ -113,6 +113,20 @@ namespace DefaultEcs.System
         /// <param name="componentTypes">The types of the component to include.</param>
         public WithAttribute(params Type[] componentTypes)
             : base(ComponentFilterType.With, componentTypes)
+        { }
+    }
+
+    /// <summary>
+    /// Represents a component type to include when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of component to include.</typeparam>
+    public sealed class WithAttribute<T> : WithAttribute
+    {
+        /// <summary>
+        /// Initialize a new instance of the <see cref="WithAttribute{T}"/> type.
+        /// </summary>
+        public WithAttribute()
+            : base(typeof(T))
         { }
     }
 
@@ -133,7 +147,7 @@ namespace DefaultEcs.System
     /// <summary>
     /// Represents a component type to exclude when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
-    public sealed class WithoutAttribute : ComponentAttribute
+    public class WithoutAttribute : ComponentAttribute
     {
         /// <summary>
         /// Initialize a new instance of the <see cref="WithoutAttribute"/> type.
@@ -141,6 +155,20 @@ namespace DefaultEcs.System
         /// <param name="componentTypes">The types of the component to exclude.</param>
         public WithoutAttribute(params Type[] componentTypes)
             : base(ComponentFilterType.Without, componentTypes)
+        { }
+    }
+
+    /// <summary>
+    /// Represents a component type to exclude when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of component to exclude.</typeparam>
+    public sealed class WithoutAttribute<T> : WithoutAttribute
+    {
+        /// <summary>
+        /// Initialize a new instance of the <see cref="WithoutAttribute{T}"/> type.
+        /// </summary>
+        public WithoutAttribute()
+            : base(typeof(T))
         { }
     }
 
@@ -161,7 +189,7 @@ namespace DefaultEcs.System
     /// <summary>
     /// Represents a component type to react to its addition when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
-    public sealed class WhenAddedAttribute : ComponentAttribute
+    public class WhenAddedAttribute : ComponentAttribute
     {
         /// <summary>
         /// Initialize a new instance of the <see cref="WhenAddedAttribute"/> type.
@@ -169,6 +197,20 @@ namespace DefaultEcs.System
         /// <param name="componentTypes">The types of the component to react to their addition.</param>
         public WhenAddedAttribute(params Type[] componentTypes)
             : base(ComponentFilterType.WhenAdded, componentTypes)
+        { }
+    }
+
+    /// <summary>
+    /// Represents a component type to react to its addition when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of component to react to its addition.</typeparam>
+    public sealed class WhenAddedAttribute<T> : WhenAddedAttribute
+    {
+        /// <summary>
+        /// Initialize a new instance of the <see cref="WhenAddedAttribute{T}"/> type.
+        /// </summary>
+        public WhenAddedAttribute()
+            : base(typeof(T))
         { }
     }
 
@@ -189,7 +231,7 @@ namespace DefaultEcs.System
     /// <summary>
     /// Represents a component type to react to its change when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
-    public sealed class WhenChangedAttribute : ComponentAttribute
+    public class WhenChangedAttribute : ComponentAttribute
     {
         /// <summary>
         /// Initialize a new instance of the <see cref="WhenChangedAttribute"/> type.
@@ -197,6 +239,20 @@ namespace DefaultEcs.System
         /// <param name="componentTypes">The types of the component to react to their change.</param>
         public WhenChangedAttribute(params Type[] componentTypes)
             : base(ComponentFilterType.WhenChanged, componentTypes)
+        { }
+    }
+
+    /// <summary>
+    /// Represents a component type to react to its change when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of component to react to its change.</typeparam>
+    public sealed class WhenChangedAttribute<T> : WhenChangedAttribute
+    {
+        /// <summary>
+        /// Initialize a new instance of the <see cref="WhenChangedAttribute{T}"/> type.
+        /// </summary>
+        public WhenChangedAttribute()
+            : base(typeof(T))
         { }
     }
 
@@ -217,7 +273,7 @@ namespace DefaultEcs.System
     /// <summary>
     /// Represents a component type to react to its deletion when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
     /// </summary>
-    public sealed class WhenRemovedAttribute : ComponentAttribute
+    public class WhenRemovedAttribute : ComponentAttribute
     {
         /// <summary>
         /// Initialize a new instance of the <see cref="WhenRemovedAttribute"/> type.
@@ -225,6 +281,20 @@ namespace DefaultEcs.System
         /// <param name="componentTypes">The types of the component to react to their deletion.</param>
         public WhenRemovedAttribute(params Type[] componentTypes)
             : base(ComponentFilterType.WhenRemoved, componentTypes)
+        { }
+    }
+
+    /// <summary>
+    /// Represents a component type to react to its deletion when building the inner <see cref="EntitySet"/> of <see cref="AEntitySetSystem{T}"/> when giving a <see cref="World"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of component to react to its deletion.</typeparam>
+    public sealed class WhenRemovedAttribute<T> : WhenRemovedAttribute
+    {
+        /// <summary>
+        /// Initialize a new instance of the <see cref="WhenRemovedAttribute{T}"/> type.
+        /// </summary>
+        public WhenRemovedAttribute()
+            : base(typeof(T))
         { }
     }
 

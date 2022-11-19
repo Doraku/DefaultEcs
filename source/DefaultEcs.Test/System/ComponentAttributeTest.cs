@@ -7,7 +7,11 @@ namespace DefaultEcs.Test.System
 {
     public sealed class ComponentAttributeTest
     {
+#if NET7_0_OR_GREATER
+        [With<bool>]
+#else
         [With(typeof(bool))]
+#endif
         private sealed class WithSystem : AEntitySetSystem<int>
         {
             public WithSystem(World world)
@@ -61,8 +65,13 @@ namespace DefaultEcs.Test.System
             protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
         }
 
+#if NET7_0_OR_GREATER
+        [With<bool>]
+        [Without<string>]
+#else
         [With(typeof(bool))]
         [Without(typeof(string))]
+#endif
         private sealed class WithoutSystem : AEntitySetSystem<int>
         {
             public WithoutSystem(World world)
@@ -72,7 +81,11 @@ namespace DefaultEcs.Test.System
             protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
         }
 
+#if NET7_0_OR_GREATER
+        [With<bool>]
+#else
         [With(typeof(bool))]
+#endif
         [WithoutEither(typeof(string), typeof(char))]
         [WithoutEither(typeof(double), typeof(long))]
         private sealed class WithoutEitherSystem : AEntitySetSystem<int>
@@ -84,7 +97,11 @@ namespace DefaultEcs.Test.System
             protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
         }
 
+#if NET7_0_OR_GREATER
+        [WhenAdded<bool>]
+#else
         [WhenAdded(typeof(bool))]
+#endif
         private sealed class WhenAddedSystem : AEntitySetSystem<int>
         {
             public WhenAddedSystem(World world)
@@ -104,7 +121,11 @@ namespace DefaultEcs.Test.System
             protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
         }
 
+#if NET7_0_OR_GREATER
+        [WhenChanged<bool>]
+#else
         [WhenChanged(typeof(bool))]
+#endif
         private sealed class WhenChangedSystem : AEntitySetSystem<int>
         {
             public WhenChangedSystem(World world)
@@ -124,8 +145,13 @@ namespace DefaultEcs.Test.System
             protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
         }
 
+#if NET7_0_OR_GREATER
+        [With<bool>]
+        [WhenRemoved<string>]
+#else
         [With(typeof(bool))]
         [WhenRemoved(typeof(string))]
+#endif
         private sealed class WhenRemovedSystem : AEntitySetSystem<int>
         {
             public WhenRemovedSystem(World world)
@@ -135,7 +161,11 @@ namespace DefaultEcs.Test.System
             protected override void Update(int state, in Entity entity) => entity.Get<bool>() = true;
         }
 
+#if NET7_0_OR_GREATER
+        [With<bool>]
+#else
         [With(typeof(bool))]
+#endif
         [WhenRemovedEither(typeof(string), typeof(char))]
         private sealed class WhenRemovedEitherSystem : AEntitySetSystem<int>
         {

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultSlap.System
 {
-    [With(typeof(TargetPosition), typeof(PositionFloat), typeof(Speed))]
+    [With<TargetPosition>, With<PositionFloat>, With<Speed>]
     public sealed class AISystem : AEntitySetSystem<float>
     {
         private readonly ThreadLocal<Random> _random = new(() => new Random());

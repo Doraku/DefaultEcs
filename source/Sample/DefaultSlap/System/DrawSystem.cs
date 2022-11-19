@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DefaultSlap.System
 {
-    [With(typeof(Position), typeof(DrawInfo))]
+    [With<Position>, With<DrawInfo>]
     public sealed class DrawSystem : AEntitySetSystem<float>
     {
         private readonly SpriteBatch _batch;

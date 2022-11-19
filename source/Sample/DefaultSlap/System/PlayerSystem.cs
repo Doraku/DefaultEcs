@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace DefaultSlap.System
 {
-    [With(typeof(PlayerState), typeof(Position), typeof(DrawInfo))]
+    [With<PlayerState>, With<Position>, With<DrawInfo>]
     internal sealed class PlayerSystem : AEntitySetSystem<float>
     {
         private readonly GameWindow _window;

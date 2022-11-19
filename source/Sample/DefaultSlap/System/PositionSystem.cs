@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultSlap.System
 {
-    [With(typeof(PositionFloat), typeof(Position))]
+    [With<PositionFloat>, With<Position>]
     public sealed class PositionSystem : AEntitySetSystem<float>
     {
         public PositionSystem(World world, IParallelRunner runner)
