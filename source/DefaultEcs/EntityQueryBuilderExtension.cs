@@ -50,7 +50,7 @@ namespace DefaultEcs
 
         private static EntityQueryBuilder Simple(EntityQueryBuilder builder, Type[] componentTypes, MethodInfo method)
         {
-            foreach (Type componentType in componentTypes.CheckArgumentNullException(nameof(componentTypes)))
+            foreach (Type componentType in componentTypes.ThrowIfNull())
             {
                 method.MakeGenericMethod(componentType).Invoke(builder, null);
             }
@@ -62,7 +62,7 @@ namespace DefaultEcs
         {
             EntityQueryBuilder.EitherBuilder eitherBuilder = null;
 
-            foreach (Type componentType in componentTypes.CheckArgumentNullException(nameof(componentTypes)))
+            foreach (Type componentType in componentTypes.ThrowIfNull())
             {
                 if (eitherBuilder is null)
                 {

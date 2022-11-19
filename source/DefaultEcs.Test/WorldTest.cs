@@ -258,7 +258,10 @@ namespace DefaultEcs.Test
         {
             using World world = new(0);
 
-            Check.ThatCode(() => world.ReadAllComponentTypes(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.ReadAllComponentTypes(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "reader");
         }
 
         [Fact]
@@ -290,9 +293,15 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            Check.ThatCode(() => world.Optimize(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.Optimize(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "runner");
 
-            Check.ThatCode(() => world.Optimize(null, () => { })).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.Optimize(null, () => { }))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "runner");
         }
 
         [Fact]
@@ -301,7 +310,10 @@ namespace DefaultEcs.Test
             using World world = new();
             using DefaultParallelRunner runner = new(Environment.ProcessorCount);
 
-            Check.ThatCode(() => world.Optimize(runner, null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.Optimize(runner, null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "mainAction");
         }
 
         [Fact]
@@ -385,7 +397,10 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            Check.ThatCode(() => world.SubscribeWorldDisposed(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.SubscribeWorldDisposed(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]
@@ -405,7 +420,10 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            Check.ThatCode(() => world.SubscribeEntityCreated(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.SubscribeEntityCreated(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]
@@ -413,7 +431,10 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            Check.ThatCode(() => world.SubscribeEntityEnabled(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.SubscribeEntityEnabled(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]
@@ -421,7 +442,10 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            Check.ThatCode(() => world.SubscribeEntityDisabled(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.SubscribeEntityDisabled(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]
@@ -429,7 +453,10 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            Check.ThatCode(() => world.SubscribeEntityDisposed(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.SubscribeEntityDisposed(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]
@@ -502,7 +529,10 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            Check.ThatCode(() => world.SubscribeComponentAdded<bool>(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.SubscribeComponentAdded<bool>(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]
@@ -510,7 +540,10 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            Check.ThatCode(() => world.SubscribeComponentChanged<bool>(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.SubscribeComponentChanged<bool>(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]
@@ -518,7 +551,10 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            Check.ThatCode(() => world.SubscribeComponentRemoved<bool>(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.SubscribeComponentRemoved<bool>(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]
@@ -526,7 +562,10 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            Check.ThatCode(() => world.SubscribeComponentEnabled<bool>(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.SubscribeComponentEnabled<bool>(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]
@@ -534,7 +573,10 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            Check.ThatCode(() => world.SubscribeComponentDisabled<bool>(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.SubscribeComponentDisabled<bool>(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]

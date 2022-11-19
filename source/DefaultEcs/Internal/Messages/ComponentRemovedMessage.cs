@@ -1,14 +1,6 @@
 ﻿namespace DefaultEcs.Internal.Messages
 {
-    internal readonly struct ComponentRemovedMessage<T>
-    {
-        public readonly int EntityId;
-        public readonly ComponentEnum Components;
-
-        public ComponentRemovedMessage(int entityId, ComponentEnum components)
-        {
-            EntityId = entityId;
-            Components = components;
-        }
-    }
+    internal readonly record struct ComponentRemovedMessage<T>(
+        int EntityId,
+        ComponentEnum Components);
 }

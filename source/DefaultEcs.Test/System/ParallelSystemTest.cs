@@ -16,14 +16,17 @@ namespace DefaultEcs.Test.System
         {
             ISystem<float>[] systems = null;
 
-            Check.ThatCode(() => new ParallelSystem<float>(Substitute.For<IParallelRunner>(), systems)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => new ParallelSystem<float>(Substitute.For<IParallelRunner>(), systems))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "systems");
         }
 
         [Fact]
-        public void ParallelSystem_Should_throw_When_runner_is_null()
-        {
-            Check.ThatCode(() => new ParallelSystem<float>(null)).Throws<ArgumentNullException>();
-        }
+        public void ParallelSystem_Should_throw_When_runner_is_null() => Check
+            .ThatCode(() => new ParallelSystem<float>(null))
+            .Throws<ArgumentNullException>()
+            .WithProperty(e => e.ParamName, "runner");
 
         [Fact]
         public void Update_Should_call_update_on_all_systems()

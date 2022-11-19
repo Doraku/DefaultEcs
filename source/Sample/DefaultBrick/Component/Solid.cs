@@ -1,5 +1,4 @@
 ﻿namespace DefaultBrick.Component
 {
-    public struct Solid
-    { }
+    public readonly record struct Solid;
 }

@@ -403,7 +403,7 @@ namespace DefaultEcs
         /// <returns>The current <see cref="EntityQueryBuilder"/>.</returns>
         public EntityQueryBuilder With<T>(ComponentPredicate<T> predicate)
         {
-            predicate.CheckArgumentNullException(nameof(predicate));
+            predicate.ThrowIfNull();
 
             if (!_predicateFilter[ComponentManager<T>.Flag])
             {

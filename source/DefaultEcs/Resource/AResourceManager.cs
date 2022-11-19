@@ -282,7 +282,7 @@ namespace DefaultEcs.Resource
                 yield return w.SubscribeComponentRemoved<ManagedResource<TInfo[], TResource>>(OnRemoved);
             }
 
-            world.CheckArgumentNullException(nameof(world));
+            world.ThrowIfNull();
 
             ComponentPool<ManagedResource<TInfo, TResource>> singleComponents = ComponentManager<ManagedResource<TInfo, TResource>>.Get(world.WorldId);
             if (singleComponents != null)

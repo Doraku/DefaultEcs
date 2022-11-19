@@ -318,8 +318,8 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public Entity CopyTo(World world, ComponentCloner cloner)
         {
-            world.CheckArgumentNullException(nameof(world));
-            cloner.CheckArgumentNullException(nameof(cloner));
+            world.ThrowIfNull();
+            cloner.ThrowIfNull();
 
             ThrowIf(WorldId == 0, "Entity was not created from a World");
 
@@ -359,7 +359,7 @@ namespace DefaultEcs
         /// </summary>
         /// <param name="reader">The <see cref="IComponentReader"/> instance to be used as callback with the current <see cref="Entity"/> components.</param>
         /// <exception cref="ArgumentNullException"><paramref name="reader"/> is null.</exception>
-        public void ReadAllComponents(IComponentReader reader) => Publisher.Publish(WorldId, new ComponentReadMessage(EntityId, reader.CheckArgumentNullException(nameof(reader))));
+        public void ReadAllComponents(IComponentReader reader) => Publisher.Publish(WorldId, new ComponentReadMessage(EntityId, reader.ThrowIfNull()));
 
         #endregion
 

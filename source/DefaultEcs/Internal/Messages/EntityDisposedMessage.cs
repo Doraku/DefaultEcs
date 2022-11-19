@@ -1,12 +1,5 @@
 ﻿namespace DefaultEcs.Internal.Messages
 {
-    internal readonly struct EntityDisposedMessage
-    {
-        public readonly int EntityId;
-
-        public EntityDisposedMessage(int entityId)
-        {
-            EntityId = entityId;
-        }
-    }
+    internal readonly record struct EntityDisposedMessage(
+        int EntityId);
 }

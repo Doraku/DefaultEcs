@@ -85,24 +85,30 @@ namespace DefaultEcs.Test.System
         #region Tests
 
         [Fact]
-        public void AEntityMultiMapSystem_Should_throw_ArgumentNullException_When_EntitySet_is_null()
-        {
-            Check.ThatCode(() => new System<int>(default(EntityMultiMap<int>))).Throws<ArgumentNullException>();
-        }
+        public void AEntityMultiMapSystem_Should_throw_ArgumentNullException_When_map_is_null() => Check
+            .ThatCode(() => new System<int>(default(EntityMultiMap<int>)))
+            .Throws<ArgumentNullException>()
+            .WithProperty(e => e.ParamName, "map");
 
         [Fact]
-        public void AEntityMultiMapSystem_Should_throw_ArgumentNullException_When_World_is_null()
-        {
-            Check.ThatCode(() => new System<int>(default(World))).Throws<ArgumentNullException>();
-        }
+        public void AEntityMultiMapSystem_Should_throw_ArgumentNullException_When_World_is_null() => Check
+            .ThatCode(() => new System<int>(default(World)))
+            .Throws<ArgumentNullException>()
+            .WithProperty(e => e.ParamName, "world");
 
         [Fact]
         public void AEntityMultiMapSystem_Should_throw_ArgumentNullException_When_factory_is_null()
         {
             using World world = new();
 
-            Check.ThatCode(() => new System<int>(world, default(Func<object, World, EntityMultiMap<int>>))).Throws<ArgumentNullException>();
-            Check.ThatCode(() => new System<int>(world, default, true)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => new System<int>(world, default(Func<object, World, EntityMultiMap<int>>)))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "factory");
+            Check
+                .ThatCode(() => new System<int>(world, default, true))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "factory");
         }
 
         [Fact]

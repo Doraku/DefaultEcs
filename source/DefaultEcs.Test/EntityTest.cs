@@ -756,7 +756,10 @@ namespace DefaultEcs.Test
         public void CopyTo_Should_throw_When_World_is_null()
         {
             Entity entity = default;
-            Check.ThatCode(() => entity.CopyTo(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => entity.CopyTo(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "world");
         }
 
         [Fact]
@@ -765,7 +768,10 @@ namespace DefaultEcs.Test
             using World world = new(1);
 
             Entity entity = default;
-            Check.ThatCode(() => entity.CopyTo(world, null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => entity.CopyTo(world, null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "cloner");
         }
 
         [Fact]
@@ -774,7 +780,10 @@ namespace DefaultEcs.Test
             using World world = new(1);
 
             Entity entity = world.CreateEntity();
-            Check.ThatCode(() => entity.ReadAllComponents(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => entity.ReadAllComponents(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "reader");
         }
 
         [Fact]

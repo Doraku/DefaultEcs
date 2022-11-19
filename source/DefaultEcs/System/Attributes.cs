@@ -97,7 +97,7 @@ namespace DefaultEcs.System
         /// <param name="componentTypes">The types of the component.</param>
         public ComponentAttribute(ComponentFilterType filterType, params Type[] componentTypes)
         {
-            ComponentTypes = componentTypes.CheckArgumentNullException(nameof(componentTypes));
+            ComponentTypes = componentTypes.ThrowIfNull();
             FilterType = filterType;
         }
     }

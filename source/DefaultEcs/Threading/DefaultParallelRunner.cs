@@ -88,7 +88,7 @@ namespace DefaultEcs.Threading
         /// <param name="runnable">The <see cref="IParallelRunnable"/> to run.</param>
         public void Run(IParallelRunnable runnable)
         {
-            runnable.CheckArgumentNullException(nameof(runnable));
+            runnable.ThrowIfNull();
 
             Volatile.Write(ref _currentRunnable, runnable);
 

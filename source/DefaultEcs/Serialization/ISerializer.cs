@@ -15,7 +15,7 @@ namespace DefaultEcs.Serialization
         /// <param name="serializer">The <see cref="ISerializer"/> instance to use.</param>
         /// <param name="stream">The <see cref="Stream"/> in which the data will be saved.</param>
         /// <param name="entities">The <see cref="Entity"/> instances to save.</param>
-        public static void Serialize(this ISerializer serializer, Stream stream, params Entity[] entities) => serializer.CheckArgumentNullException(nameof(serializer)).Serialize(stream, entities);
+        public static void Serialize(this ISerializer serializer, Stream stream, params Entity[] entities) => serializer.ThrowIfNull().Serialize(stream, entities);
     }
 
     /// <summary>

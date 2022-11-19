@@ -1,5 +1,4 @@
 ﻿namespace DefaultBrick.Component
 {
-    public struct Ball
-    { }
+    public readonly record struct Ball;
 }

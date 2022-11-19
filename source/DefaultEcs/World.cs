@@ -371,7 +371,7 @@ namespace DefaultEcs
         /// This method is primiraly used for serialization purpose and should not be called in game logic.
         /// </summary>
         /// <param name="reader">The <see cref="IComponentTypeReader"/> instance to be used as callback with the current <see cref="World"/> maximum number of component.</param>
-        public void ReadAllComponentTypes(IComponentTypeReader reader) => Publish(new ComponentTypeReadMessage(reader.CheckArgumentNullException(nameof(reader))));
+        public void ReadAllComponentTypes(IComponentTypeReader reader) => Publish(new ComponentTypeReadMessage(reader.ThrowIfNull()));
 
         /// <summary>
         /// Sorts current instance inner storage so accessing <see cref="Entity"/> and their components from <see cref="EntitySet"/> and <see cref="EntityMultiMap{TKey}"/> always move forward in memory.
@@ -382,8 +382,8 @@ namespace DefaultEcs
         /// <param name="mainAction">An <see cref="Action"/> to execute on the main thread while the optimization is in process.</param>
         public void Optimize(IParallelRunner runner, Action mainAction)
         {
-            runner.CheckArgumentNullException(nameof(runner));
-            mainAction.CheckArgumentNullException(nameof(mainAction));
+            runner.ThrowIfNull();
+            mainAction.ThrowIfNull();
 
             _optimizer.PrepareForRun(mainAction);
             runner.Run(_optimizer);
@@ -396,7 +396,7 @@ namespace DefaultEcs
         /// <param name="runner">The <see cref="IParallelRunner"/> to process this operation in parallel.</param>
         public void Optimize(IParallelRunner runner)
         {
-            runner.CheckArgumentNullException(nameof(runner));
+            runner.ThrowIfNull();
 
             _optimizer.PrepareForRun(null);
             runner.Run(_optimizer);
@@ -438,7 +438,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeWorldDisposed(WorldDisposedHandler action)
         {
-            action.CheckArgumentNullException(nameof(action));
+            action.ThrowIfNull();
 
             return Subscribe((in WorldDisposedMessage _) => action(this));
         }
@@ -451,7 +451,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeEntityCreated(EntityCreatedHandler action)
         {
-            action.CheckArgumentNullException(nameof(action));
+            action.ThrowIfNull();
 
             return Subscribe((in EntityCreatedMessage message) => action(new Entity(WorldId, message.EntityId)));
         }
@@ -464,7 +464,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeEntityEnabled(EntityEnabledHandler action)
         {
-            action.CheckArgumentNullException(nameof(action));
+            action.ThrowIfNull();
 
             return Subscribe((in EntityEnabledMessage message) => action(new Entity(WorldId, message.EntityId)));
         }
@@ -477,7 +477,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeEntityDisabled(EntityDisabledHandler action)
         {
-            action.CheckArgumentNullException(nameof(action));
+            action.ThrowIfNull();
 
             return Subscribe((in EntityDisabledMessage message) => action(new Entity(WorldId, message.EntityId)));
         }
@@ -502,7 +502,7 @@ namespace DefaultEcs
                 });
             }
 
-            action.CheckArgumentNullException(nameof(action));
+            action.ThrowIfNull();
 
             return GetSubscriptions(action).Merge();
         }
@@ -516,7 +516,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeComponentAdded<T>(ComponentAddedHandler<T> action)
         {
-            action.CheckArgumentNullException(nameof(action));
+            action.ThrowIfNull();
 
             return Subscribe((in ComponentAddedMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
@@ -534,7 +534,7 @@ namespace DefaultEcs
         {
             ComponentManager<T>.GetOrCreatePrevious(WorldId);
 
-            action.CheckArgumentNullException(nameof(action));
+            action.ThrowIfNull();
 
             return Subscribe((in ComponentChangedMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
@@ -577,7 +577,7 @@ namespace DefaultEcs
                 });
             }
 
-            action.CheckArgumentNullException(nameof(action));
+            action.ThrowIfNull();
 
             ComponentManager<T>.GetOrCreatePrevious(WorldId);
 
@@ -593,7 +593,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeComponentEnabled<T>(ComponentEnabledHandler<T> action)
         {
-            action.CheckArgumentNullException(nameof(action));
+            action.ThrowIfNull();
 
             return Subscribe((in ComponentEnabledMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
@@ -609,7 +609,7 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeComponentDisabled<T>(ComponentDisabledHandler<T> action)
         {
-            action.CheckArgumentNullException(nameof(action));
+            action.ThrowIfNull();
 
             return Subscribe((in ComponentDisabledMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),

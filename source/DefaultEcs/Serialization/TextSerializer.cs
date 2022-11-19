@@ -348,7 +348,7 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         public static void Write<T>(Stream stream, in T value, TextSerializationContext context)
         {
-            stream.CheckArgumentNullException(nameof(stream));
+            stream.ThrowIfNull();
 
             using StreamWriterWrapper writer = new(stream, context);
 
@@ -374,7 +374,7 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         public static T Read<T>(Stream stream, TextSerializationContext context)
         {
-            stream.CheckArgumentNullException(nameof(stream));
+            stream.ThrowIfNull();
 
             using StreamReaderWrapper reader = new(stream, context);
 
@@ -403,8 +403,8 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         public void Serialize(Stream stream, World world)
         {
-            stream.CheckArgumentNullException(nameof(stream));
-            world.CheckArgumentNullException(nameof(world));
+            stream.ThrowIfNull();
+            world.ThrowIfNull();
 
             using StreamWriterWrapper writer = new(stream, _context);
 
@@ -430,7 +430,7 @@ namespace DefaultEcs.Serialization
         /// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
         public World Deserialize(Stream stream)
         {
-            stream.CheckArgumentNullException(nameof(stream));
+            stream.ThrowIfNull();
 
             World world = null;
             Deserialize(stream, ref world);
@@ -445,8 +445,8 @@ namespace DefaultEcs.Serialization
         /// <param name="entities">The <see cref="Entity"/> instances to save.</param>
         public void Serialize(Stream stream, IEnumerable<Entity> entities)
         {
-            stream.CheckArgumentNullException(nameof(stream));
-            entities.CheckArgumentNullException(nameof(entities));
+            stream.ThrowIfNull();
+            entities.ThrowIfNull();
 
             using StreamWriterWrapper writer = new(stream, _context);
 
@@ -461,8 +461,8 @@ namespace DefaultEcs.Serialization
         /// <returns>The <see cref="Entity"/> instances loaded.</returns>
         public ICollection<Entity> Deserialize(Stream stream, World world)
         {
-            stream.CheckArgumentNullException(nameof(stream));
-            world.CheckArgumentNullException(nameof(world));
+            stream.ThrowIfNull();
+            world.ThrowIfNull();
 
             return Deserialize(stream, ref world);
         }

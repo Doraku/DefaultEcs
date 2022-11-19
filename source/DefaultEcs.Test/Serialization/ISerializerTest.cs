@@ -139,7 +139,10 @@ namespace DefaultEcs.Test.Serialization
         {
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
 
-            Check.ThatCode(() => serializer.Serialize(null, default)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => serializer.Serialize(null, default))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "stream");
         }
 
         [Theory]
@@ -150,7 +153,10 @@ namespace DefaultEcs.Test.Serialization
 
             using Stream stream = new MemoryStream();
 
-            Check.ThatCode(() => serializer.Serialize(stream, default)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => serializer.Serialize(stream, default))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "world");
         }
 
         [Theory]
@@ -159,18 +165,24 @@ namespace DefaultEcs.Test.Serialization
         {
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
 
-            Check.ThatCode(() => serializer.Serialize(null, default(IEnumerable<Entity>))).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => serializer.Serialize(null, default(IEnumerable<Entity>)))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "stream");
         }
 
         [Theory]
         [MemberData(nameof(SerializerTypes))]
-        public void Serialize_entities_Should_throw_When_world_is_null(Type serializerType)
+        public void Serialize_entities_Should_throw_When_entities_is_null(Type serializerType)
         {
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
 
             using Stream stream = new MemoryStream();
 
-            Check.ThatCode(() => serializer.Serialize(stream, default(IEnumerable<Entity>))).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => serializer.Serialize(stream, default(IEnumerable<Entity>)))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "entities");
         }
 
         [Theory]
@@ -179,7 +191,10 @@ namespace DefaultEcs.Test.Serialization
         {
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
 
-            Check.ThatCode(() => serializer.Deserialize(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => serializer.Deserialize(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "stream");
         }
 
         [Theory]
@@ -188,7 +203,10 @@ namespace DefaultEcs.Test.Serialization
         {
             ISerializer serializer = (ISerializer)Activator.CreateInstance(serializerType);
 
-            Check.ThatCode(() => serializer.Deserialize(null, default)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => serializer.Deserialize(null, default))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "stream");
         }
 
         [Theory]
@@ -199,7 +217,10 @@ namespace DefaultEcs.Test.Serialization
 
             using Stream stream = new MemoryStream();
 
-            Check.ThatCode(() => serializer.Deserialize(stream, default)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => serializer.Deserialize(stream, default))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "world");
         }
 
         [Theory]

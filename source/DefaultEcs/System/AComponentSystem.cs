@@ -72,7 +72,7 @@ namespace DefaultEcs.System
         {
             _runner = runner ?? DefaultParallelRunner.Default;
             _runnable = new Runnable(this);
-            _components = ComponentManager<TComponent>.GetOrCreate(world.CheckArgumentNullException(nameof(world)).WorldId);
+            _components = ComponentManager<TComponent>.GetOrCreate(world.ThrowIfNull().WorldId);
             _minComponentCountByRunnerIndex = _runner.DegreeOfParallelism > 1 ? minComponentCountByRunnerIndex : int.MaxValue;
 
             World = world;

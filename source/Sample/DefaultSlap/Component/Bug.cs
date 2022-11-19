@@ -1,5 +1,4 @@
 ﻿namespace DefaultSlap.Component
 {
-    public readonly struct Bug
-    { }
+    public readonly record struct Bug;
 }

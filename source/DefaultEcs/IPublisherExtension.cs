@@ -80,8 +80,8 @@ namespace DefaultEcs
         public static IDisposable Subscribe(this IPublisher publisher, Type type)
         {
             return Subscribe(
-                publisher.CheckArgumentNullException(nameof(publisher)),
-                type.CheckArgumentNullException(nameof(type)),
+                publisher.ThrowIfNull(),
+                type.ThrowIfNull(),
                 null);
         }
 
@@ -108,8 +108,8 @@ namespace DefaultEcs
             where T : class
         {
             return Subscribe(
-                publisher.CheckArgumentNullException(nameof(publisher)),
-                target.CheckArgumentNullException(nameof(target)).GetType(),
+                publisher.ThrowIfNull(),
+                target.ThrowIfNull().GetType(),
                 target);
         }
 

@@ -34,24 +34,30 @@ namespace DefaultEcs.Test.System
         #region Tests
 
         [Fact]
-        public void AEntitySetSystem_Should_throw_ArgumentNullException_When_EntitySet_is_null()
-        {
-            Check.ThatCode(() => new System(default(EntitySortedSet<int>))).Throws<ArgumentNullException>();
-        }
+        public void AEntitySetSystem_Should_throw_ArgumentNullException_When_EntitySet_is_null() => Check
+            .ThatCode(() => new System(default(EntitySortedSet<int>)))
+            .Throws<ArgumentNullException>()
+            .WithProperty(e => e.ParamName, "sortedSet");
 
         [Fact]
-        public void AEntitySetSystem_Should_throw_ArgumentNullException_When_World_is_null()
-        {
-            Check.ThatCode(() => new System(default)).Throws<ArgumentNullException>();
-        }
+        public void AEntitySetSystem_Should_throw_ArgumentNullException_When_World_is_null() => Check
+            .ThatCode(() => new System(default))
+            .Throws<ArgumentNullException>()
+            .WithProperty(e => e.ParamName, "world");
 
         [Fact]
         public void AEntitySetSystem_Should_throw_ArgumentNullException_When_factory_is_null()
         {
             using World world = new();
 
-            Check.ThatCode(() => new System(world, default)).Throws<ArgumentNullException>();
-            Check.ThatCode(() => new System(world, default, true)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => new System(world, default))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "factory");
+            Check
+                .ThatCode(() => new System(world, default, true))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "factory");
         }
 
         [Fact]

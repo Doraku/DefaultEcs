@@ -14,7 +14,10 @@ namespace DefaultEcs.Test
         {
             using World world = new();
 
-            Check.ThatCode(() => world.GetEntities().With<bool>(null)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => world.GetEntities().With<bool>(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "predicate");
         }
 
         [Fact]

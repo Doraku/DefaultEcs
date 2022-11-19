@@ -180,7 +180,7 @@ namespace DefaultEcs.Command
         /// <param name="world">The <see cref="World"/> to record action for.</param>
         /// <returns>The <see cref="WorldRecord"/> used to record actions on the given <see cref="World"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        public WorldRecord Record(World world) => new(this, world.CheckArgumentNullException(nameof(world)));
+        public WorldRecord Record(World world) => new(this, world.ThrowIfNull());
 
         /// <summary>
         /// Gives an <see cref="EntityRecord"/> to record action on the given <see cref="Entity"/>.

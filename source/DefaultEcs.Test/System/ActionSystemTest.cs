@@ -10,10 +10,10 @@ namespace DefaultEcs.Test.System
         #region Tests
 
         [Fact]
-        public void Update_Should_throw_ArgumentNullException_When_action_is_null()
-        {
-            Check.ThatCode(() => new ActionSystem<int>(null)).Throws<ArgumentNullException>();
-        }
+        public void Update_Should_throw_ArgumentNullException_When_action_is_null() => Check
+            .ThatCode(() => new ActionSystem<int>(null))
+            .Throws<ArgumentNullException>()
+            .WithProperty(e => e.ParamName, "action");
 
         [Fact]
         public void Update_Should_call_the_action()

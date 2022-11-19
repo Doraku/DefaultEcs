@@ -55,7 +55,7 @@ namespace DefaultEcs.System
 
         private ParallelSystem(IParallelRunner runner)
         {
-            _runner = runner.CheckArgumentNullException(nameof(runner));
+            _runner = runner.ThrowIfNull();
             _runnable = new Runnable(this);
         }
 
@@ -71,7 +71,7 @@ namespace DefaultEcs.System
             : this(runner)
         {
             _mainSystem = mainSystem;
-            _systems = systems.CheckArgumentNullException(nameof(systems)).Where(s => s != null).ToArray();
+            _systems = systems.ThrowIfNull().Where(s => s != null).ToArray();
         }
 
         /// <summary>

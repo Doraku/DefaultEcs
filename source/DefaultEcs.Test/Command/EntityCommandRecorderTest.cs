@@ -27,7 +27,10 @@ namespace DefaultEcs.Test.Command
         {
             using EntityCommandRecorder recorder = new(1024);
 
-            Check.ThatCode(() => recorder.Record(default)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => recorder.Record(default))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "world");
         }
 
         [Fact]
@@ -576,7 +579,10 @@ namespace DefaultEcs.Test.Command
             using EntityCommandRecorder recorder = new(1024);
             using World world = new();
 
-            Check.ThatCode(() => recorder.Record(world).CreateEntity().CopyTo(world, default)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => recorder.Record(world).CreateEntity().CopyTo(world, default))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "cloner");
         }
 
         [Fact]

@@ -125,7 +125,8 @@ namespace DefaultEcs.Test
 
             Check
                 .ThatCode(publisher.Subscribe<object>)
-                .Throws<ArgumentNullException>();
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "publisher");
         }
 
         [Fact]
@@ -135,7 +136,8 @@ namespace DefaultEcs.Test
 
             Check
                 .ThatCode(() => publisher.Subscribe(default))
-                .Throws<ArgumentNullException>();
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "type");
         }
 
         [Fact]
@@ -186,7 +188,8 @@ namespace DefaultEcs.Test
 
             Check
                 .ThatCode(() => publisher.Subscribe(target))
-                .Throws<ArgumentNullException>();
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "publisher");
         }
 
         [Fact]
@@ -197,7 +200,8 @@ namespace DefaultEcs.Test
 
             Check
                 .ThatCode(() => publisher.Subscribe(target))
-                .Throws<ArgumentNullException>();
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "target");
         }
 
         [Fact]

@@ -183,10 +183,16 @@ namespace DefaultEcs.Test.Serialization
         #region Tests
 
         [Fact]
-        public void Write_Should_throw_When_stream_is_null() => Check.ThatCode(() => Write(null, true)).Throws<ArgumentNullException>();
+        public void Write_Should_throw_When_stream_is_null() => Check
+            .ThatCode(() => Write(null, true))
+            .Throws<ArgumentNullException>()
+            .WithProperty(e => e.ParamName, "stream");
 
         [Fact]
-        public void Read_Should_throw_When_stream_is_null() => Check.ThatCode(() => Read<bool>(null)).Throws<ArgumentNullException>();
+        public void Read_Should_throw_When_stream_is_null() => Check
+            .ThatCode(() => Read<bool>(null))
+            .Throws<ArgumentNullException>()
+            .WithProperty(e => e.ParamName, "stream");
 
         [Fact]
         public void Should_handle_bool() => Test(true);

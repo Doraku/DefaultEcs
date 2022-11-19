@@ -6,28 +6,16 @@ using Microsoft.Xna.Framework;
 
 namespace DefaultBoids.Component
 {
-    internal readonly struct GridId : IEquatable<GridId>
+    internal readonly record struct GridId(
+        int X,
+        int Y)
+        : IEquatable<GridId>
     {
-        public readonly int X;
-        public readonly int Y;
-
-        public GridId(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
-
         public override int GetHashCode() => X + (Y * 1000);
-
-        public override bool Equals(object obj) => obj is GridId other && Equals(other);
 
         public bool Equals(GridId other) => X == other.X && Y == other.Y;
 
         public override string ToString() => $"{X} {Y}";
-
-        public static bool operator ==(GridId left, GridId right) => left.Equals(right);
-
-        public static bool operator !=(GridId left, GridId right) => !(left == right);
     }
 
     internal static class GridIdExtension

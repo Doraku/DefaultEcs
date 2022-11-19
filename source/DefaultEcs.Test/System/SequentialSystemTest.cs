@@ -15,7 +15,10 @@ namespace DefaultEcs.Test.System
         {
             ISystem<float>[] systems = null;
 
-            Check.ThatCode(() => new SequentialSystem<float>(systems)).Throws<ArgumentNullException>();
+            Check
+                .ThatCode(() => new SequentialSystem<float>(systems))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "systems");
         }
 
         [Fact]

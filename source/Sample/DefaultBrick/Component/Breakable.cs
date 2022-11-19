@@ -1,5 +1,4 @@
 ﻿namespace DefaultBrick.Component
 {
-    public struct Breakable
-    { }
+    public readonly record struct Breakable;
 }

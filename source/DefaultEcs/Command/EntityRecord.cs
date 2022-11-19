@@ -119,7 +119,7 @@ namespace DefaultEcs.Command
         /// <exception cref="ArgumentNullException"><paramref name="world"/> or <paramref name="cloner"/> was null.</exception>
         public EntityRecord CopyTo(World world, ComponentCloner cloner)
         {
-            cloner.CheckArgumentNullException(nameof(cloner));
+            cloner.ThrowIfNull();
 
             EntityRecord copy = _recorder.Record(world).CreateEntity();
 

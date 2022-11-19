@@ -1,5 +1,4 @@
 ﻿namespace DefaultBrick.Component
 {
-    public struct PlayerInput
-    { }
+    public readonly record struct PlayerInput;
 }

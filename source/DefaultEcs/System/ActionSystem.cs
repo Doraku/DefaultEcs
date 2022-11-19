@@ -23,7 +23,7 @@ namespace DefaultEcs.System
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public ActionSystem(Action<T> action)
         {
-            _action = action.CheckArgumentNullException(nameof(action));
+            _action = action.ThrowIfNull();
             IsEnabled = true;
         }
 
