@@ -15,7 +15,7 @@ namespace DefaultEcs.Test
 {
     public sealed class WorldTest
     {
-        private struct FlagType { }
+        private record struct FlagType;
 
         #region Tests
 
@@ -580,6 +580,39 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void SubscribeWorldComponentAdded_Should_throw_When_action_is_null()
+        {
+            using World world = new();
+
+            Check
+                .ThatCode(() => world.SubscribeWorldComponentAdded<bool>(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "action");
+        }
+
+        [Fact]
+        public void SubscribeWorldComponentChanged_Should_throw_When_action_is_null()
+        {
+            using World world = new();
+
+            Check
+                .ThatCode(() => world.SubscribeWorldComponentChanged<bool>(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "action");
+        }
+
+        [Fact]
+        public void SubscribeWorldComponentRemoved_Should_throw_When_action_is_null()
+        {
+            using World world = new();
+
+            Check
+                .ThatCode(() => world.SubscribeWorldComponentRemoved<bool>(null))
+                .Throws<ArgumentNullException>()
+                .WithProperty(e => e.ParamName, "action");
+        }
+
+        [Fact]
         public void SubscribeComponentAdded_Should_call_handler_When_component_added()
         {
             using World world = new();
@@ -597,7 +630,7 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SubscribeComponentAdded_Should_not_thow_When_removing_component()
+        public void SubscribeComponentAdded_Should_not_throw_When_removing_component()
         {
             using World world = new();
             Entity entity = world.CreateEntity();
@@ -757,6 +790,74 @@ namespace DefaultEcs.Test
             world.SubscribeComponentDisabled((in Entity _, in bool _) => throw new Exception()).Dispose();
 
             Check.ThatCode(() => entity.Set(true)).DoesNotThrow();
+        }
+
+        [Fact]
+        public void SubscribeWorldComponentAdded_Should_call_handler_When_component_added()
+        {
+            using World world = new();
+            bool called = false;
+            using IDisposable subscription = world.SubscribeWorldComponentAdded((World w, in bool v) =>
+            {
+                Check.That(w).IsEqualTo(world);
+                Check.That(v).IsTrue();
+                called = true;
+            });
+
+            world.Set(true);
+            Check.That(called).IsTrue();
+        }
+
+        [Fact]
+        public void SubscribeWorldComponentRemoved_Should_call_handler_When_component_removed()
+        {
+            using World world = new();
+            world.Set(true);
+            bool called = false;
+            using IDisposable subscription = world.SubscribeWorldComponentRemoved((World w, in bool v) =>
+            {
+                Check.That(w).IsEqualTo(world);
+                Check.That(v).IsTrue();
+                called = true;
+            });
+
+            world.Remove<bool>();
+            Check.That(called).IsTrue();
+        }
+
+        [Fact]
+        public void SubscribeWorldComponentRemoved_Should_call_handler_When_world_disposed()
+        {
+            World world = new();
+            world.Set(true);
+            bool called = false;
+            using IDisposable subscription = world.SubscribeWorldComponentRemoved((World w, in bool v) =>
+            {
+                Check.That(w).IsEqualTo(world);
+                Check.That(v).IsTrue();
+                called = true;
+            });
+
+            world.Dispose();
+            Check.That(called).IsTrue();
+        }
+
+        [Fact]
+        public void SubscribeWorldComponentChanged_Should_call_handler_When_component_changed()
+        {
+            using World world = new();
+            world.Set(false);
+            bool called = false;
+            using IDisposable subscription = world.SubscribeWorldComponentChanged((World w, in bool ov, in bool nv) =>
+            {
+                Check.That(w).IsEqualTo(world);
+                Check.That(ov).IsFalse();
+                Check.That(nv).IsTrue();
+                called = true;
+            });
+
+            world.Set(true);
+            Check.That(called).IsTrue();
         }
 
         [Fact]

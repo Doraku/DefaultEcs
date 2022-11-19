@@ -83,6 +83,11 @@ namespace DefaultEcs.Internal
                 ComponentPool<T> pool = Get(worldId);
                 if (pool != null)
                 {
+                    if (pool.Has(0))
+                    {
+                        previousPool.Set(0, pool.Get(0));
+                    }
+
                     foreach (Entity entity in pool.GetEntities())
                     {
                         previousPool.Set(entity.EntityId, pool.Get(entity.EntityId));

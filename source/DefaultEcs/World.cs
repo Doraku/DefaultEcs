@@ -319,7 +319,26 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="component">The value of the component.</param>
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
-        public void Set<T>(in T component) => ComponentManager<T>.GetOrCreate(WorldId).Set(0, component);
+        public void Set<T>(in T component)
+        {
+            T previousComponent = default;
+            ComponentPool<T> previousPool = ComponentManager<T>.GetPrevious(WorldId);
+            if (previousPool != null)
+            {
+                previousComponent = Get<T>();
+            }
+
+            if (ComponentManager<T>.GetOrCreate(WorldId).Set(0, component))
+            {
+                Publish(new WorldComponentAddedMessage<T>());
+            }
+            else
+            {
+                Publish(new WorldComponentChangedMessage<T>());
+            }
+
+            previousPool?.Set(0, previousComponent);
+        }
 
         /// <summary>
         /// Sets the value of the component of type <typeparamref name="T"/> to its default value on the current <see cref="World"/>.
@@ -352,7 +371,14 @@ namespace DefaultEcs
         /// This method is not thread safe.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
-        public void Remove<T>() => ComponentManager<T>.Get(WorldId)?.Remove(0);
+        public void Remove<T>()
+        {
+            if (ComponentManager<T>.Get(WorldId)?.Remove(0) is true)
+            {
+                Publish(new WorldComponentRemovedMessage<T>());
+                ComponentManager<T>.GetPrevious(WorldId)?.Remove(0);
+            }
+        }
 
         /// <summary>
         /// Gets an <see cref="EntityQueryBuilder"/> to create a subset of <see cref="Entity"/> of the current <see cref="World"/>.
@@ -532,9 +558,9 @@ namespace DefaultEcs
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public IDisposable SubscribeComponentChanged<T>(ComponentChangedHandler<T> action)
         {
-            ComponentManager<T>.GetOrCreatePrevious(WorldId);
-
             action.ThrowIfNull();
+
+            ComponentManager<T>.GetOrCreatePrevious(WorldId);
 
             return Subscribe((in ComponentChangedMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
@@ -614,6 +640,71 @@ namespace DefaultEcs
             return Subscribe((in ComponentDisabledMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
                 ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
+        }
+
+        /// <summary>
+        /// Subscribes a <see cref="WorldComponentAddedHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is added.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <param name="action">The <see cref="WorldComponentAddedHandler{T}"/> to be called.</param>
+        /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
+        public IDisposable SubscribeWorldComponentAdded<T>(WorldComponentAddedHandler<T> action)
+        {
+            action.ThrowIfNull();
+
+            return Subscribe((in WorldComponentAddedMessage<T> _) => action(
+                this,
+                Get<T>()));
+        }
+
+        /// <summary>
+        /// Subscribes a <see cref="WorldComponentChangedHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is changed.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <param name="action">The <see cref="WorldComponentChangedHandler{T}"/> to be called.</param>
+        /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
+        public IDisposable SubscribeWorldComponentChanged<T>(WorldComponentChangedHandler<T> action)
+        {
+            action.ThrowIfNull();
+
+            ComponentManager<T>.GetOrCreatePrevious(WorldId);
+
+            return Subscribe((in WorldComponentChangedMessage<T> _) => action(
+                this,
+                ComponentManager<T>.GetPrevious(WorldId).Get(0),
+                Get<T>()));
+        }
+
+        /// <summary>
+        /// Subscribes an <see cref="WorldComponentRemovedHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is removed.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <param name="action">The <see cref="WorldComponentRemovedHandler{T}"/> to be called.</param>
+        /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
+        public IDisposable SubscribeWorldComponentRemoved<T>(WorldComponentRemovedHandler<T> action)
+        {
+            IEnumerable<IDisposable> GetSubscriptions(WorldComponentRemovedHandler<T> a)
+            {
+                yield return Subscribe((in WorldComponentRemovedMessage<T> _) => a(
+                    this,
+                    ComponentManager<T>.GetPrevious(WorldId).Get(0)));
+                yield return Subscribe((in WorldDisposedMessage _) =>
+                {
+                    if (Has<T>())
+                    {
+                        a(this, Get<T>());
+                    }
+                });
+            }
+
+            action.ThrowIfNull();
+
+            ComponentManager<T>.GetOrCreatePrevious(WorldId);
+
+            return GetSubscriptions(action).Merge();
         }
 
         #endregion
