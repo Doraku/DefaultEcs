@@ -82,12 +82,6 @@ namespace DefaultEcs
         private void InnerSet<T>(bool isNew)
         {
             ref ComponentEnum components = ref Components;
-            T component = default;
-            ComponentPool<T> previousPool = ComponentManager<T>.GetPrevious(WorldId);
-            if (previousPool != null)
-            {
-                component = Get<T>();
-            }
 
             if (isNew)
             {
@@ -104,7 +98,10 @@ namespace DefaultEcs
                 Publisher.Publish(WorldId, new ComponentEnabledMessage<T>(EntityId, components));
             }
 
-            previousPool?.Set(EntityId, component);
+            if (ComponentManager<T>.GetPrevious(WorldId) is ComponentPool<T> previousPool && Has<T>())
+            {
+                previousPool.Set(EntityId, Get<T>());
+            }
         }
 
         /// <summary>

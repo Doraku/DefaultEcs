@@ -321,13 +321,6 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
         public void Set<T>(in T component)
         {
-            T previousComponent = default;
-            ComponentPool<T> previousPool = ComponentManager<T>.GetPrevious(WorldId);
-            if (previousPool != null)
-            {
-                previousComponent = Get<T>();
-            }
-
             if (ComponentManager<T>.GetOrCreate(WorldId).Set(0, component))
             {
                 Publish(new WorldComponentAddedMessage<T>());
@@ -337,7 +330,10 @@ namespace DefaultEcs
                 Publish(new WorldComponentChangedMessage<T>());
             }
 
-            previousPool?.Set(0, previousComponent);
+            if (ComponentManager<T>.GetPrevious(WorldId) is ComponentPool<T> previousPool && Has<T>())
+            {
+                previousPool.Set(0, component);
+            }
         }
 
         /// <summary>

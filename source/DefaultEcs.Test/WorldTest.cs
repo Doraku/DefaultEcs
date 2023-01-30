@@ -682,7 +682,6 @@ namespace DefaultEcs.Test
         {
             using World world = new();
             Entity entity = world.CreateEntity();
-            entity.Set(true);
             bool called = false;
             using IDisposable subscription = world.SubscribeComponentRemoved((in Entity e, in bool v) =>
             {
@@ -691,6 +690,7 @@ namespace DefaultEcs.Test
                 called = true;
             });
 
+            entity.Set(true);
             entity.Remove<bool>();
             Check.That(called).IsTrue();
         }
@@ -812,7 +812,6 @@ namespace DefaultEcs.Test
         public void SubscribeWorldComponentRemoved_Should_call_handler_When_component_removed()
         {
             using World world = new();
-            world.Set(true);
             bool called = false;
             using IDisposable subscription = world.SubscribeWorldComponentRemoved((World w, in bool v) =>
             {
@@ -821,6 +820,7 @@ namespace DefaultEcs.Test
                 called = true;
             });
 
+            world.Set(true);
             world.Remove<bool>();
             Check.That(called).IsTrue();
         }
