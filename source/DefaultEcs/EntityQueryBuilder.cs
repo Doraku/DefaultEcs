@@ -59,10 +59,10 @@ namespace DefaultEcs
                     if (!_builder._withEitherFilter[flag])
                     {
                         _builder._withEitherFilter[flag] = true;
-                        _builder._nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
-                        _builder._nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentEnabledMessage<T>>(s.CheckedAdd));
-                        _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedRemove));
-                        _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentDisabledMessage<T>>(s.CheckedRemove));
+                        _builder._nonReactSubscriptions.Add((s, w) => w.Subscribe<EntityComponentAddedMessage<T>>(s.CheckedAdd));
+                        _builder._nonReactSubscriptions.Add((s, w) => w.Subscribe<EntityComponentEnabledMessage<T>>(s.CheckedAdd));
+                        _builder._subscriptions.Add((s, w) => w.Subscribe<EntityComponentRemovedMessage<T>>(s.CheckedRemove));
+                        _builder._subscriptions.Add((s, w) => w.Subscribe<EntityComponentDisabledMessage<T>>(s.CheckedRemove));
                     }
                 }
 
@@ -78,10 +78,10 @@ namespace DefaultEcs
                     if (!_builder._withoutEitherFilter[flag])
                     {
                         _builder._withoutEitherFilter[flag] = true;
-                        _builder._nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
-                        _builder._nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentDisabledMessage<T>>(s.CheckedAdd));
-                        _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedRemove));
-                        _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentEnabledMessage<T>>(s.CheckedRemove));
+                        _builder._nonReactSubscriptions.Add((s, w) => w.Subscribe<EntityComponentRemovedMessage<T>>(s.CheckedAdd));
+                        _builder._nonReactSubscriptions.Add((s, w) => w.Subscribe<EntityComponentDisabledMessage<T>>(s.CheckedAdd));
+                        _builder._subscriptions.Add((s, w) => w.Subscribe<EntityComponentAddedMessage<T>>(s.CheckedRemove));
+                        _builder._subscriptions.Add((s, w) => w.Subscribe<EntityComponentEnabledMessage<T>>(s.CheckedRemove));
                     }
                 }
 
@@ -93,8 +93,8 @@ namespace DefaultEcs
                 if (!_builder._whenAddedFilter[ComponentManager<T>.Flag])
                 {
                     _builder._whenAddedFilter[ComponentManager<T>.Flag] = true;
-                    _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
-                    _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentEnabledMessage<T>>(s.CheckedAdd));
+                    _builder._subscriptions.Add((s, w) => w.Subscribe<EntityComponentAddedMessage<T>>(s.CheckedAdd));
+                    _builder._subscriptions.Add((s, w) => w.Subscribe<EntityComponentEnabledMessage<T>>(s.CheckedAdd));
                 }
 
                 return OrWith<T>();
@@ -107,7 +107,7 @@ namespace DefaultEcs
                     _builder._whenChangedFilter[ComponentManager<T>.Flag] = true;
                     if (!_builder._predicateFilter[ComponentManager<T>.Flag])
                     {
-                        _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.CheckedAdd));
+                        _builder._subscriptions.Add((s, w) => w.Subscribe<EntityComponentChangedMessage<T>>(s.CheckedAdd));
                     }
                 }
 
@@ -119,8 +119,8 @@ namespace DefaultEcs
                 if (!_builder._whenRemovedFilter[ComponentManager<T>.Flag])
                 {
                     _builder._whenRemovedFilter[ComponentManager<T>.Flag] = true;
-                    _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
-                    _builder._subscriptions.Add((s, w) => w.Subscribe<ComponentDisabledMessage<T>>(s.CheckedAdd));
+                    _builder._subscriptions.Add((s, w) => w.Subscribe<EntityComponentRemovedMessage<T>>(s.CheckedAdd));
+                    _builder._subscriptions.Add((s, w) => w.Subscribe<EntityComponentDisabledMessage<T>>(s.CheckedAdd));
                 }
 
                 return OrWithout<T>();
@@ -386,10 +386,10 @@ namespace DefaultEcs
             if (!_withFilter[ComponentManager<T>.Flag])
             {
                 _withFilter[ComponentManager<T>.Flag] = true;
-                _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
-                _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentEnabledMessage<T>>(s.CheckedAdd));
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.Remove));
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentDisabledMessage<T>>(s.Remove));
+                _nonReactSubscriptions.Add((s, w) => w.Subscribe<EntityComponentAddedMessage<T>>(s.CheckedAdd));
+                _nonReactSubscriptions.Add((s, w) => w.Subscribe<EntityComponentEnabledMessage<T>>(s.CheckedAdd));
+                _subscriptions.Add((s, w) => w.Subscribe<EntityComponentRemovedMessage<T>>(s.Remove));
+                _subscriptions.Add((s, w) => w.Subscribe<EntityComponentDisabledMessage<T>>(s.Remove));
             }
 
             return this;
@@ -410,7 +410,7 @@ namespace DefaultEcs
                 _predicateFilter[ComponentManager<T>.Flag] = true;
                 if (!_whenChangedFilter[ComponentManager<T>.Flag])
                 {
-                    _subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.AddOrRemove));
+                    _subscriptions.Add((s, w) => w.Subscribe<EntityComponentChangedMessage<T>>(s.AddOrRemove));
                 }
             }
 
@@ -429,10 +429,10 @@ namespace DefaultEcs
             if (!_withoutFilter[ComponentManager<T>.Flag])
             {
                 _withoutFilter[ComponentManager<T>.Flag] = true;
-                _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
-                _nonReactSubscriptions.Add((s, w) => w.Subscribe<ComponentDisabledMessage<T>>(s.CheckedAdd));
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.Remove));
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentEnabledMessage<T>>(s.Remove));
+                _nonReactSubscriptions.Add((s, w) => w.Subscribe<EntityComponentRemovedMessage<T>>(s.CheckedAdd));
+                _nonReactSubscriptions.Add((s, w) => w.Subscribe<EntityComponentDisabledMessage<T>>(s.CheckedAdd));
+                _subscriptions.Add((s, w) => w.Subscribe<EntityComponentAddedMessage<T>>(s.Remove));
+                _subscriptions.Add((s, w) => w.Subscribe<EntityComponentEnabledMessage<T>>(s.Remove));
             }
 
             return this;
@@ -448,8 +448,8 @@ namespace DefaultEcs
             if (!_whenAddedFilter[ComponentManager<T>.Flag])
             {
                 _whenAddedFilter[ComponentManager<T>.Flag] = true;
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentAddedMessage<T>>(s.CheckedAdd));
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentEnabledMessage<T>>(s.CheckedAdd));
+                _subscriptions.Add((s, w) => w.Subscribe<EntityComponentAddedMessage<T>>(s.CheckedAdd));
+                _subscriptions.Add((s, w) => w.Subscribe<EntityComponentEnabledMessage<T>>(s.CheckedAdd));
             }
 
             return With<T>();
@@ -467,7 +467,7 @@ namespace DefaultEcs
                 _whenChangedFilter[ComponentManager<T>.Flag] = true;
                 if (!_predicateFilter[ComponentManager<T>.Flag])
                 {
-                    _subscriptions.Add((s, w) => w.Subscribe<ComponentChangedMessage<T>>(s.CheckedAdd));
+                    _subscriptions.Add((s, w) => w.Subscribe<EntityComponentChangedMessage<T>>(s.CheckedAdd));
                 }
             }
 
@@ -484,8 +484,8 @@ namespace DefaultEcs
             if (!_whenRemovedFilter[ComponentManager<T>.Flag])
             {
                 _whenRemovedFilter[ComponentManager<T>.Flag] = true;
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentRemovedMessage<T>>(s.CheckedAdd));
-                _subscriptions.Add((s, w) => w.Subscribe<ComponentDisabledMessage<T>>(s.CheckedAdd));
+                _subscriptions.Add((s, w) => w.Subscribe<EntityComponentRemovedMessage<T>>(s.CheckedAdd));
+                _subscriptions.Add((s, w) => w.Subscribe<EntityComponentDisabledMessage<T>>(s.CheckedAdd));
             }
 
             return Without<T>();

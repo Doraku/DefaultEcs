@@ -30,7 +30,7 @@ namespace DefaultEcs.Internal
 
         public void Add(in EntityCreatedMessage message) => _container.Add(message.EntityId);
 
-        public void AddOrRemove<T>(in ComponentChangedMessage<T> message)
+        public void AddOrRemove<T>(in EntityComponentChangedMessage<T> message)
         {
             if (_filter(message.Components))
             {
@@ -61,7 +61,7 @@ namespace DefaultEcs.Internal
             }
         }
 
-        public void CheckedAdd<T>(in ComponentAddedMessage<T> message)
+        public void CheckedAdd<T>(in EntityComponentAddedMessage<T> message)
         {
             if (_filter(message.Components) && _predicate(message.EntityId))
             {
@@ -69,7 +69,7 @@ namespace DefaultEcs.Internal
             }
         }
 
-        public void CheckedAdd<T>(in ComponentChangedMessage<T> message)
+        public void CheckedAdd<T>(in EntityComponentChangedMessage<T> message)
         {
             if (_filter(message.Components) && _predicate(message.EntityId))
             {
@@ -77,7 +77,7 @@ namespace DefaultEcs.Internal
             }
         }
 
-        public void CheckedAdd<T>(in ComponentRemovedMessage<T> message)
+        public void CheckedAdd<T>(in EntityComponentRemovedMessage<T> message)
         {
             if (_filter(message.Components) && _predicate(message.EntityId))
             {
@@ -85,7 +85,7 @@ namespace DefaultEcs.Internal
             }
         }
 
-        public void CheckedAdd<T>(in ComponentEnabledMessage<T> message)
+        public void CheckedAdd<T>(in EntityComponentEnabledMessage<T> message)
         {
             if (_filter(message.Components) && _predicate(message.EntityId))
             {
@@ -93,7 +93,7 @@ namespace DefaultEcs.Internal
             }
         }
 
-        public void CheckedAdd<T>(in ComponentDisabledMessage<T> message)
+        public void CheckedAdd<T>(in EntityComponentDisabledMessage<T> message)
         {
             if (_filter(message.Components) && _predicate(message.EntityId))
             {
@@ -107,15 +107,15 @@ namespace DefaultEcs.Internal
 
         public void Remove(in EntityDisabledMessage message) => _container.Remove(message.EntityId);
 
-        public void Remove<T>(in ComponentAddedMessage<T> message) => _container.Remove(message.EntityId);
+        public void Remove<T>(in EntityComponentAddedMessage<T> message) => _container.Remove(message.EntityId);
 
-        public void Remove<T>(in ComponentRemovedMessage<T> message) => _container.Remove(message.EntityId);
+        public void Remove<T>(in EntityComponentRemovedMessage<T> message) => _container.Remove(message.EntityId);
 
-        public void Remove<T>(in ComponentEnabledMessage<T> message) => _container.Remove(message.EntityId);
+        public void Remove<T>(in EntityComponentEnabledMessage<T> message) => _container.Remove(message.EntityId);
 
-        public void Remove<T>(in ComponentDisabledMessage<T> message) => _container.Remove(message.EntityId);
+        public void Remove<T>(in EntityComponentDisabledMessage<T> message) => _container.Remove(message.EntityId);
 
-        public void CheckedRemove<T>(in ComponentAddedMessage<T> message)
+        public void CheckedRemove<T>(in EntityComponentAddedMessage<T> message)
         {
             if (!_filter(message.Components))
             {
@@ -123,7 +123,7 @@ namespace DefaultEcs.Internal
             }
         }
 
-        public void CheckedRemove<T>(in ComponentRemovedMessage<T> message)
+        public void CheckedRemove<T>(in EntityComponentRemovedMessage<T> message)
         {
             if (!_filter(message.Components))
             {
@@ -131,7 +131,7 @@ namespace DefaultEcs.Internal
             }
         }
 
-        public void CheckedRemove<T>(in ComponentEnabledMessage<T> message)
+        public void CheckedRemove<T>(in EntityComponentEnabledMessage<T> message)
         {
             if (!_filter(message.Components))
             {
@@ -139,7 +139,7 @@ namespace DefaultEcs.Internal
             }
         }
 
-        public void CheckedRemove<T>(in ComponentDisabledMessage<T> message)
+        public void CheckedRemove<T>(in EntityComponentDisabledMessage<T> message)
         {
             if (!_filter(message.Components))
             {

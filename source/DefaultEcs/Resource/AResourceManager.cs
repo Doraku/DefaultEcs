@@ -274,12 +274,12 @@ namespace DefaultEcs.Resource
         {
             IEnumerable<IDisposable> GetSubscriptions(World w)
             {
-                yield return w.SubscribeComponentAdded<ManagedResource<TInfo, TResource>>(OnAdded);
-                yield return w.SubscribeComponentChanged<ManagedResource<TInfo, TResource>>(OnChanged);
-                yield return w.SubscribeComponentRemoved<ManagedResource<TInfo, TResource>>(OnRemoved);
-                yield return w.SubscribeComponentAdded<ManagedResource<TInfo[], TResource>>(OnAdded);
-                yield return w.SubscribeComponentChanged<ManagedResource<TInfo[], TResource>>(OnChanged);
-                yield return w.SubscribeComponentRemoved<ManagedResource<TInfo[], TResource>>(OnRemoved);
+                yield return w.SubscribeEntityComponentAdded<ManagedResource<TInfo, TResource>>(OnAdded);
+                yield return w.SubscribeEntityComponentChanged<ManagedResource<TInfo, TResource>>(OnChanged);
+                yield return w.SubscribeEntityComponentRemoved<ManagedResource<TInfo, TResource>>(OnRemoved);
+                yield return w.SubscribeEntityComponentAdded<ManagedResource<TInfo[], TResource>>(OnAdded);
+                yield return w.SubscribeEntityComponentChanged<ManagedResource<TInfo[], TResource>>(OnChanged);
+                yield return w.SubscribeEntityComponentRemoved<ManagedResource<TInfo[], TResource>>(OnRemoved);
             }
 
             world.ThrowIfNull();

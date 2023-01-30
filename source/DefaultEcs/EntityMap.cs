@@ -142,7 +142,7 @@ namespace DefaultEcs
             _worldMaxCapacity = world.MaxCapacity == int.MaxValue ? int.MaxValue : (world.MaxCapacity + 1);
             EntityContainerWatcher container = new(this, filter, predicate);
             _subscriptions = Enumerable
-                .Repeat(world.Subscribe<ComponentChangedMessage<TKey>>(On), 1)
+                .Repeat(world.Subscribe<EntityComponentChangedMessage<TKey>>(On), 1)
                 .Concat(subscriptions.Select(s => s(container, world)))
                 .Merge();
             _previousComponents = ComponentManager<TKey>.GetOrCreatePrevious(_worldId);
@@ -168,7 +168,7 @@ namespace DefaultEcs
 
         #region Callbacks
 
-        private void On(in ComponentChangedMessage<TKey> message)
+        private void On(in EntityComponentChangedMessage<TKey> message)
         {
             if (message.EntityId < _entityIds.Length && _entityIds[message.EntityId] && _entities.Remove(_previousComponents.Get(message.EntityId)))
             {

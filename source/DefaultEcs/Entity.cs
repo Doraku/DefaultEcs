@@ -86,16 +86,13 @@ namespace DefaultEcs
             if (isNew)
             {
                 components[ComponentManager<T>.Flag] = true;
-                Publisher.Publish(WorldId, new ComponentAddedMessage<T>(EntityId, components));
-            }
-            else if (components[ComponentManager<T>.Flag])
-            {
-                Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, components));
+                Publisher.Publish(WorldId, new EntityComponentAddedMessage<T>(EntityId, components));
             }
             else
             {
-                components[ComponentManager<T>.Flag] = true;
-                Publisher.Publish(WorldId, new ComponentEnabledMessage<T>(EntityId, components));
+                Publisher.Publish(WorldId, new EntityComponentChangedMessage<T>(EntityId, components));
+
+                Enable<T>();
             }
 
             if (ComponentManager<T>.GetPrevious(WorldId) is ComponentPool<T> previousPool && Has<T>())
@@ -170,7 +167,7 @@ namespace DefaultEcs
                 if (!components[ComponentManager<T>.Flag])
                 {
                     components[ComponentManager<T>.Flag] = true;
-                    Publisher.Publish(WorldId, new ComponentEnabledMessage<T>(EntityId, components));
+                    Publisher.Publish(WorldId, new EntityComponentEnabledMessage<T>(EntityId, components));
                 }
             }
         }
@@ -190,7 +187,7 @@ namespace DefaultEcs
             if (components[ComponentManager<T>.Flag])
             {
                 components[ComponentManager<T>.Flag] = false;
-                Publisher.Publish(WorldId, new ComponentDisabledMessage<T>(EntityId, components));
+                Publisher.Publish(WorldId, new EntityComponentDisabledMessage<T>(EntityId, components));
             }
         }
 
@@ -266,7 +263,7 @@ namespace DefaultEcs
             {
                 ref ComponentEnum components = ref Components;
                 components[ComponentManager<T>.Flag] = false;
-                Publisher.Publish(WorldId, new ComponentRemovedMessage<T>(EntityId, components));
+                Publisher.Publish(WorldId, new EntityComponentRemovedMessage<T>(EntityId, components));
                 ComponentManager<T>.GetPrevious(WorldId)?.Remove(EntityId);
             }
         }
@@ -283,8 +280,12 @@ namespace DefaultEcs
             ThrowIf(WorldId == 0, "Entity was not created from a World");
             ThrowIf(!Has<T>(), $"Entity does not have a component of type {nameof(T)}");
 
-            Publisher.Publish(WorldId, new ComponentChangedMessage<T>(EntityId, Components));
-            ComponentManager<T>.GetPrevious(WorldId)?.Set(EntityId, Get<T>());
+            Publisher.Publish(WorldId, new EntityComponentChangedMessage<T>(EntityId, Components));
+
+            if (ComponentManager<T>.GetPrevious(WorldId) is ComponentPool<T> previousPool && Has<T>())
+            {
+                previousPool.Set(EntityId, Get<T>());
+            }
         }
 
         /// <summary>

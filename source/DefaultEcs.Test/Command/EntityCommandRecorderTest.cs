@@ -374,7 +374,7 @@ namespace DefaultEcs.Test.Command
             Entity entity = world.CreateEntity();
             entity.Set(true);
 
-            using IDisposable changed = world.SubscribeComponentChanged((in Entity e, in bool _, in bool _) => result = e);
+            using IDisposable changed = world.SubscribeEntityComponentChanged((in Entity e, in bool _, in bool _) => result = e);
 
             recorder.Record(entity).NotifyChanged<bool>();
 
@@ -390,7 +390,7 @@ namespace DefaultEcs.Test.Command
 
             using EntityCommandRecorder recorder = new(1024);
             using World world = new();
-            using IDisposable changed = world.SubscribeComponentChanged((in Entity e, in bool _, in bool _) => result = e);
+            using IDisposable changed = world.SubscribeEntityComponentChanged((in Entity e, in bool _, in bool _) => result = e);
 
             EntityRecord record = recorder.Record(world).CreateEntity();
             record.Set(true);

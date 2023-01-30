@@ -525,56 +525,56 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SubscribeComponentAdded_Should_throw_When_action_is_null()
+        public void SubscribeEntityComponentAdded_Should_throw_When_action_is_null()
         {
             using World world = new();
 
             Check
-                .ThatCode(() => world.SubscribeComponentAdded<bool>(null))
+                .ThatCode(() => world.SubscribeEntityComponentAdded<bool>(null))
                 .Throws<ArgumentNullException>()
                 .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]
-        public void SubscribeComponentChanged_Should_throw_When_action_is_null()
+        public void SubscribeEntityComponentChanged_Should_throw_When_action_is_null()
         {
             using World world = new();
 
             Check
-                .ThatCode(() => world.SubscribeComponentChanged<bool>(null))
+                .ThatCode(() => world.SubscribeEntityComponentChanged<bool>(null))
                 .Throws<ArgumentNullException>()
                 .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]
-        public void SubscribeComponentRemoved_Should_throw_When_action_is_null()
+        public void SubscribeEntityComponentRemoved_Should_throw_When_action_is_null()
         {
             using World world = new();
 
             Check
-                .ThatCode(() => world.SubscribeComponentRemoved<bool>(null))
+                .ThatCode(() => world.SubscribeEntityComponentRemoved<bool>(null))
                 .Throws<ArgumentNullException>()
                 .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]
-        public void SubscribeComponentEnabled_Should_throw_When_action_is_null()
+        public void SubscribeEntityComponentEnabled_Should_throw_When_action_is_null()
         {
             using World world = new();
 
             Check
-                .ThatCode(() => world.SubscribeComponentEnabled<bool>(null))
+                .ThatCode(() => world.SubscribeEntityComponentEnabled<bool>(null))
                 .Throws<ArgumentNullException>()
                 .WithProperty(e => e.ParamName, "action");
         }
 
         [Fact]
-        public void SubscribeComponentDisabled_Should_throw_When_action_is_null()
+        public void SubscribeEntityComponentDisabled_Should_throw_When_action_is_null()
         {
             using World world = new();
 
             Check
-                .ThatCode(() => world.SubscribeComponentDisabled<bool>(null))
+                .ThatCode(() => world.SubscribeEntityComponentDisabled<bool>(null))
                 .Throws<ArgumentNullException>()
                 .WithProperty(e => e.ParamName, "action");
         }
@@ -613,12 +613,12 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SubscribeComponentAdded_Should_call_handler_When_component_added()
+        public void SubscribeEntityComponentAdded_Should_call_handler_When_component_added()
         {
             using World world = new();
             Entity entity = world.CreateEntity();
             bool called = false;
-            using IDisposable subscription = world.SubscribeComponentAdded((in Entity e, in bool v) =>
+            using IDisposable subscription = world.SubscribeEntityComponentAdded((in Entity e, in bool v) =>
             {
                 Check.That(e).IsEqualTo(entity);
                 Check.That(v).IsTrue();
@@ -630,25 +630,25 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SubscribeComponentAdded_Should_not_throw_When_removing_component()
+        public void SubscribeEntityComponentAdded_Should_not_throw_When_removing_component()
         {
             using World world = new();
             Entity entity = world.CreateEntity();
-            using IDisposable subscription1 = world.SubscribeComponentChanged((in Entity _, in bool _, in bool _) => { });
-            using IDisposable subscription2 = world.SubscribeComponentAdded((in Entity e, in bool _) => e.Remove<bool>());
+            using IDisposable subscription1 = world.SubscribeEntityComponentChanged((in Entity _, in bool _, in bool _) => { });
+            using IDisposable subscription2 = world.SubscribeEntityComponentAdded((in Entity e, in bool _) => e.Remove<bool>());
 
             Check.ThatCode(() => entity.Set(true)).DoesNotThrow();
         }
 
         [Fact]
-        public void SubscribeComponentEnabled_Should_call_handler_When_component_enabled()
+        public void SubscribeEntityComponentEnabled_Should_call_handler_When_component_enabled()
         {
             using World world = new();
             Entity entity = world.CreateEntity();
             entity.Set(true);
             entity.Disable<bool>();
             bool called = false;
-            using IDisposable subscription = world.SubscribeComponentEnabled((in Entity e, in bool v) =>
+            using IDisposable subscription = world.SubscribeEntityComponentEnabled((in Entity e, in bool v) =>
             {
                 Check.That(e).IsEqualTo(entity);
                 Check.That(v).IsTrue();
@@ -660,13 +660,13 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SubscribeComponentDisabled_Should_call_handler_When_component_disabled()
+        public void SubscribeEntityComponentDisabled_Should_call_handler_When_component_disabled()
         {
             using World world = new();
             Entity entity = world.CreateEntity();
             entity.Set(true);
             bool called = false;
-            using IDisposable subscription = world.SubscribeComponentDisabled((in Entity e, in bool v) =>
+            using IDisposable subscription = world.SubscribeEntityComponentDisabled((in Entity e, in bool v) =>
             {
                 Check.That(e).IsEqualTo(entity);
                 Check.That(v).IsTrue();
@@ -678,12 +678,12 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SubscribeComponentRemoved_Should_call_handler_When_component_removed()
+        public void SubscribeEntityComponentRemoved_Should_call_handler_When_component_removed()
         {
             using World world = new();
             Entity entity = world.CreateEntity();
             bool called = false;
-            using IDisposable subscription = world.SubscribeComponentRemoved((in Entity e, in bool v) =>
+            using IDisposable subscription = world.SubscribeEntityComponentRemoved((in Entity e, in bool v) =>
             {
                 Check.That(e).IsEqualTo(entity);
                 Check.That(v).IsTrue();
@@ -696,13 +696,13 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SubscribeComponentRemoved_Should_call_handler_When_entity_disposed()
+        public void SubscribeEntityComponentRemoved_Should_call_handler_When_entity_disposed()
         {
             using World world = new();
             Entity entity = world.CreateEntity();
             entity.Set(true);
             bool called = false;
-            using IDisposable subscription = world.SubscribeComponentRemoved((in Entity e, in bool v) =>
+            using IDisposable subscription = world.SubscribeEntityComponentRemoved((in Entity e, in bool v) =>
             {
                 Check.That(e).IsEqualTo(entity);
                 Check.That(v).IsTrue();
@@ -714,13 +714,13 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SubscribeComponentRemoved_Should_call_handler_When_world_disposed()
+        public void SubscribeEntityComponentRemoved_Should_call_handler_When_world_disposed()
         {
             World world = new();
             Entity entity = world.CreateEntity();
             entity.Set(true);
             bool called = false;
-            using IDisposable subscription = world.SubscribeComponentRemoved((in Entity e, in bool v) =>
+            using IDisposable subscription = world.SubscribeEntityComponentRemoved((in Entity e, in bool v) =>
             {
                 Check.That(e).IsEqualTo(entity);
                 Check.That(v).IsTrue();
@@ -732,13 +732,13 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SubscribeComponentChanged_Should_call_handler_When_component_changed()
+        public void SubscribeEntityComponentChanged_Should_call_handler_When_component_changed()
         {
             using World world = new();
             Entity entity = world.CreateEntity();
             entity.Set(false);
             bool called = false;
-            using IDisposable subscription = world.SubscribeComponentChanged((in Entity e, in bool ov, in bool nv) =>
+            using IDisposable subscription = world.SubscribeEntityComponentChanged((in Entity e, in bool ov, in bool nv) =>
             {
                 Check.That(e).IsEqualTo(entity);
                 Check.That(ov).IsFalse();
@@ -751,43 +751,43 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
-        public void SubscribeComponent_Should_do_nothing_When_entity_disposed_without_component()
+        public void SubscribeEntityComponent_Should_do_nothing_When_entity_disposed_without_component()
         {
             using World world = new();
             Entity entity = world.CreateEntity();
-            using IDisposable added = world.SubscribeComponentAdded((in Entity _, in bool _) => throw new Exception());
-            using IDisposable changed = world.SubscribeComponentChanged((in Entity _, in bool _, in bool _) => throw new Exception());
-            using IDisposable removed = world.SubscribeComponentRemoved((in Entity _, in bool _) => throw new Exception());
-            using IDisposable enabled = world.SubscribeComponentEnabled((in Entity _, in bool _) => throw new Exception());
-            using IDisposable disabled = world.SubscribeComponentDisabled((in Entity _, in bool _) => throw new Exception());
+            using IDisposable added = world.SubscribeEntityComponentAdded((in Entity _, in bool _) => throw new Exception());
+            using IDisposable changed = world.SubscribeEntityComponentChanged((in Entity _, in bool _, in bool _) => throw new Exception());
+            using IDisposable removed = world.SubscribeEntityComponentRemoved((in Entity _, in bool _) => throw new Exception());
+            using IDisposable enabled = world.SubscribeEntityComponentEnabled((in Entity _, in bool _) => throw new Exception());
+            using IDisposable disabled = world.SubscribeEntityComponentDisabled((in Entity _, in bool _) => throw new Exception());
 
             Check.ThatCode(entity.Dispose).DoesNotThrow();
         }
 
         [Fact]
-        public void SubscribeComponent_Should_do_nothing_When_world_disposed_without_component()
+        public void SubscribeEntityComponent_Should_do_nothing_When_world_disposed_without_component()
         {
             World world = new();
             Entity entity = world.CreateEntity();
-            using IDisposable added = world.SubscribeComponentAdded((in Entity _, in bool _) => throw new Exception());
-            using IDisposable changed = world.SubscribeComponentChanged((in Entity _, in bool _, in bool _) => throw new Exception());
-            using IDisposable removed = world.SubscribeComponentRemoved((in Entity _, in bool _) => throw new Exception());
-            using IDisposable enabled = world.SubscribeComponentEnabled((in Entity _, in bool _) => throw new Exception());
-            using IDisposable disabled = world.SubscribeComponentDisabled((in Entity _, in bool _) => throw new Exception());
+            using IDisposable added = world.SubscribeEntityComponentAdded((in Entity _, in bool _) => throw new Exception());
+            using IDisposable changed = world.SubscribeEntityComponentChanged((in Entity _, in bool _, in bool _) => throw new Exception());
+            using IDisposable removed = world.SubscribeEntityComponentRemoved((in Entity _, in bool _) => throw new Exception());
+            using IDisposable enabled = world.SubscribeEntityComponentEnabled((in Entity _, in bool _) => throw new Exception());
+            using IDisposable disabled = world.SubscribeEntityComponentDisabled((in Entity _, in bool _) => throw new Exception());
 
             Check.ThatCode(world.Dispose).DoesNotThrow();
         }
 
         [Fact]
-        public void SubscribeComponent_Should_do_nothing_When_subscription_disposed()
+        public void SubscribeEntityComponent_Should_do_nothing_When_subscription_disposed()
         {
             using World world = new();
             Entity entity = world.CreateEntity();
-            world.SubscribeComponentAdded((in Entity _, in bool _) => throw new Exception()).Dispose();
-            world.SubscribeComponentChanged((in Entity _, in bool _, in bool _) => throw new Exception()).Dispose();
-            world.SubscribeComponentRemoved((in Entity _, in bool _) => throw new Exception()).Dispose();
-            world.SubscribeComponentEnabled((in Entity _, in bool _) => throw new Exception()).Dispose();
-            world.SubscribeComponentDisabled((in Entity _, in bool _) => throw new Exception()).Dispose();
+            world.SubscribeEntityComponentAdded((in Entity _, in bool _) => throw new Exception()).Dispose();
+            world.SubscribeEntityComponentChanged((in Entity _, in bool _, in bool _) => throw new Exception()).Dispose();
+            world.SubscribeEntityComponentRemoved((in Entity _, in bool _) => throw new Exception()).Dispose();
+            world.SubscribeEntityComponentEnabled((in Entity _, in bool _) => throw new Exception()).Dispose();
+            world.SubscribeEntityComponentDisabled((in Entity _, in bool _) => throw new Exception()).Dispose();
 
             Check.ThatCode(() => entity.Set(true)).DoesNotThrow();
         }
@@ -891,7 +891,7 @@ namespace DefaultEcs.Test
             Entity entity = world.CreateEntity();
             entity.Set(42);
             entity.Dispose();
-            world.SubscribeComponentChanged((in Entity _, in int __, in int ___) => { });
+            world.SubscribeEntityComponentChanged((in Entity _, in int __, in int ___) => { });
 
             world.TrimExcess<int>();
 

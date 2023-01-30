@@ -530,52 +530,52 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Subscribes a <see cref="ComponentAddedHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is added.
+        /// Subscribes a <see cref="EntityComponentAddedHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is added.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="action">The <see cref="ComponentAddedHandler{T}"/> to be called.</param>
+        /// <param name="action">The <see cref="EntityComponentAddedHandler{T}"/> to be called.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-        public IDisposable SubscribeComponentAdded<T>(ComponentAddedHandler<T> action)
+        public IDisposable SubscribeEntityComponentAdded<T>(EntityComponentAddedHandler<T> action)
         {
             action.ThrowIfNull();
 
-            return Subscribe((in ComponentAddedMessage<T> message) => action(
+            return Subscribe((in EntityComponentAddedMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
                 ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
         }
 
         /// <summary>
-        /// Subscribes a <see cref="ComponentChangedHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is changed.
+        /// Subscribes a <see cref="EntityComponentChangedHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is changed.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="action">The <see cref="ComponentChangedHandler{T}"/> to be called.</param>
+        /// <param name="action">The <see cref="EntityComponentChangedHandler{T}"/> to be called.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-        public IDisposable SubscribeComponentChanged<T>(ComponentChangedHandler<T> action)
+        public IDisposable SubscribeEntityComponentChanged<T>(EntityComponentChangedHandler<T> action)
         {
             action.ThrowIfNull();
 
             ComponentManager<T>.GetOrCreatePrevious(WorldId);
 
-            return Subscribe((in ComponentChangedMessage<T> message) => action(
+            return Subscribe((in EntityComponentChangedMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
                 ComponentManager<T>.GetPrevious(WorldId).Get(message.EntityId),
                 ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
         }
 
         /// <summary>
-        /// Subscribes an <see cref="ComponentRemovedHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is removed.
+        /// Subscribes an <see cref="EntityComponentRemovedHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is removed.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="action">The <see cref="ComponentRemovedHandler{T}"/> to be called.</param>
+        /// <param name="action">The <see cref="EntityComponentRemovedHandler{T}"/> to be called.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-        public IDisposable SubscribeComponentRemoved<T>(ComponentRemovedHandler<T> action)
+        public IDisposable SubscribeEntityComponentRemoved<T>(EntityComponentRemovedHandler<T> action)
         {
-            IEnumerable<IDisposable> GetSubscriptions(ComponentRemovedHandler<T> a)
+            IEnumerable<IDisposable> GetSubscriptions(EntityComponentRemovedHandler<T> a)
             {
-                yield return Subscribe((in ComponentRemovedMessage<T> message) => a(
+                yield return Subscribe((in EntityComponentRemovedMessage<T> message) => a(
                     new Entity(WorldId, message.EntityId),
                     ComponentManager<T>.GetPrevious(WorldId).Get(message.EntityId)));
                 yield return Subscribe((in EntityDisposingMessage message) =>
@@ -607,33 +607,33 @@ namespace DefaultEcs
         }
 
         /// <summary>
-        /// Subscribes a <see cref="ComponentEnabledHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is enabled.
+        /// Subscribes a <see cref="EntityComponentEnabledHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is enabled.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="action">The <see cref="ComponentEnabledHandler{T}"/> to be called.</param>
+        /// <param name="action">The <see cref="EntityComponentEnabledHandler{T}"/> to be called.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-        public IDisposable SubscribeComponentEnabled<T>(ComponentEnabledHandler<T> action)
+        public IDisposable SubscribeEntityComponentEnabled<T>(EntityComponentEnabledHandler<T> action)
         {
             action.ThrowIfNull();
 
-            return Subscribe((in ComponentEnabledMessage<T> message) => action(
+            return Subscribe((in EntityComponentEnabledMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
                 ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
         }
 
         /// <summary>
-        /// Subscribes a <see cref="ComponentDisabledHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is disabled.
+        /// Subscribes a <see cref="EntityComponentDisabledHandler{T}"/> on the current <see cref="World"/> to be called when a component of type <typeparamref name="T"/> is disabled.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="action">The <see cref="ComponentDisabledHandler{T}"/> to be called.</param>
+        /// <param name="action">The <see cref="EntityComponentDisabledHandler{T}"/> to be called.</param>
         /// <returns>An <see cref="IDisposable"/> object used to unsubscribe.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-        public IDisposable SubscribeComponentDisabled<T>(ComponentDisabledHandler<T> action)
+        public IDisposable SubscribeEntityComponentDisabled<T>(EntityComponentDisabledHandler<T> action)
         {
             action.ThrowIfNull();
 
-            return Subscribe((in ComponentDisabledMessage<T> message) => action(
+            return Subscribe((in EntityComponentDisabledMessage<T> message) => action(
                 new Entity(WorldId, message.EntityId),
                 ComponentManager<T>.Get(WorldId).Get(message.EntityId)));
         }

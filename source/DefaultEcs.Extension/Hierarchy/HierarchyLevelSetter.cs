@@ -16,9 +16,9 @@ namespace DefaultEcs.Hierarchy
         {
             _map = world.GetEntities().AsMultiMap<Parent>();
 
-            _addedSubscription = world.SubscribeComponentAdded<Parent>(OnAdded);
-            _changedSubscription = world.SubscribeComponentChanged<Parent>(OnChanged);
-            _removedSubscription = world.SubscribeComponentRemoved<Parent>(OnRemoved);
+            _addedSubscription = world.SubscribeEntityComponentAdded<Parent>(OnAdded);
+            _changedSubscription = world.SubscribeEntityComponentChanged<Parent>(OnChanged);
+            _removedSubscription = world.SubscribeEntityComponentRemoved<Parent>(OnRemoved);
 
             using EntitySet entities = world.GetEntities().With<Parent>().AsSet();
 

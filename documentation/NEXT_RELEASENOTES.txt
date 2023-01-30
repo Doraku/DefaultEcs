@@ -1,6 +1,11 @@
 ## Breaking changes
 
 - Entity.Set, EntitySetSameAs and EntitySetSameAsWorld will now reenable the component if it was disabled
+- renamed World.SubscribeComponentAdded to World.SubscribeEntityComponentAdded
+- renamed World.SubscribeComponentChanged to World.SubscribeEntityComponentChanged
+- renamed World.SubscribeComponentRemoved to World.SubscribeEntityComponentRemoved
+- renamed World.SubscribeComponentEnabled to World.SubscribeEntityComponentEnabled
+- renamed World.SubscribeComponentDisabled to World.SubscribeEntityComponentDisabled
 
 ## New features
 
