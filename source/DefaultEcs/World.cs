@@ -363,6 +363,27 @@ namespace DefaultEcs
         public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(0);
 
         /// <summary>
+        /// Notifies the value of the component of type <typeparamref name="T"/> has changed.
+        /// This method is not thread safe.
+        /// </summary>
+        /// <typeparam name="T">The type of the component.</typeparam>
+        /// <exception cref="InvalidOperationException"><see cref="World"/> does not have a component of type <typeparamref name="T"/>.</exception>
+        public void NotifyChanged<T>()
+        {
+            if (!Has<T>())
+            {
+                throw new InvalidOperationException($"World does not have a component of type {typeof(T)}");
+            }
+
+            Publish(new WorldComponentChangedMessage<T>());
+
+            if (ComponentManager<T>.GetPrevious(WorldId) is ComponentPool<T> previousPool && Has<T>())
+            {
+                previousPool.Set(0, Get<T>());
+            }
+        }
+
+        /// <summary>
         /// Removes the component of type <typeparamref name="T"/> on the current <see cref="World"/>.
         /// This method is not thread safe.
         /// </summary>

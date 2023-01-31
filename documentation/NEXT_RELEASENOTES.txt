@@ -13,6 +13,7 @@
 - added World.SubscribeWorldComponentAdded method (#165)
 - added World.SubscribeWorldComponentChanged method (#165)
 - added World.SubscribeWorldComponentRemoved method (#165)
+- added World.NotifyChanged method
 - added generic WithAttribute
 - added generic WithoutAttribute
 - added generic WhenAddedAttribute

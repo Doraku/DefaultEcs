@@ -956,6 +956,36 @@ namespace DefaultEcs.Test
         }
 
         [Fact]
+        public void NotifyChanged_Should_throw_When_no_component()
+        {
+            using World world = new();
+
+            Check.ThatCode(world.NotifyChanged<bool>).Throws<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void NotifyChanged_Should_notify_world_component_changed()
+        {
+            using World world = new();
+
+            world.Set(false);
+            bool notified = false;
+
+            world.SubscribeWorldComponentChanged((World sender, in bool oldValue, in bool newValue) =>
+            {
+                Check.That(sender).IsEqualTo(world);
+                Check.That(oldValue).IsFalse();
+                Check.That(newValue).IsTrue();
+                notified = true;
+            });
+
+            world.Get<bool>() = true;
+            world.NotifyChanged<bool>();
+
+            Check.That(notified).IsTrue();
+        }
+
+        [Fact]
         public void Has_Should_return_true_when_has_component()
         {
             using World world = new();

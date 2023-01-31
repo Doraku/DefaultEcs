@@ -160,7 +160,7 @@ namespace DefaultEcs.Internal
         #region Methods
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ThrowMaxNumberOfComponentReached() => throw new InvalidOperationException($"Max number of component of type {nameof(T)} reached");
+        private static void ThrowMaxNumberOfComponentReached() => throw new InvalidOperationException($"Max number of component of type {typeof(T)} reached");
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has(int entityId) => entityId < _mapping.Length && _mapping[entityId] != -1;

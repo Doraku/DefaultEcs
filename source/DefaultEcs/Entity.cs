@@ -230,7 +230,7 @@ namespace DefaultEcs
             ThrowIf(WorldId != reference.WorldId, "Reference Entity comes from a different World");
 
             ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
-            ThrowIf(!(pool?.Has(reference.EntityId) ?? false), $"Reference Entity does not have a component of type {nameof(T)}");
+            ThrowIf(!(pool?.Has(reference.EntityId) ?? false), $"Reference Entity does not have a component of type {typeof(T)}");
 
             InnerSet<T>(pool.SetSameAs(EntityId, reference.EntityId));
         }
@@ -247,7 +247,7 @@ namespace DefaultEcs
             ThrowIf(WorldId == 0, "Entity was not created from a World");
 
             ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
-            ThrowIf(!(pool?.Has(0) ?? false), $"World does not have a component of type {nameof(T)}");
+            ThrowIf(!(pool?.Has(0) ?? false), $"World does not have a component of type {typeof(T)}");
 
             InnerSet<T>(pool.SetSameAs(EntityId, 0));
         }
@@ -278,7 +278,7 @@ namespace DefaultEcs
         public void NotifyChanged<T>()
         {
             ThrowIf(WorldId == 0, "Entity was not created from a World");
-            ThrowIf(!Has<T>(), $"Entity does not have a component of type {nameof(T)}");
+            ThrowIf(!Has<T>(), $"Entity does not have a component of type {typeof(T)}");
 
             Publisher.Publish(WorldId, new EntityComponentChangedMessage<T>(EntityId, Components));
 
