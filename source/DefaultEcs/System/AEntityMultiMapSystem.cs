@@ -45,7 +45,7 @@ namespace DefaultEcs.System
 
         #region Fields
 
-        private readonly bool _useBuffer;
+        private readonly bool _useBuffer = true;
         private readonly IParallelRunner _runner;
         private readonly Runnable _runnable;
         private readonly int _minEntityCountByRunnerIndex;
@@ -96,7 +96,8 @@ namespace DefaultEcs.System
             MultiMap = factory(this);
             World = MultiMap.World;
 
-            _keyComparer = this as IComparer<TKey> ?? (IsIComparable() ? Comparer<TKey>.Default : null);
+            _keyComparer = (this as IComparer<TKey>) ?? (IsIComparable() ? Comparer<TKey>.Default : null);
+            _useBuffer = (runner != null && runner.DegreeOfParallelism > 1) ? false : _useBuffer;
             _runner = runner ?? DefaultParallelRunner.Default;
             _runnable = new Runnable(this);
             _minEntityCountByRunnerIndex = _runner.DegreeOfParallelism > 1 ? minEntityCountByRunnerIndex : int.MaxValue;
@@ -120,9 +121,9 @@ namespace DefaultEcs.System
         /// Initialise a new instance of the <see cref="AEntityMultiMapSystem{T, TKey}"/> class with the given <see cref="EntityMultiMap{TKey}"/>.
         /// </summary>
         /// <param name="map">The <see cref="EntityMultiMap{TKey}"/> on which to process the update.</param>
-        /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
+        /// <param name="useBuffer">Whether the entities should be copied before being processed. False will yield better performance but is less safe.</param>
         /// <exception cref="ArgumentNullException"><paramref name="map"/> is null.</exception>
-        protected AEntityMultiMapSystem(EntityMultiMap<TKey> map, bool useBuffer = false)
+        protected AEntityMultiMapSystem(EntityMultiMap<TKey> map, bool useBuffer = true)
             : this(map, null)
         {
             _useBuffer = useBuffer;
@@ -160,7 +161,7 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="factory">The factory used to create the <see cref="EntitySet"/>.</param>
-        /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
+        /// <param name="useBuffer">Whether the entities should be copied before being processed. False will yield better performance but is less safe.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="factory"/> is null.</exception>
         protected AEntityMultiMapSystem(World world, Func<object, World, EntityMultiMap<TKey>> factory, bool useBuffer)
@@ -174,9 +175,9 @@ namespace DefaultEcs.System
         /// To create the inner <see cref="EntityMultiMap{TKey}"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
         /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
-        /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
+        /// <param name="useBuffer">Whether the entities should be copied before being processed. False will yield better performance but is less safe.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AEntityMultiMapSystem(World world, bool useBuffer = false)
+        protected AEntityMultiMapSystem(World world, bool useBuffer = true)
             : this(world, DefaultFactory, useBuffer)
         { }
 
