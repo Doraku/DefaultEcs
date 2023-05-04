@@ -298,7 +298,15 @@ namespace DefaultEcs.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get(int entityId) => ref _components[_mapping[entityId]];
+        public ref T Get(int entityId)
+        {
+            int mappingIndex = _mapping[entityId];
+            if (mappingIndex == -1)
+            {
+                throw new InvalidOperationException("Get failed, because entity does not have component type=" + typeof(T).Name);
+            }
+            return ref _components[mappingIndex];
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> AsSpan() => new(_components, 0, _lastComponentIndex + 1);

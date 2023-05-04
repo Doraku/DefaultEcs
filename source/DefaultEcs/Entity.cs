@@ -32,6 +32,8 @@ namespace DefaultEcs
 
         #region Initialisation
 
+        private const string NON_WORLD_ENTITY_MESSAGE = "Entity was not created from a World";
+
         internal Entity(short worldId)
         {
             WorldId = worldId;
@@ -70,7 +72,7 @@ namespace DefaultEcs
 
         #region Methods
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ThrowIf(bool actuallyThrow, string message)
         {
             if (actuallyThrow)
@@ -115,7 +117,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Enable()
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
 
             ref ComponentEnum components = ref Components;
             if (!components[World.IsEnabledFlag])
@@ -132,7 +134,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Disable()
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
 
             ref ComponentEnum components = ref Components;
             if (components[World.IsEnabledFlag])
@@ -159,7 +161,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Enable<T>()
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
 
             if (Has<T>())
             {
@@ -181,7 +183,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Disable<T>()
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
 
             ref ComponentEnum components = ref Components;
             if (components[ComponentManager<T>.Flag])
@@ -201,7 +203,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
         public void Set<T>(in T component)
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
 
             InnerSet<T>(ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component));
         }
@@ -226,7 +228,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
         public void SetSameAs<T>(in Entity reference)
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
             ThrowIf(WorldId != reference.WorldId, "Reference Entity comes from a different World");
 
             ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
@@ -244,7 +246,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="World"/> does not have a component of type <typeparamref name="T"/>.</exception>
         public void SetSameAsWorld<T>()
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
 
             ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
             ThrowIf(!(pool?.Has(0) ?? false), $"World does not have a component of type {typeof(T)}");
@@ -277,7 +279,7 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
         public void NotifyChanged<T>()
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
             ThrowIf(!Has<T>(), $"Entity does not have a component of type {typeof(T)}");
 
             Publisher.Publish(WorldId, new EntityComponentChangedMessage<T>(EntityId, Components));
@@ -294,7 +296,11 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has<T>() => ComponentManager<T>.Get(WorldId)?.Has(EntityId) ?? false;
+        public bool Has<T>()
+        {
+            var componentPool = ComponentManager<T>.Get(WorldId);
+            return componentPool?.Has(EntityId) ?? false;
+        }
 
         /// <summary>
         /// Gets the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
@@ -303,7 +309,15 @@ namespace DefaultEcs
         /// <returns>A reference to the component.</returns>
         /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/> or does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
+        public ref T Get<T>()
+        {
+            var typePools = ComponentManager<T>.Pools;
+            if (WorldId > 0 && WorldId >= typePools.Length)
+            {
+                throw new InvalidOperationException("Get failed, because entity does not have component type=" + typeof(T).Name);
+            }
+            return ref typePools[WorldId].Get(EntityId);
+        }
 
         /// <summary>
         /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="DefaultEcs.World"/> using the given <see cref="ComponentCloner"/>.
@@ -319,7 +333,7 @@ namespace DefaultEcs
             world.ThrowIfNull();
             cloner.ThrowIfNull();
 
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
 
             Entity copy = world.CreateEntity();
 
