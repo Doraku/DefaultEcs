@@ -90,6 +90,7 @@ namespace DefaultEcs
         {
             get
             {
+                if (WorldId == 0) return false;
                 var entityInfo = World.EntityInfos[EntityId];
                 return Version == entityInfo.Version;
             }
