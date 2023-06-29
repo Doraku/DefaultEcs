@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup Label="Compilation">
 		<TargetFrameworks>
-			netstandard1.1;
 			netstandard2.0;
 			netstandard2.1;
 		</TargetFrameworks>
@@ -13,10 +12,7 @@
 		<None Include="..\..\image\logo.png" Pack="true" PackagePath="\" Visible="false" />
 	</ItemGroup>
 
-	<ItemGroup Label="Reference" Condition="'$(TargetFramework)'=='netstandard1.1'">
-		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
-	</ItemGroup>
-	<ItemGroup Label="Reference" Condition="'$(TargetFramework)'=='netstandard1.1' Or '$(TargetFramework)'=='netstandard2.0'">
+	<ItemGroup Label="Reference" Condition="'$(TargetFramework)'=='netstandard2.0'">
 		<PackageReference Include="System.Memory" Version="4.5.5" />
 		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
 	</ItemGroup>
