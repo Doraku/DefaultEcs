@@ -120,6 +120,7 @@ Once the dlls inside your Unity project you will then need to disable `Validate 
 Note that this feature has only been available since a specific version of Unity.
 
 You should then be able to use DefaultEcs in your Unity project. Keep in mind that if you choose the IL2CPP backend, some features will not work (the provided serializers) and some others will require extra code (check [AoTHelper](https://github.com/Doraku/DefaultEcs/blob/master/documentation/api/DefaultEcs-AoTHelper.md)).
+You may also want to compile the framework manually while removing all System.Reflection.Emit-using code (the serializers code mentioned above) as it causes unity IL2CPP-based projects fail to build.
 
 <a name='system_decorator'></a>
 ## How to update systems at half the framerate?

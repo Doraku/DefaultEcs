@@ -122,10 +122,21 @@ Entities are created as such:
 Entity entity = world.CreateEntity();
 ```
 
-You should not store entities yourself and rely as much as possible on the returned objects from a world query as those will be updated accordingly to component changes.  
 To clear an entity, simply call its `Dispose` method.
 ```csharp
 entity.Dispose();
+```
+
+You should not store entities yourself and rely as much as possible on the returned objects from a world query as those will be updated accordingly to component changes.
+If you absolutely need to store it separately and found related hard-to-find bug, you might consider temporary enabling runtime entity misuse checks:
+```csharp
+Entity entity = world.CreateEntity();
+Entity.IsMisuseDetectionEnabled = true; // this property is available in release as well, but is not used
+entity.Set<bool>();
+entity.Dispose();
+if (entity.Has<bool>()) {
+    // in debug configuration you will get entity misuse exception trying to perform Has<T> there as the entity is already dead.
+}
 ```
 
 Once disposed, you should not use the entity again. If you need a safeguard, you can check the `IsAlive` property:
@@ -142,7 +153,7 @@ There is faster alternative to IsAlive property:
 ```csharp
 if (!entity.IsAliveVersion)
 {
-    // make sure to only use this if you are sure entity was at least valid before.
+    // make sure to only use this if you are sure entity was at least valid before, and its world is still alive
     // i.e created from existing valid world through CreateEntity method, and not through default struct constructor
 }
 ```
