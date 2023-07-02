@@ -30,9 +30,16 @@ namespace DefaultEcs
 
         #endregion
 
+        /// <summary> 
+        ///     Are runtime debug checks in entity methods that are prone to misuse enabled? <para/>
+        ///     This is DEBUG configuration-only feature and is not used in release builds.
+        /// </summary>
+        public static bool IsMisuseDetectionEnabled;
+
         #region Initialisation
 
         private const string NON_WORLD_ENTITY_MESSAGE = "Entity was not created from a World";
+        private const string ENTITY_MISUSE_MESSAGE = "Entity misuse detected. Something is wrong!";
 
         internal Entity(short worldId)
         {
@@ -146,6 +153,7 @@ namespace DefaultEcs
         public void Enable()
         {
             ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
+            ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
 
             ref ComponentEnum components = ref Components;
             if (!components[World.IsEnabledFlag])
@@ -163,6 +171,7 @@ namespace DefaultEcs
         public void Disable()
         {
             ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
+            ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
 
             ref ComponentEnum components = ref Components;
             if (components[World.IsEnabledFlag])
@@ -191,6 +200,13 @@ namespace DefaultEcs
         {
             ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
 
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
+
             if (Has<T>())
             {
                 ref ComponentEnum components = ref Components;
@@ -213,6 +229,13 @@ namespace DefaultEcs
         {
             ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
 
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
+
             ref ComponentEnum components = ref Components;
             if (components[ComponentManager<T>.Flag])
             {
@@ -232,6 +255,13 @@ namespace DefaultEcs
         public void Set<T>(in T component)
         {
             ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
+
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
 
             InnerSet<T>(ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component));
         }
@@ -259,6 +289,13 @@ namespace DefaultEcs
             ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
             ThrowIf(WorldId != reference.WorldId, "Reference Entity comes from a different World");
 
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
+
             ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
             ThrowIf(!(pool?.Has(reference.EntityId) ?? false), $"Reference Entity does not have a component of type {typeof(T)}");
 
@@ -276,6 +313,13 @@ namespace DefaultEcs
         {
             ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
 
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
+
             ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
             ThrowIf(!(pool?.Has(0) ?? false), $"World does not have a component of type {typeof(T)}");
 
@@ -289,6 +333,13 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         public void Remove<T>()
         {
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
             if (ComponentManager<T>.Get(WorldId)?.Remove(EntityId) == true)
             {
                 ref ComponentEnum components = ref Components;
@@ -310,6 +361,13 @@ namespace DefaultEcs
             ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
             ThrowIf(!Has<T>(), $"Entity does not have a component of type {typeof(T)}");
 
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
+
             Publisher.Publish(WorldId, new EntityComponentChangedMessage<T>(EntityId, Components));
 
             if (ComponentManager<T>.GetPrevious(WorldId) is ComponentPool<T> previousPool && Has<T>())
@@ -326,6 +384,12 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has<T>()
         {
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
             var componentPool = ComponentManager<T>.Get(WorldId);
             return componentPool?.Has(EntityId) ?? false;
         }
@@ -412,6 +476,8 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
+            if (WorldId == 0) return;
+            if (!this.IsAliveVersion) return;
             Publisher.Publish(WorldId, new EntityDisposingMessage(EntityId));
             Publisher.Publish(WorldId, new EntityDisposedMessage(EntityId));
         }
