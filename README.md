@@ -122,10 +122,21 @@ Entities are created as such:
 Entity entity = world.CreateEntity();
 ```
 
-You should not store entities yourself and rely as much as possible on the returned objects from a world query as those will be updated accordingly to component changes.  
 To clear an entity, simply call its `Dispose` method.
 ```csharp
 entity.Dispose();
+```
+
+You should not store entities yourself and rely as much as possible on the returned objects from a world query as those will be updated accordingly to component changes.
+If you absolutely need to store it separately and found related hard-to-find bug, you might consider temporary enabling runtime entity misuse checks:
+```csharp
+Entity entity = world.CreateEntity();
+Entity.IsMisuseDetectionEnabled = true; // this property is available in release as well, but is not used
+entity.Set<bool>();
+entity.Dispose();
+if (entity.Has<bool>()) {
+    // in debug configuration you will get entity misuse exception trying to perform Has<T> there as the entity is already dead.
+}
 ```
 
 Once disposed, you should not use the entity again. If you need a safeguard, you can check the `IsAlive` property:
@@ -136,6 +147,15 @@ if (!entity.IsAlive)
     // something is wrong
 }
 #endif
+```
+
+There is faster alternative to IsAlive property:
+```csharp
+if (!entity.IsAliveVersion)
+{
+    // make sure to only use this if you are sure entity was at least valid before, and its world is still alive
+    // i.e created from existing valid world through CreateEntity method, and not through default struct constructor
+}
 ```
 
 You can also make an entity act as if it was disposed so it is removed from world queries while keeping all its components, this is useful when you need to activate/deactivate an entity from your game logic:
@@ -311,6 +331,7 @@ entity.Set(ManagedResource<Texture2D>.Create("square.png", "circle.png")); // se
 textureResourceManager.Manage(_world);
 ```
 This feature only cares for entity components, not the world components.
+Plus, it's intended mostly for init, so keep it in mind before trying to use it in any non-init systems as the performance might not be the best.
 
 ## Query
 To perform operations, systems should query entities from the world. This is performed by requesting entities through the world and using the fluent API to create rules
@@ -368,8 +389,38 @@ world
     .AsMap<TKey>();
 ```
 Gets an `EntityMap<TKey>` which maps a single entity with a component type of `TKey` value. Its content is cached for fast access and is automatically updated as you change your entity component composition.
-If `When...` rules are present, you should call its `Complete()` method once you are done processing its entities to clear it.
+You can think of it as ecs-framework intergated version of `Dictionary<TKey,Entity>`.
 This is useful if you need O(1) access to an entity based on a key.
+
+For complex situations when you want to compare specific field(s) instead of whole component, you can pass `IEqualityComparer<TKey>` when creating the map:
+```csharp
+    public static class TestsApplication {
+        public static void Main() {
+            World testWorld = new World();
+            var comparer = new TestComponentComparer();
+            var testComponentMap = testWorld.GetEntities().AsMap<TestComponent>(comparer);
+
+            Entity one = testWorld.CreateEntity();
+            Entity two = testWorld.CreateEntity();
+            Entity three = testWorld.CreateEntity();
+            one.Set(new TestComponent() { UniqueID = 1, SomeBool = true });
+            two.Set(new TestComponent() { UniqueID = 1, SomeBool = false });
+
+            // Now we will get error because EntityMap we have only cares about the bool equality
+            three.Set(new TestComponent() { UniqueID = 2, SomeBool = true });
+        }
+    }
+    public struct TestComponent {
+        public byte UniqueID;
+        public bool SomeBool;
+    }
+    public class TestComponentComparer : IEqualityComparer<TestComponent> {
+        bool IEqualityComparer<TestComponent>.Equals(TestComponent x, TestComponent y) => x.SomeBool == y.SomeBool;
+        int IEqualityComparer<TestComponent>.GetHashCode(TestComponent obj) => obj.GetHashCode();
+    }
+```
+
+If `When...` rules are present, you should call its `Complete()` method once you are done processing its entities to clear it.
 
 ### AsMultiMap
 ```csharp
@@ -379,8 +430,11 @@ world
     .AsMultiMap<TKey>();
 ```
 Gets an `EntityMultiMap<TKey>` which maps multiple entities with a component type of `TKey` value. Its content is cached for fast access and is automatically updated as you change your entity component composition.
-If `When...` rules are present, you should call its `Complete()` method once you are done processing its entities to clear it.
+You can think of it as ecs-framework intergated version of `Dictionary<TKey,Entity[]>`.
 This is useful if you need O(1) access to entities based on a key.
+Just like `EntityMap<TKey>` it supports custom component equality by passing `IEqualityComparer<TKey>`
+
+If `When...` rules are present, you should call its `Complete()` method once you are done processing its entities to clear it.
 
 ## System
 Although there is no obligation to use them, a set of base classes is provided to help with the creation of systems:
@@ -495,14 +549,15 @@ public sealed class VelocitySystem : AEntitySetSystem<float>
 
 It is also possible to declare the component types by using the `WithAttribute` and `WithoutAttribute` on the system type:
 ```csharp
-[With(typeof(Velocity)]
+[With<Velocity>]
 [With(typeof(Position)]
 public sealed class VelocitySystem : AEntitySetSystem<float>
 {
-    public VelocitySystem(World world, IParallelRunner runner)
-        : base(world, runner)
-    {
-    }
+    // Note the usage of useBuffer paramater in constructor.
+    // Setting it to false will yield us better performance.
+    // But now setting removing, or enabling-disabling components on entity that are part of filter (namely, Velocity and Position) is no longer safe.
+    // Manipulating entity (i.e. disabling it, or disposing) is now also no longer safe.
+    public VelocitySystem(World world) : base(world, useBuffer: false) { }
 
     protected override void Update(float elapsedTime, in Entity entity)
     {

@@ -40,7 +40,7 @@ namespace DefaultEcs.System
 
         #region Fields
 
-        private readonly bool _useBuffer;
+        private readonly bool _useBuffer = true;
         private readonly IParallelRunner _runner;
         private readonly Runnable _runnable;
         private readonly int _minEntityCountByRunnerIndex;
@@ -69,6 +69,7 @@ namespace DefaultEcs.System
             Set = factory(this);
             World = Set.World;
 
+            _useBuffer = (runner != null && runner.DegreeOfParallelism > 1) ? false : _useBuffer;
             _runner = runner ?? DefaultParallelRunner.Default;
             _runnable = new Runnable(this);
             _minEntityCountByRunnerIndex = _runner.DegreeOfParallelism > 1 ? minEntityCountByRunnerIndex : int.MaxValue;
@@ -89,10 +90,9 @@ namespace DefaultEcs.System
         /// Initialise a new instance of the <see cref="AEntitySetSystem{T}"/> class with the given <see cref="EntitySet"/>.
         /// </summary>
         /// <param name="set">The <see cref="EntitySet"/> on which to process the update.</param>
-        /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
+        /// <param name="useBuffer">Whether the entities should be copied before being processed. False will yield better performance but is less safe.</param>
         /// <exception cref="ArgumentNullException"><paramref name="set"/> is null.</exception>
-        protected AEntitySetSystem(EntitySet set, bool useBuffer = false)
-            : this(set, null)
+        protected AEntitySetSystem(EntitySet set, bool useBuffer = true) : this(set, null)
         {
             _useBuffer = useBuffer;
         }
@@ -129,7 +129,7 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="factory">The factory used to create the <see cref="EntitySet"/>.</param>
-        /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
+        /// <param name="useBuffer">Whether the entities should be copied before being processed. False will yield better performance but is less safe.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="factory"/> is null.</exception>
         protected AEntitySetSystem(World world, Func<object, World, EntitySet> factory, bool useBuffer)
@@ -143,9 +143,9 @@ namespace DefaultEcs.System
         /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
         /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
-        /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
+        /// <param name="useBuffer">Whether the entities should be copied before being processed. False will yield better performance but is less safe.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AEntitySetSystem(World world, bool useBuffer = false)
+        protected AEntitySetSystem(World world, bool useBuffer = true)
             : this(world, DefaultFactory, useBuffer)
         { }
 

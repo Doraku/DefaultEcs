@@ -30,7 +30,16 @@ namespace DefaultEcs
 
         #endregion
 
+        /// <summary> 
+        ///     Are runtime debug checks in entity methods that are prone to misuse enabled? <para/>
+        ///     This is DEBUG configuration-only feature and is not used in release builds.
+        /// </summary>
+        public static bool IsMisuseDetectionEnabled;
+
         #region Initialisation
+
+        private const string NON_WORLD_ENTITY_MESSAGE = "Entity was not created from a World";
+        private const string ENTITY_MISUSE_MESSAGE = "Entity misuse detected. Something is wrong!";
 
         internal Entity(short worldId)
         {
@@ -60,17 +69,45 @@ namespace DefaultEcs
         public World World => World.Worlds[WorldId];
 
         /// <summary>
-        /// Gets whether the current <see cref="Entity"/> is alive or not.
+        /// Gets whether the current <see cref="Entity"/> is valid (i.e. not disposed and properly created from existing world) or not.
         /// </summary>
         /// <returns>true if the <see cref="Entity"/> is alive; otherwise, false.</returns>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public bool IsAlive => WorldId != 0 && World.EntityInfos[EntityId].IsAlive(Version);
+        public bool IsAlive
+        {
+            get
+            {
+                if (WorldId == 0) return false;
+                if (World.EntityInfos.Length > EntityId)
+                {
+                    var entityInfo = World.EntityInfos[EntityId];
+                    return entityInfo.IsAlive(Version);
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Returns whether the current <see cref="Entity"/> version copy is alive. This method is faster and less safe version of <see cref="Entity.IsAlive"/> <para/>
+        /// Use it when know for sure that entity was valid previously (i.e. it was created from existing world and used before)
+        /// </summary>
+        /// <returns>true if the given <see cref="Entity"/> copy is latest(alive) version; otherwise, false.</returns>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public readonly bool IsAliveVersion
+        {
+            get
+            {
+                if (WorldId == 0) return false;
+                var entityInfo = World.EntityInfos[EntityId];
+                return Version == entityInfo.Version;
+            }
+        }
 
         #endregion
 
         #region Methods
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ThrowIf(bool actuallyThrow, string message)
         {
             if (actuallyThrow)
@@ -115,7 +152,8 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Enable()
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
+            ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
 
             ref ComponentEnum components = ref Components;
             if (!components[World.IsEnabledFlag])
@@ -132,7 +170,8 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Disable()
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
+            ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
 
             ref ComponentEnum components = ref Components;
             if (components[World.IsEnabledFlag])
@@ -159,7 +198,14 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Enable<T>()
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
+
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
 
             if (Has<T>())
             {
@@ -181,7 +227,14 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/>.</exception>
         public void Disable<T>()
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
+
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
 
             ref ComponentEnum components = ref Components;
             if (components[ComponentManager<T>.Flag])
@@ -201,7 +254,14 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">Max number of component of type <typeparamref name="T"/> reached.</exception>
         public void Set<T>(in T component)
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
+
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
 
             InnerSet<T>(ComponentManager<T>.GetOrCreate(WorldId).Set(EntityId, component));
         }
@@ -226,8 +286,15 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException">Reference <see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
         public void SetSameAs<T>(in Entity reference)
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
             ThrowIf(WorldId != reference.WorldId, "Reference Entity comes from a different World");
+
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
 
             ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
             ThrowIf(!(pool?.Has(reference.EntityId) ?? false), $"Reference Entity does not have a component of type {typeof(T)}");
@@ -244,7 +311,14 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="World"/> does not have a component of type <typeparamref name="T"/>.</exception>
         public void SetSameAsWorld<T>()
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
+
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
 
             ComponentPool<T> pool = ComponentManager<T>.Get(WorldId);
             ThrowIf(!(pool?.Has(0) ?? false), $"World does not have a component of type {typeof(T)}");
@@ -259,6 +333,13 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         public void Remove<T>()
         {
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
             if (ComponentManager<T>.Get(WorldId)?.Remove(EntityId) == true)
             {
                 ref ComponentEnum components = ref Components;
@@ -277,8 +358,15 @@ namespace DefaultEcs
         /// <exception cref="InvalidOperationException"><see cref="Entity"/> does not have a component of type <typeparamref name="T"/>.</exception>
         public void NotifyChanged<T>()
         {
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
             ThrowIf(!Has<T>(), $"Entity does not have a component of type {typeof(T)}");
+
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
 
             Publisher.Publish(WorldId, new EntityComponentChangedMessage<T>(EntityId, Components));
 
@@ -294,7 +382,17 @@ namespace DefaultEcs
         /// <typeparam name="T">The type of the component.</typeparam>
         /// <returns>true if the <see cref="Entity"/> has a component of type <typeparamref name="T"/>; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has<T>() => ComponentManager<T>.Get(WorldId)?.Has(EntityId) ?? false;
+        public bool Has<T>()
+        {
+#if DEBUG
+            if (IsMisuseDetectionEnabled)
+            {
+                ThrowIf(!this.IsAliveVersion, ENTITY_MISUSE_MESSAGE);
+            }
+#endif
+            var componentPool = ComponentManager<T>.Get(WorldId);
+            return componentPool?.Has(EntityId) ?? false;
+        }
 
         /// <summary>
         /// Gets the component of type <typeparamref name="T"/> on the current <see cref="Entity"/>.
@@ -303,7 +401,15 @@ namespace DefaultEcs
         /// <returns>A reference to the component.</returns>
         /// <exception cref="Exception"><see cref="Entity"/> was not created from a <see cref="DefaultEcs.World"/> or does not have a component of type <typeparamref name="T"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref T Get<T>() => ref ComponentManager<T>.Pools[WorldId].Get(EntityId);
+        public ref T Get<T>()
+        {
+            var typePools = ComponentManager<T>.Pools;
+            if (WorldId > 0 && WorldId >= typePools.Length)
+            {
+                throw new InvalidOperationException("Get failed, because entity does not have component type=" + typeof(T).Name);
+            }
+            return ref typePools[WorldId].Get(EntityId);
+        }
 
         /// <summary>
         /// Creates a copy of current <see cref="Entity"/> with all of its components in the given <see cref="DefaultEcs.World"/> using the given <see cref="ComponentCloner"/>.
@@ -319,7 +425,7 @@ namespace DefaultEcs
             world.ThrowIfNull();
             cloner.ThrowIfNull();
 
-            ThrowIf(WorldId == 0, "Entity was not created from a World");
+            ThrowIf(WorldId == 0, NON_WORLD_ENTITY_MESSAGE);
 
             Entity copy = world.CreateEntity();
 
@@ -370,6 +476,8 @@ namespace DefaultEcs
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
+            if (WorldId == 0) return;
+            if (!this.IsAliveVersion) return;
             Publisher.Publish(WorldId, new EntityDisposingMessage(EntityId));
             Publisher.Publish(WorldId, new EntityDisposedMessage(EntityId));
         }

@@ -97,6 +97,9 @@ namespace DefaultEcs.System
         /// <param name="componentTypes">The types of the component.</param>
         public ComponentAttribute(ComponentFilterType filterType, params Type[] componentTypes)
         {
+            if (!Enum.IsDefined(typeof(ComponentFilterType), filterType)) {
+                throw new ArgumentException(nameof(filterType));
+            }
             ComponentTypes = componentTypes.ThrowIfNull();
             FilterType = filterType;
         }

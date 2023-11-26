@@ -17,7 +17,7 @@ namespace DefaultEcs.System
     {
         #region Fields
 
-        private readonly bool _useBuffer;
+        private readonly bool _useBuffer = true;
 
         #endregion
 
@@ -48,9 +48,9 @@ namespace DefaultEcs.System
         /// Initialise a new instance of the <see cref="AEntitySortedSetSystem{TState, TComponent}"/> class with the given <see cref="EntitySortedSet{TComponent}"/>.
         /// </summary>
         /// <param name="sortedSet">The <see cref="EntitySet"/> on which to process the update.</param>
-        /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
+        /// <param name="useBuffer">Whether the entities should be copied before being processed. False will yield better performance but is less safe.</param>
         /// <exception cref="ArgumentNullException"><paramref name="sortedSet"/> is null.</exception>
-        protected AEntitySortedSetSystem(EntitySortedSet<TComponent> sortedSet, bool useBuffer = false)
+        protected AEntitySortedSetSystem(EntitySortedSet<TComponent> sortedSet, bool useBuffer = true)
             : this(sortedSet is null ? throw new ArgumentNullException(nameof(sortedSet)) : _ => sortedSet)
         {
             _useBuffer = useBuffer;
@@ -62,7 +62,7 @@ namespace DefaultEcs.System
         /// </summary>
         /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
         /// <param name="factory">The factory used to create the <see cref="EntitySortedSet{TComponent}"/>.</param>
-        /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
+        /// <param name="useBuffer">Whether the entities should be copied before being processed. False will yield better performance but is less safe.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="factory"/> is null.</exception>
         protected AEntitySortedSetSystem(World world, Func<object, World, EntitySortedSet<TComponent>> factory, bool useBuffer)
@@ -76,9 +76,9 @@ namespace DefaultEcs.System
         /// To create the inner <see cref="EntitySet"/>, <see cref="WithAttribute"/> and <see cref="WithoutAttribute"/> attributes will be used.
         /// </summary>
         /// <param name="world">The <see cref="DefaultEcs.World"/> from which to get the <see cref="Entity"/> instances to process the update.</param>
-        /// <param name="useBuffer">Whether the entities should be copied before being processed.</param>
+        /// <param name="useBuffer">Whether the entities should be copied before being processed. False will yield better performance but is less safe.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world"/> is null.</exception>
-        protected AEntitySortedSetSystem(World world, bool useBuffer = false)
+        protected AEntitySortedSetSystem(World world, bool useBuffer = true)
             : this(world, static (o, w) => EntityRuleBuilderFactory.Create(o.GetType())(o, w).AsSortedSet(o as IComparer<TComponent>), useBuffer)
         { }
 
