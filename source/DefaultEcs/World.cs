@@ -171,6 +171,11 @@ namespace DefaultEcs
         /// </summary>
         public int MaxCapacity { get; }
 
+        /// <summary>
+        /// Gets the unique id of the world instance.
+        /// </summary>
+        public int Id => WorldId;
+
         #endregion
 
         #region Initialisation
