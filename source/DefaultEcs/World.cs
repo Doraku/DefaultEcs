@@ -172,7 +172,7 @@ namespace DefaultEcs
         public int MaxCapacity { get; }
 
         /// <summary>
-        /// Gets the unique id of the world instance.
+        /// Gets the unique id of the world instance.   
         /// </summary>
         public int Id => GetHashCode();
 
@@ -803,6 +803,15 @@ namespace DefaultEcs
         /// </summary>
         /// <returns>A string representing this instance.</returns>
         public override string ToString() => $"World {WorldId}";
+
+        /// <summary>
+        /// Returns a hashcode representing this instance.
+        /// </summary>
+        /// <returns>A hashcode representing this instance.</returns>
+        public override int GetHashCode()
+        {
+            return WorldId.GetHashCode();
+        }
 
         #endregion
     }
