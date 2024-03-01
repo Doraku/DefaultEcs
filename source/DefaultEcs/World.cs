@@ -174,7 +174,7 @@ namespace DefaultEcs
         /// <summary>
         /// Gets the unique id of the world instance.
         /// </summary>
-        public int Id => WorldId;
+        public int Id => GetHashCode();
 
         #endregion
 
